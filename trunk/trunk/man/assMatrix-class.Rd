@@ -3,8 +3,9 @@
 \alias{assMatrix-class}
 \alias{as.character,assMatrix-method}
 \alias{show,assMatrix-method}
-\alias{"%in%",assMatrix-method}
+\alias{\%in\%,assMatrix-method}
 \alias{attributes-class}
+\alias{[,assMatrix-method}
 
 \title{Class "assMatrix" ~~~ }
 \description{  ~~ A concise (1-5 lines) description of what the class is.  ~~}
@@ -34,6 +35,7 @@ Class \code{"cscMatrix"}, directly.
     \item{as.character}{\code{signature(x = "assMatrix")}: ... }
     \item{as.list}{\code{signature(x = "assMatrix")}: ... }
     \item{match}{\code{signature(x = "assMatrix")}: ... }
+    \item{\%in\%}{\code{signature(x = "assMatrix")}: ... }
     \item{show}{\code{signature(object = "assMatrix")}: ... }
   }
 }

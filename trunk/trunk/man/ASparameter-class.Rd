@@ -1,13 +1,15 @@
-\name{ASparms-class}
+\name{ASparameter-class}
 \docType{class}
-\alias{APparms-class}
-\alias{ASparms-class}
-\alias{ECparms-class}
+\alias{APparameter-class}
+\alias{ASparameter-class}
+\alias{ECparameter-class}
+\alias{.parameter-class}
+\alias{show,.parameter-method}
 
-\title{Class "ASparms" ~~~ }
+\title{Class "ASparameter" ~~~ }
 \description{  ~~ A concise (1-5 lines) description of what the class is.  ~~}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("APparms", ...)}.
+Objects can be created by calls of the form \code{new("APparameter", ...)}.
     ~~ describe objects here ~~ 
 }
 \section{Slots}{
@@ -26,7 +28,7 @@ Objects can be created by calls of the form \code{new("APparms", ...)}.
   }
 }
 \section{Methods}{
-No methods defined with class "APparms" in the signature.
+No methods defined with class "APparameter" in the signature.
 }
 \references{ ~put references to the literature/web site here ~ }
 \author{Bettina Gruen}

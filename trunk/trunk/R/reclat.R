@@ -1,18 +1,18 @@
-reclat <-  function(data=list(), parms = NULL, control = NULL)
+reclat <-  function(data, parameter = NULL, control = NULL)
   {
     call <- match.call()
     data <- as(data, "assMatrix")
     control <- as(control, "ECcontrol")
-    parms <- as(parms, "ECparms")
-    set <- .Call("reclat", 
+    parameter <- as(parameter, "ECparameter")
+    sets <- .Call("reclat", 
                  ## Transactions
                  as.integer(data@p),
                  as.integer(data@i),
                  ## parameter
-                 parms, control,
+                 parameter, control,
                  PACKAGE = "arules")                  
-    for (i in c("levels", "attr", "assign", "labels")) slot(set, i) <- slot(data, i)
-    set@quality <- as.data.frame(set@quality)
-    new("arules", set = set, parms = parms, call = call, control = control)
+    for (i in c("levels", "attr", "assign", "labels")) slot(sets, i) <- slot(data, i)
+    sets@quality <- as.data.frame(sets@quality)
+    new("arules", sets = sets, parameter = parameter, call = call, control = control)
   }
 

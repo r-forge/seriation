@@ -717,15 +717,15 @@ SEXP returnObject(RULESET *set, ARparameter *param)
 	SEXP ans, rnb, tp, q, dmns, names, body, head, trans, dim;
 
 	if (param->target <= TT_CLSET)	{
-		ans = PROTECT(NEW_OBJECT(MAKE_CLASS("itemset")));
+		ans = PROTECT(NEW_OBJECT(MAKE_CLASS("itemsets")));
 		len = 1;
 	}
 	else if (param->target == TT_RULE) {
-		ans = PROTECT(NEW_OBJECT(MAKE_CLASS("ruleset")));
+		ans = PROTECT(NEW_OBJECT(MAKE_CLASS("rules")));
 		len = 3;
 	}
 	else {
-		ans = PROTECT(NEW_OBJECT(MAKE_CLASS("hyperedgeset")));
+		ans = PROTECT(NEW_OBJECT(MAKE_CLASS("hyperedges")));
 		len = 2;
 	}
 	if (param->aval) len++;

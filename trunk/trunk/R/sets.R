@@ -1,22 +1,22 @@
-setClass("itemset",
+setClass("itemsets",
          representation(rnb = "integer",
                         body = "cscMatrix",
                         trans = "cscMatrix",
                         quality = "data.frame"),
          contains = "attributes")
 
-setClass("ruleset",
+setClass("rules",
          representation(head = "cscMatrix"),
-         contains = "itemset")
+         contains = "itemsets")
 
-setClass("hyperedgeset",
-         contains = "itemset")
+setClass("hyperedges",
+         contains = "itemsets")
 
-setClassUnion("set", c("itemset", "ruleset", "hyperedgeset"))
+setClassUnion("sets", c("itemsets", "rules", "hyperedges"))
 
 ###**********************************************************
 
-setMethod("as.character", "set", function(x) {
+setMethod("as.character", "sets", function(x) {
   slots <- intersect(slotNames(x), c("head", "body"))
   names <- list()
   if (length(x@labels)) {
@@ -33,39 +33,54 @@ setMethod("as.character", "set", function(x) {
   names
 })
 
-setMethod("show", signature(object = "itemset"), function(object) {
+setMethod("show", signature(object = "itemsets"), function(object) {
   cat(class(object), " containing ", object@rnb, " sets\n", sep = "")
+  invisible(object)
 })
 
 ###**********************************************************
 
-setClass("summary.set",
+setClass("summary.sets",
          representation(rnb = "integer",
                         tnb = "table",
                         body = "integer",
                         quality = "table"))
 
-setClass("summary.ruleset",
-         contains = "summary.set",
+setClass("summary.rules",
+         contains = "summary.sets",
          representation(head = "integer"))
 
-setMethod("summary", "set", function(object, maxsum = 7, ...) {
+setMethod("summary", "sets", function(object, maxsum = 7, ...) {
   chars <- as.character(object)
   for (i in names(chars)) assign(i, summary(as.factor(chars[[i]]), maxsum = maxsum, ...))
   if (length(chars) == 2) {
-    return(new("summary.ruleset", rnb = object@rnb, quality = summary(object@quality), tnb = table(diff(object@body@p)),
+    return(new("summary.rules", rnb = object@rnb, quality = summary(object@quality), tnb = table(diff(object@body@p)),
                head = head, body = body))
   }
   else {
-    return(new("summary.set", rnb = object@rnb, quality = summary(object@quality), tnb = table(diff(object@body@p)),
+    return(new("summary.sets", rnb = object@rnb, quality = summary(object@quality), tnb = table(diff(object@body@p)),
           body = body))
   }
 
 })
 
+setMethod("show", signature(object = "summary.sets"), function(object) {
+  cat("Object contains ", object@rnb, " ", strsplit(class(object), ".", fixed = TRUE)[[1]][2], ".\n\n", sep = "")
+  cat("body lengths:\n")
+  print(object@tnb)
+  slots <- slotNames(object)
+  slots <- slots[slots %in% c("head", "body")]
+  for (s in slots) {
+    cat("\n", s, ":\n", sep = "")
+    print(slot(object, s))
+  }
+  cat("\nquality:\n")
+  print(object@quality)
+  invisible(object)
+})
 ###**********************************************************
 
-setMethod("[", signature(x = "set"),
+setMethod("[", signature(x = "sets"),
           function(x, i, j, ..., drop)
           {
             if (!missing(j)) stop("incorrect number of dimensions")
@@ -105,13 +120,13 @@ subsetSet <- function(x, subset, ...) {
   x[i,]
 }
 
-setMethod("subset", signature(x = "set"), subsetSet)
-setMethod("subset", signature(x = "ruleset"), subsetRuleSet)
+setMethod("subset", signature(x = "sets"), subsetSet)
+setMethod("subset", signature(x = "rules"), subsetRuleSet)
 
 
 ###**********************************************************
 
-setAs("set", "data.frame", function(from, to) {          
+setAs("sets", "data.frame", function(from, to) {          
   if (from@rnb == 0) {
     warning("Empty set!")
     return(from)
@@ -127,6 +142,7 @@ setAs("set", "data.frame", function(from, to) {
   }
 })
 
-setMethod("as.data.frame", signature(x = "set"), function(x, row.names = NULL, optional = FALSE) {
+setMethod("as.data.frame", signature(x = "sets"), function(x, row.names = NULL, optional = FALSE) {
   as(x, "data.frame")
 })
+

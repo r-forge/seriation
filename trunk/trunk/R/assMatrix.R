@@ -4,7 +4,7 @@ setClass("assMatrix",
 setAs("matrix", "assMatrix", 
       function(from) {
         z <- as(from, "cscMatrix")
-        v <- attributes(labels = 1:dim(z)[1])
+        v <- .attributes(labels = 1:dim(z)[1])
         new("assMatrix", z, v)
       })
   
@@ -15,19 +15,21 @@ setAs("assMatrix", "matrix",
       })
 
 setAs("data.frame", "assMatrix", function(from) {
+  if (!all(sapply(from, is.factor)))
+    stop("Column ", names(which(!sapply(census, is.factor))), " is not a factor.") 
   fdim <- dim(from)
   attr <- colnames(from)
-  from <- lapply(from, as.factor)
-  levels <- lapply(from, levels)
-  attrib <- attributes(levels = levels)
+  levels <- sapply(from, levels)
+  attrib <- .attributes(levels = levels)
   lev <- c(0, cumsum(attrib@assign))
-  u <- sapply(from, as.integer) + rep(lev[-length(lev)], each = fdim[1])
-  i <- as.integer(t(u)-1)
   ndim <- c(length(attrib@labels), fdim[1])
   len <- rep(fdim[2], ndim[2])
-  if (any(is.na(u))) {
+  v <- lapply(1:14, function(i) factor(from[[i]], labels = lev[i]:(lev[i+1]-1)))
+  v <- data.frame(v)
+  i <- as.integer(t(v))
+  if (any(is.na(v))) {
     i <- i[!is.na(i)]
-    ind <- table(which(is.na(u), arr.ind = TRUE)[,1])
+    ind <- table(which(is.na(v), arr.ind = TRUE)[,1])
     rowsNA <- as.integer(names(ind))
     len[rowsNA] <- len[rowsNA] - ind
   }
@@ -36,6 +38,16 @@ setAs("data.frame", "assMatrix", function(from) {
   new("assMatrix", z, attrib)
 })
 
+setAs("assMatrix", "data.frame", function(from) {
+  variables <- from@attr
+  to <- list()
+  for (v in 1:length(variables)) {
+    t <- .Call("assMatrix_var", from, as.integer(v), PACKAGE = "arules")
+    var <- variables[v]
+    to[[var]] <- factor(t, labels = from@levels[[var]])
+  }
+  to <- do.call("data.frame", to)
+})
 ###**********************************************************
 
 setMethod("as.character", signature(x = "assMatrix"), function(x) {
@@ -55,6 +67,7 @@ setMethod("as.list", signature(x = "cscMatrix"), function(x, ...) {
 
 setMethod("show", signature(object = "assMatrix"), function(object) {
   cat("Transaction matrix in sparse format with dimension", object@Dim, "\n")
+  invisible(object)
 })
 
 ###**********************************************************

@@ -1,14 +1,14 @@
-\name{ruleset-class}
+\name{rules-class}
 \docType{class}
-\alias{ruleset-class}
-\alias{summary,ruleset-method}
-\alias{subset,ruleset-method}
-\alias{summary.ruleset-class}
+\alias{rules-class}
+\alias{summary,rules-method}
+\alias{subset,rules-method}
+\alias{summary.rules-class}
 
-\title{Class "ruleset" ~~~ }
+\title{Class "rules" ~~~ }
 \description{  ~~ A concise (1-5 lines) description of what the class is.  ~~}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("ruleset", ...)}.
+Objects can be created by calls of the form \code{new("rules", ...)}.
     ~~ describe objects here ~~ 
 }
 \section{Slots}{
@@ -21,21 +21,16 @@ Objects can be created by calls of the form \code{new("ruleset", ...)}.
   }
 }
 \section{Extends}{
-Class \code{"itemset"}, directly.
+Class \code{"itemsets"}, directly.
 Class \code{"set"}, directly.
 }
 \section{Methods}{
   \describe{
-    \item{as.character}{\code{signature(x = "ruleset")}: ... }
-    \item{summary}{\code{signature(object = "ruleset")}: ... }
-    \item{subset}{\code{signature(object = "ruleset")}: ... }
+    \item{as.character}{\code{signature(x = "rules")}: ... }
+    \item{summary}{\code{signature(object = "rules")}: ... }
+    \item{subset}{\code{signature(object = "rules")}: ... }
   }
 }
-\references{ ~put references to the literature/web site here ~ }
 \author{Bettina Gruen}
-\note{ ~~further notes~~ }
-
- ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{\code{\link{set-class}}}
+\seealso{\code{\link{sets-class}}}
 \keyword{classes}

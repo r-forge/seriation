@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{subset-methods}
 \alias{subset,ANY-method}
-\alias{subset,set-method}
+\alias{subset,sets-method}
 \title{ ~~ Methods for Function subset in Package `rapriori' ~~}
 \description{
  ~~ Methods for function \code{subset} in package \pkg{rapriori} ~~
@@ -12,7 +12,7 @@
 
 \item{x = "ANY"}{ ~~describe this method here }
 
-\item{x = "set"}{ ~~describe this method here }
+\item{x = "sets"}{ ~~describe this method here }
 }}
 \keyword{methods}
 

@@ -69,3 +69,43 @@ SEXP csc_subset(SEXP x, SEXP i, SEXP j)
     return val;
 }
 
+SEXP assMatrix_var(SEXP x, SEXP i)
+{
+    SEXP val;
+    int *xi, *xp, *lev, *plev, anz, *ndims, k, ind, *ans, id, new;
+    double *xx;
+
+    id = *INTEGER(i);
+    xi = INTEGER(GET_SLOT(x, install("i")));
+    xp = INTEGER(GET_SLOT(x, install("p")));
+    xx = REAL(GET_SLOT(x, install("x")));
+    lev = INTEGER(GET_SLOT(x, install("assign")));
+    anz = LENGTH(GET_SLOT(x, install("assign")));
+    plev = Calloc(anz+1, int);
+    plev[0] = 0;
+    for (k = 1; k < anz + 1; k++) {
+	    plev[k] = plev[k-1] + lev[k-1];
+    }
+    ndims = INTEGER(GET_SLOT(x, install("Dim")));
+    ans = Calloc(ndims[1], int);
+    new = 1;
+    for (k = 0; k < ndims[1]; k++) {
+	    for (ind = xp[k]; ind < xp[k+1]; ind++) {
+		    if ((plev[(id-1)] <= xi[ind]) & (xi[ind] < plev[id])) {
+			    if (new) {
+				    ans[k] = xi[ind];
+				    new = 0;
+			    }
+			    else error("The same variable is specified twice.");
+		    }
+	    }
+	    if (new) {
+		    ans[k] = NA_REAL;
+	    }
+	    else new = 1;
+    }
+    val = PROTECT(allocVector(INTSXP, ndims[1]));
+    Memcpy(INTEGER(val), ans, ndims[1]);
+    UNPROTECT(1);
+    return val;
+}

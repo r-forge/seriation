@@ -1,9 +1,8 @@
-rapriori <-  function(data, parms = NULL, appearance = NULL, control = NULL)
+rapriori <-  function(data, parameter = NULL, appearance = NULL, control = NULL)
   {
     call <- match.call()
     data <- as(data, "assMatrix")
-
-    as.ASapp <- function(from) {
+    as.ASappearance <- function(from) {
       prv <- names(from)
       warn <- NULL
       args = c("default", "body", "head", "both", "none")
@@ -31,24 +30,27 @@ rapriori <-  function(data, parms = NULL, appearance = NULL, control = NULL)
       }
       app <- list(body, head, both, none)
       if (!is.null(warn)) warning(warn)
-      new("ASapp", default = from$default, items = unlist(app),
-          set = sapply(app, length), labels = labs)
+      if (length(unlist(app))) 
+        return(new("ASappearance", default = from$default, items = unlist(app),
+            set = sapply(app, length), labels = labs))
+      else return(new("ASappearance", default = from$default))
     }
-    if (is.list(appearance)) appearance <- as.ASapp(appearance)
+
+    if (is.list(appearance)) appearance <- as.ASappearance(appearance)
     control <- as(control, "APcontrol")
-    parms <- as(parms, "APparms")
-    appearance <- as(appearance, "ASapp")   
-    set <- .Call("rapriori", 
+    parameter <- as(parameter, "APparameter")
+    appearance <- as(appearance, "ASappearance")   
+    sets <- .Call("rapriori", 
                  ## Transactions
                  as.integer(data@p),
                  as.integer(data@i),
                  ## parameter
-                 parms, control,
+                 parameter, control,
                  ## appearance
                  appearance,
                  PACKAGE = "arules")                  
-    for (i in c("levels", "attr", "assign", "labels")) slot(set, i) <- slot(data, i)
-    set@quality <- as.data.frame(set@quality)
-    new("arules", set = set, parms = parms, call = call, control = control)
+    for (i in c("levels", "attr", "assign", "labels")) slot(sets, i) <- slot(data, i)
+    sets@quality <- as.data.frame(sets@quality)
+    new("arules", sets = sets, parameter = parameter, call = call, control = control)
   }
 

@@ -7,14 +7,15 @@ setGeneric("as.data.frame")
 setGeneric("%in%")
 setGeneric("subset")
 
-types <- function(method = "apriori") {
+.types <- function(method = "apriori") {
   targets <- c("frequent item sets", "maximally frequent item sets", "closed item sets", "rules", "hyperedgesets")
   methods <- c("apriori", "eclat")
   method <- match.arg(tolower(method), methods)
   if (method == "eclat") return(targets[1:3])
   else return(targets)
 }
-aremtypes <- function() {
+
+.aremtypes <- function() {
   c("none",      ## no additional evaluation measure 
     "diff",      ## absolute confidence difference 
     "quot",      ## difference of conf. quotient to 1 
@@ -31,7 +32,7 @@ setClass("attributes",
                         assign = "integer",
                         labels = "character"))
 
-attributes <- function(levels, labels) {
+.attributes <- function(levels, labels) {
   if (!missing(levels)) {
     attr <- names(levels)
     assign <- sapply(levels, length, USE.NAMES = FALSE)

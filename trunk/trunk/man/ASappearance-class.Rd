@@ -1,11 +1,11 @@
-\name{ASapp-class}
+\name{ASappearance-class}
 \docType{class}
-\alias{ASapp-class}
+\alias{ASappearance-class}
 
-\title{Class "ASapp" ~~~ }
+\title{Class "ASappearance" ~~~ }
 \description{  ~~ A concise (1-5 lines) description of what the class is.  ~~}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("APapp", ...)}.
+Objects can be created by calls of the form \code{new("APappearance", ...)}.
     ~~ describe objects here ~~ 
 }
 \section{Slots}{
@@ -17,7 +17,7 @@ Objects can be created by calls of the form \code{new("APapp", ...)}.
   }
 }
 \section{Methods}{
-No methods defined with class "APapp" in the signature.
+No methods defined with class "APappearance" in the signature.
 }
 \references{ ~put references to the literature/web site here ~ }
 \author{Bettina Gruen}

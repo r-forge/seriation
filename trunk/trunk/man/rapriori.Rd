@@ -6,12 +6,12 @@
   Mining association rules
 }
 \usage{
-rapriori(data, parms = NULL, appearance = NULL, control = NULL)
+rapriori(data, parameter = NULL, appearance = NULL, control = NULL)
 }
 \arguments{
   \item{data}{binary matrix or data.frame}
-  \item{parms}{Object of class \code{APparms} or names list.}
-  \item{appearance}{Object of class \code{ASapp} or names list.}
+  \item{parameter}{Object of class \code{APparameter} or names list.}
+  \item{appearance}{Object of class \code{ASappearance} or names list.}
   \item{control}{Object of class \code{APcontrol} or names list.}
 }
 \details{

@@ -1,14 +1,14 @@
-\name{itemset-class}
+\name{itemsets-class}
 \docType{class}
-\alias{itemset-class}
-\alias{hyperedgeset-class}
-\alias{show,itemset-method}
-\alias{summary,itemset-method}
+\alias{itemsets-class}
+\alias{hyperedges-class}
+\alias{show,itemsets-method}
+\alias{summary,itemsets-method}
 
-\title{Class "itemset" ~~~ }
+\title{Class "itemsets" ~~~ }
 \description{  ~~ A concise (1-5 lines) description of what the class is.  ~~}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("itemset", ...)}.
+Objects can be created by calls of the form \code{new("itemsets", ...)}.
     ~~ describe objects here ~~ 
 }
 \section{Slots}{
@@ -24,15 +24,15 @@ Class \code{"set"}, directly.
 }
 \section{Methods}{
   \describe{
-    \item{as.character}{\code{signature(x = "itemset")}: ... }
-    \item{extractRules}{\code{signature(object = "itemset")}: ... }
-    \item{show}{\code{signature(object = "itemset")}: ... }
-    \item{subset}{\code{signature(x = "itemset")}: ... }
-    \item{summary}{\code{signature(object = "itemset")}: ... }
+    \item{as.character}{\code{signature(x = "itemsets")}: ... }
+    \item{extractRules}{\code{signature(object = "itemsets")}: ... }
+    \item{show}{\code{signature(object = "itemsets")}: ... }
+    \item{subset}{\code{signature(x = "itemsets")}: ... }
+    \item{summary}{\code{signature(object = "itemsets")}: ... }
   }
 }
 \references{ ~put references to the literature/web site here ~ }
 \author{Bettina Gruen}
 \note{ ~~further notes~~ }
-\seealso{\code{\link{set-class}}}
+\seealso{\code{\link{sets-class}}}
 \keyword{classes}

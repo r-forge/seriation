@@ -6,12 +6,12 @@
   Mining frequent item sets
 }
 \usage{
-reclat(data = list(), parms = NULL, control = NULL)
+reclat(data, parameter = NULL, control = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{ ~~Describe \code{data} here~~ }
-  \item{parms}{ ~~Describe \code{parms} here~~ }
+  \item{parameter}{ ~~Describe \code{parameter} here~~ }
   \item{control}{ ~~Describe \code{control} here~~ }
 }
 \details{
