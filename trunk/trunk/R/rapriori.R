@@ -1,7 +1,7 @@
 rapriori <-  function(data, parameter = NULL, appearance = NULL, control = NULL)
   {
     call <- match.call()
-    data <- as(data, "assMatrix")
+    data <- as(data, "arMatrix")
     as.ASappearance <- function(from) {
       if (!length(from)) return(new("ASappearance"))
       prv <- names(from)

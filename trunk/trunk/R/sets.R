@@ -102,9 +102,9 @@ subsetRuleSet <- function(x, subset, ...) {
     e <- substitute(subset)
     i <- eval(e,
               c(x@quality, list(
-                body = new("assMatrix", x@body, labels = x@labels, levels = x@levels, attr = x@attr,
+                body = new("arMatrix", x@body, labels = x@labels, levels = x@levels, attr = x@attr,
                   assign = x@assign),
-                head = new("assMatrix", x@head, labels = x@labels, levels = x@levels, attr = x@attr,
+                head = new("arMatrix", x@head, labels = x@labels, levels = x@levels, attr = x@attr,
                   assign = x@assign)
                                 )))
   }
@@ -117,7 +117,7 @@ subsetSet <- function(x, subset, ...) {
     e <- substitute(subset)
     i <- eval(e,
               c(x@quality, list(
-                body = new("assMatrix", x@body, labels = x@labels, levels = x@levels, attr = x@attr,
+                body = new("arMatrix", x@body, labels = x@labels, levels = x@levels, attr = x@attr,
                   assign = x@assign))))
   }
   x[i,]

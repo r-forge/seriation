@@ -8,7 +8,7 @@
 rapriori(data, parameter = NULL, appearance = NULL, control = NULL)
 }
 \arguments{
-  \item{data}{binary matrix, data.frame or \code{assMatrix}}
+  \item{data}{binary matrix, data.frame or \code{arMatrix}}
   \item{parameter}{Object of class \code{APparameter} or named list.}
   \item{appearance}{Object of class \code{ASappearance} or named list.}
   \item{control}{Object of class \code{APcontrol} or named list.}
@@ -32,8 +32,8 @@ rapriori(data, parameter = NULL, appearance = NULL, control = NULL)
 }
 \author{Bettina Gruen}
 \examples{
-data(census.assMatrix)
-rules <- rapriori(census.assMatrix)
+data(census.arMatrix)
+rules <- rapriori(census.arMatrix)
 }
 \keyword{models}
 

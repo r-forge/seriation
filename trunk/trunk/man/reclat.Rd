@@ -8,7 +8,7 @@
 reclat(data, parameter = NULL, control = NULL)
 }
 \arguments{
-  \item{data}{binary matrix, data.frame or \code{assMatrix}}
+  \item{data}{binary matrix, data.frame or \code{arMatrix}}
   \item{parameter}{Object of class \code{ECparameter} or named list.}
   \item{control}{Object of class \code{ECcontrol} or named list.}
 }
@@ -27,8 +27,8 @@ reclat(data, parameter = NULL, control = NULL)
 \author{Bettina Gruen}
 \seealso{\code{\link{rapriori}}}
 \examples{
-data(census.assMatrix)
-sets <- reclat(census.assMatrix)
+data(census.arMatrix)
+sets <- reclat(census.arMatrix)
 }
 \keyword{models}
 

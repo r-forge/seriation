@@ -1,14 +1,14 @@
 \name{census}
 \docType{data}
 \alias{census}
-\alias{census.assMatrix}
+\alias{census.arMatrix}
 \title{Census data set}
 \description{
 
 }
 \usage{
 data(census)
-data(census.assMatrix)
+data(census.arMatrix)
 }
 \format{
   A data frame with 48842 observations on the following 14 variables.

@@ -6,7 +6,7 @@
 \description{
   Class \code{cscMatrix} is defined in package \code{Matrix} together
   with some methods. Additional methods are implemented which are used
-  for the directly extending class \code{assMatrix}.
+  for the directly extending class \code{arMatrix}.
 }
 \section{Methods}{
   \describe{
@@ -19,6 +19,6 @@
       usual subsetting for matrices.}
   }
 }
-\seealso{\code{\link{assMatrix-class}}}
+\seealso{\code{\link{arMatrix-class}}}
 \keyword{methods}
 

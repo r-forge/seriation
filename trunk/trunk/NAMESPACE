@@ -3,7 +3,7 @@ useDynLib(arules)
 # Generics and functions defined in this package
 import(Matrix)
 export("rapriori", "reclat")
-exportClasses("assMatrix","itemsets","rules","hyperedges","sets","arules","ASappearance","APparameter","APcontrol",
+exportClasses("arMatrix","itemsets","rules","hyperedges","sets","arules","ASappearance","APparameter","APcontrol",
 	"summary.sets", "summary.rules",
 	"attributes","ECparameter","ECcontrol",
 	"ASparameter","AScontrol", ".parameter")

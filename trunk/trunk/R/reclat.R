@@ -1,7 +1,7 @@
 reclat <-  function(data, parameter = NULL, control = NULL)
   {
     call <- match.call()
-    data <- as(data, "assMatrix")
+    data <- as(data, "arMatrix")
     control <- as(control, "ECcontrol")
     parameter <- as(parameter, "ECparameter")
     sets <- .Call("reclat", 
