@@ -11,6 +11,7 @@
             22.08.2003 based on transaction module from apriori
             23.08.2003 option -q (item sort control) added
             12.09.2003 option -u (sparse representation) added
+	    16.08.2004 bug concerning option -q0 fixed (min. support)
 ----------------------------------------------------------------------*/
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +31,7 @@
 ----------------------------------------------------------------------*/
 #define PRGNAME     "eclat"
 #define DESCRIPTION "find frequent item sets with the eclat algorithm"
-#define VERSION     "version 2.5 (2004.02.26)         " \
+#define VERSION     "version 2.6 (2004.08.16)         " \
                     "(c) 2002-2004   Christian Borgelt"
 #define BLKSIZE  256            /* block size for enlarging vectors */
 
@@ -346,12 +347,12 @@ SEXP reclat(SEXP x, SEXP y, SEXP parms, SEXP control)
   }                             /* and check it against 0 */
  
   /* --- sort and recode items --- */
+  supp = ceil(tacnt *supp);     /* sort and recode the items */
   if (sort != 0) {              /* sort items w.r.t. their frequency */
     if (param.verbose) Rprintf("sorting and recoding items ... ");
     t   = clock();              /* start the timer */
     map = (int*)malloc(is_cnt(itemset) *sizeof(int));
     if (!map) {_cleanup(); error(msg(E_NOMEM));}   /* create an item identifier map */
-    supp = ceil(tacnt *supp);   /* sort and recode the items */
     n = is_recode(itemset, (int)supp, sort, map);
     tas_recode(taset, map, n);  /* recode the loaded transactions */
     free(map);                  /* delete the item identifier map */

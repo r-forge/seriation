@@ -156,6 +156,7 @@ function(from, to)
 }
 
 setAs("list", "ECparameter", function(from, to) .listNull2object(from, to))
+setAs("list", "ECcontrol", function(from, to) .listNull2object(from, to))
 setAs("list", "APcontrol", function(from, to) .listNull2object(from, to))
 setAs("list", "APparameter", function(from, to) .listNull2object(from, to))
 
