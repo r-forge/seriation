@@ -16,15 +16,17 @@ setAs("assMatrix", "matrix",
 
 setAs("data.frame", "assMatrix", function(from) {
   if (!all(sapply(from, is.factor)))
-    stop("Column ", names(which(!sapply(census, is.factor))), " is not a factor.") 
+    stop("Column ", names(which(!sapply(from, is.factor))), " is not a factor.") 
   fdim <- dim(from)
   attr <- colnames(from)
-  levels <- sapply(from, levels)
+  levels <- sapply(from, levels, simplify = FALSE)
   attrib <- .attributes(levels = levels)
   lev <- c(0, cumsum(attrib@assign))
   ndim <- c(length(attrib@labels), fdim[1])
   len <- rep(fdim[2], ndim[2])
-  v <- lapply(1:14, function(i) factor(from[[i]], labels = lev[i]:(lev[i+1]-1)))
+  v <- lapply(1:fdim[2], function(i) factor(from[[i]],
+                                            levels = levels(from[[i]]),
+                                            labels = lev[i]:(lev[i+1]-1)))
   v <- data.frame(v)
   i <- as.integer(t(v))
   if (any(is.na(v))) {
