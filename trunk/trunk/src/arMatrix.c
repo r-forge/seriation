@@ -2,9 +2,9 @@
 
 SEXP csc_subset(SEXP x, SEXP i, SEXP j)
 {
-    SEXP val;
-    int nj = 0, u = 0, nnz = 0,
-	    h, k, ii, jj, ind,  maxnz, 
+    SEXP val, dim;
+    int nj = 0, u = 0, nnz = 0, stretch = 1,
+	    h, k, l, ii, jj, ind,  maxnz, 
 	    *dims, *ndims, *is, *xi, *xp, *zi, *zp;
     double *xx, *zx;
     
@@ -13,7 +13,11 @@ SEXP csc_subset(SEXP x, SEXP i, SEXP j)
     xi = INTEGER(GET_SLOT(x, install("i")));
     xp = INTEGER(GET_SLOT(x, install("p")));
     xx = REAL(GET_SLOT(x, install("x")));	    
-	    
+
+    dim = GET_SLOT(x, install("Dim"));
+    i = arraySubscript(0, i, dim, getAttrib, (STRING_ELT), x);
+    j = arraySubscript(1, j, dim, getAttrib, (STRING_ELT), x);
+
     ndims = Calloc(2, int);
     ndims[0] = LENGTH(i);
     ndims[1] = LENGTH(j);
@@ -21,40 +25,35 @@ SEXP csc_subset(SEXP x, SEXP i, SEXP j)
     SET_SLOT(val, install("Dim"), allocVector(INTSXP, 2));
     Memcpy(INTEGER(GET_SLOT(val, install("Dim"))), ndims, 2);
     zi = Calloc(maxnz, int); zx = Calloc(maxnz, double);
-    zp = Calloc(ndims[1]+1, int); is = Calloc(dims[0], int);
-    for (k = 0; k < dims[0]; k++)
+    zp = Calloc(ndims[1]+1, int); 
+    for (k = 0; k < ndims[0]; k++)
     {
-	is[k] = 0;
-	for (h = 0; h < ndims[0]; h++)
-	    {
-		ii = INTEGER(i)[h];
-		if (k == ii) {
-		    is[k] = u;
-		    u++;
-		    break;
-		}
+	    ii = INTEGER(i)[k];
+	    if (ii != NA_INTEGER) {
+		    if (ii < 1 || ii > dims[0])
+			    error("subscript out of bounds");
 	    }
     }
-    for (k = 0; k < dims[1]; k++) {
-	for (h = 0; h < ndims[1]; h++) {
+    for (h = 0; h < ndims[1]; h++) {
 	    jj = INTEGER(j)[h];
-	    if (k == jj) {
-		zp[nj] = nnz;
-		nj++;
-		for (ind = xp[k]; ind < xp[k+1]; ind++) {
-		    for (h = 0; h < ndims[0]; h++) {
-			ii = INTEGER(i)[h];
-			if (xi[ind] == ii) {
-			    zx[nnz] = xx[ind];
-			    zi[nnz] = is[ii];
-			    nnz++;
-			    break;
-			}
-		    }
-		}
-		break;
+	    if (jj != NA_INTEGER) {
+		    if (jj < 1 || jj > dims[1])
+			    error("subscript out of bounds");
+		    jj--;
 	    }
-	}
+	    zp[nj] = nnz;
+	    nj++;
+	    for (ind = xp[jj]; ind < xp[jj+1]; ind++) {
+		    for (k = 0; k < ndims[0]; k++) {
+			    ii = INTEGER(i)[k];
+			    ii--;
+			    if (ii == xi[ind]) {
+				    zx[nnz] = xx[ind];
+				    zi[nnz] = k;
+				    nnz++;
+			    }
+		    }
+	    }
     }
     zp[nj] = nnz;
     nj++;
