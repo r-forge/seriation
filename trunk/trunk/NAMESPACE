@@ -1,0 +1,9 @@
+useDynLib(arules)
+
+# Generics and functions defined in this package
+import(Matrix)
+export("rapriori", "reclat")
+exportClasses("assMatrix","itemset","ruleset","hyperedgeset","set","arules","ASapp","APparms","APcontrol",
+	"summary.set", "summary.ruleset", "attributes","ECparms","ECcontrol", "ASparms","AScontrol")
+exportMethods("show", "summary", "[", "subset", "as.character", "as.data.frame", "%in%", "as.list")
+

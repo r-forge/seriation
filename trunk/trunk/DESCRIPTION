@@ -1,0 +1,11 @@
+Package: arules
+Version: 0.0-1
+Date: 2004/07/09
+Title: Mining association rules
+Author: Bettina Gruen <bettina.gruen@ci.tuwien.ac.at>
+Maintainer: Bettina Gruen <bettina.gruen@ci.tuwien.ac.at>
+Description: Interface to the programs apriori and eclat by Christian Borgelt
+Depends: R (>= 1.9.0), Matrix
+License: GPL version 2 or later
+ This R package includes code from Christian Borgelt which is
+ distributed under the GPL.
