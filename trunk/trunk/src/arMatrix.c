@@ -3,9 +3,9 @@
 SEXP csc_subset(SEXP x, SEXP i, SEXP j)
 {
     SEXP val, dim;
-    int nj = 0, u = 0, nnz = 0, stretch = 1,
-	    h, k, l, ii, jj, ind,  maxnz, 
-	    *dims, *ndims, *is, *xi, *xp, *zi, *zp;
+    int nj = 0, nnz = 0, 
+	    h, k, ii, jj, ind,  maxnz, 
+	    *dims, *ndims, *xi, *xp, *zi, *zp;
     double *xx, *zx;
     
     PROTECT(val = NEW_OBJECT(MAKE_CLASS("cscMatrix")));
@@ -63,7 +63,7 @@ SEXP csc_subset(SEXP x, SEXP i, SEXP j)
     Memcpy(INTEGER(GET_SLOT(val, install("i"))), zi, nnz);
     SET_SLOT(val, install("x"), allocVector(REALSXP, nnz));
     Memcpy(REAL(GET_SLOT(val, install("x"))), zx, nnz);
-    Free(zi); Free(zx); Free(is); Free(zp);Free(ndims);
+    Free(zi); Free(zx); Free(zp);Free(ndims);
     UNPROTECT(1);
     return val;
 }
