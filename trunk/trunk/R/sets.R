@@ -5,12 +5,15 @@ setClass("itemsets",
                         quality = "data.frame"),
          contains = "attributes")
 
+setClass("hyperedges",
+         representation(rnb = "integer",
+                        body = "cscMatrix",
+                        quality = "data.frame"),
+         contains = "attributes")
+
 setClass("rules",
          representation(head = "cscMatrix"),
-         contains = "itemsets")
-
-setClass("hyperedges",
-         contains = "itemsets")
+         contains = "hyperedges")
 
 setClassUnion("sets", c("itemsets", "rules", "hyperedges"))
 
@@ -33,7 +36,7 @@ setMethod("as.character", "sets", function(x) {
   names
 })
 
-setMethod("show", signature(object = "itemsets"), function(object) {
+setMethod("show", signature(object = "sets"), function(object) {
   cat(class(object), " containing ", object@rnb, " sets\n", sep = "")
   invisible(object)
 })

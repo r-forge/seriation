@@ -1,21 +1,21 @@
 \name{rapriori}
 \alias{rapriori}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Call apriori}
 \description{
-  Mining association rules
+  Mining frequent itemsets, association rules and hyperedges.
 }
 \usage{
 rapriori(data, parameter = NULL, appearance = NULL, control = NULL)
 }
 \arguments{
-  \item{data}{binary matrix or data.frame}
-  \item{parameter}{Object of class \code{APparameter} or names list.}
-  \item{appearance}{Object of class \code{ASappearance} or names list.}
-  \item{control}{Object of class \code{APcontrol} or names list.}
+  \item{data}{binary matrix, data.frame or \code{assMatrix}}
+  \item{parameter}{Object of class \code{APparameter} or named list.}
+  \item{appearance}{Object of class \code{ASappearance} or named list.}
+  \item{control}{Object of class \code{APcontrol} or named list.}
 }
 \details{
-  
+  Calls the C code \code{apriori} by Christian Borgelt for mining
+  frequent itemsets/rules/hyperedgesets. 
 }
 \value{
   Returns an object of class \code{arules}.
@@ -31,7 +31,6 @@ rapriori(data, parameter = NULL, appearance = NULL, control = NULL)
   Melbourne, FL, USA).
 }
 \author{Bettina Gruen}
-\note{}
 \examples{
 data(census.assMatrix)
 rules <- rapriori(census.assMatrix)

@@ -113,14 +113,16 @@ setClass("ECcontrol",
                    sort = as.integer(-2)))
 
 ###**********************************************************
+setClassUnion(".parameter", c("ASparameter", "AScontrol"))
 
-setAs("NULL", "ASappearance",
-function(from, to)
-{
-  new(to)
+setMethod("show", ".parameter", function(object) {
+  print(data.frame(sapply(slotNames(object), function(x) slot(object, x), simplify = FALSE), row.names = ""))
+  invisible(object)
 })
 
-setAs("NULL", "APcontrol",
+###**********************************************************
+
+setAs("NULL", "ASappearance",
 function(from, to)
 {
   new(to)
@@ -132,6 +134,11 @@ function(from, to)
   new(to)
 })
 
+setAs("NULL", "APcontrol",
+function(from, to)
+{
+  new(to)
+})
 setAs("NULL", "ECcontrol",
 function(from, to)
 {
@@ -144,10 +151,13 @@ function(from, to)
   new(to)
 })
 
-setAs("list", "ECcontrol", function(from, to) .list2object(from, to))
-setAs("list", "ECparameter", function(from, to) .list2object(from, to))
-setAs("list", "APcontrol", function(from, to) .list2object(from, to))
-setAs("list", "APparameter", function(from, to) .list2object(from, to))
+.listNull2object <-  function(from, to) {
+  if (!length(from)) return(new(to)) else return(.list2object(from, to))
+}
+
+setAs("list", "ECparameter", function(from, to) .listNull2object(from, to))
+setAs("list", "APcontrol", function(from, to) .listNull2object(from, to))
+setAs("list", "APparameter", function(from, to) .listNull2object(from, to))
 
 ###**********************************************************
 setMethod("initialize", "ASparameter",
@@ -183,12 +193,11 @@ setMethod("initialize", "AScontrol",
      .Object
    })
 
-###**********************************************************
-setClassUnion(".parameter", c("ASparameter", "AScontrol"))
-
-setMethod("show", ".parameter", function(object) {
-  print(data.frame(sapply(slotNames(object), function(x) slot(object, x), simplify = FALSE), row.names = ""))
-  invisible(object)
-})
-
+setMethod("initialize", "ASappearance",
+   function(.Object, set = as.integer(rep(0, 4)), items = integer(), labels= "", default = "both") {
+     for (args in c("default", "items", "set", "labels"))  assign(args, eval(get(args), parent.frame()))
+     .Object <- callNextMethod(.Object, set = set, items = items, labels = labels, default = default)
+     names(.Object@set) <- c("body", "head", "both", "none")
+     .Object
+   })
 

@@ -5,30 +5,34 @@
 \alias{subset,rules-method}
 \alias{summary.rules-class}
 
-\title{Class "rules" ~~~ }
-\description{  ~~ A concise (1-5 lines) description of what the class is.  ~~}
+\title{Class "rules"}
+\description{Data structure for rules.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("rules", ...)}.
-    ~~ describe objects here ~~ 
+  Objects are generally returned by \code{rapriori}.
 }
 \section{Slots}{
   \describe{
-    \item{\code{head}:}{Object of class \code{"integer"} ~~ }
-    \item{\code{rnt}:}{Object of class \code{"integer"} ~~ }
-    \item{\code{body}:}{Object of class \code{"bsrMatrix"} ~~ }
-    \item{\code{quality}:}{Object of class \code{"data.frame"} ~~ }
-    \item{\code{labels}:}{Object of class \code{"character"} ~~ }
+    \item{\code{rnt}:}{\code{"integer"}; number of rules}
+    \item{\code{head}:}{\code{"cscMatrix"}; items contained in the head
+      of the ruels.}
+    \item{\code{body}:}{\code{"cscMatrix"}; items contained in the body
+      of the rules}
+    \item{\code{quality}:}{\code{"data.frame"}; quality measures as
+      e.g. support, confidence, \dots}
+    \item{\code{levels}:}{\code{"list"}}
+    \item{\code{attr}:}{\code{"character"}}
+    \item{\code{assign}:}{\code{"integer"}}
+    \item{\code{labels}:}{\code{"character"}}
   }
 }
 \section{Extends}{
-Class \code{"itemsets"}, directly.
-Class \code{"set"}, directly.
+  Class \code{"sets"}, directly.
+  Class \code{"hyperedges"}, directly.
 }
 \section{Methods}{
   \describe{
-    \item{as.character}{\code{signature(x = "rules")}: ... }
-    \item{summary}{\code{signature(object = "rules")}: ... }
-    \item{subset}{\code{signature(object = "rules")}: ... }
+    \item{subset}{\code{signature(object = "rules")}: select rules
+      fulfilling certain conditions.}
   }
 }
 \author{Bettina Gruen}

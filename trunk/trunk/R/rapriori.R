@@ -3,6 +3,7 @@ rapriori <-  function(data, parameter = NULL, appearance = NULL, control = NULL)
     call <- match.call()
     data <- as(data, "assMatrix")
     as.ASappearance <- function(from) {
+      if (!length(from)) return(new("ASappearance"))
       prv <- names(from)
       warn <- NULL
       args = c("default", "body", "head", "both", "none")

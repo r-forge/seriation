@@ -5,34 +5,32 @@
 \alias{show,itemsets-method}
 \alias{summary,itemsets-method}
 
-\title{Class "itemsets" ~~~ }
-\description{  ~~ A concise (1-5 lines) description of what the class is.  ~~}
+\title{Classes "itemsets" and "hyperedges"}
+\description{Data structure for frequent itemsets and hyperedges.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("itemsets", ...)}.
-    ~~ describe objects here ~~ 
+Objects are generally returned by \code{rapriori} and \code{reclat}. 
 }
 \section{Slots}{
   \describe{
-    \item{\code{rnt}:}{Object of class \code{"integer"} ~~ }
-    \item{\code{body}:}{Object of class \code{"bsrMatrix"} ~~ }
-    \item{\code{quality}:}{Object of class \code{"data.frame"} ~~ }
-    \item{\code{labels}:}{Object of class \code{"character"} ~~ }
+    \item{\code{rnt}:}{\code{"integer"}; number of itemsets}
+    \item{\code{body}:}{\code{"cscMatrix"}; items contained in the
+      itemsets}
+    \item{\code{quality}:}{\code{"data.frame"}; quality measures as
+      e.g. support, \dots}
+    \item{\code{levels}:}{\code{"list"}}
+    \item{\code{attr}:}{\code{"character"}}
+    \item{\code{assign}:}{\code{"integer"}}
+    \item{\code{labels}:}{\code{"character"}}
+  }
+  Additonal slot for \code{itemsets}:
+  \describe{
+    \item{\code{trans}:}{\code{"cscMatrix"}; transactions supporting the
+      frequent itemsets}
   }
 }
 \section{Extends}{
-Class \code{"set"}, directly.
+Class \code{"sets"}, directly.
 }
-\section{Methods}{
-  \describe{
-    \item{as.character}{\code{signature(x = "itemsets")}: ... }
-    \item{extractRules}{\code{signature(object = "itemsets")}: ... }
-    \item{show}{\code{signature(object = "itemsets")}: ... }
-    \item{subset}{\code{signature(x = "itemsets")}: ... }
-    \item{summary}{\code{signature(object = "itemsets")}: ... }
-  }
-}
-\references{ ~put references to the literature/web site here ~ }
 \author{Bettina Gruen}
-\note{ ~~further notes~~ }
 \seealso{\code{\link{sets-class}}}
 \keyword{classes}

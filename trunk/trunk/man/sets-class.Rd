@@ -1,24 +1,33 @@
 \name{sets-class}
 \docType{class}
 \alias{sets-class}
-\alias{summary,sets-method}
 \alias{as.character,sets-method}
 \alias{as.data.frame,sets-method}
-\alias{[,sets-method}
+\alias{show,sets-method}
+\alias{summary,sets-method}
 \alias{summary.sets-class}
 \alias{show,summary.sets-method}
+\alias{subset,sets-method}
+\alias{[,sets-method}
 
-\title{Class "sets" ~~~ }
-\description{  ~~ A concise (1-5 lines) description of what the class is.  ~~}
+\title{Class "sets"}
+\description{A virtual class extended by \code{itemsets}, \code{rules}
+  and \code{hyperedges}.}
 \section{Objects from the Class}{A virtual Class: No objects may be created from it.}
 \section{Methods}{
   \describe{
-    \item{summary}{\code{signature(object = "sets")}: ... }
-    \item{subset}{\code{signature(object = "sets")}: ... }
+    \item{as.character}{\code{signature(x = "sets")}: replace row
+      indices by labels}
+    \item{as.data.frame}{\code{signature(x = "sets")}:
+      transform it into printable form.}
+    \item{show}{\code{signature(object = "sets")}}
+    \item{summary}{\code{signature(object = "sets")}: give an
+      overview over sets.}
+    \item{subset}{\code{signature(x = "sets")}: select sets
+      fulfilling certain conditions.}
+    \item{[}{\code{signature(x = "sets")}}
   }
 }
-\references{ ~put references to the literature/web site here ~ }
 \author{Bettina Gruen}
-\note{ ~~further notes~~ }
-\seealso{\code{\link{itemsets-class}},\code{\link{rules-class}}}
+\seealso{\code{\link{itemsets-class}}, \code{\link{rules-class}}}
 \keyword{classes}

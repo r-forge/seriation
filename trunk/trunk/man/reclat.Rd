@@ -1,20 +1,20 @@
 \name{reclat}
 \alias{reclat}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{Call eclat}
 \description{
-  Mining frequent item sets
+  Mining frequent itemsets.
 }
 \usage{
 reclat(data, parameter = NULL, control = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{ ~~Describe \code{data} here~~ }
-  \item{parameter}{ ~~Describe \code{parameter} here~~ }
-  \item{control}{ ~~Describe \code{control} here~~ }
+  \item{data}{binary matrix, data.frame or \code{assMatrix}}
+  \item{parameter}{Object of class \code{ECparameter} or named list.}
+  \item{control}{Object of class \code{ECcontrol} or named list.}
 }
 \details{
+  Calls the C code \code{eclat} by Christian Borgelt for mining
+  frequent itemsets. 
 }
 \value{
   Returns an object of class \code{arules}.
