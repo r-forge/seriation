@@ -12,18 +12,18 @@ rapriori <-  function(data, parameter = NULL, appearance = NULL, control = NULL)
       if (is.null(from$default)) from[["default"]] = "both"
       labs <- data@labels
       for (i in args) assign(i, NULL)
+      which.labels <- function(x) {
+        u <- unique(c(which(data@labels %in% x), which(rep(data@attr, data@assign) %in% x),
+                      which(unlist(data@levels, use.names = FALSE) %in% x)))
+        if (!length(u)) {
+          warn <<- c(warn, paste(x, " is not a valid attribute, label or level."))
+          return(NULL)
+              }
+        u - 1
+      }
       for (i in names(from)){
         if (i != "default") {
           if (is.character(from[[i]])) {
-            which.labels <- function(x) {
-              u <- which(data@labels %in% x | rep(data@attr, data@assign) %in% x |
-                         unlist(data@levels, use.names = FALSE) %in% x)
-              if (!length(u)) {
-                warn <<- c(warn, paste(x, " is not a valid attribute, label or level."))
-                return(NULL)
-              }
-              u - 1
-            }
             assign(i, as.integer(unlist(sapply(from[[i]], which.labels))))
           }
           else assign(i, as.integer(from[[i]]))
