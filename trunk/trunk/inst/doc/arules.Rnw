@@ -1,0 +1,292 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage{a4wide}
+\usepackage[round,longnamesfirst]{natbib}
+\setlength{\parskip}{0.5ex plus0.1ex minus0.1ex}
+\setlength{\parindent}{0em}
+\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+\usepackage{Sweave}
+%% \VignetteIndexEntry{Data structures for association rules}
+\begin{document} 
+%% ------------------------------------------------------------------
+%% ------------------------------------------------------------------                                               
+\title{Data structures for association rules--\\
+implementation in the \textsf{R} package \strong{arules}}
+\author{Bettina Gr{\"u}n}
+\maketitle
+\sloppy
+%% ------------------------------------------------------------------
+%% ------------------------------------------------------------------                                               
+\section{Introduction}
+Mining of frequent itemsets or association rules is a popular method
+for discovering interesting relations between variables in large
+databases. Apriori and Eclat
+\citep{bga:Agrawal+Imielinski+Swami:1993,bga:Agrawal+Srikant:1994} are
+two algorithms for fast evaluation of frequent itemsets and
+association rules given certain threshold values. 
+
+The \textsf{R} package \strong{arules} provides an interface to the
+\textsf{C} programs by Christian Borgelt which implement the two
+algorithms and basic infrastructure for creating and suitably
+transforming the input and analyzing the results.
+%% ------------------------------------------------------------------
+%% ------------------------------------------------------------------                                               
+\section{Transaction data}
+The main application of association rules is for market basket
+analysis. In every transaction there are the items contained which are
+purchased at one visit. In one transaction there is usually only a
+small part of the items contained and the main interest is if the item
+is purchased or not. There are also other kinds of transaction data
+possible, as e.g., data containing the web pages visited during one
+session. 
+
+It can be assumed that transaction data consists of entries of the
+form
+\begin{itemize}
+  \item transaction ID
+  \item item ID
+  \item user ID (optional)
+\end{itemize}
+Further information on transactions (as e.g., time, location), items
+(as e.g., category, price) or users (as e.g., socio-demographic
+variables: age, gender) might be available. 
+
+This kind of data can be transformed into a matrix with columns equal
+to the number of different transactions and rows equal to the number
+of different items. The matrix entries are the items present in the
+transaction. This matrix will in general be sparse.
+
+Another application of mining association rules has been proposed for
+discovering interesting relationships between the values of different
+categorical variables. An example can be found in
+\cite{bgb:Hastie+Tibshirani+Friedman:2001}, where questionnaires data
+is used. Their data consists of ordinal, nominal and metric variables.
+A transaction for this kind of data consists of one customer and his
+characteristics and the items are the different values of all
+variables. This data can be transformed into a binary matrix, by first
+dichotomizing the metric variables and then coding each variable with
+$k$ categories by $k$ dummy variables.
+
+The algorithms used for mining frequent itemsets or association rules
+need as input the transaction data transformed into a binary incidence
+matrix. A natural representation is a sparse matrix format. For our
+implementation we choose the format \texttt{cscMatrix} which is
+defined in the \textsf{R} package \strong{Matrix}. ``csc'' stands for
+compressed, sparse, column-oriented. It contains the indices of the
+rows unequal to zero, the pointers to the initial indices of elements
+in each column and the non-zero elements of the matrix. For a binary
+matrix the non-zero elements are all equal to 1.
+
+Another possibility of storing binary matrices would be to interpret
+every column as a binary number with can be coerced into an integer in
+the decimal system. We could then represent each column by one number.
+The drawback is that the decimal number grows exponentially with $2^n$
+where $n$ is the number of columns. In \textsf{R} this transformation
+from a binary vector to a decimal number is only possible for $n \leq
+30$, because then the integer number limit is reached. As the number
+of items will in general be much larger we have decided not to use
+this sparse format to represent the data.
+
+The natural format for the questionnaires data in \textsf{R} is a
+\texttt{data.frame}. In order to mine frequent itemsets/association
+rules with \texttt{apriori} or \texttt{eclat} this data needs to be
+transformed to an incidence matrix. In addition it has to be taken
+care that the information on the different variables and their levels
+is not lost. Transaction data is hence represented in \strong{arules}
+as a S4 class named \texttt{assMatrix} containing the following S4
+classes:
+\begin{itemize}
+ \item \texttt{cscMatrix}: sparse matrix representation of the
+ incidence matrix
+ \item \texttt{attributes}: contains the factor names, their levels,
+  and labels constructed by collapsing factor name and level name
+  separated by a dot
+\end{itemize}
+The attributes are necessary in order to keep track of the factors and
+levels of a data frame which is transformed into the sparse matrix
+format. This allows the retransformation of a \texttt{assMatrix} into
+the original data frame.
+
+Methods implemented are
+\begin{itemize}
+ \item \texttt{show}
+ \item coercion: from (binary) matrices and data frames (and the
+  corresponding retransformation)
+ \item extract ($[$)
+ \item \texttt{\%in\%}
+ \item \texttt{as.character}
+ \item \texttt{as.list}
+\end{itemize}
+%% ------------------------------------------------------------------
+%% ------------------------------------------------------------------                                               
+\section{Mining frequent itemsets/association rules}
+Free reference implementations of the algorithms apriori and eclat in
+\textsf{C} are available by Christian Borgelt
+\citep{bga:Borgelt+Kruse:2002,bga:Borgelt:2003}. The code is called
+directly from \textsf{R} by the functions \texttt{rapriori} and
+\texttt{reclat} and no writing to external files is necessary for the
+data exchange.
+
+%% <<rapriori>>=
+%% library(arules)
+%% args(rapriori)
+%% args(reclat)
+%% @ 
+
+The input format of the data for the \textsf{R} functions is
+\texttt{assMatrix} (or a data format which can be coerced to
+\texttt{assMatrix}). Furthermore, information on the parameters needs
+to be given. It is distinguished between parameters which change the
+characteristics of the itemsets/rules/hyperedges mined, as e.g. the
+minimum support or the target, and parameters which influence the
+performance of the algorithm, as e.g., an initial sorting of the items
+with respect to their frequency.
+
+The parameters which influence the output are contained in the
+argument \texttt{parameter}, the other parameters are summarized in
+\texttt{control}. These arguments have to be either instances of the
+classes \texttt{APparameter} and \texttt{APcontrol} for
+\texttt{rapriori} and \texttt{ECparameter} and \texttt{ECcontrol} for
+\texttt{reclat} or data which can be coerced to these classes, as
+e.g., \texttt{NULL} which will give the default values or a named list
+(names equal to slot names to change the default values). In these
+classes each slot specifies a different parameter and the values are
+already validated (to a certain extend). Parameters which have an
+integer specification are coerced before validity checking. The
+default values are equal to the defaults of the stand-alone \textsf{C}
+programs \citep[cp.][]{bgm:Borgelt:2004} except that by default the original
+support definition is used for the specified minimum support required.
+
+For \texttt{rapriori} there can be also the argument
+\texttt{appearance} specified, which determines which
+itemsets/rules/hyperedges are mined with respect to the items
+contained in the body or head.
+
+It will in general be specified by a named list containing
+\begin{itemize}
+ \item default: \texttt{character}, one of ``head'', ``body'',
+  ``none'', ``both'' \citep[or one of the other names described in the
+  apriori manual;][]{bgm:Borgelt:2004}
+ \item head: \texttt{character} or \texttt{integer}, specifying the
+  items which are allowed to appear in the head of the rules
+ \item body: \texttt{character} or \texttt{integer}, specifying the
+  items which are allowed to appear in the body of the
+  itemsets/rules/hyperedges
+ \item none: \texttt{character} or \texttt{integer}, specifying the
+  items which are not allowed to be contained in the
+  itemsets/rules/hyperedges
+ \item both: \texttt{character} or \texttt{integer}, specifying the
+  items which are allowed to be contained in the
+  itemsets/rules/hyperedges
+\end{itemize}
+This list is coerced to an \texttt{ASappearance} object within
+\texttt{rapriori} where the attributes information in the
+\texttt{assMatrix} data is used for determining the column number if
+\texttt{character} values are given.
+
+The output of the functions \texttt{rapriori} and \texttt{reclat} is
+an object of class \texttt{arules} which contains the call, the
+(suitably modified) parameter specifications and the sets mined. 
+%% ------------------------------------------------------------------
+%% ------------------------------------------------------------------                                               
+\section{Sets: itemsets, rules, hyperedges}
+The output of \texttt{rapriori} or \texttt{reclat} are either itemsets
+(frequent itemsets, closed itemsets, maximal itemsets), rules or
+hyperedges. All three kinds contain the items involved and quality
+measures, as e.g., support, confidence, \dots. 
+
+In \strong{arules} there is a virtual class \texttt{sets} defined
+which contains \texttt{itemsets}, \texttt{rules} and
+\texttt{hyperedges} as subclasses. It contains the following
+slots/classes:
+\begin{itemize}
+ \item body: \texttt{cscMatrix} containing in each column the items
+  which are in the body of the corresponding itemset/rule/hyperedge
+ \item quality: \texttt{data.frame} with a row for each
+  itemset/rule/hyperedge and a column for each quality measure
+  (support, body.support, confidence, \dots) returned 
+ \item rnb:  \texttt{integer} number of rules
+ \item \texttt{attributes}: containing the factor names, levels
+  and labels from the input data
+\end{itemize}
+In addition \texttt{rules} contain
+\begin{itemize}
+ \item head: \texttt{cscMatrix} containing in each column the items
+ contained in the head of each rule
+\end{itemize}
+and \texttt{itemsets} contain
+\begin{itemize}
+ \item trans: \texttt{cscMatrix} containing in each column the
+  transactions which support the corresponding itemset (only returned
+  by \textsf{eclat} if \texttt{trans} = \texttt{TRUE})
+\end{itemize}
+
+Methods implemented are
+\begin{itemize}
+  \item \texttt{show}
+  \item \texttt{summary}
+  \item extract ($[$)%%: useful for creating subsets and ordering of the sets with respect to a qualtiy measure
+  \item \texttt{subset}
+  \item \texttt{as.data.frame}
+  \item \texttt{as.character}
+\end{itemize}
+%% ------------------------------------------------------------------
+%% ------------------------------------------------------------------                                               
+\section{Example}
+\strong{arules} provides the census data set from the UCI machine
+learning repository \citep{bgm:Blake+Merz:1998}. 
+<<data>>=
+library(arules)
+data(census)
+dim(census)
+census[1:2,1:4]
+census.assMatrix <- as(census, "assMatrix")
+census.assMatrix
+@ 
+
+The census data set contains \Sexpr{dim(census)[1]} observations on
+\Sexpr{dim(census)[2]} categorical variables. If the data frame is
+transformed into a binary incidence matrix using dummy coding the
+number of different items is \Sexpr{dim(census.assMatrix)[1]}.
+
+We can use this data for calling \texttt{rapriori} and finding all
+rules with a minimum support of 0.05 and where all other parameters
+have the default values.
+
+<<rapriori>>=
+rules <- rapriori(census.assMatrix, parameter = list(support = 0.05))
+rules
+@
+The specified parameter values are validated and a support $> 1$ gives
+<<error>>=
+error <- try(rapriori(census.assMatrix, parameter = list(support = 1.3)))
+error
+@ 
+
+The function \texttt{subset} can be used if we are only interested in
+the subset of rules which certain variables or values of variables in
+the head/body or where a given quality measure fulfills a certain
+criterion. 
+<<sets>>=
+sets <- rules@sets
+sets.sub <- subset(sets, subset = head %in% "sex" & lift > 1.4)
+@ 
+For an overview on the rules mined  the function \texttt{summary} can
+be used which gives a description on the number of rules,
+their lengths, the items contained in body and head and the quality
+measures. 
+<<summary>>=
+summary(sets.sub)
+@ 
+The \texttt{sets} object can be coerced to a data frame which allows
+the printing of the rules similar to the output format of the
+\textsf{C} programs.
+<<subset>>=
+as.data.frame(sets.sub)[1:3,]
+@ 
+\bibliographystyle{plainnat}
+\bibliography{bgb,bga,bgm}
+\end{document}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
