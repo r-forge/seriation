@@ -20,7 +20,7 @@ implementation in the \textsf{R} package \strong{arules}}
 Mining of frequent itemsets or association rules is a popular method
 for discovering interesting relations between variables in large
 databases. Apriori and Eclat
-\citep{bga:Agrawal+Imielinski+Swami:1993,bga:Agrawal+Srikant:1994} are
+\citep{arules:Agrawal+Imielinski+Swami:1993,arules:Agrawal+Srikant:1994} are
 two algorithms for fast evaluation of frequent itemsets and
 association rules given certain threshold values. 
 
@@ -58,7 +58,7 @@ transaction. This matrix will in general be sparse.
 Another application of mining association rules has been proposed for
 discovering interesting relationships between the values of different
 categorical variables. An example can be found in
-\cite{bgb:Hastie+Tibshirani+Friedman:2001}, where questionnaires data
+\cite{arules:Hastie+Tibshirani+Friedman:2001}, where questionnaires data
 is used. Their data consists of ordinal, nominal and metric variables.
 A transaction for this kind of data consists of one customer and his
 characteristics and the items are the different values of all
@@ -121,7 +121,7 @@ Methods implemented are
 \section{Mining frequent itemsets/association rules}
 Free reference implementations of the algorithms apriori and eclat in
 \textsf{C} are available by Christian Borgelt
-\citep{bga:Borgelt+Kruse:2002,bga:Borgelt:2003}. The code is called
+\citep{arules:Borgelt+Kruse:2002,arules:Borgelt:2003}. The code is called
 directly from \textsf{R} by the functions \texttt{rapriori} and
 \texttt{reclat} and no writing to external files is necessary for the
 data exchange.
@@ -153,7 +153,7 @@ classes each slot specifies a different parameter and the values are
 already validated (to a certain extend). Parameters which have an
 integer specification are coerced before validity checking. The
 default values are equal to the defaults of the stand-alone \textsf{C}
-programs \citep[cp.][]{bgm:Borgelt:2004} except that by default the original
+programs \citep[cp.][]{arules:Borgelt:2004} except that by default the original
 support definition is used for the specified minimum support required.
 
 For \texttt{rapriori} there can be also the argument
@@ -165,7 +165,7 @@ It will in general be specified by a named list containing
 \begin{itemize}
  \item default: \texttt{character}, one of ``head'', ``body'',
   ``none'', ``both'' \citep[or one of the other names described in the
-  apriori manual;][]{bgm:Borgelt:2004}
+  apriori manual;][]{arules:Borgelt:2004}
  \item head: \texttt{character} or \texttt{integer}, specifying the
   items which are allowed to appear in the head of the rules
  \item body: \texttt{character} or \texttt{integer}, specifying the
@@ -233,7 +233,7 @@ Methods implemented are
 %% ------------------------------------------------------------------                                               
 \section{Example}
 \strong{arules} provides the census data set from the UCI machine
-learning repository \citep{bgm:Blake+Merz:1998}. 
+learning repository \citep{arules:Blake+Merz:1998}. 
 <<data>>=
 library(arules)
 data(census)
@@ -284,7 +284,7 @@ the printing of the rules similar to the output format of the
 as.data.frame(sets.sub)[1:3,]
 @ 
 \bibliographystyle{plainnat}
-\bibliography{bgb,bga,bgm}
+\bibliography{arules}
 \end{document}
 %%% Local Variables: 
 %%% mode: latex
