@@ -84,16 +84,6 @@ subsetcscMatrix <- function(x, i, j, ..., drop) {
   }
   if (missing(i)) i <- 1:x@Dim[1]
   if (missing(j)) j <- 1:x@Dim[2]
-  if (is.logical(i)) {
-    i <- rep(i, length.out = x@Dim[1])
-    i <- which(i)
-  }
-  if (is.logical(j)) {
-    j <- rep(j, length.out = x@Dim[2])
-    j <- which(j)
-  }
-  i <- as.integer(i - 1)
-  j <- as.integer(j - 1)
   z <- .Call("csc_subset", x, i, j, PACKAGE = "arules")                  
   z
 }
