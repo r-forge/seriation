@@ -1,0 +1,10 @@
+Package: seriation
+Type: Package
+Title: Some seriation heuristics and algorithms
+Version: 0.1-1
+Date: 2006-xx-xx
+Author: Christian Buchta and Michael Hahsler
+Maintainer: Michael Hahsler <hahsler@ai.wu-wien.ac.at>
+Description: Implements some seriation heuristics and algorithms to reorder
+  (dissimilarity) matrices and dendrograms.
+License: GNU GENERAL PUBLIC LICENSE Version 2

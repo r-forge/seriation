@@ -1,0 +1,90 @@
+\name{reorder.hclust}
+\alias{reorder.hclust}
+\title{Reorder the leaves of a hierarchical clustering}
+\description{
+  Find a good (or optimal) linear leaf ordering of a dendrogram as
+  produced by a hierarchical cluster algorithm.
+}
+\usage{
+reorder(hclust, dist, method = NULL)
+}
+\arguments{
+  \item{hclust}{a hclust object (see \code{\link{hclust}}).}
+  \item{dist}{the \code{dist} object used for clustering.}
+  \item{method}{ a character string with the name of the reorder 
+	method (default: optimal).}
+}
+\details{
+A dendrogram (binary tree) has \eqn{2^{n-1}} internal nodes (subtrees) and the
+same number of leaf orderings. That is, at each internal node the left and
+right subtree (or leaves) can be swapped, or, in terms of a dendrogram, be
+flipped.
+  
+Currently, the following methods are implemented:
+
+\describe{
+    \item{optimal}{Optimal leaf ordering (Bar-Joseph et al. 2001).
+      Provides an interface to the optimal leaf ordering algorithm. 
+      The used objective measure for leaf ordering is the
+      sum of the distances along the (Hamiltonian) path connecting the leaves
+      in the given order. This algorithm produces the ordering with a minimal
+      path length. The time complexity of the algorithm is
+      \eqn{o(n^3)}.
+
+      Note that non-finite distance values are not allowed.}
+    \item{gw}{Gruvaeus and Wainer (1972). 
+      Uses the algorithm implemented in package \code{gclus} (Hurley 2004; due
+      to a missing namespace in gclus, a copy of the code is included in this
+      package). The clusters are ordered at each level so that the objects at
+      the edge of each cluster are adjacent to that object outside the cluster
+      to which it is nearest. The method produces an unique order.}
+}
+}
+\value{
+The reordered \code{hclust} object.
+}
+\references{
+Z. Bar-Joseph, E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001), Fast
+Optimal Leaf Ordering for Hierarchical Clustering.  Bioinformatics, Vol. 17
+Suppl. 1, pp. 22-29. 
+
+Gruvaeus, G. and Wainer, H. (1972), Two Additions to Hierarchical Cluster
+Analysis, British Journal of Mathematical and Statistical Psychology, 25, pp.
+200-206.
+
+Hurley, Catherine B. (2004), Clustering Visualizations of Multidimensional
+Data.  Journal of Computational and Graphical Statistics, 13(4), pp. 788-806.
+}
+\author{Christian Buchta and Michael Hahsler}
+\seealso{
+  \code{\link{dist}} and \code{\link{hclust}} for hierarchical clustering and
+  \code{\link{criterion}} for computing the objective value of a 
+    leaf ordering.
+}
+\examples{
+d <- dist(matrix(runif(30), ncol=2))
+hc <- hclust(d)
+hc_opt <- reorder(hc, d, method="optimal")
+hc_gru <- reorder(hc, d, method="gw")
+
+### compare dendrograms
+op <- par(mfrow=c(2,3), pty="s")
+plot(hc, main="hclust")
+plot(hc_gru, main="Gruvaeus-Wainer")
+plot(hc_opt, main="Optimal leaf ordering")
+
+# compare images
+m <- as.matrix(d)
+image_proper(m[hc$order, hc$order])
+image_proper(m[hc_gru$order, hc_gru$order])
+image_proper(m[hc_opt$order, hc_opt$order])
+par(op)
+
+### compare lengths
+criterion(d)
+criterion(d, hc$order)
+criterion(d, hc_gru$order)
+criterion(d, hc_opt$order)
+}
+\keyword{hplot}
+\keyword{cluster}
