@@ -4,14 +4,15 @@
 
 
 ### wrapper for dist
-reorder.dist <- function(x, method = NULL) 
-    reorder.matrix(as.matrix(x), method = method)
+reorder.dist <- function(x, method = NULL, ...) 
+    reorder.matrix(as.matrix(x), method = method, ...)
 
-reorder.matrix <- function(x, method = NULL, col = TRUE) {
+reorder.matrix <- function(x, method = NULL, col = TRUE, ...) {
 
   methods <- c(
     "murtagh", 
-    "first-pc") 
+    "first-pc",
+    "chen") 
 
   # standard seriation is Murtagh
   if(is.null(method)) methodNr <- 1
@@ -24,13 +25,14 @@ reorder.matrix <- function(x, method = NULL, col = TRUE) {
     order <- reorder_murtagh(x)
   }else if(methodNr == 2) {
     order <- reorder_prcomp(x)
+  }else if(methodNr == 3) {
+    order <- reorder_chen(x)
   }
-  
-  attr(order, "method") <- methods[methodNr]
+ 
+  #attr(order, "method") <- methods[methodNr]
   return(order)
 }
   
-
 
 # Algorithm B
 #  F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures
@@ -38,11 +40,12 @@ reorder.matrix <- function(x, method = NULL, col = TRUE) {
 
 reorder_murtagh <- function(x) {
 
-  # pre-calculate criterion for column pairs in x 
+  # calculate the Murtagh criterion
   criterion <- as.dist(tcrossprod(x))
   order_greedy(-criterion)$order
 }
  
+
 # use the projection on the first pricipal component to determine the
 # order
 
@@ -52,4 +55,44 @@ reorder_prcomp <- function(x) {
   order(scores)
 }
 
+
+# uses a sequence of correlation matrices and finds  the first matrix
+# with rank 2. The elements are projected into the plane spanned by the 
+# first two eigenvectors. All points are lying on a ellipse. The order
+# of the elements on the ellipse is returned (see Chen 2002). 
+
+reorder_chen <- function(x){
+  rank <- qr(x)$rank
+  #l <- list()  
+  #l$ranks <- rank
+ 
+  # find the first correlation matrix of rank 2  
+  n <- 0
+  while(rank > 2){
+    x <- cor(x)
+    n <- n + 1
+    rank <- qr(x)$rank
+    #l[[paste("cor", n, sep = "")]] <- x
+    #l$ranks <- c(l$ranks, rank)
+  }
+
+  # project the matrix on the first 2 eigenvectors
+  e <- eigen(x)$vectors[,1:2]
+  
+  # extract the order
+  # chen says that he uses the one of the two possible cuts
+  # that separate the points at rank 1. Since the points just 
+  # separate further towards right and left, cutting on the vertical
+  # axis of the ellipse yields the same result.
+  
+  left <- which(e[,1] < 0)
+  left <- left[order(e[left,2])]
+  right <- which(e[,1] > 0)
+  right <- right[order(e[right,1], decreasing = TRUE)]
+  o <- c(left, right)
+   
+  #l$order <- o
+  #l
+  o
+}
 

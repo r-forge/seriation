@@ -59,5 +59,5 @@ criterion(d)
 criterion(d, o_h)
 criterion(d, o_m)
 }
-\keyword{hplot}
 \keyword{cluster}
+\keyword{optimize}

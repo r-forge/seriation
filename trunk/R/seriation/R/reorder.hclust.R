@@ -1,9 +1,9 @@
 # reorder existing hierarchical cluster solutions (hclust)
 # and dissimilarity objects (dist)
 
-reorder.hclust <- function(hclust, dist, method = NULL) {
-  if (!inherits(hclust,"hclust"))
-    stop(paste(sQuote("hclust"),"not of class hclust"))
+reorder.hclust <- function(x, dist, method = NULL, ...) {
+  if (!inherits(x,"hclust"))
+    stop(paste(sQuote("x"),"not of class hclust"))
   if (!inherits(dist,"dist"))
     stop(paste(sQuote("dist"),"not of class dist"))
 
@@ -16,9 +16,9 @@ reorder.hclust <- function(hclust, dist, method = NULL) {
   if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
 		
   if(methodNr == 1) {
-        res <- reorder_optimal(hclust, dist)
+        res <- reorder_optimal(x, dist)
   }else if (methodNr == 2) {
-        res <- reorder_gruvaeus(hclust, dist)
+        res <- reorder_gruvaeus(x, dist)
   }
 
   # fixme: reflection would be nice 

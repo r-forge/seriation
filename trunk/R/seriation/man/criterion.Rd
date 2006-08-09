@@ -62,11 +62,11 @@ The following criteria are implemented:
     to values farther away from the diagonal. It increases with quality.}
   
   \item{ar-i}{Number of anti-Robinson events (Chen 2002).
-    A Robinson matrix has its columns arranged such that the values of
-    the cells always decrease when moving from the diagonal. In practice
-    matrices rarely are Robinson matrices. This and the following
-    two criteria measure the differences to a Robinson matrix.
-    The number of anti-Robinsin events is calcualted by
+    A Robinson matrix (Robinson 1951) has its columns arranged such that the
+    values of the cells always decrease when moving from the diagonal. In
+    practice matrices rarely are Robinson matrices. This and the following two
+    criteria measure the differences to a Robinson matrix.  The number of
+    anti-Robinsin events is calcualted by
 
     \deqn{\sum_{i=1}^p (\sum_{j<k<i} I(d(i,j)<d(i,k)) w(i,j,k)%
     + \sum_{i<j<k} I(d(i,j) > d(i,k)) w(i,j,k)),}
@@ -88,9 +88,6 @@ The following criteria are implemented:
   If there are non-finite distance values \code{NA} is returned.
 }
 \references{
-R. Sedgewick. (2002), Algorithms in C. Part 5. Graph Algorithms.  3rd Edition,
-Addison-Wesley.
-
 Caraux, G., and Pinloche, S. (2005), Permutmatrix: A Graphical Environment
 to Arrange Gene Expression Profiles in Optimal Linear Order, Bioinformatics,
 21, 1280-1281.
@@ -98,6 +95,13 @@ to Arrange Gene Expression Profiles in Optimal Linear Order, Bioinformatics,
 Chun-Houh Chen (2002), Generalized association plots:
 Information visualization via iteratively generated correlation matrices,
 Statistica Sinica 12(2002), 7-29.
+
+W.S. Robinson (1951), A method for chronologically ordering archaeological 
+deposits, American Antiquity, 16, 293-301.
+
+R. Sedgewick (2002), Algorithms in C. Part 5. Graph Algorithms.  3rd Edition,
+Addison-Wesley.
+
 }
 \author{Christian Buchta and Michael Hahsler}
 \examples{

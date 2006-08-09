@@ -6,13 +6,14 @@
   produced by a hierarchical cluster algorithm.
 }
 \usage{
-reorder(hclust, dist, method = NULL)
+\method{reorder}{hclust}(x, dist, method = NULL, \ldots)
 }
 \arguments{
-  \item{hclust}{a hclust object (see \code{\link{hclust}}).}
+  \item{x}{a hclust object (see \code{\link{hclust}}).}
   \item{dist}{the \code{dist} object used for clustering.}
   \item{method}{ a character string with the name of the reorder 
 	method (default: optimal).}
+  \item{\ldots}{ further arguments (currently unused).}
 }
 \details{
 A dendrogram (binary tree) has \eqn{2^{n-1}} internal nodes (subtrees) and the
@@ -41,7 +42,7 @@ Currently, the following methods are implemented:
 }
 }
 \value{
-The reordered \code{hclust} object.
+The reordered object of class \code{hclust}.
 }
 \references{
 Z. Bar-Joseph, E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001), Fast
@@ -86,5 +87,5 @@ criterion(d, hc$order)
 criterion(d, hc_gru$order)
 criterion(d, hc_opt$order)
 }
-\keyword{hplot}
+\keyword{optimize}
 \keyword{cluster}
