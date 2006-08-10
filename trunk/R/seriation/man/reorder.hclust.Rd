@@ -76,9 +76,9 @@ plot(hc_opt, main="Optimal leaf ordering")
 
 # compare images
 m <- as.matrix(d)
-image_proper(m[hc$order, hc$order])
-image_proper(m[hc_gru$order, hc_gru$order])
-image_proper(m[hc_opt$order, hc_opt$order])
+pimage(m[hc$order, hc$order])
+pimage(m[hc_gru$order, hc_gru$order])
+pimage(m[hc_opt$order, hc_opt$order])
 par(op)
 
 ### compare lengths

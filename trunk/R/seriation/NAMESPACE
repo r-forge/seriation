@@ -1,12 +1,12 @@
 importFrom(stats, reorder)
 
-export(criterion, image_proper, order_greedy)
+export(criterion, pimage, hclust_greedy)
 
 S3method(reorder, hclust)
 S3method(reorder, matrix)
 S3method(reorder, dist)
 
-S3method(image_proper, matrix)
-S3method(image_proper, dist)
+S3method(pimage, matrix)
+S3method(pimage, dist)
 
 useDynLib(seriation)

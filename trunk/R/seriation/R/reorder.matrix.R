@@ -42,7 +42,7 @@ reorder_murtagh <- function(x) {
 
   # calculate the Murtagh criterion
   criterion <- as.dist(tcrossprod(x))
-  order_greedy(-criterion)$order
+  hclust_greedy(-criterion)$order
 }
  
 
@@ -62,6 +62,7 @@ reorder_prcomp <- function(x) {
 # of the elements on the ellipse is returned (see Chen 2002). 
 
 reorder_chen <- function(x){
+  x <- t(x)
   rank <- qr(x)$rank
   #l <- list()  
   #l$ranks <- rank

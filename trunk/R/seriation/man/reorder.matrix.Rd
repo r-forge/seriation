@@ -24,8 +24,8 @@ can show a structure in the data which was not visible in the original matrix.
 \describe{
     \item{murtagh}{Algorithm B (Murtagh 1985). 
       A simple heuristic which uses the cross-product of the matrix
-      (unnormalized form of the Pearson correlation) and \code{order_greedy} to
-      obtain the ordering. For \code{order_greedy} in each step a single
+      (unnormalized form of the Pearson correlation) and \code{hclust_greedy} to
+      obtain the ordering. For \code{hclust_greedy} in each step a single
       cluster is constructed by merging the leaf closest to one of the two
       endpoints of the cluster. The algorithm starts with a random leaf and
       uses tie-breaking.
@@ -69,7 +69,7 @@ F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures in
 Computational Statistics, Physica Verlag, pp. 15.
 }
 \seealso{
-\code{\link{order_greedy}},
+\code{\link{hclust_greedy}},
 \code{\link{criterion}}
 }
 \author{Michael Hahsler}
@@ -88,8 +88,8 @@ o <- reorder(x)
 o
 
 op <- par(mfrow = c(1,2))
-image_proper(x, main = "original")
-image_proper(x[o, reorder(x, col = FALSE)], main = "after seriation")
+pimage(x, main = "original")
+pimage(x[o, reorder(x, col = FALSE)], main = "after seriation")
 par(op)
 
 }

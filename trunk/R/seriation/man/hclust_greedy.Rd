@@ -1,11 +1,11 @@
-\name{order_greedy}
-\alias{order_greedy}
+\name{hclust_greedy}
+\alias{hclust_greedy}
 \title{Hierarchical Greedy Ordering}
 \description{
   Compute a hierarchical greedy ordering of a data matrix.
 }
 \usage{
-order_greedy(dist)
+hclust_greedy(dist)
 }
 \arguments{
   \item{dist}{an object of class \code{dist}.}
@@ -22,36 +22,37 @@ order_greedy(dist)
   This algorithm is used to implement Algorithm B by Fionn Murtagh (1985).  
 }
 \value{
-  A list with the following items:
+  An object of class \code{hclust}
+  which is a  list with the following components:
   
   \item{merge}{a matrix containing the merge tree.}
   \item{order}{a vector containing the leaf ordering.}
   \item{height}{a vector containing the merge heights.}
+
+  Note that the merge heights may not be monotonic so plotting the 
+  result might result in no valid dendrogram.
 }
 \references{
   F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures in
   Computational Statistics, Physica Verlag, pp. 15.
 }
 \author{Christian Buchta}
-\note{The merge heights may not be monotonic so we do not 
-    return a \code{hclust} object.}
 \seealso{
   \code{\link{hclust}} for hierarchical clustering.
 }
 \examples{
 d <- dist(matrix(runif(20), ncol=2))
-hc <- hclust(d)
-o_h <- hc$order
+o_h <- hclust(d)$order
 
 d_m <- -as.dist(crossprod(as.matrix(d)))	# Murtagh's distances
-o_m <- order_greedy(d_m)$order
+o_m <- hclust_greedy(d_m)$order
 
 ### compare images
 op <- par(mfrow=c(1,3), pty="s")
 m <- as.matrix(d)
-image_proper(m, main="original")
-image_proper(m[o_h, o_h], main="hclust")
-image_proper(m[o_m, o_m], main="greedy (Murthag)")
+pimage(m, main="original")
+pimage(m[o_h, o_h], main="hclust")
+pimage(m[o_m, o_m], main="greedy (Murthag)")
 par(op)
 
 # compare lenghts

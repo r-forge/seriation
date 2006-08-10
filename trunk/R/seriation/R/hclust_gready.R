@@ -3,13 +3,14 @@
 
 # ceeboo 2005
 
-order_greedy <- function(dist) {
+hclust_greedy <- function(dist) {
     if (!inherits(dist, "dist"))
        stop(paste(sQuote("dist"),"not of class dist"))
     if (!is.real(dist))
        storage.mode(dist) <- "real"
     obj <- .Call("order_greedy", dist)
     names(obj) <- c("merge", "order", "height");
+    class(obj) <- "hclust"
     obj
   }
 
