@@ -110,7 +110,7 @@ d <- dist(m)
 
 criterion(d, method = "least-square")
 
-o <- reorder(d, method = "first-pc")
+o <- reorder(d, method = "fpc")
 o
 
 criterion(d, o, method = "least-square")

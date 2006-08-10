@@ -2,6 +2,7 @@ Package: seriation
 Type: Package
 Title: Some seriation heuristics and algorithms
 Version: 0.1-1
+Suggests: vcd
 Date: 2006-xx-xx
 Author: Christian Buchta and Michael Hahsler
 Maintainer: Michael Hahsler <hahsler@ai.wu-wien.ac.at>

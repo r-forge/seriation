@@ -11,7 +11,7 @@ reorder.matrix <- function(x, method = NULL, col = TRUE, ...) {
 
   methods <- c(
     "murtagh", 
-    "first-pc",
+    "fpc",
     "chen") 
 
   # standard seriation is Murtagh
@@ -86,11 +86,11 @@ reorder_chen <- function(x){
   # separate further towards right and left, cutting on the vertical
   # axis of the ellipse yields the same result.
   
+  right <- which(e[,1] >= 0)
+  right <- right[order(e[right,2], decreasing = TRUE)]
   left <- which(e[,1] < 0)
   left <- left[order(e[left,2])]
-  right <- which(e[,1] > 0)
-  right <- right[order(e[right,1], decreasing = TRUE)]
-  o <- c(left, right)
+  o <- c(right,left)
    
   #l$order <- o
   #l

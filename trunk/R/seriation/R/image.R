@@ -12,7 +12,7 @@ function(x, col, xlab="", ylab="", ...) {
 
 pimage.dist <- 
 function(x, col, xlab="", ylab="", ...) 
-image_proper.matrix(as.matrix(x), xlab=xlab, ylab=ylab, col=col, ...)
+pimage.matrix(as.matrix(x), xlab=xlab, ylab=ylab, col=col, ...)
 
 pimage <- function(x, col, xlab="", ylab="", ...) UseMethod("pimage")
 pimage.default <- pimage.matrix

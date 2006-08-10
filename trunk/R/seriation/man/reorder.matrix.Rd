@@ -32,7 +32,7 @@ can show a structure in the data which was not visible in the original matrix.
       
       Note that the ordering can change from run to run since ties are broken
       randomly.}
-    \item{first-pc}{First principal component. 
+    \item{fpc}{First principal component. 
       Uses the projection of the data on its
       first principal component to determine the order. 
       
@@ -74,23 +74,28 @@ Computational Statistics, Physica Verlag, pp. 15.
 }
 \author{Michael Hahsler}
 \examples{
+library("vcd")
+data(iris)
+d <- dist(iris[,1:4])
 
-# generate random data
-x <- rbind(cbind(matrix(rnorm(10*5, mean = 2), nrow=5),
-	    matrix(rnorm(4*5, mean = 8), nrow=5)),
-	cbind(matrix(rnorm(10*10, mean = 6), nrow=10),
-	    matrix(rnorm(4*10, mean = 1), nrow=10)))
 
-x <- x[sample(1:nrow(x)), sample(1:ncol(x))]
+def.par <- par(no.readonly = TRUE)
+layout(matrix(c(1,2,3,4), 2, 2, byrow=TRUE), respect=TRUE)
 
-# do seriation of columns
-o <- reorder(x) 
-o
+pimage(d, col=diverge_hcl(64), main = "original")
 
-op <- par(mfrow = c(1,2))
-pimage(x, main = "original")
-pimage(x[o, reorder(x, col = FALSE)], main = "after seriation")
-par(op)
+h <- reorder(hclust(d, method = "average"), d, method = "optimal")
+pimage(as.matrix(d)[h$order, h$order], col=diverge_hcl(64), 
+	main = "hclust (avg.) linkage + optimal")
+
+fpc <- reorder(d, method = "fpc")
+pimage(as.matrix(d)[fpc, fpc], col=diverge_hcl(64), 
+	main = "first principal comp.")
+
+chen <- reorder(d, method = "chen")
+pimage(as.matrix(d)[chen, chen], col=diverge_hcl(64), main = "Chen 2002")
+
+par(def.par)
 
 }
 \keyword{optimize}
