@@ -59,7 +59,7 @@ path_length <- function(dist, order) {
        storage.mode(dist) <- "real"
     if (!is.integer(order))
        storage.mode(order) <- "integer"
-    x <- .Call("path_length", dist, order)
+    x <- .Call("order_length", dist, order)
     x
 }
 

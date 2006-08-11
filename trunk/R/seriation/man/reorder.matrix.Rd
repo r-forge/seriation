@@ -76,8 +76,8 @@ Computational Statistics, Physica Verlag, pp. 15.
 \examples{
 library("vcd")
 data(iris)
-d <- dist(iris[,1:4])
-
+x <- as.matrix(iris[,1:4])
+d <- dist(x)
 
 def.par <- par(no.readonly = TRUE)
 layout(matrix(c(1,2,3,4), 2, 2, byrow=TRUE), respect=TRUE)
@@ -88,10 +88,10 @@ h <- reorder(hclust(d, method = "average"), d, method = "optimal")
 pimage(as.matrix(d)[h$order, h$order], col=diverge_hcl(64), 
 	main = "hclust (avg.) linkage + optimal")
 
-fpc <- reorder(d, method = "fpc")
+fpc <- reorder(x, method = "fpc")
 pimage(as.matrix(d)[fpc, fpc], col=diverge_hcl(64), 
 	main = "first principal comp.")
-
+	
 chen <- reorder(d, method = "chen")
 pimage(as.matrix(d)[chen, chen], col=diverge_hcl(64), main = "Chen 2002")
 

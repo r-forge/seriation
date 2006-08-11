@@ -2,6 +2,93 @@
 #include <R.h>
 #include <Rdefines.h>
 
+/* compute the lenght of an order, i.e. the sum of
+ * the edge weights along the path defined by the
+ * order.
+ * 
+ * note that the order is a tour with the leg between
+ * the first and the last city omitted.
+ *
+ * ceeboo 2005
+ */
+
+static double orderLength(double *x, int *o, int n) {
+
+    double v, z;
+    int i, j, k;
+
+    z = 0;	/* path length */
+    i = o[0];
+    for (k = 0; k < n-1; k++) {
+	j = o[k+1];
+	if (i > j)
+	   v = x[i+j*(n-1)-j*(j+1)/2-1];
+	else
+	   if (i == j)
+	      return NA_REAL;
+           else
+	      v = x[j+i*(n-1)-i*(i+1)/2-1];
+	if (!R_FINITE(v))
+	   return NA_REAL;
+	z += v;
+	i = j;
+    }
+	    
+    return z; 
+}
+
+/* R wrapper 
+ */
+
+SEXP order_length(SEXP R_dist, SEXP R_order) {
+
+    int n, k;
+    int *o;
+	
+    SEXP R_obj;
+
+    n = 1 + (int) sqrt(2 * LENGTH(R_dist));
+
+    if (LENGTH(R_dist) < 1 || LENGTH(R_dist) != n*(n-1)/2)
+       error("order_cost: invalid length");
+
+    if (LENGTH(R_order) != n)
+       error("order_length: \"dist\" and \"order\" do not match");
+
+    o = Calloc(n, int);
+
+    for (k = 0; k < n; k++)		/* offset to C indexing */
+	o[k] = INTEGER(R_order)[k]-1;
+    
+    PROTECT(R_obj = NEW_NUMERIC(1));
+    
+    REAL(R_obj)[0] = orderLength(REAL(R_dist), o, n);
+    Free(o);
+    
+    UNPROTECT(1);
+    
+    return R_obj;
+}
+
+/* check validity of a merge tree representation */
+
+int checkRmerge(int *x, int n) {
+
+    int k, v;
+
+    if (x[0] > 0 || x[n-1] > 0)     /* initial merge */
+       return 0;
+
+    for (k = 0; k < 2*(n-1); k++) {
+        v = x[k];
+        if (v < -n || v > n-1)
+           return 0;
+	if (v > 0 && v > k+1)
+	   return 0;
+    }
+
+    return 1;
+}
 
 /* Z. Bar-Joseph, E. D. Demaine, D. K. Gifford, and T. Jaakkola.
  * (2001) Fast Optimal Leaf Ordering for Hierarchical Clustering.
@@ -47,7 +134,7 @@
  * is O(n^3). 
  *
  * the suggested improvement based on early termination of the search is 
- * currently not implemented. however, ties are breaken randomly. 
+ * currently not implemented. however, ties are broken randomly. 
  *
  * 3) recursively find the total optimal leaf ordering. 
  * 
@@ -60,33 +147,10 @@
  * (C) ceeboo 2005
  */
 
-
-/* check validity of a merge tree representation */
-
-int checkRmerge(int *x, int n) {
-
-    int k, v;
-
-    if (x[0] > 0 || x[n-1] > 0)     /* initial merge */
-       return 0;
-
-    for (k = 0; k < 2*(n-1); k++) {
-        v = x[k];
-        if (v < -n || v > n-1)
-           return 0;
-	if (v > 0 && v > k+1)
-	   return 0;
-    }
-
-    return 1;
-}
-
-
-
 static int calcAllOrder(double *x, int *e, int *oi, int *ok, int *oj, 
 				           int  ci, int  ck, int  cj, int n) {
 	
-    int i, ii, j, jj, k, kk, h, l;
+    int i, ii, j, jj, k, kk, h = 0, l;
     double s, z;
 	
     for (i = 0; i < ci; i++) {
@@ -132,7 +196,7 @@ static int calcAllOrder(double *x, int *e, int *oi, int *ok, int *oj,
 static int calcEndOrder(double *x, int *e, int *oi, int *ok, 
 				           int  ci, int  ck, int n) {
 
-    int i, ii, k, kk, h, l;
+    int i, ii, k, kk, h = 0, l;
     double s, z;
     
     for (i = 0; i < ci; i++) {
@@ -169,10 +233,10 @@ static int debug = FALSE;
 
 SEXP order_optimal(SEXP R_dist, SEXP R_merge) {
 
-    int n, i, ii, j, jj, k, kk, h, a, b;
-    int cl, cll, clr, cr, crl, crr;
+    int n, i, ii, j, jj, k, kk, h, a = 0, b = 0;
+    int cl = 0, cll = 0, clr = 0, cr = 0, crl = 0, crr = 0;
     int *l, *r, *c, *e;
-    int *left, *right, *o, *ol, *oll, *olr, *or, *orl, *orr;
+    int *left, *right, *o, *ol = 0, *oll = 0, *olr = 0, *or = 0, *orl = 0, *orr = 0;
 
     double s, z, zz;
     double *x;
@@ -548,7 +612,5 @@ SEXP order_optimal(SEXP R_dist, SEXP R_merge) {
     
     return R_obj;
 }
-
-
 
 /**/

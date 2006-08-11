@@ -68,7 +68,7 @@ hc <- hclust(d)
 hc_opt <- reorder(hc, d, method="optimal")
 hc_gru <- reorder(hc, d, method="gw")
 
-### compare dendrograms
+# compare dendrograms
 op <- par(mfrow=c(2,3), pty="s")
 plot(hc, main="hclust")
 plot(hc_gru, main="Gruvaeus-Wainer")
@@ -81,11 +81,27 @@ pimage(m[hc_gru$order, hc_gru$order])
 pimage(m[hc_opt$order, hc_opt$order])
 par(op)
 
-### compare lengths
+# compare lengths
 criterion(d)
 criterion(d, hc$order)
 criterion(d, hc_gru$order)
 criterion(d, hc_opt$order)
+
+# application: heatmap
+data("iris")
+x <- as.matrix(iris[1:4])
+d_c <- dist(t(x))
+dend_c <- as.dendrogram(reorder(hclust(d_c), d_c))
+
+d_r <- dist(x)
+dend_r <- as.dendrogram(reorder(hclust(d_r), d_r))
+
+# standard plot
+heatmap(x, col = rev(gray.colors(64)), main = "standard plot")
+
+# optimal leaf ordering
+heatmap(x, Colv = dend_c, Rowv = dend_r, col = rev(gray.colors(64)),
+    main = "optimal leaf ordering")
 }
 \keyword{optimize}
 \keyword{cluster}

@@ -49,7 +49,7 @@ The following criteria are implemented:
     Note that if Euclidean distance is used to calculate \eqn{D} from
     a data matrix \eqn{X}, the order of the elements in \eqn{X} by projecting 
     them on the first principal component of \eqn{X} minimizes this criterion.
-    The least square criterion is also related unidimensional scaling.
+    The least square criterion is also related to unidimensional scaling.
     }
   \item{inertia}{Inertia criterion (Caraux and Pinloche 2005). 
     Measures the moment of the inertia of dissimilarity values 
