@@ -9,12 +9,11 @@ criterion <- function(dist, order, method = NULL) {
     "ar-w"
   )
 
-    if (!inherits(dist,"dist"))
+   if (!inherits(dist,"dist"))
        stop(paste(sQuote("dist"),"not of class dist"))
-    if (!missing(order) && length(order) != attr(dist,"Size"))
+   if (!missing(order) && length(order) != attr(dist,"Size"))
           stop(paste(sQuote("order"),"invalid length"))
     
-  
    if(is.null(method)) methodNr <- 1
      else methodNr <- pmatch(tolower(method), tolower(methods))
    if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
@@ -71,37 +70,22 @@ path_length <- function(dist, order) {
 
 least_square <- function(dist, order) {
 
-  dist <- as.matrix(dist)
-  if(!missing(order)) dist <- dist[order, order]
-  p <- ncol(dist)
+  if(missing(order)) order <- 1:attr(dist, "Size") 
+  else if (!is.integer(order)) order <- as.integer(order)
+  
+  .Call("least_square_criterion", dist, order)
 
-  # since d ist symmetric we only need to sum up half the matrix
-  sum <- 0
-  for (i in 1:p) {
-    for (j in 1:i) {
-       sum <- sum + (dist[i,j] - abs(i-j))^2
-    }
-  }
-  sum * 2
 }
 
 # inertia around the diagonal
 # see PermutMatrix
 
 inertia <- function(dist, order) {
-
-  dist <- as.matrix(dist)
-  if(!missing(order)) dist <- dist[order, order]
-  p <- ncol(dist)
-
-  # since d ist symmetric we only need to sum up half the matrix
-  sum <- 0
-  for (i in 1:p) {
-    for (j in 1:i) {
-       sum <- sum + dist[i,j] * abs(i-j)^2
-    }
-  }
-  sum * 2
+  
+  if(missing(order)) order <- 1:attr(dist, "Size") 
+  else if (!is.integer(order)) order <- as.integer(order)
+  
+  .Call("inertia_criterion", dist, order)
 }
 
 
