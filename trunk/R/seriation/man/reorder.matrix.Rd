@@ -85,15 +85,15 @@ layout(matrix(c(1,2,3,4), 2, 2, byrow=TRUE), respect=TRUE)
 pimage(d, col=diverge_hcl(64), main = "original")
 
 h <- reorder(hclust(d, method = "average"), d, method = "optimal")
-pimage(as.matrix(d)[h$order, h$order], col=diverge_hcl(64), 
+pimage(arrange(d, h$order), col=diverge_hcl(64), 
 	main = "hclust (avg.) linkage + optimal")
 
 fpc <- reorder(x, method = "fpc")
-pimage(as.matrix(d)[fpc, fpc], col=diverge_hcl(64), 
+pimage(arrange(d, fpc), col=diverge_hcl(64), 
 	main = "first principal comp.")
 	
 chen <- reorder(d, method = "chen")
-pimage(as.matrix(d)[chen, chen], col=diverge_hcl(64), main = "Chen 2002")
+pimage(arrange(d, chen), col=diverge_hcl(64), main = "Chen 2002")
 
 par(def.par)
 

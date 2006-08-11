@@ -1,10 +1,12 @@
 importFrom(stats, reorder)
 
-export(criterion, pimage, hclust_greedy)
+export(criterion, pimage, hclust_greedy, arrange)
 
 S3method(reorder, hclust)
 S3method(reorder, matrix)
 S3method(reorder, dist)
+
+S3method(arrange, dist)
 
 S3method(pimage, matrix)
 S3method(pimage, dist)
