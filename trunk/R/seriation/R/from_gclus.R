@@ -6,7 +6,7 @@
 .reorder_gruvaeus_gclus <- function (x, dis, ...)
 {
     if (!is.matrix(dis))
-        dis <- as.matrix(dis)
+    dis <- as.matrix(dis)
     merges <- x$merge
     n <- nrow(merges)
     endpoints <- matrix(0, n, 2)
@@ -22,8 +22,8 @@
             j <- -j
             endpoints[i, 1] <- j
             if (dis[j, endpoints[k, 1]] < dis[j, endpoints[k,
-                2]])
-                endpoints[i, 2] <- endpoints[k, 2]
+                        2]])
+            endpoints[i, 2] <- endpoints[k, 2]
             else {
                 endpoints[i, 2] <- endpoints[k, 1]
                 dir[i, 2] <- -1
@@ -33,7 +33,7 @@
             k <- -k
             endpoints[i, 2] <- k
             if (dis[k, endpoints[j, 1]] < dis[k, endpoints[j,
-                2]]) {
+                        2]]) {
                 endpoints[i, 1] <- endpoints[j, 2]
                 dir[i, 1] <- -1
             }
@@ -77,7 +77,7 @@
                 merges[m, 1] <- merges[m, 2]
                 merges[m, 2] <- m1
                 if (dir[m, 1] == dir[m, 2])
-                  dir[m, ] <- -dir[m, ]
+                dir[m, ] <- -dir[m, ]
             }
         }
         if (dir[i, 2] == -1) {
@@ -87,7 +87,7 @@
                 merges[m, 1] <- merges[m, 2]
                 merges[m, 2] <- m1
                 if (dir[m, 1] == dir[m, 2])
-                  dir[m, ] <- -dir[m, ]
+                dir[m, ] <- -dir[m, ]
             }
         }
     }
@@ -96,11 +96,11 @@
         j <- merges[i, 1]
         k <- merges[i, 2]
         if ((j < 0) && (k < 0))
-            clusters[[i]] <- c(-j, -k)
+        clusters[[i]] <- c(-j, -k)
         else if (j < 0)
-            clusters[[i]] <- c(-j, clusters[[k]])
+        clusters[[i]] <- c(-j, clusters[[k]])
         else if (k < 0)
-            clusters[[i]] <- c(clusters[[j]], -k)
+        clusters[[i]] <- c(clusters[[j]], -k)
         else clusters[[i]] <- c(clusters[[j]], clusters[[k]])
     }
     x1 <- x

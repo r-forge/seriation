@@ -5,34 +5,34 @@
 
 ### wrapper for dist
 reorder.dist <- function(x, method = NULL, ...) 
-    reorder.matrix(as.matrix(x), method = method, ...)
+reorder.matrix(as.matrix(x), method = method, ...)
 
 reorder.matrix <- function(x, method = NULL, col = TRUE, ...) {
 
-  methods <- c(
-    "murtagh", 
-    "fpc",
-    "chen") 
+    methods <- c(
+        "murtagh", 
+        "fpc",
+        "chen") 
 
-  # standard seriation is Murtagh
-  if(is.null(method)) methodNr <- 1
-  else methodNr <- pmatch(tolower(method), tolower(methods))
-  if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
+    # standard seriation is Murtagh
+    if(is.null(method)) methodNr <- 1
+    else methodNr <- pmatch(tolower(method), tolower(methods))
+    if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
 
-  if(col == FALSE) x <- t(x)
+    if(col == FALSE) x <- t(x)
 
-  if(methodNr == 1) {
-    order <- reorder_murtagh(x)
-  }else if(methodNr == 2) {
-    order <- reorder_prcomp(x)
-  }else if(methodNr == 3) {
-    order <- reorder_chen(x)
-  }
- 
-  #attr(order, "method") <- methods[methodNr]
-  return(order)
+    if(methodNr == 1) {
+        order <- reorder_murtagh(x)
+    }else if(methodNr == 2) {
+        order <- reorder_prcomp(x)
+    }else if(methodNr == 3) {
+        order <- reorder_chen(x)
+    }
+
+    #attr(order, "method") <- methods[methodNr]
+    return(order)
 }
-  
+
 
 # Algorithm B
 #  F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures
@@ -40,19 +40,19 @@ reorder.matrix <- function(x, method = NULL, col = TRUE, ...) {
 
 reorder_murtagh <- function(x) {
 
-  # calculate the Murtagh criterion
-  criterion <- as.dist(tcrossprod(x))
-  hclust_greedy(-criterion)$order
+    # calculate the Murtagh criterion
+    criterion <- as.dist(tcrossprod(x))
+    hclust_greedy(-criterion)$order
 }
- 
+
 
 # use the projection on the first pricipal component to determine the
 # order
 
 reorder_prcomp <- function(x) {
-  pr <- prcomp(x) 
-  scores <- pr$x[,1]
-  order(scores)
+    pr <- prcomp(x) 
+    scores <- pr$x[,1]
+    order(scores)
 }
 
 
@@ -62,38 +62,38 @@ reorder_prcomp <- function(x) {
 # of the elements on the ellipse is returned (see Chen 2002). 
 
 reorder_chen <- function(x){
-  x <- t(x)
-  rank <- qr(x)$rank
-  #l <- list()  
-  #l$ranks <- rank
- 
-  # find the first correlation matrix of rank 2  
-  n <- 0
-  while(rank > 2){
-    x <- cor(x)
-    n <- n + 1
+    x <- t(x)
     rank <- qr(x)$rank
-    #l[[paste("cor", n, sep = "")]] <- x
-    #l$ranks <- c(l$ranks, rank)
-  }
+    #l <- list()  
+    #l$ranks <- rank
 
-  # project the matrix on the first 2 eigenvectors
-  e <- eigen(x)$vectors[,1:2]
-  
-  # extract the order
-  # chen says that he uses the one of the two possible cuts
-  # that separate the points at rank 1. Since the points just 
-  # separate further towards right and left, cutting on the vertical
-  # axis of the ellipse yields the same result.
-  
-  right <- which(e[,1] >= 0)
-  right <- right[order(e[right,2], decreasing = TRUE)]
-  left <- which(e[,1] < 0)
-  left <- left[order(e[left,2])]
-  o <- c(right,left)
-   
-  #l$order <- o
-  #l
-  o
+    # find the first correlation matrix of rank 2  
+    n <- 0
+    while(rank > 2){
+        x <- cor(x)
+        n <- n + 1
+        rank <- qr(x)$rank
+        #l[[paste("cor", n, sep = "")]] <- x
+        #l$ranks <- c(l$ranks, rank)
+    }
+
+    # project the matrix on the first 2 eigenvectors
+    e <- eigen(x)$vectors[,1:2]
+
+    # extract the order
+    # chen says that he uses the one of the two possible cuts
+    # that separate the points at rank 1. Since the points just 
+    # separate further towards right and left, cutting on the vertical
+    # axis of the ellipse yields the same result.
+
+    right <- which(e[,1] >= 0)
+    right <- right[order(e[right,2], decreasing = TRUE)]
+    left <- which(e[,1] < 0)
+    left <- left[order(e[left,2])]
+    o <- c(right,left)
+
+    #l$order <- o
+    #l
+    o
 }
 
