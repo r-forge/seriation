@@ -1,35 +1,43 @@
 
-criterion <- function(dist, order, method = NULL) {
+criterion <- function(x, order, method = NULL) {
     methods <- c(
-        "path-length",
-        "least-square",
+        "path_length",
+        "least_square",
         "inertia",
-        "ar-i",
-        "ar-s",
-        "ar-w"
+        "ar_i",
+        "ar_s",
+        "ar_w",
+        "bond_energy"
     )
 
-    if (!inherits(dist,"dist"))
-    stop(paste(sQuote("dist"),"not of class dist"))
-    if (!missing(order) && length(order) != attr(dist,"Size"))
-    stop(paste(sQuote("order"),"invalid length"))
+    if (!inherits(x,"dist")) stop(paste(sQuote("x"),"not of class dist"))
+    
+    if (!missing(order)){
+        if (length(order) != attr(x,"Size"))
+        stop(paste(sQuote("order"),"invalid length"))
+        if (!is.integer(order)) storage.mode(order) <- "integer"
+    }
+    
+    if (!is.real(x)) storage.mode(x) <- "real"
 
     if(is.null(method)) methodNr <- 1
     else methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
 
     if(methodNr == 1) {
-        crit <- path_length(dist, order)
+        crit <- path_length(x, order)
     }else if (methodNr == 2) {
-        crit <- least_square(dist, order)
+        crit <- least_square(x, order)
     }else if (methodNr == 3) {
-        crit <- inertia(dist, order)
+        crit <- inertia(x, order)
     }else if (methodNr == 4) {
-        crit <- ar(dist, order, method = "i")
+        crit <- ar(x, order, method = 1)  # i
     }else if (methodNr == 5) {
-        crit <- ar(dist, order, method = "s")
+        crit <- ar(x, order, method = 2)  # s
     }else if (methodNr == 6) {
-        crit <- ar(dist, order, method = "w")
+        crit <- ar(x, order, method = 3)  # w
+    }else if (methodNr == 7) {
+        crit <- bond_energy(x, order)
     }
 
     #attr(crit, "method") <- methods[methodNr]
@@ -51,15 +59,8 @@ criterion <- function(dist, order, method = NULL) {
 # ceeboo 2005
 
 path_length <- function(dist, order) {
-    if (missing(order))
-    order <- 1:attr(dist, "Size")
-
-    if (!is.real(dist))
-    storage.mode(dist) <- "real"
-    if (!is.integer(order))
-    storage.mode(order) <- "integer"
-    x <- .Call("order_length", dist, order)
-    x
+    if (missing(order)) order <- 1:attr(dist, "Size")
+    .Call("order_length", dist, order)
 }
 
 
@@ -69,22 +70,15 @@ path_length <- function(dist, order) {
 # see PermutMatrix
 
 least_square <- function(dist, order) {
-
     if(missing(order)) order <- 1:attr(dist, "Size") 
-    else if (!is.integer(order)) order <- as.integer(order)
-
     .Call("least_square_criterion", dist, order)
-
 }
 
 # inertia around the diagonal
 # see PermutMatrix
 
 inertia <- function(dist, order) {
-
     if(missing(order)) order <- 1:attr(dist, "Size") 
-    else if (!is.integer(order)) order <- as.integer(order)
-
     .Call("inertia_criterion", dist, order)
 }
 
@@ -92,35 +86,27 @@ inertia <- function(dist, order) {
 # anti-Robinsin loss functions (Streng and Schönfelder 1978, Chen 2002)
 
 # count the anti-Robinson events
-ar <- function(dist, order, method = "i") {
-
-    if(method=="i") weight <- expression(1)
-    if(method=="s") weight <- expression(abs(dist[i,j] - dist[i,k]))
-    if(method=="w") weight <- expression(abs(j - k) * abs(dist[i,j] - dist[i,k]))
-
-    dist <- as.matrix(dist)
-    if(!missing(order)) dist <- dist[order, order]
-    p <- ncol(dist)
-
-    sum <- 0
-    for(i in 3:p){
-
-        for(k in 2:(i-1)){
-            for(j in 1:(k-1)){
-                sum <- sum + (dist[i,j] < dist[i,k]) * eval(weight)
-            }
-        }
-    }
-
-    for(i in 1:(p-2)){
-        for(j in (i+1):(p-1)){
-            for(k in (j+1):p){
-                sum <- sum + (dist[i,j] > dist[i,k]) * eval(weight)
-            }
-        }
-    }
-
-    sum 
+ar <- function(dist, order, method = 1) {
+    if(missing(order)) order <- 1:attr(dist, "Size") 
+    .Call("ar", dist, order, as.integer(method))
 }
 
+# Energy from BEA
+# this could be done with a regular matrix!
+bond_energy <- function(dist, order){
+    
+    ener <- as.single(0.0)
+    m <- as.matrix(dist)
+    n <- ncol(m)
 
+    if(!missing(order)) m <- m[order,order]
+    storage.mode(m) <- "single"
+
+    energy <- .Fortran("energy",
+        n = n,
+        m = n,
+        b = m,
+        ener = ener)
+    
+    as.numeric(energy$ener)
+}

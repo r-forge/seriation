@@ -7,10 +7,11 @@
 reorder.dist <- function(x, method = NULL, ...) 
 reorder.matrix(as.matrix(x), method = method, ...)
 
-reorder.matrix <- function(x, method = NULL, col = TRUE, ...) {
+reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
 
     methods <- c(
         "murtagh", 
+        "bea",
         "fpc",
         "chen") 
 
@@ -19,13 +20,15 @@ reorder.matrix <- function(x, method = NULL, col = TRUE, ...) {
     else methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
 
-    if(col == FALSE) x <- t(x)
+    if(row == FALSE) x <- t(x)
 
     if(methodNr == 1) {
         order <- reorder_murtagh(x)
     }else if(methodNr == 2) {
-        order <- reorder_prcomp(x)
+        order <- reorder_bea(x,...)
     }else if(methodNr == 3) {
+        order <- reorder_prcomp(x)
+    }else if(methodNr == 4) {
         order <- reorder_chen(x)
     }
 
@@ -62,6 +65,9 @@ reorder_prcomp <- function(x) {
 # of the elements on the ellipse is returned (see Chen 2002). 
 
 reorder_chen <- function(x){
+    if(!isSymmetric(x))
+        stop(paste("Method",sQuote("chen"),"requires a symmetrical (dissimilarity or correlation) matrix"))
+    
     x <- t(x)
     rank <- qr(x)$rank
     #l <- list()  
@@ -97,3 +103,31 @@ reorder_chen <- function(x){
     o
 }
 
+
+# Bond Energy Algorithm (McCormick 1972)
+
+reorder_bea <- function(x, start = 0){
+    n <- nrow(x)
+    m <- ncol(x)
+
+    b <- matrix(0.0, n, m)
+    storage.mode(x) <- "single"
+    storage.mode(b) <- "single"
+    jb <- integer(n)
+    jfin <- integer(n)
+    #
+    if (start == 0) start <- floor(runif(1,1,n))
+    start <- as.integer(start)
+    #
+
+    bea <- .Fortran("rbea",
+        n = n,
+        m = m,
+        a = x,                      # input data
+        jstart = start, # 1st row placement
+        b = b,                      # permuted array
+        jb = jb,                    # permuted order of rows
+        jfin = jfin)                # for book-keeping
+
+    bea$jb
+}
