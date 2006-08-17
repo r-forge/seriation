@@ -13,7 +13,9 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
         "murtagh", 
         "bea",
         "fpc",
-        "chen") 
+        "chen",
+        "nearest_insertion",
+        "farthest_insertion") 
 
     # standard seriation is Murtagh
     if(is.null(method)) methodNr <- 1
@@ -31,7 +33,9 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
     }else if(methodNr == 4) {
         order <- reorder_chen(x)
     }else if(methodNr == 5) {
-        order <- reorder_tsp(x)
+        order <- reorder_insertion(x, nearest = TRUE)
+    }else if(methodNr == 6) {
+        order <- reorder_insertion(x, nearest = FALSE)
     }
 
     #attr(order, "method") <- methods[methodNr]
@@ -122,7 +126,7 @@ reorder_bea <- function(x, start = 0){
     jb <- integer(n)
     jfin <- integer(n)
     #
-    if (start == 0) start <- floor(runif(1,1,n))
+    if (start == 0) start <- sample(1:n, 1)
     start <- as.integer(start)
     #
 
@@ -138,3 +142,78 @@ reorder_bea <- function(x, start = 0){
     bea$jb
 }
 
+
+# Nearest/farthest insertion algorithm 
+# (Johnson and Papadimitrou in Lawler et al. 1985)
+
+reorder_insertion <- function(x, start = 0, nearest = TRUE){
+    n <- nrow(x)
+    m <- ncol(x)
+
+    if (start == 0) start <- sample(1:n, 1)
+
+    placed <- logical(n)
+    placed[start] <- TRUE
+    order <- c(start)
+   
+    while(any(placed == FALSE)) {
+        # find city j (in tour) and city k (not jet used) which are closest
+        js <- which(placed)
+        ks <- which(!placed)
+
+        # which.min does not break ties by random!
+        if(nearest == TRUE) mx <- which.min(x[js,ks, drop = FALSE])
+        else mx <- which.max(x[js,ks, drop = FALSE])
+        k <- ks[(mx-1) %/% length(js) + 1]
+        j <- js[(mx-1) %% length(js) + 1]
+
+        # now place k (we always place it after j)
+        #placed[k] <- TRUE
+        #j_index <- which(order == j)
+        #if(length(order) > j_index) order <- c(order[1:j_index], k, order[(j_index+1):length(order)]) else order <- c(order[1:j_index], k)
+    
+        # now we do nearest insertion
+        placed[k] <- TRUE
+        if(length(order) == 1) order <- c(order, k)
+        else {
+            bestVal <- Inf
+            insert <- 0
+            for(i in 1:(length(order)-1)) {
+                val <- x[order[i], k] + x[k, order[i+1]] - x[order[i], order[i+1]]
+                if(val < bestVal) {
+                    bestVal <- val
+                    insert <- i
+                }
+            }
+            
+            # now between the last an first city
+            val <- x[order[length(order)], k] + x[k,order[1]] 
+                - x[order[length(order)],order[1]]
+            if(val < bestVal) {
+                bestVal <- val
+                insert <- 0     # we just append k
+            }
+
+            if(insert == 0) order <- c(order, k)
+            else order <- c(order[1:insert], k, order[(insert+1):length(order)]) 
+        }
+    }
+
+    # finally, we cut the tour between the most distant cities
+    maxDist <- 0.0
+    cut <- 0
+    for(i in 1:(length(order)-1)) {
+        if(x[order[i], order[i+1]] > maxDist) {
+            maxDist <- x[order[i], order[i+1]]
+            cut <- i
+        }
+    }
+
+    if(x[order[length(order)], order[1]] > maxDist) {
+        cut <- 0
+    }
+    
+    if(cut > 0) order <- c(order[(cut+1):length(order)], order[1:cut])
+   
+    order
+}

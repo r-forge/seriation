@@ -82,6 +82,31 @@ one-dimensional ordering of rows and columns.
       (top or bottom) of the vertical axis with the ellipse. 
       In this implementation the top most cutting point is used.
       }  
+  \item{nearest\_insertion, farthest\_insertion}{Nearest and farthest insertion
+      algorithms (Johnson and Papadimitriou 1985).
+      The two algorithms are variants of the minimum spanning tree algorithm.
+      Since it is a heuristic for the traveling salesman problem
+      we will refer to observations here as cities and to the
+      ordering as a tour. The distances between cities are stored
+      in a dissimilarity matrix \eqn{D} with elements \eqn{d(i,j)}.
+      
+      The nearest insertion algorithm starts with a partial tour consisting of 
+      a single, arbitrarily chosen observation. As long as not
+      all observations are in the tour, find the city \eqn{k} which is
+      \emph{nearest} to a city on the tour. Next insert city \eqn{k} into the
+      tour between two consecutive cities \eqn{i} and \eqn{j}, 
+      such that \eqn{d(i,k) + d(k,j) - d(i,j)} is minimized.
+      Repeat till all cities are on the tour.
+
+      The farthest insertion algorithm used the \emph{farthest} instead
+      of the \emph{nearest} city. The idea behind this choice is to link cities
+      far away into the tour fist to establish an outline of the whole tour 
+      early.
+
+      Since a tour is a connected circle and we are looking for a
+      linear order, we have to cut the circle between the two
+      cities which are farthest apart.
+      }
       }}
 \value{
 Returns an integer vector containing the ordering of the rows or columns. 
@@ -94,7 +119,7 @@ Sinica 12, 7-29.
 F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures in
 Computational Statistics, Physica Verlag, pp. 15.
 
-W.T. McCormick, P.J. Schweitzer and T.W. White (1972) 
+W.T. McCormick, P.J. Schweitzer and T.W. White (1972). 
 Problem decomposition and data reorganization by a clustering technique,
 Operations Research, 
 Vol. 20, pp. 993-1009.
@@ -103,6 +128,12 @@ P. Arabie and L.J. Huber (1990).
 The bond energy algorithm revisited,
 IEEE Transactions on Systems, Man, and Cybernetics, 
 vol. 20, pp. 268-274.
+
+D. S. Johnson, C. H. Papadimitriou (1985). Performance guarantees for 
+heuristics (chapter 5). In: E. L. Lawler, J. K. Lenstra, A.H.G. Rinnooy Kan, 
+D. B. Shmoys (eds.) 
+The traveling salesman problem - A guided
+tour of combinatorial optimization, Wiley \& Sons.
 }
 \seealso{
 \code{\link{hclust_greedy}},
@@ -117,9 +148,15 @@ d <- dist(x)
 
 # compare the different methods
 def.par <- par(no.readonly = TRUE)
-layout(matrix(c(1,2,3,4,5,6), 2, 3, byrow=TRUE), respect=FALSE)
+layout(matrix(c(1,2,3,4,5,6,7,8,9), 3, 3, byrow=TRUE), respect=FALSE)
 
 pimage(d, col=diverge_hcl(64), main = "original")
+
+nins <- reorder(d, method="nearest_insertion")
+pimage(arrange(d, nins), col=diverge_hcl(64), main = "nearest insertion alg.")
+
+fins <- reorder(d, method="farthest_insertion")
+pimage(arrange(d, fins), col=diverge_hcl(64), main = "farthest insertion alg.")
 
 bea <- reorder(max(d)-d, method = "bea")
 pimage(arrange(d, bea), col=diverge_hcl(64), main = "BEA")
@@ -128,8 +165,12 @@ pimage(arrange(d, bea), col=diverge_hcl(64), main = "BEA")
 murtagh <- reorder(max(d)-d, method = "murtagh")
 pimage(arrange(d, murtagh), col=diverge_hcl(64), main = "Murtagh")
 
-h <- reorder(hclust(d, method = "average"), d, method = "optimal")
+h <- hclust(d, method = "average")
 pimage(arrange(d, h$order), col=diverge_hcl(64), 
+	main = "hclust (avg.) linkage")
+
+ho <- reorder(hclust(d, method = "average"), d, method = "optimal")
+pimage(arrange(d, ho$order), col=diverge_hcl(64), 
 	main = "hclust (avg.) linkage + optimal")
 
 fpc <- reorder(x, method = "fpc")
