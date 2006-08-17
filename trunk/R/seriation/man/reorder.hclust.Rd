@@ -87,6 +87,7 @@ criterion(d, hc$order)
 criterion(d, hc_gru$order)
 criterion(d, hc_opt$order)
 
+
 # application: heatmap
 data("iris")
 x <- as.matrix(iris[1:4])
@@ -97,7 +98,7 @@ d_r <- dist(x)
 dend_r <- as.dendrogram(reorder(hclust(d_r), d_r))
 
 # standard plot
-heatmap(x, col = rev(gray.colors(64)), main = "standard plot")
+#heatmap(x, col = rev(gray.colors(64)), main = "standard plot")
 
 # optimal leaf ordering
 heatmap(x, Colv = dend_c, Rowv = dend_r, col = rev(gray.colors(64)),

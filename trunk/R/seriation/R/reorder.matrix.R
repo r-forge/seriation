@@ -30,6 +30,8 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
         order <- reorder_prcomp(x)
     }else if(methodNr == 4) {
         order <- reorder_chen(x)
+    }else if(methodNr == 5) {
+        order <- reorder_tsp(x)
     }
 
     #attr(order, "method") <- methods[methodNr]
@@ -43,6 +45,7 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
 
 reorder_murtagh <- function(x) {
 
+    if(any(x < 0)) stop("Only usable for nonnegative matrices")
     # calculate the Murtagh criterion
     criterion <- as.dist(tcrossprod(x))
     hclust_greedy(-criterion)$order
@@ -107,6 +110,9 @@ reorder_chen <- function(x){
 # Bond Energy Algorithm (McCormick 1972)
 
 reorder_bea <- function(x, start = 0){
+    
+    if(any(x < 0)) stop("Only usable for nonnegative matrices")
+    
     n <- nrow(x)
     m <- ncol(x)
 
@@ -131,3 +137,4 @@ reorder_bea <- function(x, start = 0){
 
     bea$jb
 }
+

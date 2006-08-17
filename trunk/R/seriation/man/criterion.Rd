@@ -2,35 +2,64 @@
 \alias{criterion}
 \alias{criterion.dist}
 \alias{criterion.matrix}
-\title{Criterion for the quality of a dissimilarity matrix order}
+\title{Criterion for the quality of a permutation of a dissimilarity 
+or general matrix}
 \description{
-  Compute different criteria to judge the quality of a certain order
-  of a dissimilarity matrix.
+  Compute different criteria to judge the quality of a permuation
+  of a dissimilarity or general matrix. 
 }
 \usage{
-criterion(x, order, method = NULL)
+criterion(x, order, method = NULL, \ldots)
+\method{criterion}{dist}(x, order, method = NULL, \ldots)
+\method{criterion}{matrix}(x, order, method = NULL, \ldots)
 }
 \arguments{
-  \item{x}{an object of class \code{dist} or \code{matrix}.}
-  \item{order}{an optional permutation of the row (column) indexes.
-  If \code{order} is missing the identity order is used.
+  \item{x}{an object of class \code{dist} or, for certain methods, a 
+      \code{matrix} (currently only for \code{bond\_energy}).}
+  \item{order}{
+      an optional permutation vector for rows and columns.
+      For matrices with different row and column orderings 
+      \code{order} can contain a \code{list} with components \code{row} and
+      \code{col} with the permutation vectors.
+      
+      If no order is given, the identity order is used.
     }
-  \item{method}{character string with the name of the criterion 
-    (default: path-length).}
+  \item{\ldots}{further arguments (currently unused).}
+  \item{method}{character string with the name of the criterion
+      (default: \code{path\_length} for \code{dist} and
+      \code{bond\_energy} for \code{matrix}.}
 }
 \details{
-Ordering a matrix such that similar values are closer together
+Ordering a matrix such that large values are closer together
 may help to uncover structure (blocks) if it
 is plotted as an image.
+Currently, the following criteria to judge the quality of a
+certain ordering of a matrix are implemented:
 
-For the special case for a symmetric distance matrix 
+\describe{
+\item{bond\_energy}{(McCormick 1972). 
+    The bond energy for matrix \eqn{A = (a_{ij})}, \eqn{i=1\ldots M} 
+    and  \eqn{j=1\ldots N}, is defined as 
+   
+    
+    \deqn{\sum_{i=1}^{i=M} \sum_{j=1}^{j=N} a_{i,j}(a_{i,j-1}+a_{i,j+1}+a_{i-1,j}+a_{i+1,j})}
+
+    with, by convention
+
+    \deqn{a_{0,j}=a_{M+1,j}=a_{i,0}=a_{i,N+1}=0.}
+    
+    A higher bond energy indicates a better ordering.
+    
+    Maximizing the bond energy is the objective of the bond energy algorithm 
+    (BEA).}
+}
+
+For the special case for a symmetric dissimilarity matrix 
 \eqn{D} with elements \eqn{d(i,j)} where \eqn{i, j = 1 \ldots p}, 
-the aim is generally to place 
-low distance values close to the diagonal.
-
-There exist several criteria to judge the quality of a 
-certain ordering of a matrix. 
-The following criteria are implemented:
+the aim is generally to place low distance values close to the diagonal.
+The following criteria to judge the quality of a
+certain ordering of a dissimilarity matrix 
+are currently implemented:
 \describe{
   \item{path\_length}{Hamiltonian path length (Caraux and Pinloche 2005).
     The order of a dissimilarity matrix corresponds to a path through a 
@@ -90,24 +119,7 @@ The following criteria are implemented:
   \item{ar\_w}{Weighted sum of absolute anti-Robinson deviations (Chen 2002).
     Weights the deviations by the difference of column indices, i.e.
     \eqn{w(i,j,k) = |j-k| |d(i,j) - d(i,k)|}.}
-\item{bond\_energy}{(McCormick 1972). 
-    The bond energy for matrix \eqn{A = (a_{ij})}, \eqn{i=1\ldots M} 
-    and  \eqn{j=1\ldots N}, is defined as 
-   
-    
-    \deqn{\sum_{i=1}^{i=M} \sum_{j=1}^{j=N} a_{i,j}(a_{i,j-1}+a_{i,j+1}+a_{i-1,j}+a_{i+1,j})}
-
-    with, by convention
-
-    \deqn{a_{0,j}=a_{M+1,j}=a_{i,0}=a_{i,N+1}=0.}
-    } 
-    
-    A higher bond energy indicates a better ordering.
-    
-    Maximizing the bond energy is the objective of the bond energy algorithm 
-    (BEA). 
-    }
-}
+    }}
 \value{
   A single real value.
 }

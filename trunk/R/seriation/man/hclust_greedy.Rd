@@ -1,6 +1,6 @@
 \name{hclust_greedy}
 \alias{hclust_greedy}
-\title{Hierarchical Greedy Ordering}
+\title{Hierarchical greedy ordering}
 \description{
   Compute a hierarchical greedy ordering of a data matrix.
 }
