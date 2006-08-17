@@ -19,7 +19,7 @@ SEXP least_square_criterion(SEXP R_dist, SEXP R_order) {
     double sum = 0.0;
     int p = INTEGER(getAttrib(R_dist, install("Size")))[0];
     int *o = INTEGER(R_order);
-    double x = 0; 
+    double x = 0.0; 
     SEXP R_out;
 
     /* since d ist symmetric we only need to sum up half the matrix */
@@ -29,7 +29,7 @@ SEXP least_square_criterion(SEXP R_dist, SEXP R_order) {
             sum += x*x;
         }
     }
-    sum *= 2;
+    sum *= 2.0;
 
     PROTECT(R_out = allocVector(REALSXP, 1));
     REAL(R_out)[0] = sum; 
@@ -48,7 +48,7 @@ SEXP inertia_criterion(SEXP R_dist, SEXP R_order) {
     double sum = 0.0;
     int p = INTEGER(getAttrib(R_dist, install("Size")))[0];
     int *o = INTEGER(R_order);
-    double x = 0; 
+    int x = 0; 
     SEXP R_out;
 
     /* since d ist symmetric we only need to sum up half the matrix */
@@ -58,7 +58,7 @@ SEXP inertia_criterion(SEXP R_dist, SEXP R_order) {
             sum += REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])] * x*x;
         }
     }
-    sum *= 2;
+    sum *= 2.0;
 
     PROTECT(R_out = allocVector(REALSXP, 1));
     REAL(R_out)[0] = sum; 
@@ -103,7 +103,7 @@ SEXP ar(SEXP R_dist, SEXP R_order, SEXP R_which) {
                     }else if(which == 2) {
                         sum += fabs(d_ij - d_ik);
                     }else if(which == 3) 
-                        sum += fabs(o[j-1]-o[k-1]) * fabs(d_ij - d_ik);
+                        sum += abs(o[j-1]-o[k-1]) * fabs(d_ij - d_ik);
                 }    
             }
         }
@@ -122,7 +122,7 @@ SEXP ar(SEXP R_dist, SEXP R_order, SEXP R_which) {
                     }else if(which == 2) {
                         sum += fabs(d_ij - d_ik);
                     }else if(which == 3) 
-                        sum += fabs(o[j-1]-o[k-1]) * fabs(d_ij - d_ik);
+                        sum += abs(o[j-1]-o[k-1]) * fabs(d_ij - d_ik);
                 }    
             }
         }

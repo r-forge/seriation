@@ -169,7 +169,7 @@ h <- hclust(d, method = "average")
 pimage(arrange(d, h$order), col=diverge_hcl(64), 
 	main = "hclust (avg.) linkage")
 
-ho <- reorder(hclust(d, method = "average"), d, method = "optimal")
+ho <- reorder(h, d, method = "optimal")
 pimage(arrange(d, ho$order), col=diverge_hcl(64), 
 	main = "hclust (avg.) linkage + optimal")
 
