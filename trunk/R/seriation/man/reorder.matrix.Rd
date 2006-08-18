@@ -104,8 +104,13 @@ one-dimensional ordering of rows and columns.
       early.
 
       Since a tour is a connected circle and we are looking for a
-      linear order, we have to cut the circle between the two
-      cities which are farthest apart.
+      linear order, we need to find the optimal cutting point.
+      Typically, for this reason a dummy city with equal distance to 
+      each other city is added before generating the tour. It is easy to
+      show that this city is then the optimal cutting point 
+      (Johnson and Papadimitriou 1985). However, this implementation
+      does not use a dummy city, but it chooses the cutting point
+      after the tour is constructed as the cities which are farthest apart.
       }
       }}
 \value{

@@ -1,41 +1,41 @@
-# Seriation heuristics for matrices
-#
-# Michael Hahsler
+# reorder matrices and dist objects
 
-
-### wrapper for dist
+# wrapper for dist (matrix does all the work for now)
 reorder.dist <- function(x, method = NULL, ...) 
 reorder.matrix(as.matrix(x), method = method, ...)
 
+# matrix
 reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
 
+    # methods
     methods <- c(
-        "murtagh", 
+        "murtagh",      # standard
         "bea",
         "fpc",
         "chen",
         "nearest_insertion",
         "farthest_insertion") 
 
-    # standard seriation is Murtagh
     if(is.null(method)) methodNr <- 1
     else methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
 
+    # do columns?
     if(row == FALSE) x <- t(x)
 
+    # work horses
     if(methodNr == 1) {
-        order <- reorder_murtagh(x)
+        order <- .reorder_murtagh(x)
     }else if(methodNr == 2) {
-        order <- reorder_bea(x,...)
+        order <- .reorder_bea(x,...)
     }else if(methodNr == 3) {
-        order <- reorder_prcomp(x)
+        order <- .reorder_prcomp(x)
     }else if(methodNr == 4) {
-        order <- reorder_chen(x)
+        order <- .reorder_chen(x)
     }else if(methodNr == 5) {
-        order <- reorder_insertion(x, nearest = TRUE)
+        order <- .reorder_insertion(x, nearest = TRUE, ...)
     }else if(methodNr == 6) {
-        order <- reorder_insertion(x, nearest = FALSE)
+        order <- .reorder_insertion(x, nearest = FALSE, ...)
     }
 
     #attr(order, "method") <- methods[methodNr]
@@ -47,9 +47,9 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
 #  F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures
 #  in Computational Statistics, Physica Verlag, pp. 15.
 
-reorder_murtagh <- function(x) {
+.reorder_murtagh <- function(x) {
 
-    if(any(x < 0)) stop("Only usable for nonnegative matrices")
+    if(any(x < 0)) stop("Requires a nonnegative matrix")
     # calculate the Murtagh criterion
     criterion <- as.dist(tcrossprod(x))
     hclust_greedy(-criterion)$order
@@ -59,7 +59,7 @@ reorder_murtagh <- function(x) {
 # use the projection on the first pricipal component to determine the
 # order
 
-reorder_prcomp <- function(x) {
+.reorder_prcomp <- function(x) {
     pr <- prcomp(x) 
     scores <- pr$x[,1]
     order(scores)
@@ -71,14 +71,12 @@ reorder_prcomp <- function(x) {
 # first two eigenvectors. All points are lying on a ellipse. The order
 # of the elements on the ellipse is returned (see Chen 2002). 
 
-reorder_chen <- function(x){
+.reorder_chen <- function(x){
     if(!isSymmetric(x))
         stop(paste("Method",sQuote("chen"),"requires a symmetrical (dissimilarity or correlation) matrix"))
     
     x <- t(x)
     rank <- qr(x)$rank
-    #l <- list()  
-    #l$ranks <- rank
 
     # find the first correlation matrix of rank 2  
     n <- 0
@@ -86,8 +84,6 @@ reorder_chen <- function(x){
         x <- cor(x)
         n <- n + 1
         rank <- qr(x)$rank
-        #l[[paste("cor", n, sep = "")]] <- x
-        #l$ranks <- c(l$ranks, rank)
     }
 
     # project the matrix on the first 2 eigenvectors
@@ -105,15 +101,13 @@ reorder_chen <- function(x){
     left <- left[order(e[left,2])]
     o <- c(right,left)
 
-    #l$order <- o
-    #l
     o
 }
 
 
 # Bond Energy Algorithm (McCormick 1972)
 
-reorder_bea <- function(x, start = 0){
+.reorder_bea <- function(x, start = 0){
     
     if(any(x < 0)) stop("Only usable for nonnegative matrices")
     
@@ -146,7 +140,11 @@ reorder_bea <- function(x, start = 0){
 # Nearest/farthest insertion algorithm 
 # (Johnson and Papadimitrou in Lawler et al. 1985)
 
-reorder_insertion <- function(x, start = 0, nearest = TRUE){
+.reorder_insertion <- function(x, nearest = TRUE, start = 0){
+    if(!isSymmetric(x))
+        stop(paste("Methods",sQuote("nearest/farthest insertion"),
+                "require a symmetrical distance matrix"))
+    
     n <- nrow(x)
     m <- ncol(x)
 
@@ -167,11 +165,6 @@ reorder_insertion <- function(x, start = 0, nearest = TRUE){
         k <- ks[(mx-1) %/% length(js) + 1]
         j <- js[(mx-1) %% length(js) + 1]
 
-        # now place k (we always place it after j)
-        #placed[k] <- TRUE
-        #j_index <- which(order == j)
-        #if(length(order) > j_index) order <- c(order[1:j_index], k, order[(j_index+1):length(order)]) else order <- c(order[1:j_index], k)
-    
         # now we do nearest insertion
         placed[k] <- TRUE
         if(length(order) == 1) order <- c(order, k)
@@ -199,7 +192,12 @@ reorder_insertion <- function(x, start = 0, nearest = TRUE){
         }
     }
 
-    # finally, we cut the tour between the most distant cities
+    # To find the cutting point in the tour, typically a dummy city with
+    # equal distance to every other city is added. The dummy city is then
+    # the optimal cutting place.
+    # However, this would require to manipulate the distance matrix. 
+    # Therefore, we just cut the tour between the most distant cities 
+    # which should give the same result.
     maxDist <- 0.0
     cut <- 0
     for(i in 1:(length(order)-1)) {
@@ -208,7 +206,6 @@ reorder_insertion <- function(x, start = 0, nearest = TRUE){
             cut <- i
         }
     }
-
     if(x[order[length(order)], order[1]] > maxDist) {
         cut <- 0
     }

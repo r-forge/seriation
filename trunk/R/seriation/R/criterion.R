@@ -3,6 +3,15 @@
 
 
 criterion.dist <- function(x, order, method = NULL, ...) {
+    
+    # get and check order 
+    if (!missing(order)){
+        if (length(order) != attr(x,"Size"))
+        stop(paste(sQuote("order"),"invalid length"))
+        if (!is.integer(order)) order <- as.integer(order)
+    }
+    
+    # methods
     methods <- c(
         "path_length",
         "least_square",
@@ -12,44 +21,35 @@ criterion.dist <- function(x, order, method = NULL, ...) {
         "ar_w",
         "bond_energy"
     )
-
-    
-    if (!missing(order)){
-        if (length(order) != attr(x,"Size"))
-        stop(paste(sQuote("order"),"invalid length"))
-        if (!is.integer(order)) storage.mode(order) <- "integer"
-    }
     
     if(is.null(method)) methodNr <- 1
     else methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
     
-    # bond energy works for nonnegative matrices
-    if (methodNr != 7 && class(x) != "dist") 
-        stop(paste(sQuote("x"),"not of class dist"))
-    
+    # check dist (C code only works with lower-triangle version) 
+    if(attr(x, "Diag") == TRUE || attr(x, "Upper") == TRUE)
+        x <- as.dist(x, diag = FALSE, upper = FALSE)
     if (!is.real(x)) storage.mode(x) <- "real"
 
+    
+    # work horses
     if(methodNr == 1) {
-        crit <- path_length(x, order)
+        crit <- .path_length(x, order)
     }else if (methodNr == 2) {
-        crit <- least_square(x, order)
+        crit <- .least_square(x, order)
     }else if (methodNr == 3) {
-        crit <- inertia(x, order)
+        crit <- .inertia(x, order)
     }else if (methodNr == 4) {
-        crit <- ar(x, order, method = 1)  # i
+        crit <- .ar(x, order, method = 1)  # i
     }else if (methodNr == 5) {
-        crit <- ar(x, order, method = 2)  # s
+        crit <- .ar(x, order, method = 2)  # s
     }else if (methodNr == 6) {
-        crit <- ar(x, order, method = 3)  # w
+        crit <- .ar(x, order, method = 3)  # w
     }
 
     #attr(crit, "method") <- methods[methodNr]
     return(crit)
-
-
 }
-
 
 criterion.matrix <- function(x, order, method = NULL, ...) {
 
@@ -77,10 +77,12 @@ criterion.matrix <- function(x, order, method = NULL, ...) {
     else methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
     
+    # check matrix
     if (!is.real(x)) storage.mode(x) <- "real"
 
+    # work horses
     if (methodNr == 1) {
-        crit <- bond_energy(x, col_order, row_order)
+        crit <- .bond_energy(x, col_order, row_order)
     }
 
     #attr(crit, "method") <- methods[methodNr]
@@ -104,7 +106,7 @@ criterion.default <- criterion.dist
 # 
 
 # ceeboo 2005
-path_length <- function(dist, order) {
+.path_length <- function(dist, order) {
     if (missing(order)) order <- 1:attr(dist, "Size")
     .Call("order_length", dist, order)
 }
@@ -113,27 +115,28 @@ path_length <- function(dist, order) {
 # least square criterion. measures the difference between the 
 # dissimilarities between two elements and the rank distance
 # (PermutMatrix)
-least_square <- function(dist, order) {
+.least_square <- function(dist, order) {
     if(missing(order)) order <- 1:attr(dist, "Size") 
     .Call("least_square_criterion", dist, order)
 }
 
 
 # inertia around the diagonal (see PermutMatrix)
-inertia <- function(dist, order) {
+.inertia <- function(dist, order) {
     if(missing(order)) order <- 1:attr(dist, "Size") 
     .Call("inertia_criterion", dist, order)
 }
 
 
 # anti-Robinson loss functions (Streng and Schönfelder 1978, Chen 2002)
-ar <- function(dist, order, method = 1) {
+# method: 1...i, 2...s, 3...w
+.ar <- function(dist, order, method = 1) {
     if(missing(order)) order <- 1:attr(dist, "Size") 
     .Call("ar", dist, order, as.integer(method))
 }
 
 # Bond energy (BEA)
-bond_energy <- function(m, col_order, row_order){
+.bond_energy <- function(m, col_order, row_order){
     
     ener <- as.single(0.0)
     if(any(m < 0)) stop("Bond energy is only defined for nonnegative matrices!")
