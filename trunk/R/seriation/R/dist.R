@@ -1,7 +1,7 @@
 # rearrange a dist object
 arrange.dist <- function(x, order) {
 
-    if(class(x) != "dist")
+    if(!inherits(x,"dist"))
     stop(paste(sQuote("dist"),"not of class dist"))
 
     if(attr(x, "Diag") || attr(x, "Upper"))
