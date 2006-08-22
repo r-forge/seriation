@@ -103,42 +103,43 @@ one-dimensional ordering of rows and columns.
       far away into the tour fist to establish an outline of the whole tour 
       early.
 
-      Since a tour is a connected circle and we are looking for a
-      linear order, we need to find the optimal cutting point.
-      Typically, for this reason a dummy city with equal distance to 
-      each other city is added before generating the tour. It is easy to
-      show that this city is then the optimal cutting point 
-      (Johnson and Papadimitriou 1985). However, this implementation
-      does not use a dummy city, but it chooses the cutting point
-      after the tour is constructed as the cities which are farthest apart.
+      Since a tour is a connected circle and we are looking for a path
+      representing a linear order, we need to find the best cutting point.
+      Climer and Zhang (2006) suggest to add a dummy city with equal distance
+      to each other city before generating the tour. The place of this dummy
+      city in an optimal tour with minimal length is the best cutting point (it
+      lies between the most distant cities). However, both algorithms used here
+      normally only find suboptimal tours and thus it is not guaranteed that
+      the dummy city would be the best place to cut. Therefore, we seach the
+      tour for the two most distant cities and cut there.
       }
       }}
 \value{
 Returns an integer vector containing the ordering of the rows or columns. 
 }
 \references{ 
-Chen, C. H. (2002).  Generalized Association Plots: Information
+P. Arabie and L.J. Huber (1990): The bond energy algorithm revisited, IEEE
+Transactions on Systems, Man, and Cybernetics, vol. 20, pp. 268-274.
+
+Chen, C. H. (2002):  Generalized Association Plots: Information
 Visualization via Iteratively Generated Correlation Matrices.  Statistica
 Sinica 12, 7-29.
 
-F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures in
+Sharlee Climer, Weixiong Zhang (2006): Rearrangement Clustering: Pitfalls,
+Remedies, and Applications, Journal of Machine Learning Research 7, pp.
+919-943.
+
+D. S. Johnson, C. H. Papadimitriou (1985): Performance guarantees for
+heuristics (chapter 5). In: E. L. Lawler, J. K. Lenstra, A.H.G. Rinnooy Kan, D.
+B. Shmoys (eds.) The traveling salesman problem - A guided tour of
+combinatorial optimization, Wiley \& Sons.
+  
+W.T. McCormick, P.J. Schweitzer and T.W. White (1972): Problem decomposition
+and data reorganization by a clustering technique, Operations Research, Vol.
+20, pp. 993-1009.
+
+F. Murtagh (1985): Multidimensional Cluster Algorithms. Lectures in
 Computational Statistics, Physica Verlag, pp. 15.
-
-W.T. McCormick, P.J. Schweitzer and T.W. White (1972). 
-Problem decomposition and data reorganization by a clustering technique,
-Operations Research, 
-Vol. 20, pp. 993-1009.
-
-P. Arabie and L.J. Huber (1990). 
-The bond energy algorithm revisited,
-IEEE Transactions on Systems, Man, and Cybernetics, 
-vol. 20, pp. 268-274.
-
-D. S. Johnson, C. H. Papadimitriou (1985). Performance guarantees for 
-heuristics (chapter 5). In: E. L. Lawler, J. K. Lenstra, A.H.G. Rinnooy Kan, 
-D. B. Shmoys (eds.) 
-The traveling salesman problem - A guided
-tour of combinatorial optimization, Wiley \& Sons.
 }
 \seealso{
 \code{\link{hclust_greedy}},
@@ -147,7 +148,7 @@ tour of combinatorial optimization, Wiley \& Sons.
 \author{Michael Hahsler}
 \examples{
 library("vcd")
-data(iris)
+data("iris")
 x <- as.matrix(iris[,1:4])
 d <- dist(x)
 

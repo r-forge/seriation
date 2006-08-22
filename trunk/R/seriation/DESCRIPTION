@@ -2,6 +2,7 @@ Package: seriation
 Type: Package
 Title: Some seriation heuristics and algorithms
 Version: 0.1-1
+Depends: tsp
 Suggests: vcd
 Date: 2006-xx-xx
 Author: Michael Hahsler with contributions by Christian Buchta and Fionn Murtagh

@@ -1,6 +1,16 @@
-importFrom(stats, reorder)
+importFrom(stats, reorder)  # reorder exists for factor
+import(tsp)
 
-export(criterion, pimage, hclust_greedy, bea, arrange)
+export(
+    arrange,
+    bea, 
+    criterion, 
+    hclust_greedy, 
+    pimage 
+    )
+
+
+S3method(arrange, dist)
 
 S3method(criterion, matrix)
 S3method(criterion, dist)
@@ -9,9 +19,8 @@ S3method(reorder, hclust)
 S3method(reorder, matrix)
 S3method(reorder, dist)
 
-S3method(arrange, dist)
-
 S3method(pimage, matrix)
 S3method(pimage, dist)
+
 
 useDynLib(seriation)
