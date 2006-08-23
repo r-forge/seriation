@@ -13,8 +13,7 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
         "bea",
         "fpc",
         "chen",
-        "nearest_insertion",
-        "farthest_insertion") 
+        "tsp") 
 
     if(is.null(method)) methodNr <- 1
     else methodNr <- pmatch(tolower(method), tolower(methods))
@@ -33,9 +32,7 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
     }else if(methodNr == 4) {
         order <- .reorder_chen(x)
     }else if(methodNr == 5) {
-        order <- .reorder_insertion(x, nearest = TRUE, ...)
-    }else if(methodNr == 6) {
-        order <- .reorder_insertion(x, nearest = FALSE, ...)
+        order <- .reorder_tsp(x, ...)
     }
 
     #attr(order, "method") <- methods[methodNr]
@@ -137,22 +134,18 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
 }
 
 
-# Nearest/farthest insertion algorithm 
-# (Johnson and Papadimitrou in Lawler et al. 1985)
+# TSPs
 
-.reorder_insertion <- function(x, nearest = TRUE, start = 0){
-    if(!isSymmetric(x))
-        stop(paste("Methods",sQuote("nearest/farthest insertion"),
-                "require a symmetrical distance matrix"))
+# optimal cut helper
+# To find the cutting point in the tour, typically a dummy city with
+# equal distance to every other city is added. The dummy city is then
+# the optimal cutting place.
+# However, this would require to manipulate the distance matrix. 
+# Therefore, we just cut the tour between the most distant cities 
+# which should give the same result.
+.cut_tsp <- function(order, x) {
+    if(!is.matrix(x)) x <- as.matrix(x)
     
-    order <- tsp_insertion(as.dist(x), nearest = nearest, start = start)
-
-    # To find the cutting point in the tour, typically a dummy city with
-    # equal distance to every other city is added. The dummy city is then
-    # the optimal cutting place.
-    # However, this would require to manipulate the distance matrix. 
-    # Therefore, we just cut the tour between the most distant cities 
-    # which should give the same result.
     maxDist <- 0.0
     cut <- 0
     for(i in 1:(length(order)-1)) {
@@ -164,8 +157,16 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
     if(x[order[length(order)], order[1]] > maxDist) {
         cut <- 0
     }
-    
+
     if(cut > 0) order <- c(order[(cut+1):length(order)], order[1:cut])
-   
+
     order
+}
+
+# Bridge to package tsp 
+.reorder_tsp <- function(x, tsp, ...){
+    if(!is.function(tsp)) stop("tsp function missing.")
+    
+    order <- tsp(x, ...)
+    .cut_tsp(order, x)
 }
