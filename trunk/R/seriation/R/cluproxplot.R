@@ -112,10 +112,10 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL, ...) {
     if(options$silhouettes == FALSE) {
         pushViewport(viewport(layout = grid.layout(6, 3,
                     # space, image, space
-                    widths = unit(c(3,1,3), c("lines", "null", "lines")),
+                    widths = unit(c(2,0.7,2), c("lines", "snpc", "lines")),
                     # title, space, image, space, colorkey, space
-                    heights = unit(c(3,3,1,1,1,3), 
-                        c("lines", "lines", "null", "lines", "lines", "lines"))
+                    heights = unit(c(2,1,0.7,1,1,2), 
+                        c("lines", "lines", "snpc", "lines", "lines", "lines"))
                 )))
 
         main_vp     <- viewport(layout.pos.col = 2, layout.pos.row = 1)
@@ -125,15 +125,11 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL, ...) {
     }else{
         pushViewport(viewport(layout = grid.layout(6, 5,
                     # space, image, space, sil, space
-                    #widths = unit(c(3,3,1,1,3), 
-                        #        c("lines", "null", "lines", "null", "lines")),
-                    widths = unit(c(3,0.6,1,0.2,3), 
-                                c("lines", "snpc", "lines", "snpc", "lines")),
+                    widths = unit(c(2,0.6,1,0.2,2), 
+                        c("lines", "snpc", "lines", "snpc", "lines")),
                     # title, space, image, space, colorkey, space
-                    #heights = unit(c(3,3,1,1,1,3), 
-                        #        c("lines", "lines", "null", "lines", "lines", "lines"))
-                    heights = unit(c(3,3,0.6,1,1,3), 
-                                c("lines", "lines", "snpc", "lines", "lines", "lines"))
+                    heights = unit(c(2,2,0.6,1,1,2), 
+                        c("lines", "lines", "snpc", "lines", "lines", "lines"))
                 )))
 
         main_vp     <- viewport(layout.pos.col = 2:4, layout.pos.row = 1)
