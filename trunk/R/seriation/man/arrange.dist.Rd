@@ -16,9 +16,10 @@ arrange(x, order)
 }
 %\details{
 %}
-\author{Michael Hahsler}
+%\author{Michael Hahsler}
 \seealso{
-  \code{\link{dist}}.}
+\code{\link{dist}} in package \pkg{stats}.
+  }
 \examples{
 d <- dist(matrix(rnorm(6), 3, 2))
 d

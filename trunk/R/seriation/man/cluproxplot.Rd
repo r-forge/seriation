@@ -1,5 +1,6 @@
 \name{cluproxplot}
 \alias{cluproxplot}
+\alias{plot.cluster_proximity_matrix}
 \title{Cluster Proximity Plot}
 \description{
 Visualizes cluster quality using shading of a rearranged proximity matrix (see
@@ -27,7 +28,7 @@ cluproxplot(x, labels = NULL, method = NULL,
     seriation algorithms. The first element indicates the inter cluster
     and the second element the intra cluster seriation method. See 
     \code{reorder} for available reorder algorithms.}
-  \item{plot}{\code{logical"};  if \code{FALSE}, no plot is produced. The 
+  \item{plot}{\code{"logical"};  if \code{FALSE}, no plot is produced. The 
     returned object can be plotted later using the function \code{plot}
     which takes as the second argument a a list of plotting options (see
     \code{plot_options} below).}
@@ -50,12 +51,13 @@ cluproxplot(x, labels = NULL, method = NULL,
       \code{hcl(h = 0, c = 0, l = seq(20, 95, len = 100))}). }
   \item{\code{colorkey}}{ place a color key under the plot. }
   \item{\code{lines_col}}{ color used for the lines to separate clusters. }
-  \item{\code{newpage}}{\code{logical"}; start plot on a new page 
+  \item{\code{newpage}}{\code{"logical"}; start plot on a new page 
     (see package \code{grid}). }
-\item{\code{pop}}{\code{logical"};  should the viewports created be popped 
+\item{\code{pop}}{\code{"logical"};  should the viewports created be popped 
     (see package \code{grid})?  }
+\item{\code{gp}}{an object of class \code{gpar} containing graphical parameters
+    (see \code{gpar} in package \code{grid}). }
     }
-  
 }}
 %\details{
 %}
@@ -73,6 +75,9 @@ generated.}
    and the average silhouette) 
    for the clusters as displayed in the 
    plot (from top/left to bottom/right).}
+
+This object can be used for plotting via
+\code{plot(x, plot_options = NULL, ...)}
 }
 \references{
 Ling, R.F. A computer generated aid for cluster analysis. Comm. of the ACM, 
@@ -96,32 +101,56 @@ INFORMS Journal on Computing, 208-230, 2003.
 %\author{Michael Hahsler (hahsler@ai.wu-wien.ac.at)}
 \examples{
 data("iris")
-
 d <- dist(iris[1:4])
 
-# original matrix
-res <- cluproxplot(d, method = NA, plot_options = list(main = "No seriation"))
+# plot original matrix
+res <- cluproxplot(d, method = NA)
 
-# reordered matrix using the farthest insertion algorithm (from tsp)
+# plot reordered matrix using the farthest insertion algorithm (from tsp)
 res <- cluproxplot(d, method = "tsp", tsp = tsp_insertion, nearest = FALSE,
     plot_options = list(main = "Seriation (farthest insertion)"))
+
+
 
 # cluster with pam (we know iris has 3 clusters)
 library("cluster")
 l <- pam(d, 3, cluster.only = TRUE)
 
+# we use a grid.layout to place several plots on a page
+grid.newpage()
+pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2), 
+    gp = gpar(fontsize = 8)))
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+
 # visualize the clustering
 res <- cluproxplot(d, l, method = "chen",  
-    plot_options = list(main = "PAM + Seriation (Chen)"))
+    plot_options = list(main = "PAM + Seriation (Chen) - standard", 
+    newpage = FALSE))
 
+popViewport()
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 
 # more visualization options
 # threshold
-plot(res, plot_options = list(main = "PAM + Seriation (Chen)", threshold=2))
+plot(res, plot_options = list(main = "PAM + Seriation (Chen) - threshold", 
+    threshold=2, newpage = FALSE))
+
+popViewport()
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
 
 # color: use 10 shades of blue
-plot(res, plot_options = list(main = "PAM + Seriation (Chen)", 
-	col = hcl(h = 260, c = seq(75,0, length=10), l = seq(30,95, length=10))))
+plot(res, plot_options = list(main = "PAM + Seriation (Chen) - blue", 
+	col = hcl(h = 260, c = seq(75,0, length=10), l = seq(30,95, length=10)),
+    gp = gpar(fill = hcl(h = 260, c=30, l = 80)), newpage = FALSE))
+
+popViewport()
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
+
+# supress average in lower triangle
+plot(res, plot_options = list(main = "PAM + Seriation (Chen) - no avg.", 
+	average = FALSE, newpage = FALSE))
+
+popViewport(2)
 
 # the cluster_proximity_matrix
 res 

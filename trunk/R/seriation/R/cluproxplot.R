@@ -7,7 +7,7 @@ cluproxplot <- function(x, labels = NULL, method = NULL,
 
     res <- .arrange_proximity_matrix(x, labels = labels,
         method = method, ...)
-    if(plot == TRUE) plot(res, plot_options)
+    if(plot == TRUE) plot(res, plot_options, gp = gp)
 
     invisible(res)
 }
@@ -31,7 +31,14 @@ print.cluster_proximity_matrix <- function(x, ...) {
 }
 
 # plot for cluster_proximity_matrix
-plot.cluster_proximity_matrix <- function(x, plot_options = NULL, ...) {
+plot.cluster_proximity_matrix <- function(x, plot_options = NULL, 
+    ...) {
+    
+    m       <- x$x_reordered
+    k       <- x$k
+    dim     <- dim(m)[1]
+    labels  <- x$labels
+    labels_unique <- unique(labels)
 
     # default plot options
     options <- list(
@@ -40,37 +47,36 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL, ...) {
         lines       = TRUE, 
         silhouettes = TRUE,
         threshold   = NULL,
-        main        = "cluster proximity plot",
+        main        = paste("cluster proximity plot:", 
+            dim,"x",dim),
         col         = hcl(h = 0, c = 0, l = seq(20, 95, len = 100)), 
         colorkey    = TRUE, 
         lines_col   = "black",
         newpage     = TRUE, 
-        pop         = TRUE
+        pop         = TRUE,
+        gp          = gpar()
     ) 
-
 
     # check and add the plot options
     if(!is.null(plot_options) && length(plot_options) != 0) {
-        m <- pmatch(names(plot_options), names(options))
+        o <- pmatch(names(plot_options), names(options))
 
-        if(any(is.na(m))) stop(paste("Unknown plot option:", 
-                names(plot_options)[is.na(m)], "\n\t"))
+        if(any(is.na(o))) stop(paste("Unknown plot option:", 
+                names(plot_options)[is.na(o)], "\n\t"))
 
-        for (i in 1:length(m)) {
-            options[[m[i]]] <- unlist(plot_options[i], use.names = FALSE)
+        for (i in 1:length(o)) {
+            options[[o[i]]] <- plot_options[[i]] 
         }
-
     } 
 
+    # get grid options
+    gp <- options$gp
+    
     # clear page
     if(options$newpage) grid.newpage()
 
-    m       <- x$x_reordered
-    k       <- x$k
-    dim     <- dim(m)[1]
-    labels  <- x$labels
-    labels_unique <- unique(labels)
 
+    # do we have silhouettes?
     if(is.null(x$sil)) options$silhouettes <- FALSE
 
     # color lower triangle panels with avg. dissimilarity
@@ -142,16 +148,22 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL, ...) {
 
     # main
     pushViewport(main_vp)
-    grid.text(options$main, gp = gpar(fontface = "bold", cex = 1.5))
+    gp_main             <- gp
+    gp_main$cex         <- if(is.null(gp$cex)) 1.3 else gp$cex * 1.3
+    gp_main$fontface    <- "bold"
+    
+    grid.text(options$main, gp = gp_main)
     upViewport(1)
 
+    # image
     pushViewport(image_vp)
-    .grid_image(m, col = options$col, threshold = options$threshold)
+    .grid_image(m, col = options$col, threshold = options$threshold, gp = gp)
     upViewport(1)
 
     if(options$colorkey == TRUE){
         pushViewport(colorkey_vp)
-        .grid_colorkey(0, max(m), col = options$col, threshold = options$threshold)
+        .grid_colorkey(0, max(m), col = options$col, 
+            threshold = options$threshold, gp = gp)
         upViewport(1)
     }
 
@@ -165,19 +177,21 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL, ...) {
             cluster_center <- cluster_cuts - cluster_width / 2
 
             seekViewport("image")
-            #grid.text(labels_unique, x = cluster_center, 
-                # y = unit(-1, "lines"), default.unit="native")
 
             # above the plot
             grid.text(labels_unique, x = cluster_center, 
-                y = unit(1, "npc") + unit(1, "lines"), default.unit="native")
+                y = unit(1, "npc") + unit(1, "lines"), default.unit="native",
+                gp = gp)
             # left of the plot
             grid.text(labels_unique, x = unit(-1, "lines"),
-                y = cluster_center, default.unit="native")
+                y = cluster_center, default.unit="native", gp = gp)
             upViewport(2)
         }
 
         if(options$lines == TRUE){
+            gp_lines        <- gp
+            gp_lines$col    <- options$lines_col
+            
             # draw lines separating the clusters
             cluster_cuts <- cluster_cuts[-length(cluster_cuts)]
             # remove last line
@@ -187,22 +201,22 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL, ...) {
 
                 grid.lines(
                     x = c(0.5, dim + 0.5), y = cluster_cuts[i], 
-                    default.unit="native", gp = gpar(col = options$lines_col))
+                    default.unit="native", gp = gp_lines)
 
                 grid.lines(
                     x = cluster_cuts[i], y = c(0.5, dim + 0.5), 
-                    default.unit="native", gp = gpar(col = options$lines_col))
+                    default.unit="native", gp=gp_lines)
 
             }
 
             # draw diagonal
             grid.lines(x = c(0.5, dim + 0.5), y = c(0.5, dim + 0.5),
-                default.unit="native", gp = gpar(col = options$lines_col))
+                default.unit="native", gp = gp_lines)
             
             # redraw border
             grid.rect(x = 0,5 * dim, y = 0.5 * dim, width = dim - 1, 
                 height =  dim - 1, default.units = "native", 
-                gp= gpar(col = "black"))
+                gp = gp_lines)
 
             upViewport(2)
 
@@ -215,7 +229,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL, ...) {
         s <- x$sil[,"sil_width"]
 
         pushViewport(barplot_vp)
-        .grid_barplot_horiz(s, xlab = "Silhouette width")
+        .grid_barplot_horiz(s, xlab = "Silhouette width", gp = gp)
         upViewport(1)
 
     }
