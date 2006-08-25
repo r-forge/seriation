@@ -84,8 +84,10 @@ one-dimensional ordering of rows and columns.
       }  
   \item{tsp}{Traveling salesman problem solver. 
       Here external solvers can be used. The solver function
-      has to be provided by the parameter \code{tsp} and \code{\ldots}
-      is passed on to the solver function. Solver functions have to
+      has to be provided by the parameter \code{tsp},
+      a method for the solver can be provided via \code{tsp_method}
+      and \code{\ldots} is passed on to the solver function. 
+      Solver functions have to
       accept the distance matrix as a full \code{matrix} as the first 
       argument and they have to return the resulting tour as an
       \code{integer} vector. For example, 
@@ -143,10 +145,10 @@ layout(matrix(c(1,2,3,4,5,6,7,8,9), 3, 3, byrow=TRUE), respect=FALSE)
 pimage(d, col=diverge_hcl(64), main = "original")
 
 # using a tsp solver from pkg tsp
-nins <- reorder(d, method="tsp", tsp = tsp_insertion, nearest = TRUE)
+nins <- reorder(d, method="tsp", tsp = solve_TSP, tsp_method = "nearest")
 pimage(arrange(d, nins), col=diverge_hcl(64), main = "nearest insertion alg.")
 
-fins <- reorder(d, method="tsp", tsp = tsp_insertion, nearest = FALSE)
+fins <- reorder(d, method="tsp", tsp = solve_TSP, tsp_method = "farthest")
 pimage(arrange(d, fins), col=diverge_hcl(64), main = "farthest insertion alg.")
 
 bea <- reorder(max(d)-d, method = "bea")

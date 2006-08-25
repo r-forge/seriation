@@ -164,9 +164,9 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
 }
 
 # Bridge to package tsp 
-.reorder_tsp <- function(x, tsp, ...){
+.reorder_tsp <- function(x, tsp, tsp_method = NULL, ...){
     if(!is.function(tsp)) stop("tsp function missing.")
     
-    order <- tsp(x, ...)
+    order <- tsp(x, method = tsp_method, ...)
     .cut_tsp(order, x)
 }

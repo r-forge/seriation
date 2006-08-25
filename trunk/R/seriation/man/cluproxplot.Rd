@@ -107,7 +107,7 @@ d <- dist(iris[1:4])
 res <- cluproxplot(d, method = NA)
 
 # plot reordered matrix using the farthest insertion algorithm (from tsp)
-res <- cluproxplot(d, method = "tsp", tsp = tsp_insertion, nearest = FALSE,
+res <- cluproxplot(d, method = "tsp", tsp = solve_TSP, tsp_method = "nearest",
     plot_options = list(main = "Seriation (farthest insertion)"))
 
 
