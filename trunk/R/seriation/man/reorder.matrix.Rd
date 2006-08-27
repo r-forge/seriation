@@ -8,15 +8,17 @@ columns and rows at the same time. Using a image plot of the reordered matrix
 can show a structure in the data which was not visible in the original matrix.
 }
 \usage{
-\method{reorder}{dist}(x, method = NULL, \ldots)
-\method{reorder}{matrix}(x, method = NULL, row = TRUE, \ldots)
+\method{reorder}{dist}(x, method = NULL, options = NULL, \ldots)
+\method{reorder}{matrix}(x, method = NULL, row = TRUE, options = NULL, \ldots)
 }
 \arguments{
   \item{x}{ matrix or object of class \code{dist} to be seriated.}
   \item{method}{ a character string with the name of the seriation method
-    (default: murtagh).}
+    (default: murtagh) or a function call (suitable functions need to
+    accept teh arguments \code{(x, methodm options)} and return an order).}
   \item{row}{ if \code{row=TRUE} the order for rows is calculated, 
     otherwise for columns. }
+  \item{options}{ a list of options passen on to the reorder algorithms.}
   \item{\ldots}{ further arguments (currently unused).}
     }
 \details{
@@ -145,10 +147,10 @@ layout(matrix(c(1,2,3,4,5,6,7,8,9), 3, 3, byrow=TRUE), respect=FALSE)
 pimage(d, col=diverge_hcl(64), main = "original")
 
 # using a tsp solver from pkg tsp
-nins <- reorder(d, method="tsp", tsp = solve_TSP, tsp_method = "nearest")
+nins <- reorder(d, method="tsp", options = list(method = "nearest_insertion"))
 pimage(arrange(d, nins), col=diverge_hcl(64), main = "nearest insertion alg.")
 
-fins <- reorder(d, method="tsp", tsp = solve_TSP, tsp_method = "farthest")
+fins <- reorder(d, method="tsp", options = list(method = "farthest_insertion"))
 pimage(arrange(d, fins), col=diverge_hcl(64), main = "farthest insertion alg.")
 
 bea <- reorder(max(d)-d, method = "bea")

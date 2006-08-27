@@ -1,13 +1,23 @@
 # reorder matrices and dist objects
 
 # wrapper for dist (matrix does all the work for now)
-reorder.dist <- function(x, method = NULL, ...) 
-reorder.matrix(as.matrix(x), method = method, ...)
+reorder.dist <- function(x, method = NULL, options = NULL,...) 
+reorder.matrix(as.matrix(x), method = method, options = options, ...)
 
 # matrix
-reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
+reorder.matrix <- function(x, method = NULL, row = TRUE, options = NULL, ...) {
+    
+    # do columns?
+    if(row == FALSE) x <- t(x)
 
-    # methods
+    # methods is a function with interface (x, method, options)
+
+    if(is.function(method)) {
+      order <- method(x, method = options$method, options = options$options)
+      return(order)  
+  }
+    
+    # build-in methods
     methods <- c(
         "murtagh",      # standard
         "bea",
@@ -19,20 +29,18 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
     else methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
 
-    # do columns?
-    if(row == FALSE) x <- t(x)
 
     # work horses
     if(methodNr == 1) {
         order <- .reorder_murtagh(x)
     }else if(methodNr == 2) {
-        order <- .reorder_bea(x,...)
+        order <- .reorder_bea(x, options)
     }else if(methodNr == 3) {
         order <- .reorder_prcomp(x)
     }else if(methodNr == 4) {
         order <- .reorder_chen(x)
     }else if(methodNr == 5) {
-        order <- .reorder_tsp(x, ...)
+        order <- .reorder_tsp(x, options)
     }
 
     #attr(order, "method") <- methods[methodNr]
@@ -104,7 +112,7 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
 
 # Bond Energy Algorithm (McCormick 1972)
 
-.reorder_bea <- function(x, start = 0){
+.reorder_bea <- function(x, options = NULL){
     
     if(any(x < 0)) stop("Only usable for nonnegative matrices")
     
@@ -117,7 +125,8 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
     jb <- integer(n)
     jfin <- integer(n)
     #
-    if (start == 0) start <- sample(1:n, 1)
+    start <- options$start
+    if (is.null(start)) start <- sample(1:n, 1)
     start <- as.integer(start)
     #
 
@@ -164,9 +173,7 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, ...) {
 }
 
 # Bridge to package tsp 
-.reorder_tsp <- function(x, tsp, tsp_method = NULL, ...){
-    if(!is.function(tsp)) stop("tsp function missing.")
-    
-    order <- tsp(x, method = tsp_method, ...)
+.reorder_tsp <- function(x, options = NULL){
+    order <- solve_TSP(x, method = options$method, options = options$options)
     .cut_tsp(order, x)
 }

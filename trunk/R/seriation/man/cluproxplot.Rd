@@ -15,7 +15,7 @@ Additionally a Silhouette plot (Rousseeuw, 1987) is added.
 The visualization was also inspired by CLUSION (see Strehl and Ghosh, 2002).
   }
 \usage{
-cluproxplot(x, labels = NULL, method = NULL, 
+cluproxplot(x, labels = NULL, method = NULL, options = NULL, 
   plot = TRUE, plot_options = NULL, \ldots)   
 }
 \arguments{
@@ -28,6 +28,7 @@ cluproxplot(x, labels = NULL, method = NULL,
     seriation algorithms. The first element indicates the inter cluster
     and the second element the intra cluster seriation method. See 
     \code{reorder} for available reorder algorithms.}
+\item{options}{ a list of options passed on to the reorder algorithm. }
   \item{plot}{\code{"logical"};  if \code{FALSE}, no plot is produced. The 
     returned object can be plotted later using the function \code{plot}
     which takes as the second argument a a list of plotting options (see
@@ -107,7 +108,7 @@ d <- dist(iris[1:4])
 res <- cluproxplot(d, method = NA)
 
 # plot reordered matrix using the farthest insertion algorithm (from tsp)
-res <- cluproxplot(d, method = "tsp", tsp = solve_TSP, tsp_method = "nearest",
+res <- cluproxplot(d, method = "tsp", options = list(method = "nearest"),
     plot_options = list(main = "Seriation (farthest insertion)"))
 
 

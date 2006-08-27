@@ -3,10 +3,10 @@
 
 # interface
 cluproxplot <- function(x, labels = NULL, method = NULL,
-    plot = TRUE, plot_options = NULL, ...) {
+    options = NULL, plot = TRUE, plot_options = NULL, ...) {
 
     res <- .arrange_proximity_matrix(x, labels = labels,
-        method = method, ...)
+        method = method, options = options, ...)
     if(plot == TRUE) plot(res, plot_options, gp = gp)
 
     invisible(res)
@@ -241,7 +241,8 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
 
 # work horse
-.arrange_proximity_matrix <- function(x, labels = NULL, method = NULL, ...) {
+.arrange_proximity_matrix <- function(x, labels = NULL, method = NULL, 
+    options = NULL, ...) {
 
     
     # check if matrix is ok
@@ -254,11 +255,11 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     diss_measure <- attr(x, "method")
 
     # set everything to NULL first
-    k                   <- NULL           # number of clusters
+    k                   <- NULL             # number of clusters
     sil                 <- NULL
     labels_ordered      <- NULL
     cluster_distances   <- NULL
-    used_method         <- c(NA, NA)
+    used_method         <- c(NA, NA)        # names for result
     names(used_method)  <- c("inter cluster", "intra cluster")
 
     # set default seriation
@@ -273,7 +274,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         
     }else if(is.null(labels)) {
         # seriate whole matrix if no labels are given
-        order <- reorder(x_mat, method = method[1], ...)  
+        order <- reorder(x_mat, method = method[1], options = options, ...)  
         
         if(!is.null(attr(order, "method"))) 
         used_method[1]      <- attr(order, "method")
@@ -293,7 +294,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
         if(k>2) {
             cluster_order <- reorder(cluster_distances, 
-                method = method[1], ... )
+                method = method[1], options = options, ... )
             
             if(!is.null(attr(cluster_order, "method"))) 
             used_method[1] <- attr(cluster_order, "method")
@@ -333,7 +334,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
                         attr(intra_order, "method") <- "silhouette width"
                     }else{
                         block <- x_mat[take, take, drop = FALSE] 
-                        intra_order <- reorder(block, method = method[2], ...) 
+                        intra_order <- reorder(block, method = method[2], optiosn = options, ...) 
                     }
 
                     order <- c(order, take[intra_order])

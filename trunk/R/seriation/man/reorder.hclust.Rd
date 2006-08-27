@@ -6,13 +6,14 @@
   produced by a hierarchical cluster algorithm.
 }
 \usage{
-\method{reorder}{hclust}(x, dist, method = NULL, \ldots)
+\method{reorder}{hclust}(x, dist, method = NULL, options = NULL, \ldots)
 }
 \arguments{
   \item{x}{a hclust object (see \code{\link{hclust}}).}
   \item{dist}{the \code{dist} object used for clustering.}
   \item{method}{ a character string with the name of the reorder 
 	method (default: optimal).}
+  \item{options}{ options passed on to the algorithms (currently unused).}
   \item{\ldots}{ further arguments (currently unused).}
 }
 \details{
