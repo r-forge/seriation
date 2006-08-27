@@ -22,14 +22,23 @@ cluproxplot(x, labels = NULL, method = NULL, options = NULL,
   \item{x}{ an object of class \code{dist} or a matrix. }
   \item{labels}{ \code{NULL} or an integer vector of the same length as
       rows/columns in \code{x} indicating the membership for each element in
-      \code{x} as consecutive integers starting with one.  The labels are used
+      \code{x} as consecutive integers starting with one. The labels are used
       to reorder the matrix.}
-  \item{method}{ a vector of character strings indicating the used
-    seriation algorithms. The first element indicates the inter cluster
-    and the second element the intra cluster seriation method. See 
-    \code{reorder} for available reorder algorithms.}
-\item{options}{ a list of options passed on to the reorder algorithm. }
-  \item{plot}{\code{"logical"};  if \code{FALSE}, no plot is produced. The 
+  \item{method}{ a single character strings indicating the used
+      seriation algorithm (\code{NA} if to plot the matrix as is). The same
+      algorithm is used to reorder the clusters (inter cluster seriation) as
+      well as the objects within each cluster (intra cluster seriation). If
+      separate algorithms for inter and intra cluster seriation are required,
+      \code{method} and be a \code{list} of two named elements
+      (\code{inter_cluster} and \code{intra_cluster} each containing the name
+      of the respective seriation method. See \code{reorder} for available
+      reorder algorithms.}
+\item{options}{ a list of options passed on to the reorder algorithm.
+    In case of two different reorder algorithms, \code{options} can
+    contain a list of two named elemens (\code{inter_cluster} 
+    and \code{intra_cluster}) containing each a list with the options
+    for the respective algorithm.}
+  \item{plot}{\code{"logical"}; if \code{FALSE}, no plot is produced. The 
     returned object can be plotted later using the function \code{plot}
     which takes as the second argument a a list of plotting options (see
     \code{plot_options} below).}

@@ -174,6 +174,8 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, options = NULL, ...) {
 
 # Bridge to package tsp 
 .reorder_tsp <- function(x, options = NULL){
-    order <- solve_TSP(x, method = options$method, options = options$options)
-    .cut_tsp(order, x)
+    tour <- solve_TSP(x, method = options$method, options = options$options)
+    order <- .cut_tsp(tour, x)
+    attributes(order) <- attributes(tour)
+    order
 }
