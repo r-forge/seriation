@@ -27,12 +27,18 @@ cluproxplot(x, labels = NULL, method = NULL, options = NULL,
   \item{method}{ a single character strings indicating the used
       seriation algorithm (\code{NA} if to plot the matrix as is). The same
       algorithm is used to reorder the clusters (inter cluster seriation) as
-      well as the objects within each cluster (intra cluster seriation). If
-      separate algorithms for inter and intra cluster seriation are required,
-      \code{method} and be a \code{list} of two named elements
+      well as the objects within each cluster (intra cluster seriation). 
+      
+      If separate algorithms for inter and intra cluster seriation are
+      required, \code{method} can be a \code{list} of two named elements
       (\code{inter_cluster} and \code{intra_cluster} each containing the name
       of the respective seriation method. See \code{reorder} for available
-      reorder algorithms.}
+      reorder algorithms. 
+      
+      For intra cluster reordering the special
+      method \code{silhouette width} is available. Objects in clusters are
+      then ordered by silhouette width (the standard for silhouette plots).
+      }
 \item{options}{ a list of options passed on to the reorder algorithm.
     In case of two different reorder algorithms, \code{options} can
     contain a list of two named elemens (\code{inter_cluster} 

@@ -11,7 +11,6 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, options = NULL, ...) {
     if(row == FALSE) x <- t(x)
 
     # methods is a function with interface (x, method, options)
-
     if(is.function(method)) {
       order <- method(x, method = options$method, options = options$options)
       return(order)  
@@ -25,9 +24,10 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, options = NULL, ...) {
         "chen",
         "tsp") 
 
-    if(is.null(method)) methodNr <- 1
-    else methodNr <- pmatch(tolower(method), tolower(methods))
-    if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
+    
+    methodNr <- if(is.null(method)) 1
+    else pmatch(tolower(method), tolower(methods))
+    if(is.na(methodNr)) stop (paste("Unknown method:", sQuote(method)))
 
 
     # work horses
@@ -43,8 +43,12 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, options = NULL, ...) {
         order <- .reorder_tsp(x, options)
     }
 
-    #attr(order, "method") <- methods[methodNr]
-    return(order)
+    if(is.null(attr(order, "method"))) 
+        attr(order, "method") <- methods[methodNr]
+    
+    #class(order) <- "order"
+        
+    order
 }
 
 
