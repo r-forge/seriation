@@ -38,6 +38,7 @@ certain ordering of a matrix are implemented:
 
 \describe{
 \item{bond\_energy}{(McCormick 1972). 
+
     The bond energy for matrix \eqn{A = (a_{ij})}, \eqn{i=1\ldots M} 
     and  \eqn{j=1\ldots N}, is defined as 
    
@@ -62,7 +63,8 @@ certain ordering of a dissimilarity matrix
 are currently implemented:
 \describe{
   \item{path\_length}{Hamiltonian path length (Caraux and Pinloche 2005).
-    The order of a dissimilarity matrix corresponds to a path through a 
+    
+      The order of a dissimilarity matrix corresponds to a path through a 
     graph where each node is
     visited only once, i.e. a Hamilton path. The length of a path is defined 
     as the sum of the edge weights, i.e. disimilarities.
@@ -74,6 +76,7 @@ are currently implemented:
     If \code{order} is not unique \code{NA} is returned.
     If there are non-finite distance values \code{NA} is returned.
 \item{least\_square}{Least square criterion (Caraux and Pinloche 2005). 
+    
     The sum of squares of deviations between the
     dissimilarities and rank differences (distance in the matrix) between two
     elements: 
@@ -101,7 +104,8 @@ are currently implemented:
     to values farther away from the diagonal. It increases with quality.}
   
   \item{ar\_i}{Number of anti-Robinson events (Chen 2002).
-    A Robinson matrix (Robinson 1951) has its columns arranged such that the
+    
+      A Robinson matrix (Robinson 1951) has its columns arranged such that the
     values of the cells always decrease when moving from the diagonal. In
     practice matrices rarely are Robinson matrices. This and the following two
     criteria measure the differences to a Robinson matrix.  The number of
@@ -114,12 +118,14 @@ are currently implemented:
     For the raw number of events, the weight is \eqn{w(i,j,k) = 1}.
     }
   \item{ar\_s}{Sum of absolute anti-Robinson deviations (Chen 2002).
-    The deviations are used as the weight, i.e. 
+    
+      The deviations are used as the weight, i.e. 
     \eqn{w(i,j,k) = |d(i,j) - d(i,k)|}.}
   \item{ar\_w}{Weighted sum of absolute anti-Robinson deviations (Chen 2002).
-    Weights the deviations by the difference of column indices, i.e.
+    
+      Weights the deviations by the difference of column indices, i.e.
     \eqn{w(i,j,k) = |j-k| |d(i,j) - d(i,k)|}.}
-    }}
+}}
 \value{
   A single real value.
 }
@@ -151,7 +157,7 @@ d <- dist(m)
 
 criterion(d, method = "least_square")
 
-o <- reorder(d, method = "fpc")
+o <- reorder(m, method = "fpc")
 o
 
 criterion(d, o, method = "least_square")

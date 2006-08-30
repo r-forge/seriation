@@ -26,7 +26,8 @@ Currently, the following methods are implemented:
 
 \describe{
     \item{optimal}{Optimal leaf ordering (Bar-Joseph et al. 2001).
-      Provides an interface to the optimal leaf ordering algorithm. 
+      
+        Provides an interface to the optimal leaf ordering algorithm. 
       The used objective measure for leaf ordering is the
       sum of the distances along the (Hamiltonian) path connecting the leaves
       in the given order. This algorithm produces the ordering with a minimal
@@ -35,7 +36,8 @@ Currently, the following methods are implemented:
 
       Note that non-finite distance values are not allowed.}
     \item{gw}{Gruvaeus and Wainer (1972). 
-      Uses the algorithm implemented in package \code{gclus} (Hurley 2004; due
+      
+        Uses the algorithm implemented in package \code{gclus} (Hurley 2004; due
       to a missing namespace in gclus, a copy of the code is included in this
       package). The clusters are ordered at each level so that the objects at
       the edge of each cluster are adjacent to that object outside the cluster
@@ -103,7 +105,7 @@ dend_r <- as.dendrogram(reorder(hclust(d_r), d_r))
 
 # optimal leaf ordering
 heatmap(x, Colv = dend_c, Rowv = dend_r, col = rev(gray.colors(64)),
-    main = "optimal leaf ordering")
+    main = "optimally ordered heatmap")
 }
 \keyword{optimize}
 \keyword{cluster}

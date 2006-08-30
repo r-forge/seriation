@@ -6,9 +6,9 @@
 Visualizes cluster quality using shading of a rearranged proximity matrix (see
 Ling, 1973). Objects belonging to the same cluster are displayed in consecutive
 order. The placement of clusters and the within cluster order is done by
-various seriation algorithms which try to place large similarities close to
-the diagonal. Compact clusters are visible as dark squares (high similarity)
-on the diagonal of the plot.
+various seriation algorithms which try to place large similarities/small
+dissimilarites close to the diagonal. Compact clusters are visible as dark
+squares (low dissimilarity) on the diagonal of the plot.
 
 Additionally a Silhouette plot (Rousseeuw, 1987) is added.
 
@@ -19,7 +19,7 @@ cluproxplot(x, labels = NULL, method = NULL, options = NULL,
   plot = TRUE, plot_options = NULL, \ldots)   
 }
 \arguments{
-  \item{x}{ an object of class \code{dist} or a matrix. }
+  \item{x}{ an object of class \code{dist}.}
   \item{labels}{ \code{NULL} or an integer vector of the same length as
       rows/columns in \code{x} indicating the membership for each element in
       \code{x} as consecutive integers starting with one. The labels are used
@@ -114,7 +114,7 @@ INFORMS Journal on Computing, 208-230, 2003.
    package \code{grid} and
    \code{\link{reorder}}.
 }
-%\author{Michael Hahsler (hahsler@ai.wu-wien.ac.at)}
+\author{Michael Hahsler}
 \examples{
 data("iris")
 d <- dist(iris[1:4])

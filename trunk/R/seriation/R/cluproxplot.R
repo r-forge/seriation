@@ -5,6 +5,13 @@
 cluproxplot <- function(x, labels = NULL, method = NULL,
     options = NULL, plot = TRUE, plot_options = NULL, ...) {
 
+    # make x dist
+    if(!inherits(x, "dist")) {
+        if(is.matrix(x) && isSymmetric(x)) x <- as.dist(x)
+        else stop(paste(sQuote("x"), "cannot be savely coerced to", 
+                sQuote("dist")))
+    }
+    
     res <- .arrange_proximity_matrix(x, labels = labels,
         method = method, options = options, ...)
     if(plot == TRUE) plot(res, plot_options, gp = gp)
@@ -14,11 +21,11 @@ cluproxplot <- function(x, labels = NULL, method = NULL,
 
 # print for cluster_proximity_matrix
 print.cluster_proximity_matrix <- function(x, ...) {
-    d <- dim(x$x_reordered)
+    d <- attr(x, "Size")
     k <- if(!is.null(x$k)) x$k else NA
 
     cat("object of class", sQuote(class(x)), "\n")
-    cat("matrix dimensions:", d[1], "x", d[2], "\n")
+    cat("matrix dimensions:", d, "x", d, "\n")
     cat("distance measure:", sQuote(x$diss_measure), "\n")
     cat("number of clusters k:", k, "\n")
     if(!is.null(x$k)) {
@@ -36,9 +43,9 @@ print.cluster_proximity_matrix <- function(x, ...) {
 plot.cluster_proximity_matrix <- function(x, plot_options = NULL, 
     ...) {
     
-    m       <- x$x_reordered
+    m       <- as.matrix(x$x_reordered)
     k       <- x$k
-    dim     <- dim(m)[1]
+    dim     <- attr(x$x_reordered, "Size")
     labels  <- x$labels
     labels_unique <- unique(labels)
 
@@ -246,19 +253,21 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 .arrange_proximity_matrix <- function(x, labels = NULL, method = NULL, 
     options = NULL, ...) {
 
-    # check if matrix is ok
-    x_mat <- as.matrix(x)
-    if(!isSymmetric(x_mat))
-    stop("not implemented for non-symmetric matrices!")
-    
-    # make x dist
-    if(!inherits(x, "dist")) x <- as.dist(x)
+    # x is already of class dist
+    dim <- attr(x, "Size")
     diss_measure <- attr(x, "method")
-
+    
+    # check labels
+    if(!is.null(labels) && length(labels) != dim) 
+        stop("number of labels in", sQuote("labels"), 
+            "does not match dimensions of", sQuote("x"))
+    
+    
     # set everything to NULL first
     order               <- NULL
     k                   <- NULL             # number of clusters
     sil                 <- NULL
+    avgSil              <- NULL
     labels_ordered      <- NULL
     cluster_distances   <- NULL
     used_method         <- list(inter_cluster = NA, intra_cluster = NA) 
@@ -281,24 +290,22 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         
     }else if(is.null(labels)) {
         # reorder whole matrix if no labels are given
-        order <- reorder(x_mat, method = method$inter, options = options$inter, ...)  
+        order <- reorder(x, method = method$inter, 
+            options = options$inter, ...)  
         
         used_method$inter <- if(!is.null(attr(order, "method"))) 
             attr(order, "method") else method$inter
 
     }else if (!is.null(labels)){
         # reorder clusters for given labels
-        if(length(labels) != dim(x_mat)[1]) stop("number of labels in",
-            sQuote("labels"), "does not match dimensions of", sQuote("x"))
-
         # get number of clusters k
         k <- length(unique(labels))
 
         # reorder with average pairwise dissimilarites between clusters
-        cluster_distances <- .cluster_dissimilarity(x_mat, labels)
+        cluster_distances <- .cluster_dissimilarity(x, labels)
 
         if(k>2) {
-            cluster_order <- reorder(cluster_distances, 
+            cluster_order <- reorder(as.dist(cluster_distances), 
                 method = method$inter, options = options$inter, ... )
            
             used_method$inter <- if(!is.null(attr(cluster_order, "method"))) 
@@ -307,6 +314,9 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         }else{
             cluster_order <- 1:k
         }
+
+        # calculate silhouette values for later use
+        sil <- silhouette(labels, x)
 
         # determine order for matrix from cluster order
         order <- c()
@@ -321,8 +331,6 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
         }else{
             # intra cluster order
-            # calculate silhouette values for later use
-            sil <- silhouette(labels, x)
 
             for(i in 1 : k) {
                 take <- which(labels == cluster_order[i])
@@ -337,7 +345,8 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
                             decreasing = TRUE)
                         attr(intra_order, "method") <- "silhouette width"
                     }else{
-                        block <- x_mat[take, take, drop = FALSE] 
+                        block <- arrange(x, take)
+                        
                         intra_order <- reorder(block, 
                             method = method$intra, options = options$intra, ...) 
                     }
@@ -369,12 +378,14 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     }
 
     # reorder matrix
-    if(!is.null(order)) x_mat <- x_mat[order, order]
-
+    if(!is.null(order)) x_reordered <- arrange(x, order)
+    else x_reordered <- x
+    
     # prepare for return value
     cluster_description <- NULL
 
     if(!is.null(labels)) {
+        
         # reorder silhouettes
         sil <- sil[order,]
 
@@ -395,7 +406,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     attributes(order) <- NULL
     
     result <- list(
-        x_reordered     = x_mat, 
+        x_reordered     = x_reordered, 
         labels          = labels, 
         method          = used_method, 
         k               = k, 

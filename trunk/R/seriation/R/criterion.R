@@ -18,8 +18,7 @@ criterion.dist <- function(x, order, method = NULL, ...) {
         "inertia",
         "ar_i",
         "ar_s",
-        "ar_w",
-        "bond_energy"
+        "ar_w"
     )
     
     if(is.null(method)) methodNr <- 1
@@ -47,7 +46,7 @@ criterion.dist <- function(x, order, method = NULL, ...) {
         crit <- .ar(x, order, method = 3)  # w
     }
 
-    #attr(crit, "method") <- methods[methodNr]
+    attr(crit, "method") <- methods[methodNr]
     return(crit)
 }
 
@@ -78,14 +77,14 @@ criterion.matrix <- function(x, order, method = NULL, ...) {
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
     
     # check matrix
-    if (!is.real(x)) storage.mode(x) <- "real"
+    #if (!is.real(x)) storage.mode(x) <- "real"
 
     # work horses
     if (methodNr == 1) {
         crit <- .bond_energy(x, col_order, row_order)
     }
 
-    #attr(crit, "method") <- methods[methodNr]
+    attr(crit, "method") <- methods[methodNr]
     crit
 }
     
@@ -136,24 +135,25 @@ criterion.default <- criterion.dist
 }
 
 # Bond energy (BEA)
-.bond_energy <- function(m, col_order, row_order){
+.bond_energy <- function(x, col_order = NULL, row_order = NULL){
     
-    ener <- as.single(0.0)
-    if(any(m < 0)) stop("Bond energy is only defined for nonnegative matrices!")
-    n <- ncol(m)
+    if(any(x < 0)) stop("Bond energy is only defined for nonnegative matrices!")
+    
+    n <- nrow(x)
+    m <- ncol(x)
 
     if(is.null(col_order) && is.null(row_order)) 1 #do nothing
-    else if(is.null(row_order)) m <- m[, col_order]
-    else if(is.null(col_order)) m <- m[row_order, ]
-    else m <- m[row_order, col_order]
+    else if(is.null(row_order)) x <- x[, col_order]
+    else if(is.null(col_order)) x <- x[row_order, ]
+    else x <- x[row_order, col_order]
     
-    storage.mode(m) <- "single"
+    storage.mode(x) <- "single"
 
     energy <- .Fortran("energy",
         n = n,
-        m = n,
-        b = m,
-        ener = ener)
+        m = m,
+        b = x,
+        ener = as.single(0.0))
     
     as.numeric(energy$ener)
 }

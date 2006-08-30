@@ -8,12 +8,22 @@ arrange.dist <- function(x, order) {
     stop(paste(Quote("dist"), 
             "with diagonal or upper triangle matrix not implemented"))
 
+    if(any(order > attr(x, "Size"))) stop(paste(sQuote("order"), 
+            "contains indices too large for", sQuote("x")))
+   
+    storage.mode(x) <- "double"
     order <- as.integer(order)
+    
     d <- .Call("reorder_dist", x, order)
 
-    attributes(d) <- attributes(x)
-    attr(d, "Labels") <- labels(x)[order]
-    d
+    structure(d, 
+        class   = "dist", 
+        Size    = length(order), 
+        Labels  = labels(x)[order], 
+        Diag    = FALSE,
+        Upper   = FALSE,
+        method  = attr(x, "method")
+    )
 }
 
 # create a generic function
