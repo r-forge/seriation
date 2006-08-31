@@ -37,9 +37,8 @@ Currently, the following methods are implemented:
       Note that non-finite distance values are not allowed.}
     \item{"gw"}{Gruvaeus and Wainer (1972). 
       
-        Uses the algorithm implemented in package \pkg{gclus} (Hurley 2004; due
-      to a missing namespace in gclus, a copy of the code is included in this
-      package). The clusters are ordered at each level so that the objects at
+        Uses the algorithm implemented in package \pkg{gclus} (Hurley 2004).
+      The clusters are ordered at each level so that the objects at
       the edge of each cluster are adjacent to that object outside the cluster
       to which it is nearest. The method produces an unique order.}
 }

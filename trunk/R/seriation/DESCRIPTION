@@ -2,7 +2,7 @@ Package: seriation
 Type: Package
 Title: Seriation
 Version: 0.1-1
-Depends: grid, tsp, cluster
+Depends: stats, grid, tsp, gclus, cluster
 Date: 2006-xx-xx
 Author: Michael Hahsler, Christian Buchta and Kurt Hornik 
 Maintainer: Michael Hahsler <hahsler@ai.wu-wien.ac.at>
