@@ -1,13 +1,12 @@
 Package: seriation
 Type: Package
-Title: Seriation algorithms
+Title: Seriation
 Version: 0.1-1
 Depends: grid, tsp, cluster
-Suggests: vcd
 Date: 2006-xx-xx
 Author: Michael Hahsler, Christian Buchta and Kurt Hornik 
 Maintainer: Michael Hahsler <hahsler@ai.wu-wien.ac.at>
-Description: Implements some seriation algorithms to reorder
-  (dissimilarity) matrices and dendrograms. Also contains some 
+Description: Implements some seriation algorithms to reorder matrices,
+  dissimilarity matrices, and dendrograms. Also contains some
   visualizations techniques based on seriation.
 License: GNU GENERAL PUBLIC LICENSE Version 2

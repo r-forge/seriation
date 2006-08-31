@@ -1,11 +1,11 @@
-# Cluster visualization by proximity matrix shading
+## Cluster visualization by proximity matrix shading
 
 
-# interface
+## interface
 cluproxplot <- function(x, labels = NULL, method = NULL,
     options = NULL, plot = TRUE, plot_options = NULL, ...) {
 
-    # make x dist
+    ## make x dist
     if(!inherits(x, "dist")) {
         if(is.matrix(x) && isSymmetric(x)) x <- as.dist(x)
         else stop(paste(sQuote("x"), "cannot be savely coerced to", 
@@ -19,7 +19,7 @@ cluproxplot <- function(x, labels = NULL, method = NULL,
     invisible(res)
 }
 
-# print for cluster_proximity_matrix
+## print for cluster_proximity_matrix
 print.cluster_proximity_matrix <- function(x, ...) {
     d <- attr(x, "Size")
     k <- if(!is.null(x$k)) x$k else NA
@@ -39,7 +39,7 @@ print.cluster_proximity_matrix <- function(x, ...) {
     cat("intra cluster:", sQuote(x$method$intra), "\n")
 }
 
-# plot for cluster_proximity_matrix
+## plot for cluster_proximity_matrix
 plot.cluster_proximity_matrix <- function(x, plot_options = NULL, 
     ...) {
     
@@ -49,7 +49,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     labels  <- x$labels
     labels_unique <- unique(labels)
 
-    # default plot options
+    ## default plot options
     options <- list(
         cluster_labels = TRUE, 
         averages    = TRUE, 
@@ -66,7 +66,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         gp          = gpar()
     ) 
 
-    # check and add the plot options
+    ## check and add the plot options
     if(!is.null(plot_options) && length(plot_options) != 0) {
         o <- pmatch(names(plot_options), names(options))
 
@@ -78,17 +78,17 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         }
     } 
 
-    # get grid options
+    ## get grid options
     gp <- options$gp
     
-    # clear page
+    ## clear page
     if(options$newpage) grid.newpage()
 
 
-    # do we have silhouettes?
+    ## do we have silhouettes?
     if(is.null(x$sil)) options$silhouettes <- FALSE
 
-    # color lower triangle panels with avg. dissimilarity
+    ## color lower triangle panels with avg. dissimilarity
     if(options$averages == TRUE 
         && !is.null(x$cluster_distances) 
         && !is.null(labels)) {
@@ -96,18 +96,18 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         for(i in 1 : k) {
             for( j in 1 : k) {
 
-                # check empty clusters
+                ## check empty clusters
                 if(is.na(labels_unique[i])) next
                 if(is.na(labels_unique[j])) next
 
-                # upper panels stay unchanged
+                ## upper panels stay unchanged
 
-                # do lower panels
+                ## do lower panels
                 if(i > j) { 
                     m[labels == labels_unique[i], labels == labels_unique[j]] <- x$cluster_distances[i, j] 
                 }
 
-                # do diagonal
+                ## do diagonal
                 if(i == j) {
                     block <- m[labels == labels_unique[i], 
                         labels == labels_unique[j]]
@@ -122,13 +122,13 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         }
     }
 
-    # remove entries > threshold
+    ## remove entries > threshold
 
     if(options$silhouettes == FALSE) {
         pushViewport(viewport(layout = grid.layout(6, 3,
-                    # space, image, space
+                    ## space, image, space
                     widths = unit(c(2,0.7,2), c("lines", "snpc", "lines")),
-                    # title, space, image, space, colorkey, space
+                    ## title, space, image, space, colorkey, space
                     heights = unit(c(2,1,0.7,1,1,2), 
                         c("lines", "lines", "snpc", "lines", "lines", "lines"))
                 )))
@@ -139,10 +139,10 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
     }else{
         pushViewport(viewport(layout = grid.layout(6, 5,
-                    # space, image, space, sil, space
+                    ## space, image, space, sil, space
                     widths = unit(c(2,0.6,1,0.2,2), 
                         c("lines", "snpc", "lines", "snpc", "lines")),
-                    # title, space, image, space, colorkey, space
+                    ## title, space, image, space, colorkey, space
                     heights = unit(c(2,2,0.6,1,1,2), 
                         c("lines", "lines", "snpc", "lines", "lines", "lines"))
                 )))
@@ -155,7 +155,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     }
 
 
-    # main
+    ## main
     pushViewport(main_vp)
     gp_main             <- gp
     gp_main$cex         <- if(is.null(gp$cex)) 1.3 else gp$cex * 1.3
@@ -164,7 +164,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     grid.text(options$main, gp = gp_main)
     upViewport(1)
 
-    # image
+    ## image
     pushViewport(image_vp)
     .grid_image(m, col = options$col, threshold = options$threshold, gp = gp)
     upViewport(1)
@@ -176,7 +176,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         upViewport(1)
     }
 
-    # plot cluster borders if we have labels and order
+    ## plot cluster borders if we have labels and order
     if(!is.null(labels)) {
 
         cluster_width   <- (tabulate(labels)[labels_unique])
@@ -187,11 +187,11 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
             seekViewport("image")
 
-            # above the plot
+            ## above the plot
             grid.text(labels_unique, x = cluster_center, 
                 y = unit(1, "npc") + unit(1, "lines"), default.unit="native",
                 gp = gp)
-            # left of the plot
+            ## left of the plot
             grid.text(labels_unique, x = unit(-1, "lines"),
                 y = cluster_center, default.unit="native", gp = gp)
             upViewport(2)
@@ -201,9 +201,9 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
             gp_lines        <- gp
             gp_lines$col    <- options$lines_col
             
-            # draw lines separating the clusters
+            ## draw lines separating the clusters
             cluster_cuts <- cluster_cuts[-length(cluster_cuts)]
-            # remove last line
+            ## remove last line
 
             seekViewport("image")
             for(i in 1:k) {
@@ -218,11 +218,11 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
             }
 
-            # draw diagonal
-            #grid.lines(x = c(0.5, dim + 0.5), y = c(0.5, dim + 0.5),
-                #    default.unit="native", gp = gp_lines)
+            ## draw diagonal
+            ##grid.lines(x = c(0.5, dim + 0.5), y = c(0.5, dim + 0.5),
+                ##    default.unit="native", gp = gp_lines)
             
-            # redraw border
+            ## redraw border
             grid.rect(x = 0,5 * dim, y = 0.5 * dim, width = dim - 1, 
                 height =  dim - 1, default.units = "native", 
                 gp = gp_lines)
@@ -234,7 +234,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
     if(options$silhouettes == TRUE) {
 
-        # get and reorder silhouettes
+        ## get and reorder silhouettes
         s <- x$sil[,"sil_width"]
 
         pushViewport(barplot_vp)
@@ -249,21 +249,21 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 }
 
 
-# work horse
+## work horse
 .arrange_proximity_matrix <- function(x, labels = NULL, method = NULL, 
     options = NULL, ...) {
 
-    # x is already of class dist
+    ## x is already of class dist
     dim <- attr(x, "Size")
     diss_measure <- attr(x, "method")
     
-    # check labels
+    ## check labels
     if(!is.null(labels) && length(labels) != dim) 
         stop("number of labels in", sQuote("labels"), 
             "does not match dimensions of", sQuote("x"))
     
     
-    # set everything to NULL first
+    ## set everything to NULL first
     order               <- NULL
     k                   <- NULL             # number of clusters
     sil                 <- NULL
@@ -272,8 +272,8 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     cluster_distances   <- NULL
     used_method         <- list(inter_cluster = NA, intra_cluster = NA) 
     
-    # default is NULL which means use the default of reorder
-    # maybe we want to check if names inter and intra are ok
+    ## default is NULL which means use the default of reorder
+    ## maybe we want to check if names inter and intra are ok
     if(class(method) != "list"){
         method <- list(inter = method, intra = method)
     }
@@ -283,13 +283,13 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         
     if(!is.null(method$inter) && !is.function(method$inter) && 
         is.na(method$inter)) { 
-        # keep the matrix as is -- do not reorder
+        ## keep the matrix as is -- do not reorder
         labels          <- NULL
-        #order           <- NULL
-        #used_method$inter  <- NA
+        ##order           <- NULL
+        ##used_method$inter  <- NA
         
     }else if(is.null(labels)) {
-        # reorder whole matrix if no labels are given
+        ## reorder whole matrix if no labels are given
         order <- reorder(x, method = method$inter, 
             options = options$inter, ...)  
         
@@ -297,11 +297,11 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
             attr(order, "method") else method$inter
 
     }else if (!is.null(labels)){
-        # reorder clusters for given labels
-        # get number of clusters k
+        ## reorder clusters for given labels
+        ## get number of clusters k
         k <- length(unique(labels))
 
-        # reorder with average pairwise dissimilarites between clusters
+        ## reorder with average pairwise dissimilarites between clusters
         cluster_distances <- .cluster_dissimilarity(x, labels)
 
         if(k>2) {
@@ -315,27 +315,27 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
             cluster_order <- 1:k
         }
 
-        # calculate silhouette values for later use
+        ## calculate silhouette values for later use
         sil <- silhouette(labels, x)
 
-        # determine order for matrix from cluster order
+        ## determine order for matrix from cluster order
         order <- c()
         
         if(!is.null(method$intra) && !is.function(method$intra) && 
             is.na(method$intra)) {
-            # no intra cluster ordering
+            ## no intra cluster ordering
             for(i in 1 : k) {
                 order <- c(order, which(labels == cluster_order[i]))
             }
-            #used_method$intra <- NA
+            ##used_method$intra <- NA
 
         }else{
-            # intra cluster order
+            ## intra cluster order
 
             for(i in 1 : k) {
                 take <- which(labels == cluster_order[i])
 
-                # only reorder for >1 elements
+                ## only reorder for >1 elements
                 if(length(take) > 1) {
 
                     if(is.character(method$intra) &&
@@ -364,36 +364,36 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         }
 
 
-        # reorder cluster_distances for later
+        ## reorder cluster_distances for later
         cluster_distances  <- 
         cluster_distances[cluster_order, cluster_order]
 
-        # prepare order for labels 
+        ## prepare order for labels 
         labels          <- labels[order]
 
-        # we might need unique labels at some point
+        ## we might need unique labels at some point
         labels_unique   <-  unique(labels)
 
 
     }
 
-    # reorder matrix
+    ## reorder matrix
     if(!is.null(order)) x_reordered <- arrange(x, order)
     else x_reordered <- x
     
-    # prepare for return value
+    ## prepare for return value
     cluster_description <- NULL
 
     if(!is.null(labels)) {
         
-        # reorder silhouettes
+        ## reorder silhouettes
         sil <- sil[order,]
 
-        # calculate avg silhouettes
+        ## calculate avg silhouettes
         avgSil <- sapply(labels_unique, function(x) 
             mean(sil[sil[,"cluster"]==x, "sil_width"])) 
 
-        # generate description
+        ## generate description
         cluster_description = data.frame(
             position        = c(1 : k),
             label           = labels_unique, 
@@ -402,7 +402,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
             avg_silhouette_width = avgSil)
     }
 
-    # clean order from names, etc.
+    ## clean order from names, etc.
     attributes(order) <- NULL
     
     result <- list(
@@ -421,25 +421,25 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 }
 
 
-# inter and intra cluster dissimilarity matrix from 
-# a dissimilarity matrix plus labels
+## inter and intra cluster dissimilarity matrix from 
+## a dissimilarity matrix plus labels
 .cluster_dissimilarity <- function(x, labels) {
     if(class(x) != "matrix") x <- as.matrix(x)
 
-    # kill self-dissimilarities (which are always 0)
+    ## kill self-dissimilarities (which are always 0)
     diag(x) <- NA
 
     k           <- length(unique(labels))
     diss_matrix <- matrix(nrow = k, ncol = k)
 
-    # calculate avg. dissimilarity between clusters
+    ## calculate avg. dissimilarity between clusters
     for(i in 1:k) {
         slice <- x[labels == i, , drop = FALSE]
         for(j in 1:i) {
             block <- slice[,labels == j, drop = FALSE]
             val <- mean(as.vector(block), na.rm = TRUE)
 
-            # fix for clusters of size 1
+            ## fix for clusters of size 1
             if(is.nan(val)) val <- 0
 
             diss_matrix[i, j] <- val

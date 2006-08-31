@@ -1,14 +1,14 @@
-# reorder dist objects
+## reorder dist objects
 
 reorder.dist <- function(x, method = NULL, options = NULL,...){ 
 
-    # methods is a function with interface (x, method, options)
+    ## methods is a function with interface (x, method, options)
     if(is.function(method)) {
       order <- method(x, method = options$method, options = options$options)
       return(order)  
   }
     
-    # build-in methods
+    ## build-in methods
     methods <- c(
         "chen",         # standard
         "tsp") 
@@ -19,7 +19,7 @@ reorder.dist <- function(x, method = NULL, options = NULL,...){
     if(is.na(methodNr)) stop (paste("Unknown method:", sQuote(method)))
 
 
-    # work horses
+    ## work horses
     if(methodNr == 1) {
         order <- .reorder_chen(x)
     }else if(methodNr == 2) {
@@ -29,23 +29,22 @@ reorder.dist <- function(x, method = NULL, options = NULL,...){
     if(is.null(attr(order, "method"))) 
         attr(order, "method") <- methods[methodNr]
     
-    #class(order) <- "order"
+    ##class(order) <- "order"
     order
 }
 
 
 
-# uses a sequence of correlation matrices and finds  the first matrix
-# with rank 2. The elements are projected into the plane spanned by the 
-# first two eigenvectors. All points are lying on a ellipse. The order
-# of the elements on the ellipse is returned (see Chen 2002). 
+## uses a sequence of correlation matrices and finds  the first matrix
+## with rank 2. The elements are projected into the plane spanned by the 
+## first two eigenvectors. All points are lying on a ellipse. The order
+## of the elements on the ellipse is returned (see Chen 2002). 
 .reorder_chen <- function(x){
     x <- as.matrix(x)
     
-    #x <- t(x)
     rank <- qr(x)$rank
 
-    # find the first correlation matrix of rank 2  
+    ## find the first correlation matrix of rank 2  
     n <- 0
     while(rank > 2){
         x <- cor(x)
@@ -53,14 +52,14 @@ reorder.dist <- function(x, method = NULL, options = NULL,...){
         rank <- qr(x)$rank
     }
 
-    # project the matrix on the first 2 eigenvectors
+    ## project the matrix on the first 2 eigenvectors
     e <- eigen(x)$vectors[,1:2]
 
-    # extract the order
-    # chen says that he uses the one of the two possible cuts
-    # that separate the points at rank 1. Since the points just 
-    # separate further towards right and left, cutting on the vertical
-    # axis of the ellipse yields the same result.
+    ## extract the order
+    ## chen says that he uses the one of the two possible cuts
+    ## that separate the points at rank 1. Since the points just 
+    ## separate further towards right and left, cutting on the vertical
+    ## axis of the ellipse yields the same result.
 
     right <- which(e[,1] >= 0)
     right <- right[order(e[right,2], decreasing = TRUE)]
@@ -72,8 +71,8 @@ reorder.dist <- function(x, method = NULL, options = NULL,...){
 }
 
 
-# TSPs
-# Bridge to package tsp 
+## TSPs
+## Bridge to package tsp 
 .reorder_tsp <- function(x, options = NULL){
     tour <- solve_TSP(TSP(x), method = options$method, 
         options = options$options)
@@ -82,13 +81,13 @@ reorder.dist <- function(x, method = NULL, options = NULL,...){
     order
 }
 
-# optimal cut helper
-# To find the cutting point in the tour, typically a dummy city with
-# equal distance to every other city is added. The dummy city is then
-# the optimal cutting place.
-# However, this would require to manipulate the distance matrix. 
-# Therefore, we just cut the tour between the most distant cities 
-# which should give the same result.
+## optimal cut helper
+## To find the cutting point in the tour, typically a dummy city with
+## equal distance to every other city is added. The dummy city is then
+## the optimal cutting place.
+## However, this would require to manipulate the distance matrix. 
+## Therefore, we just cut the tour between the most distant cities 
+## which should give the same result.
 .cut_tsp <- function(order, x) {
     if(!is.matrix(x)) x <- as.matrix(x)
     

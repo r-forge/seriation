@@ -1,7 +1,7 @@
-# wrapper to greedy ordering inspired by F. Murtagh
-# actually a hierarchical cluster algorithm.
+## wrapper to greedy ordering inspired by F. Murtagh
+## actually a hierarchical cluster algorithm.
 
-# ceeboo 2005
+## ceeboo 2005
 
 hclust_greedy <- function(dist) {
     if (!inherits(dist, "dist"))
@@ -14,5 +14,3 @@ hclust_greedy <- function(dist) {
     obj
 }
 
-
-###

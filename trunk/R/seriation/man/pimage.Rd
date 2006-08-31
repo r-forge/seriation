@@ -5,16 +5,16 @@
 \title{Proper matrix image plots}
 \description{
   Provides methods for plotting proper image plots for 
-  objects of class \code{matrix} and \code{dist}.
+  matrix and opbjects of class \code{dist}.
 }
 \usage{
 pimage(x, col, xlab = "", ylab = "", ...)
-\method{pimage}{matrix}(x, col, xlab = "", ylab = "", ...)
 
+\method{pimage}{matrix}(x, col, xlab = "", ylab = "", ...)
 \method{pimage}{dist}(x, col, xlab = "", ylab = "", ...)
 }
 \arguments{
-  \item{x}{an object of class \code{matrix} or \code{dist}.}
+  \item{x}{a matrix or an object of class \code{dist}.}
   \item{col}{a list of colors used. If missing, a gray scale is used (for
       matrix larger values are displayed darker and for \code{dist} smaller
       distances are darker). }
@@ -22,7 +22,7 @@ pimage(x, col, xlab = "", ylab = "", ...)
   \item{\dots}{further arguments passed on to \code{image} in \pkg{graphics}.}
 }
 \details{
-  Plots an object of class \code{matrix} in its original row and column
+  Plots a matrix in its original row and column
   orientation. This means, in a plot the columns become the x-coordinates 
   and the reversed rows the y-coordinates.
 

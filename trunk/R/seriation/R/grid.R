@@ -1,4 +1,4 @@
-# grid helpers
+## grid helpers
 
 .grid_image <- function(x, name = "image", 
     col = gray.colors(12, 0, 1), threshold = NULL, gp = gpar()) {
@@ -11,22 +11,22 @@
 
     div <- 1/length(col)
 
-    # create a viewport
+    ## create a viewport
     vp <- viewport(
         xscale = c(0,(n+1)), yscale = c((m+1),0),
         default.unit="native", name = name)
     pushViewport(vp)
 
-    # make sure we have a color for the maximal value (see floor +1)
+    ## make sure we have a color for the maximal value (see floor +1)
     col[length(col)+1] <- col[length(col)]
 
-    # the highest value is lightest color!
+    ## the highest value is lightest color!
     xs <- sapply(c(1:m), "rep.int", times = n)
     grid.rect(x = xs, y = c(1:n), 1, 1, 
         gp = gpar(fill = col[floor(x/max_x/div)+1], col=0), 
         default.units = "native")
 
-    # make border
+    ## make border
     gp_border       <- gp
     gp_border$fill  <- "transparent"
     grid.rect(x = (n+1)/2, y = (m+1)/2, width = n, height = m, 
@@ -41,15 +41,15 @@
 
     n <-  length(height)
 
-    # these plots always start at x = 0 or below!
+    ## these plots always start at x = 0 or below!
     lim <- c(min(c(height, 0)), max(height))
 
-    # create a viewport
+    ## create a viewport
     vp <- viewport(
         xscale = lim , yscale = c((n+1),0), default.unit="native", name = name)
     pushViewport(vp)
 
-    # make bars
+    ## make bars
     gp_bars     <- gp
     gp_bars$col <- 0
     if(is.null(gp_bars$fill) || gp_bars$fill == "transparent") 
@@ -59,7 +59,7 @@
         just = c("left", "center"), default.units = "native",
         gp = gp_bars)
 
-    # hopefuly there is space outside for axes
+    ## hopefuly there is space outside for axes
     grid.xaxis(gp = gp)
     grid.text(xlab, y = unit(-3, "lines"), gp = gp)
 
@@ -79,10 +79,10 @@
     width <- range/(n)
     xs <- seq(min_x + width/2, max_x - width/2, length.out = n)
 
-    # do not display the part above the threshold 
+    ## do not display the part above the threshold 
     col[xs > threshold] <- NA
 
-    # col
+    ## col
     gp_col      <- gp
     gp_col$col  <- 0
     gp_col$fill <- col
@@ -91,7 +91,7 @@
         gp = gp_col)
 
 
-    # box
+    ## box
     gp_border       <- gp
     gp_border$fill  <- "transparent"
     grid.rect(x = 0, y = 0, width = 1, height = 1,

@@ -13,22 +13,24 @@ can show a structure in the data which was not visible in the original matrix.
 \arguments{
   \item{x}{ an object of class \code{dist}.}
   \item{method}{ a character string with the name of the seriation method
-    (default: chen) or a function call (suitable functions need to
+    (default: \code{"chen"}) or a function call (suitable functions need to
     accept the arguments \code{(x, method, options)} and return an order).}
   \item{options}{ a list of options passen on to the reorder algorithms.}
-  \item{\ldots}{ further arguments (currently unused).}
+  \item{\ldots}{ further arguments (unused).}
     }
 \details{
     Currently the following methods are implemented:
    
 \describe{    
-\item{chen}{Rank-two ellipse seriation (Chen 2002).
+\item{\code{"chen"}}{Rank-two ellipse seriation (Chen 2002).
       
         This method starts with generating a sequence of correlation matrices
       \eqn{R^1, R^2, \ldots}. \eqn{R^1} is the correlation matrix
       of the original distance matrix \eqn{D} (supplied to the function as 
       \code{x}), 
-      and \eqn{R^{n+1} = \phi R^n} where \eqn{\phi} calculates the
+      and 
+        \deqn{R^{n+1} = \phi R^n,} 
+      where \eqn{\phi} calculates the
       correlation matrix. 
       
       The rank of the matrix \eqn{R^n} falls with increasing \eqn{n}. The 
@@ -42,7 +44,7 @@ can show a structure in the data which was not visible in the original matrix.
       In this implementation the top most cutting point is used.
       }  
     
-\item{tsp}{Traveling salesman problem solver. 
+\item{{"tsp"}}{Traveling salesman problem solver. 
       
       A solver in \pkg{tsp} can be used (see \code{solve_TSP} in
       package \pkg{tsp}). The solver method can be passed on via the
@@ -53,7 +55,7 @@ looking for a path representing a linear order, we need to find the best
 cutting point.  Climer and Zhang (2006) suggest to add a dummy city with equal
 distance to each other city before generating the tour. The place of this dummy
 city in an optimal tour with minimal length is the best cutting point (it lies
-between the most distant cities). However, both algorithms used here normally
+between the most distant cities). However, most heuristics normally
 only find suboptimal tours and thus it is not guaranteed that the dummy city
 would be the best place to cut. Therefore, we seach the tour for the two most
 distant cities and cut there.}
@@ -64,12 +66,13 @@ Returns an integer vector containing the ordering of the objects in \code{x}.
 }
 \references{ 
 Chen, C. H. (2002):  Generalized Association Plots: Information
-Visualization via Iteratively Generated Correlation Matrices.  Statistica
-Sinica 12, 7-29.
+Visualization via Iteratively Generated Correlation Matrices.  
+\emph{Statistica Sinica,} \bold{12}(1), pp. 7--29.
 
 Sharlee Climer, Weixiong Zhang (2006): Rearrangement Clustering: Pitfalls,
-Remedies, and Applications, Journal of Machine Learning Research 7, pp.
-919-943.
+Remedies, and Applications, 
+\emph{Journal of Machine Learning Research,} \bold{7}(Jun), 
+pp. 919--943.
 }
 \seealso{
 \code{\link[tsp]{solve_TSP}} in \pkg{tsp},
@@ -77,49 +80,44 @@ Remedies, and Applications, Journal of Machine Learning Research 7, pp.
 }
 %\author{Michael Hahsler}
 \examples{
-library("vcd")
 data("iris")
 x <- as.matrix(iris[,1:4])
 d <- dist(x)
 
-# compare the different methods
+## compare the different methods
 def.par <- par(no.readonly = TRUE)
-layout(matrix(c(1,2,3,4,5,6,7,8,9), 3, 3, byrow = TRUE), respect = TRUE)
+layout(rbind(1:3, 4:6, 7:9), respect = TRUE)
 
-pimage(d, col=diverge_hcl(64), main = "original")
+pimage(d, main = "original")
 
 chen <- reorder(d, method = "chen")
-pimage(arrange(d, chen), col=diverge_hcl(64), main = "Chen")
+pimage(arrange(d, chen), main = "Chen")
 
-# use the projection of the data on its first principal component to
-# determine the order 
+## use the projection of the data on its first principal component to
+## determine the order 
 fpc <- reorder(x, method = "fpc")
-pimage(arrange(d, fpc), col=diverge_hcl(64), 
-	main = "first principal component")
+pimage(arrange(d, fpc), main = "first principal component")
 
-# using some tsp solvers from pkg tsp
+## using some tsp solvers from pkg tsp
 greedy <- reorder(d, method="tsp", options = list(method = "greedy"))
-pimage(arrange(d, greedy), col=diverge_hcl(64), main = "TSP - greedy")
+pimage(arrange(d, greedy), main = "TSP - greedy")
 
 nins <- reorder(d, method="tsp", options = list(method = "nearest_insertion"))
-pimage(arrange(d, nins), col=diverge_hcl(64), main = "TSP - nearest insertion")
+pimage(arrange(d, nins), main = "TSP - nearest insertion")
 
 fins <- reorder(d, method="tsp", options = list(method = "farthest_insertion"))
-pimage(arrange(d, fins), col=diverge_hcl(64), main = "TSP - farthest insertion")
+pimage(arrange(d, fins), main = "TSP - farthest insertion")
 
 
-# using hclust and reorder.hclust
+## using hclust and reorder.hclust
 h <- hclust(d, method = "average")
-pimage(arrange(d, h$order), col=diverge_hcl(64), 
-	main = "hclust (avg.) linkage")
+pimage(arrange(d, h$order), main = "hclust (avg.) linkage")
 
 gw <- reorder(h, d, method = "gw") 
-pimage(arrange(d, gw$order), col=diverge_hcl(64), 
-	main = "hclust (avg.) linkage + Gruvaeus-Wainer")
+pimage(arrange(d, gw$order), main = "hclust (avg.) linkage + Gruvaeus-Wainer")
 
 ho <- reorder(h, d, method = "optimal")
-pimage(arrange(d, ho$order), col=diverge_hcl(64), 
-	main = "hclust (avg.) linkage + optimal")
+pimage(arrange(d, ho$order), main = "hclust (avg.) linkage + optimal")
 
     
 par(def.par)

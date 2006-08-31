@@ -1,4 +1,4 @@
-# rearrange a dist object
+## rearrange a dist object
 arrange.dist <- function(x, order) {
 
     if(!inherits(x,"dist"))
@@ -16,17 +16,19 @@ arrange.dist <- function(x, order) {
     
     d <- .Call("reorder_dist", x, order)
 
+    labels <- if(is.null(labels(x))) as.character(order) else labels(x)[order]
+    
     structure(d, 
         class   = "dist", 
         Size    = length(order), 
-        Labels  = labels(x)[order], 
+        Labels  = labels,
         Diag    = FALSE,
         Upper   = FALSE,
         method  = attr(x, "method")
     )
 }
 
-# create a generic function
+## create a generic function
 arrange <- function(x, order) UseMethod("arrange")
 arrange.default <- arrange.dist
 

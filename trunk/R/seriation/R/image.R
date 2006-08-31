@@ -1,9 +1,9 @@
-# image method that makes a proper image plot of a matrix.
-# the rows and columns are swapped and the order of the
-# columns (original rows) is reversed.
+## image method that makes a proper image plot of a matrix.
+## the rows and columns are swapped and the order of the
+## columns (original rows) is reversed.
 
 
-# large values are dark
+## large values are dark
 pimage.matrix <- 
 function(x, col, xlab="", ylab="", ...) {
     if(missing(col)) col <- rev(gray.colors(64))    
@@ -11,7 +11,7 @@ function(x, col, xlab="", ylab="", ...) {
         xlab=xlab, ylab=ylab, col=col, ...)
 }
 
-# small values are dark
+## small values are dark
 pimage.dist <- 
 function(x, col, xlab="", ylab="", ...) { 
     if(missing(col)) col <- gray.colors(64)    

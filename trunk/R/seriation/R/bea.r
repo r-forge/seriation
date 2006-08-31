@@ -1,3 +1,5 @@
+# BEA by Fionn Murtagh
+
 bea <- function(a, istart=0, jstart=0)
 #          Permute rows and colums, using "bond energy algorithm".
 {

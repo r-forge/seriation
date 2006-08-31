@@ -1,13 +1,13 @@
-# reorder existing hierarchical cluster solutions (hclust)
+## reorder existing hierarchical cluster solutions (hclust)
 
 reorder.hclust <- function(x, dist, method = NULL, options = NULL, ...) {
     
-    # check arguments
+    ## check arguments
     if (!inherits(dist, "dist"))
     stop(paste(sQuote("dist"),"not of class dist"))
     if (!is.real(dist)) storage.mode(dist) <- "real"
 
-    # methods
+    ## methods
     methods <- c(
         "optimal",      # standard
         "gw")
@@ -16,7 +16,7 @@ reorder.hclust <- function(x, dist, method = NULL, options = NULL, ...) {
     else methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
 
-    # work horses
+    ## work horses
     if(methodNr == 1) {
         res <- .reorder_optimal(x, dist)
     }else if (methodNr == 2) {
@@ -27,19 +27,19 @@ reorder.hclust <- function(x, dist, method = NULL, options = NULL, ...) {
 }
 
 
-# wrapper for reorder.hclust in gclus
+## wrapper for reorder.hclust in gclus
 .reorder_gruvaeus <- function(hclust, dist) {
     return(.reorder_gruvaeus_gclus(hclust, dist))
 }
 
 
-# wrapper to the optimal leaf ordering algorithm
-#
-# ceeboo 2005
+## wrapper to the optimal leaf ordering algorithm
+##
+## ceeboo 2005
 
 .reorder_optimal <- function(hclust, dist) {
     
-    # check hclust
+    ## check hclust
     merge <- hclust$merge
     if (!is.matrix(merge))
     stop(paste(sQuote("merge"),"in",sQuote("hclust"),"not a matrix"))
@@ -53,7 +53,7 @@ reorder.hclust <- function(x, dist, method = NULL, options = NULL, ...) {
     obj <- .Call("order_optimal", dist, merge)
     
     names(obj) <- c("merge","order","length")
-    #names(obj$order) <- attr(dist,"Labels")
+    ##names(obj$order) <- attr(dist,"Labels")
     hclust$merge <- obj$merge
     hclust$order <- obj$order
 

@@ -28,7 +28,7 @@ routine may improve the bond energy.
 
 A row is arbitrarily placed; then rows are positioned one by one.  When this
 is completed, the columns are treated similarly.  The overall procedure
-amounts to two approximate traveling salesman problems, - one on the rows and
+amounts to two approximate traveling salesman problems, one on the rows and
 one on the columns.  The so-called `best insertion' strategy is used: rows
 (or columns) are inserted into the current permuted list of rows (or columns).
 
@@ -43,60 +43,58 @@ List describing the reordering carried out:
 \item{b}{row and column permuted array.}
 \item{ib}{permutation of rows.}
 \item{jb}{permutation of columns.}
-\item{e}{`bond energy' of the permuted matrix, `b'.}
+\item{e}{`bond energy' of the permuted matrix, \code{b}.}
 }
 \references{
-W.T. McCormick, P.J. Schweitzer and T.W. White,
+W.T. McCormick, P.J. Schweitzer and T.W. White (1972):
 Problem decomposition and data reorganization by a clustering technique,
-Operations Research,
-vol. 20, pp. 993-1009, Sept./Oct. 1972.
+\emph{Operations Research,} 
+\bold{20}(5), pp. 993--1009.
 
-P. Arabie and L.J. Hubert,
+P. Arabie and L.J. Hubert (1990):
 The bond energy algorithm revisited,
-IEEE Transactions on Systems, Man, and Cybernetics,
-vol. 20, pp. 268-274, 1990.
+\emph{IEEE Transactions on Systems, Man, and Cybernetics,}
+\bold{20}(1), pp. 268--274.
 
-P. Arabie, S. Schleutermann, J. Daws and L. Hubert,
+P. Arabie, S. Schleutermann, J. Daws and L. Hubert (1988):
 Marketing applications of sequencing and partitioning of nonsymmetric
 and/or two-mode matrices,
 in W. Gaul and M. Schader, Eds.,
-Data Analysis, Decision Support, \& Expert Knowledge Representation in
-Marketing,
-Springer Verlag, 1988, pp. 215-224.
+\emph{Data Analysis, Decision Support, \& Expert Knowledge Representation in
+Marketing,}
+Springer Verlag, pp. 215--224.
 }
 \author{Fionn Murtagh}
 %\seealso{}
 \examples{
-# set seed
+## set seed
 set.seed(1)
 
-# generate random data
-a <- matrix(runif(100) > 0.6, ncol=20)
-storage.mode(a) <- "integer" 
-
+## generate random data
+a <- matrix(as.integer(runif(100) > 0.6), ncol=20)
     
 run1 <- bea(a)
 
-# look at energy:
+## look at energy:
 run1$e
 
-# Redo, on basis of first run, to see if energy increases:
+## Redo, on basis of first run, to see if energy increases:
 run2 <- bea(run1$b)
 run2$e
 
-# Remark: to have repeatable results, issue the `set.seed' before the `bea'
-# command.  Now, reorder the rows and the columns once more:
+## Remark: to have repeatable results, issue the `set.seed' before the `bea'
+## command.  Now, reorder the rows and the columns once more:
 run3 <- bea(run2$b)
 run3$e
 
-# Of course, sequencing of rows and columns of each run is relative to
-# the array which was input.  Get `net' ordering of rows after third run:
+## Of course, sequencing of rows and columns of each run is relative to
+## the array which was input.  Get net ordering of rows after third run:
 run1$ib[run2$ib[run3$ib]]
 run1$jb[run2$jb[run3$jb]]
 
-# Plot the output as images:
+## Plot the output as images:
 def.par <- par(no.readonly = TRUE)
-layout(matrix(c(1,2), 1, 2, byrow=TRUE), respect=TRUE)
+layout(cbind(1, 2), respect=TRUE)
 pimage(a, main = "original")
 pimage(bea(a)$b, main = "rordered")
 par(def.par)

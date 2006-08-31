@@ -10,12 +10,13 @@ or general matrix}
 }
 \usage{
 criterion(x, order, method = NULL, \ldots)
+
 \method{criterion}{dist}(x, order, method = NULL, \ldots)
 \method{criterion}{matrix}(x, order, method = NULL, \ldots)
 }
 \arguments{
   \item{x}{an object of class \code{dist} or, for certain methods, a 
-      \code{matrix} (currently only for \code{bond\_energy}).}
+      \code{matrix} (currently only for \code{"bond\_energy"}).}
   \item{order}{
       an optional permutation vector for rows and columns.
       For matrices with different row and column orderings 
@@ -26,8 +27,8 @@ criterion(x, order, method = NULL, \ldots)
     }
   \item{\ldots}{further arguments (currently unused).}
   \item{method}{character string with the name of the criterion
-      (default: \code{path\_length} for \code{dist} and
-      \code{bond\_energy} for \code{matrix}.}
+      (default: \code{"path\_length"} for \code{dist} and
+      \code{"bond\_energy"} for \code{matrix}.}
 }
 \details{
 Ordering a matrix such that large values are closer together
@@ -37,7 +38,7 @@ Currently, the following criteria to judge the quality of a
 certain ordering of a matrix are implemented:
 
 \describe{
-\item{bond\_energy}{(McCormick 1972). 
+\item{\code{"bond\_energy"}}{Bond Energy (McCormick 1972). 
 
     The bond energy for matrix \eqn{A = (a_{ij})}, \eqn{i=1\ldots M} 
     and  \eqn{j=1\ldots N}, is defined as 
@@ -53,6 +54,11 @@ certain ordering of a matrix are implemented:
     
     Maximizing the bond energy is the objective of the bond energy algorithm 
     (BEA).}
+
+\item{\code{"me"}}{ Measure of effectiveness (McCormick 1972).
+    
+    The measure of effectiveness is just \eqn{1/2 * bond\ energy} (see above).
+    }
 }
 
 For the special case for a symmetric dissimilarity matrix 
@@ -62,12 +68,12 @@ The following criteria to judge the quality of a
 certain ordering of a dissimilarity matrix 
 are currently implemented:
 \describe{
-  \item{path\_length}{Hamiltonian path length (Caraux and Pinloche 2005).
+\item{\code{"path\_length"}}{Hamiltonian path length (Caraux and Pinloche 2005).
     
       The order of a dissimilarity matrix corresponds to a path through a 
     graph where each node is
-    visited only once, i.e. a Hamilton path. The length of a path is defined 
-    as the sum of the edge weights, i.e. disimilarities.
+    visited only once, i.e., a Hamilton path. The length of a path is defined 
+    as the sum of the edge weights, i.e., disimilarities.
     
     The length of the Hamiltonian path is equal to the 
     value of the minimal span loss function (as used by Chen 2002).
@@ -75,7 +81,7 @@ are currently implemented:
   
     If \code{order} is not unique \code{NA} is returned.
     If there are non-finite distance values \code{NA} is returned.
-\item{least\_square}{Least square criterion (Caraux and Pinloche 2005). 
+\item{\code{"least\_square"}}{Least square criterion (Caraux and Pinloche 2005). 
     
     The sum of squares of deviations between the
     dissimilarities and rank differences (distance in the matrix) between two
@@ -93,7 +99,8 @@ are currently implemented:
     them on the first principal component of \eqn{X} minimizes this criterion.
     The least square criterion is also related to unidimensional scaling.
     }
-  \item{inertia}{Inertia criterion (Caraux and Pinloche 2005). 
+
+\item{\code{"inertia"}}{Inertia criterion (Caraux and Pinloche 2005). 
     Measures the moment of the inertia of dissimilarity values 
     around the diagonal as
     
@@ -103,63 +110,67 @@ are currently implemented:
     \eqn{d(i,j)} gives the weight. This criterion gives higher weight
     to values farther away from the diagonal. It increases with quality.}
   
-  \item{ar\_i}{Number of anti-Robinson events (Chen 2002).
+  \item{\code{"ar\_i", "ar\_s", "ar\_w"}}{Anti-Robinson events (Chen 2002).
     
       A Robinson matrix (Robinson 1951) has its columns arranged such that the
-    values of the cells always decrease when moving from the diagonal. In
-    practice matrices rarely are Robinson matrices. This and the following two
-    criteria measure the differences to a Robinson matrix.  The number of
-    anti-Robinsin events is calcualted by
+values of the cells always decrease when moving from the diagonal. In practice
+matrices rarely are Robinson matrices. The three criteria measure the
+differences to of a matrix to a Robinson matrix.  All three criteria use the 
+anti-Robinson events, but weight them differently:
 
     \deqn{\sum_{i=1}^p (\sum_{j<k<i} I(d(i,j)<d(i,k)) w(i,j,k)%
     + \sum_{i<j<k} I(d(i,j) > d(i,k)) w(i,j,k)),}
     
     where \eqn{I} is an indicator function and \eqn{w(i,j,k)} is a weight.
-    For the raw number of events, the weight is \eqn{w(i,j,k) = 1}.
-    }
-  \item{ar\_s}{Sum of absolute anti-Robinson deviations (Chen 2002).
     
-      The deviations are used as the weight, i.e. 
-    \eqn{w(i,j,k) = |d(i,j) - d(i,k)|}.}
-  \item{ar\_w}{Weighted sum of absolute anti-Robinson deviations (Chen 2002).
+For the raw number of events (\code{"ar\_i"}), the weight is 
+\deqn{w(i,j,k) = 1.}
     
-      Weights the deviations by the difference of column indices, i.e.
-    \eqn{w(i,j,k) = |j-k| |d(i,j) - d(i,k)|}.}
+For the sum of absolute anti-Robinson deviations (\code{"ar\_s"}), the
+deviations are used as the weight, i.e.,  
+\deqn{w(i,j,k) = |d(i,j) - d(i,k)|.}
+
+For the weighted sum of absolute anti-Robinson deviations
+(\code{"ar\_w"}), the deviations are
+weighted by the difference of column indices, i.e., 
+\deqn{w(i,j,k) = |j-k||d(i,j) - d(i,k)|.}
+}
 }}
 \value{
   A single real value.
 }
 \references{
-Caraux, G., and Pinloche, S. (2005). Permutmatrix: A Graphical Environment
-to Arrange Gene Expression Profiles in Optimal Linear Order, Bioinformatics,
-21, 1280-1281.
+Caraux, G., and Pinloche, S. (2005): Permutmatrix: A Graphical Environment
+to Arrange Gene Expression Profiles in Optimal Linear Order, 
+\emph{Bioinformatics,}
+\bold{21}(7), pp. 1280--1281.
 
-Chun-Houh Chen (2002). Generalized association plots:
+Chun-Houh Chen (2002): Generalized association plots:
 Information visualization via iteratively generated correlation matrices,
-Statistica Sinica 12(2002), 7-29.
+\emph{Statistica Sinica,} \bold{12}(1), pp. 7--29.
 
-W.S. Robinson (1951). A method for chronologically ordering archaeological 
-deposits, American Antiquity, 16, 293-301.
+W.S. Robinson (1951): A method for chronologically ordering archaeological 
+deposits, 
+\emph{American Antiquity,} \bold{16}, pp. 293--301.
 
-R. Sedgewick (2002). Algorithms in C. Part 5. Graph Algorithms.  3rd Edition,
-Addison-Wesley.
-
-W.T. McCormick, P.J. Schweitzer and T.W. White (1972). 
+W.T. McCormick, P.J. Schweitzer and T.W. White (1972): 
 Problem decomposition and data reorganization by a clustering technique, 
-Operations Research, 
-Vol. 20, pp. 993-1009.
+\emph{Operations Research,}
+\bold{20}(5), pp. 993-1009.
 
 }
 \author{Christian Buchta and Michael Hahsler}
 \examples{
+## create random data and calculate distance
 m <- matrix(runif(10),ncol=2)
 d <- dist(m)
 
-criterion(d, method = "least_square")
-
+## get an order (optimal for the least square criterion)
 o <- reorder(m, method = "fpc")
 o
 
+## compare the values of the least square criterion
+criterion(d, method = "least_square")
 criterion(d, o, method = "least_square")
 }
 \keyword{cluster}

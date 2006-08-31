@@ -7,7 +7,7 @@ Visualizes cluster quality using shading of a rearranged proximity matrix (see
 Ling, 1973). Objects belonging to the same cluster are displayed in consecutive
 order. The placement of clusters and the within cluster order is done by
 various seriation algorithms which try to place large similarities/small
-dissimilarites close to the diagonal. Compact clusters are visible as dark
+dissimilarities close to the diagonal. Compact clusters are visible as dark
 squares (low dissimilarity) on the diagonal of the plot.
 
 Additionally a Silhouette plot (Rousseeuw, 1987) is added.
@@ -41,36 +41,40 @@ cluproxplot(x, labels = NULL, method = NULL, options = NULL,
       }
 \item{options}{ a list of options passed on to the reorder algorithm.
     In case of two different reorder algorithms, \code{options} can
-    contain a list of two named elemens (\code{inter_cluster} 
+    contain a list of two named elements (\code{inter_cluster} 
     and \code{intra_cluster}) containing each a list with the options
     for the respective algorithm.}
-  \item{plot}{\code{"logical"}; if \code{FALSE}, no plot is produced. The 
-    returned object can be plotted later using the function \code{plot}
-    which takes as the second argument a a list of plotting options (see
-    \code{plot_options} below).}
-  \item{\dots}{ further arguments passed on to \code{reorder}. }
-  \item{plot_options}{\code{"list"}; options for plotting the matrix. The list
-    can contain the following elements:
+  \item{plot}{a logical indicating  if a plot should be produced.  if
+      \code{FALSE}, the returned object can be plotted later using the function
+      \code{plot} which takes as the second argument a a list of plotting
+      options (see \code{plot_options} below).}
+  \item{\dots}{ further arguments (unused). }
+  \item{plot_options}{a list with options for plotting the matrix. The
+      list can contain the following elements:
     
   \describe{
-  \item{\code{cluster_labels}}{ \code{"logical"}; display cluster labels in the plot.}
-  \item{\code{averages}}{ \code{"logical"}; display in the lower triangle of the plot
-      the average pair-wise dissimilarity between clusters instead of the
-      individual dissimilarities.}
-  \item{\code{lines}}{ \code{"logical"}; draw lines to separate clusters.} 
-  \item{\code{silhouettes}}{ \code{"logical"}; include a silhouette plot 
-    (see Rousseeuw, 1987).} 
-\item{\code{threshold}}{ \code{"numeric"}; only plot distances below the threshold.} 
+\item{\code{cluster_labels}}{ a logical indicating whether to display cluster
+      labels in the plot.}
+\item{\code{averages}}{ a logical indicating whether to display the average
+      pair-wise dissimilarity between clusters instead of the individual
+      dissimilarities in the lower triangle of the plot.}
+\item{\code{lines}}{ a logical indicating  whether to draw lines to separate
+      clusters.} 
+\item{\code{silhouettes}}{ a logical indicating  whether to include a
+      silhouette plot (see Rousseeuw, 1987).} 
+\item{\code{threshold}}{ a numeric. If used, only plot distances below the
+    threshold are displayed.} 
 \item{\code{main}}{ title for the plot.}
-\item{\code{col}}{ colors used for the image plot (default: 100 shades of gray using
-      the hcl colorspace with 
-      \code{hcl(h = 0, c = 0, l = seq(20, 95, len = 100))}). }
-  \item{\code{colorkey}}{ place a color key under the plot. }
-  \item{\code{lines_col}}{ color used for the lines to separate clusters. }
-  \item{\code{newpage}}{\code{"logical"}; start plot on a new page 
-    (see package \code{grid}). }
-\item{\code{pop}}{\code{"logical"};  should the viewports created be popped 
-    (see package \code{grid})?  }
+\item{\code{col}}{ colors used for the image plot (default: 100 shades of gray
+    using the hcl colorspace with 
+    \code{hcl(h = 0, c = 0, l = seq(20, 95, len = 100))}). }
+\item{\code{colorkey}}{ a logical indicating  whether to place a color key
+      below the plot. }
+\item{\code{lines_col}}{ color used for the lines to separate clusters. }
+\item{\code{newpage}}{ a logical indicating  whether to start plot on a new
+    page (see \code{grid.newpage} in package \code{grid}). }
+\item{\code{pop}}{a logical indicating  whether to  should the viewports
+    created be popped (see package \code{grid})?  }
 \item{\code{gp}}{an object of class \code{gpar} containing graphical parameters
     (see \code{gpar} in package \code{grid}). }
     }
@@ -78,7 +82,7 @@ cluproxplot(x, labels = NULL, method = NULL, options = NULL,
 %\details{
 %}
 \value{
-An invisible object of class \code{"cluster_proximity_matrix"} of the folowing
+An invisible object of class \code{cluster_proximity_matrix} with the folowing
 elements:
 \item{order}{ \code{NULL} or integer vector giving the order 
 used to plot \code{x}.}
@@ -96,16 +100,22 @@ This object can be used for plotting via
 \code{plot(x, plot_options = NULL, ...)}
 }
 \references{
-Ling, R.F. A computer generated aid for cluster analysis. Comm. of the ACM, 
-16(6), 355-361, 1973.
+Ling, R.F. (1973):
+A computer generated aid for cluster analysis. 
+\emph{Communications of the ACM,} 
+\bold{16}(6), pp. 355--361.
 
-Rousseeuw, P.J. Silhouettes: A graphical aid to the 
-interpretation and validation of cluster analysis. J. Comput. Appl. Math., 
-20, 53-65, 1987.
+Rousseeuw, P.J. (1987): 
+Silhouettes: A graphical aid to the interpretation and 
+validation of cluster analysis. 
+\emph{Journal of Computational and Applied Mathematics,}
+\bold{20}(1), pp. 53--65.
 
-Strehl, A. and Ghosh, J. Relationship-based clustering and 
+Strehl, A. and Ghosh, J. (2003):
+Relationship-based clustering and 
 visualization for high-dimensional data mining. 
-INFORMS Journal on Computing, 208-230, 2003.
+\emph{INFORMS Journal on Computing,} 
+\bold{15}(2), pp. 208--230.
 
 }
 \seealso{
@@ -119,26 +129,24 @@ INFORMS Journal on Computing, 208-230, 2003.
 data("iris")
 d <- dist(iris[1:4])
 
-# plot original matrix
+## plot original matrix
 res <- cluproxplot(d, method = NA)
 
-# plot reordered matrix using the farthest insertion algorithm (from tsp)
+## plot reordered matrix using the farthest insertion algorithm (from tsp)
 res <- cluproxplot(d, method = "tsp", options = list(method = "nearest"),
     plot_options = list(main = "Seriation (farthest insertion)"))
 
-
-
-# cluster with pam (we know iris has 3 clusters)
+## cluster with pam (we know iris has 3 clusters)
 library("cluster")
 l <- pam(d, 3, cluster.only = TRUE)
 
-# we use a grid.layout to place several plots on a page
+## we use a grid.layout to place several plots on a page
 grid.newpage()
 pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2), 
     gp = gpar(fontsize = 8)))
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
 
-# visualize the clustering
+## visualize the clustering
 res <- cluproxplot(d, l, method = "chen",  
     plot_options = list(main = "PAM + Seriation (Chen) - standard", 
     newpage = FALSE))
@@ -146,29 +154,29 @@ res <- cluproxplot(d, l, method = "chen",
 popViewport()
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 
-# more visualization options
-# threshold
+## more visualization options
+## threshold
 plot(res, plot_options = list(main = "PAM + Seriation (Chen) - threshold", 
     threshold=2, newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
 
-# color: use 10 shades of blue
+## color: use 10 shades of blue
 plot(res, plot_options = list(main = "PAM + Seriation (Chen) - blue", 
-	col = hcl(h = 260, c = seq(75,0, length=10), l = seq(30,95, length=10)),
+    col = hcl(h = 260, c = seq(75,0, length=10), l = seq(30,95, length=10)),
     gp = gpar(fill = hcl(h = 260, c=30, l = 80)), newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
 
-# supress average in lower triangle
+## supress average in lower triangle
 plot(res, plot_options = list(main = "PAM + Seriation (Chen) - no avg.", 
-	average = FALSE, newpage = FALSE))
+    average = FALSE, newpage = FALSE))
 
 popViewport(2)
 
-# the cluster_proximity_matrix
+## the cluster_proximity_matrix object
 res 
 names(res)
 }
