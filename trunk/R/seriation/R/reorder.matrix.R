@@ -1,15 +1,7 @@
 ## reorder matrices 
 
-reorder.matrix <- function(x, method = NULL, row = TRUE, options = NULL, ...) {
+reorder.matrix <- function(x, method = NULL, options = NULL, ...) {
     
-    ## do columns?
-    if(row == FALSE) x <- t(x)
-
-    ## methods is a function with interface (x, method, options)
-    if(is.function(method)) {
-      order <- method(x, method = options$method, options = options$options)
-      return(order)  
-  }
     
     ## build-in methods
     methods <- c(
@@ -26,11 +18,11 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, options = NULL, ...) {
 
     ## work horses
     if(methodNr == 1) {
-        order <- .reorder_murtagh(x)
+        order <- .reorder_murtagh(x, options)
     }else if(methodNr == 2) {
         order <- .reorder_bea(x, options)
     }else if(methodNr == 3) {
-        order <- .reorder_fpc(x)
+        order <- .reorder_fpc(x, options)
     }
 
     if(is.null(attr(order, "method"))) 
@@ -45,12 +37,16 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, options = NULL, ...) {
 ##  F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures
 ##  in Computational Statistics, Physica Verlag, pp. 15.
 
-.reorder_murtagh <- function(x) {
+.reorder_murtagh <- function(x, options) {
 
     if(any(x < 0)) stop("Requires a nonnegative matrix")
     ## calculate the Murtagh criterion
     criterion <- as.dist(tcrossprod(x))
-    hclust_greedy(-criterion)$order
+    row <- hclust_greedy(-criterion)$order
+    criterion <- as.dist(crossprod(x))
+    col <- hclust_greedy(-criterion)$order
+    
+    list(row = row, col = col)
 }
 
 
@@ -60,37 +56,28 @@ reorder.matrix <- function(x, method = NULL, row = TRUE, options = NULL, ...) {
 .reorder_bea <- function(x, options = NULL){
     
     if(any(x < 0)) stop("Requires a nonnegative matrix")
+    istart <- if(is.null(options$istart)) 0 else options$istart
+    jstart <- if(is.null(options$jstart)) 0 else options$jstart
     
-    n <- nrow(x)
-    m <- ncol(x)
+    res <- bea(x, istart = istart, jstart = jstart)
 
-    b <- matrix(0.0, n, m)
-    storage.mode(x) <- "single"
-    storage.mode(b) <- "single"
-    jb <- integer(n)
-    jfin <- integer(n)
+    list(row = res$ib, col = res$jb)
     
-    start <- options$start
-    start <- as.integer(if (is.null(start)) sample(1:n, 1) else start)
-
-    bea <- .Fortran("rbea",
-        n = n,
-        m = m,
-        a = x,                      # input data
-        jstart = start,             # 1st row placement
-        b = b,                      # permuted array
-        jb = jb,                    # permuted order of rows
-        jfin = jfin)                # for book-keeping
-
-    bea$jb
 }
 
 ## use the projection on the first pricipal component to determine the
 ## order
-.reorder_fpc <- function(x) {
+.reorder_fpc <- function(x, options) {
     pr <- prcomp(x)
     scores <- pr$x[,1]
-    order(scores)
+    row <- order(scores)
+
+    pr <- prcomp(t(x))
+    scores <- pr$x[,1]
+    col <- order(scores)
+
+    list(row = row, col = col)
+
 }
 
 

@@ -7,15 +7,12 @@ closer together. Using a image plot of the reordered matrix can show a
 structure in the data which was not visible in the original matrix.
 }
 \usage{
-\method{reorder}{matrix}(x, method = NULL, row = TRUE, options = NULL, \ldots)
+\method{reorder}{matrix}(x, method = NULL, options = NULL, \ldots)
 }
 \arguments{
   \item{x}{ a matrix.}
   \item{method}{ a character string with the name of the seriation method
-    (default: \code{"murtagh"}) or a function call (suitable functions need to
-    accept the arguments \code{(x, method, options)} and return an order).}
-  \item{row}{ if \code{row=TRUE} the order for rows is calculated, 
-    otherwise for columns. }
+    (default: \code{"murtagh"}).}
   \item{options}{ a list of options passen on to the reorder algorithms.}
   \item{\ldots}{ further arguments (unused).}
     }
@@ -70,7 +67,7 @@ one-dimensional ordering of rows and columns.
       Euclidean distance, this methods minimizes the least square criterion.}  
 }}
 \value{
-Returns an integer vector containing the ordering of the rows or columns. 
+Returns a named list with two an integer vector containing the ordering of the rows (\code{row}) and columns (\code{col}). 
 }
 \references{ 
 P. Arabie and L.J. Hubert (1990): The bond energy algorithm revisited, 
@@ -95,7 +92,6 @@ Physica Verlag, pp. 9--31.
 data("iris")
 x <- as.matrix(iris[,1:4])
 
-
 ## try some methods
 def.par <- par(no.readonly = TRUE)
 layout(rbind(1:2, 3:4, 5:6), respect=TRUE)
@@ -103,26 +99,23 @@ layout(rbind(1:2, 3:4, 5:6), respect=TRUE)
 pimage(x, main = "original data")
 criterion(x)
 
-r <- reorder(x, row = TRUE)
-c <- reorder(x, row = FALSE)
-pimage(x[r,c], main = "Murtagh")
-criterion(x, list(row = r, col = c))
+order <- reorder(x)
+pimage(x[order$row, order$col], main = "Murtagh")
+criterion(x, order)
 
+order <- reorder(x, method="bea")
+pimage(x[order$row, order$col], main = "BEA")
+criterion(x, order)
 
-r <- reorder(x, method="bea", row = TRUE)
-c <- reorder(x, method="bea", row = FALSE)
-pimage(x[r,c], main = "BEA")
-criterion(x, list(row = r, col = c))
+order <- reorder(x, method="fpc")
+pimage(x[order$row, order$col], main = "first principal component")
+criterion(x, order)
 
-r <- reorder(x, method="fpc", row = TRUE)
-c <- reorder(x, method="fpc", row = FALSE)
-pimage(x[r,c], main = "first principal component")
-criterion(x, list(row = r, col = c))
-
-r <- reorder(dist(x), method = "tsp")
-c <- reorder(dist(t(x)), method = "tsp")
-pimage(x[r,c], main = "2 TSPs")
-criterion(x, list(row = r, col = c))
+## 2 TSPs
+order <- list(row = reorder(dist(x), method = "tsp"),
+    col = reorder(dist(t(x)), method = "tsp"))
+pimage(x[order$row, order$col], main = "2 TSPs")
+criterion(x, order)
 
 par(def.par)
 }

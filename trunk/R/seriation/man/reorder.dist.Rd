@@ -13,8 +13,7 @@ can show a structure in the data which was not visible in the original matrix.
 \arguments{
   \item{x}{ an object of class \code{dist}.}
   \item{method}{ a character string with the name of the seriation method
-    (default: \code{"chen"}) or a function call (suitable functions need to
-    accept the arguments \code{(x, method, options)} and return an order).}
+      (default: \code{"chen"}).}
   \item{options}{ a list of options passen on to the reorder algorithms.}
   \item{\ldots}{ further arguments (unused).}
     }
@@ -96,7 +95,7 @@ pimage(arrange(d, chen), main = "Chen")
 ## use the projection of the data on its first principal component to
 ## determine the order 
 fpc <- reorder(x, method = "fpc")
-pimage(arrange(d, fpc), main = "first principal component")
+pimage(arrange(d, fpc$row), main = "first principal component")
 
 ## using some tsp solvers from pkg tsp
 greedy <- reorder(d, method="tsp", options = list(method = "greedy"))

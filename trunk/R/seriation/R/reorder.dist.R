@@ -2,11 +2,6 @@
 
 reorder.dist <- function(x, method = NULL, options = NULL,...){ 
 
-    ## methods is a function with interface (x, method, options)
-    if(is.function(method)) {
-      order <- method(x, method = options$method, options = options$options)
-      return(order)  
-  }
     
     ## build-in methods
     methods <- c(

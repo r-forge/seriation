@@ -171,6 +171,6 @@ o
 
 ## compare the values of the least square criterion
 criterion(d, method = "least_square")
-criterion(d, o, method = "least_square")
+criterion(d, o$row, method = "least_square")
 }
 \keyword{cluster}
