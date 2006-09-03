@@ -32,12 +32,15 @@ cluproxplot(x, labels = NULL, method = NULL, options = NULL,
       If separate algorithms for inter and intra cluster seriation are
       required, \code{method} can be a \code{list} of two named elements
       (\code{inter_cluster} and \code{intra_cluster} each containing the name
-      of the respective seriation method. See \code{reorder} for available
+      of the respective seriation method. See \code{reorder.dist} for available
       reorder algorithms. 
       
       For intra cluster reordering the special
       method \code{silhouette width} is available. Objects in clusters are
       then ordered by silhouette width (the standard for silhouette plots).
+      
+      If no \code{method} is given, the default method of \code{reorder.dist}
+      is used.
       }
 \item{options}{ a list of options passed on to the reorder algorithm.
     In case of two different reorder algorithms, \code{options} can

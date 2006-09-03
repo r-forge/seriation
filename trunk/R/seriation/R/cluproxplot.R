@@ -281,7 +281,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         options <- list(inter = options, intra = options)
     }
         
-    if(!is.null(method$inter) && !is.function(method$inter) && 
+    if(!is.null(method$inter) && 
         is.na(method$inter)) { 
         ## keep the matrix as is -- do not reorder
         labels          <- NULL
@@ -321,7 +321,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         ## determine order for matrix from cluster order
         order <- c()
         
-        if(!is.null(method$intra) && !is.function(method$intra) && 
+        if(!is.null(method$intra) && 
             is.na(method$intra)) {
             ## no intra cluster ordering
             for(i in 1 : k) {
