@@ -8,17 +8,24 @@
   matrix and opbjects of class \code{dist}.
 }
 \usage{
-pimage(x, col, xlab = "", ylab = "", ...)
+pimage(x, col, xlab = "", ylab = "", axes = NULL, ...)
 
-\method{pimage}{matrix}(x, col, xlab = "", ylab = "", ...)
-\method{pimage}{dist}(x, col, xlab = "", ylab = "", ...)
+\method{pimage}{matrix}(x, col, xlab = "", ylab = "", axes = NULL, ...)
+\method{pimage}{dist}(x, col, xlab = "", ylab = "", axes = NULL,
+    upper.tri = TRUE, lower.tri = TRUE, ...)
 }
 \arguments{
   \item{x}{a matrix or an object of class \code{dist}.}
   \item{col}{a list of colors used. If missing, a gray scale is used (for
       matrix larger values are displayed darker and for \code{dist} smaller
-      distances are darker). }
+      distances are darker). For matrices containing logical data, black and
+      white is used. }
   \item{xlab, ylab}{labels for the x and y axis.}
+  \item{axes}{ a logical indicating whether to add axes using the
+      labels of \code{x}. The default value (\code{NULL}) shows only axes
+      if the dimension is below 32 (so it is reasonable to show labels).}
+  \item{upper.tri, lower.tri}{ a logical indicating whether to show the
+      upper or lower triangle of the distance matrix. }
   \item{\dots}{further arguments passed on to \code{image} in \pkg{graphics}.}
 }
 \details{
@@ -35,8 +42,15 @@ pimage(x, col, xlab = "", ylab = "", ...)
 \examples{
 x <- matrix(sample(c(FALSE, TRUE), 150, rep=TRUE), ncol=10)
 
-pimage(x, col=c("white","black"))
-axis(1, at = 1:ncol(x))				        # columns
-axis(2, at = 1:nrow(x), labels= nrow(x):1)  # reversed rows
+## matrix
+pimage(x)
+
+pimage(x, col = c("white", "green"), axes = FALSE)
+axis(1, at = 1:ncol(x))				            # columns
+axis(2, at = 1:nrow(x), labels= rev(1:nrow(x))) # reversed rows
+
+## distances
+d <- dist(x, method = "binary")
+pimage(d, lower.tri = FALSE)
 }
 \keyword{hplot}

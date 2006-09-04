@@ -38,7 +38,8 @@ Currently, the following criteria to judge the quality of a
 certain ordering of a matrix are implemented:
 
 \describe{
-\item{\code{"bond\_energy"}}{Bond Energy (McCormick 1972). 
+\item{\code{"bond\_energy"}, \code{"me"}}{Bond Energy and Measure of
+    Effectiveness (McCormick 1972). 
 
     The bond energy for matrix \eqn{A = (a_{ij})}, \eqn{i=1\ldots M} 
     and  \eqn{j=1\ldots N}, is defined as 
@@ -53,12 +54,26 @@ certain ordering of a matrix are implemented:
     A higher bond energy indicates a better ordering.
     
     Maximizing the bond energy is the objective of the bond energy algorithm 
-    (BEA).}
+    (BEA).
 
-\item{\code{"me"}}{ Measure of effectiveness (McCormick 1972).
-    
-    The measure of effectiveness is just \eqn{1/2 * bond\ energy} (see above).
-    }
+    The measure of effectiveness is just \eqn{1/2 * bond\ energy}.
+}
+
+\item{\code{"moore_stress"}, \code{"neumann_stress"}}{ STRESS (Niermann 2005).
+
+STRESS measures the conciseness of the presentation of a matrix/table and can
+be seen as a purity function which compares the values in a matrix/table with
+its neighbors. The stress measure used here is computed as the sum of squared
+distances of each matrix entry from its adjacent entries. The following types
+of neighborhoods are available:
+
+  \describe{
+    \item{\code{moore}:}{comprises the eight adjacent entries (five at the
+    margins and three at the corners).}
+    \item{\code{neumann}:}{comprises the four adjacent entries (three at the
+    margins and two at the corners).}
+  }
+  }
 }
 
 For the special case for a symmetric dissimilarity matrix 
