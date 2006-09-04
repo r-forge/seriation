@@ -89,7 +89,7 @@ x <- as.matrix(iris[,1:4])
 
 ## try some methods
 def.par <- par(no.readonly = TRUE)
-layout(rbind(1:2, 3:4, 5:6), respect=TRUE)
+layout(rbind(1:3, 4:6), respect=TRUE)
 
 pimage(x, main = "original data")
 criterion(x)

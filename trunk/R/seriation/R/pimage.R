@@ -23,7 +23,7 @@ function(x, col, xlab="", ylab="", axes = NULL, ...) {
         if(dim(x)[1] < axes)
             axis(2, at = 1:dim(x)[1], labels = rev(labels(x)[[1]]))
         if(dim(x)[2] < axes)
-            axis(3, at = 1:dim(x)[2], labels = labels(x)[[2]])
+            axis(1, at = 1:dim(x)[2], labels = labels(x)[[2]])
     }
 }
 
