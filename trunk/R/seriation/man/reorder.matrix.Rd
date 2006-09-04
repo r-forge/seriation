@@ -13,50 +13,46 @@ structure in the data which was not visible in the original matrix.
   \item{x}{ a matrix.}
   \item{method}{ a character string with the name of the seriation method
     (default: \code{"murtagh"}).}
-  \item{options}{ a list of options passen on to the reorder algorithms.}
+  \item{options}{ a list of options passed on to the reorder algorithms.}
   \item{\ldots}{ further arguments (unused).}
     }
 \details{
     Currently the following methods are implemented:
 \describe{
-    \item{\code{"bea"}}{Bond Endergy Algorithm (BEA; McCormick 1972).
+    \item{\code{"bea"}}{Bond Energy Algorithm (BEA; McCormick 1972).
      
 The algorithm tries to maximize the summed bond energy (see bond energy
-     in \code{criterion}) of a nonnegative matrix. 
+     in \code{criterion}) of a nonnegative matrix. Due to the definition
+     of this measure, the tasks of ordering rows and columns is separable
+     and can  be solved independently.
      
     A row is arbitrarily placed; then rows are positioned one by one. When this
     is completed, the columns are treated similarly. The overall procedure
     amounts to two approximate traveling salesman problems (TSP), one on the
     rows and one on the columns. The so-called `best insertion strategy' is
-    used: Rows (or columns) are inserted into the current permuted list of rows
-    (or columns). Note that several runs of the algorithm on the
-    previously reordered matrix might improve the energy.  
-
-    For symmetric matrices (one-mode data; e.g., dissimilarity matrices), only
-one TSP has to be solved. The two TSPs (for rows and columns) for general
-matrices (two-mode data) are separable and here only one problem is solved
-(depending on the value of \code{row}). Therefore, to apply BEA for two-mode
-data, \code{reorder} has to be used twice. 
+    used: rows (or columns) are inserted into the current permuted list of rows
+    (or columns). Several consecutive runs of the algorithm might improve the
+    energy.  
       
 Note that Arabie and Hubert (1990)
 recommend that it be used with ratio scale data and they question its use 
 with non-binary data if the objective is to find a seriation or 
 one-dimensional ordering of rows and columns. 
-      }
+      
+The BEA codes used in this package was implemented by Fionn Murtagh.
+}
 
 \item{\code{"murtagh"}}{Algorithm B (Murtagh 1985). 
       
-        A simple heuristic which also tries to maximize the summed bond energy
-      (see BEA) of a nonnegative matrix.
-      It uses the cross-product of the matrix (an unnormalized form
-      of the Pearson correlation) and \code{hclust_greedy} to obtain the
-      ordering. For \code{hclust_greedy} in each step a single cluster is
-      constructed by merging the leaf closest to one of the two endpoints of
-      the cluster. The algorithm starts with a random leaf and uses
-      tie-breaking.
+    A simple heuristic which also tries to maximize the summed bond energy (see
+    BEA) of a nonnegative matrix. It uses the cross-product of the matrix (an
+    unnormalized form of the Pearson correlation) and a greedy hierarchical
+    clustering scheme. In each step a single cluster is constructed by merging
+    the leaf closest to one of the two endpoints of the cluster. The algorithm
+    starts with a random leaf and uses tie-breaking.
       
-      Note that the ordering can change from run to run since ties are broken
-      randomly.}
+    Note that the ordering can change from run to run since ties are broken
+    randomly.}
 
 \item{\code{"fpc"}}{First principal component. 
       
@@ -84,8 +80,7 @@ F. Murtagh (1985): Multidimensional Cluster Algorithms.
 Physica Verlag, pp. 9--31.
 }
 \seealso{
-\code{\link{hclust_greedy}},
-\code{\link{criterion}}.
+\code{\link{criterion}}
 }
 %\author{Michael Hahsler}
 \examples{

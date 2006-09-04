@@ -3,9 +3,8 @@
 \alias{arrange.dist}
 \title{Arrange the observations in a dist object}
 \description{
-Provides a method for rearranging and subsetting 
-the observations in a \code{dist} object. This is just a convenience 
-method for \code{dist} object.
+A convenience method for rearranging and subsetting the observations in a
+\code{dist} object. 
 }
 \usage{
 arrange(x, order)

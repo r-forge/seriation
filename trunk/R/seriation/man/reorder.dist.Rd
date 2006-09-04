@@ -14,7 +14,7 @@ can show a structure in the data which was not visible in the original matrix.
   \item{x}{ an object of class \code{dist}.}
   \item{method}{ a character string with the name of the seriation method
       (default: \code{"chen"}).}
-  \item{options}{ a list of options passen on to the reorder algorithms.}
+  \item{options}{ a list of options passed on to the reorder algorithms.}
   \item{\ldots}{ further arguments (unused).}
     }
 \details{
@@ -56,7 +56,7 @@ distance to each other city before generating the tour. The place of this dummy
 city in an optimal tour with minimal length is the best cutting point (it lies
 between the most distant cities). However, most heuristics normally
 only find suboptimal tours and thus it is not guaranteed that the dummy city
-would be the best place to cut. Therefore, we seach the tour for the two most
+would be the best place to cut. Therefore, we search the tour for the two most
 distant cities and cut there.}
     }
 }

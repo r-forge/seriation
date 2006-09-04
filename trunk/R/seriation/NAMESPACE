@@ -3,9 +3,7 @@ import(tsp)
 
 export(
     arrange,
-    bea, 
     criterion, 
-    hclust_greedy, 
     pimage, 
     cluproxplot,
     reorder.hclust      # this is just so we win over gclus

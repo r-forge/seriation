@@ -5,7 +5,7 @@
 \title{Proper matrix image plots}
 \description{
   Provides methods for plotting proper image plots for 
-  matrix and opbjects of class \code{dist}.
+  matrix and objects of class \code{dist}.
 }
 \usage{
 pimage(x, col, xlab = "", ylab = "", axes = NULL, ...)
@@ -36,7 +36,7 @@ pimage(x, col, xlab = "", ylab = "", axes = NULL, ...)
   If \code{x} is of class \code{dist} it is converted to full-storage
   representation and dispatched to the matrix method.
 }
-\author{Christian Buchta}
+\author{Christian Buchta and Michael Hahsler}
 \seealso{
   \code{\link{image}} for details.}
 \examples{

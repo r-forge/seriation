@@ -68,7 +68,7 @@ Data.
     leaf ordering.
 }
 \examples{
-## generate som random data
+## generate some random data
 d <- dist(matrix(runif(30), ncol=2))
 hc <- hclust(d)
 hc_opt <- reorder(hc, d, method="optimal")

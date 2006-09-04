@@ -56,7 +56,7 @@ certain ordering of a matrix are implemented:
     Maximizing the bond energy is the objective of the bond energy algorithm 
     (BEA).
 
-    The measure of effectiveness is just \eqn{1/2 * bond\ energy}.
+    The measure of effectiveness (ME) is defined as \eqn{1/2 * bond\ energy}.
 }
 
 \item{\code{"moore_stress"}, \code{"neumann_stress"}}{ STRESS (Niermann 2005).
