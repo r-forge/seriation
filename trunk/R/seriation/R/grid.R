@@ -1,7 +1,7 @@
 ## grid helpers
 
 .grid_image <- function(x, name = "image", 
-    col = gray.colors(12, 0, 1), threshold = NULL, gp = gpar()) {
+    col = gray.colors(12, 1, 0), threshold = NULL, gp = gpar()) {
 
     n <-  ncol(x)
     m <-  nrow(x)
@@ -21,8 +21,8 @@
     col[length(col)+1] <- col[length(col)]
 
     ## the highest value is lightest color!
-    xs <- sapply(c(1:m), "rep.int", times = n)
-    grid.rect(x = xs, y = c(1:n), 1, 1, 
+    xs <- sapply(c(1:n), "rep.int", times = m)
+    grid.rect(x = xs, y = c(1:m), 1, 1, 
         gp = gpar(fill = col[floor(x/max_x/div)+1], col=0), 
         default.units = "native")
 
@@ -34,6 +34,7 @@
 
     upViewport(1)
 }
+
 
 
 .grid_barplot_horiz <- function(height, name = "barplot", xlab="", 

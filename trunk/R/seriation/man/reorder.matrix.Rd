@@ -89,17 +89,13 @@ x <- as.matrix(iris[,1:4])
 
 ## try some methods
 def.par <- par(no.readonly = TRUE)
-layout(rbind(1:3, 4:6), respect=TRUE)
+layout(rbind(1:2, 3:4), respect=TRUE)
 
 pimage(x, main = "original data")
 criterion(x)
 
 order <- reorder(x)
 pimage(x[order$row, order$col], main = "Murtagh")
-criterion(x, order)
-
-order <- reorder(x, method="bea")
-pimage(x[order$row, order$col], main = "BEA")
 criterion(x, order)
 
 order <- reorder(x, method="fpc")
