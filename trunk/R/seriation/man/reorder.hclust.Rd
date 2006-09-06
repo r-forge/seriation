@@ -49,17 +49,17 @@ The reordered object of class \code{hclust}.
 \references{
 Z. Bar-Joseph, E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001): Fast
 Optimal Leaf Ordering for Hierarchical Clustering.  
-\emph{Bioinformatics,} \bold{17}(1), pp. 22--29. 
+\emph{Bioinformatics,} \bold{17}(1), 22--29. 
 
 Gruvaeus, G. and Wainer, H. (1972): Two Additions to Hierarchical Cluster
 Analysis, 
 \emph{British Journal of Mathematical and Statistical Psychology,}
-\bold{25}, pp. 200--206.
+\bold{25}, 200--206.
 
 Hurley, Catherine B. (2004): Clustering Visualizations of Multidimensional
 Data.  
 \emph{Journal of Computational and Graphical Statistics,} 
-\bold{13}(4), pp. 788--806.
+\bold{13}(4), 788--806.
 }
 \author{Christian Buchta and Michael Hahsler}
 \seealso{

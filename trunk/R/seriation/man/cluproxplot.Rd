@@ -75,11 +75,11 @@ cluproxplot(x, labels = NULL, method = NULL, options = NULL,
       below the plot. }
 \item{\code{lines_col}}{ color used for the lines to separate clusters. }
 \item{\code{newpage}}{ a logical indicating  whether to start plot on a new
-    page (see \code{grid.newpage} in package \code{grid}). }
+    page (see \code{grid.newpage} in package \pkg{grid}). }
 \item{\code{pop}}{a logical indicating  whether to  should the viewports
-    created be popped (see package \code{grid})?  }
+    created be popped (see package \pkg{grid})?  }
 \item{\code{gp}}{an object of class \code{gpar} containing graphical parameters
-    (see \code{gpar} in package \code{grid}). }
+    (see \code{gpar} in package \pkg{grid}). }
     }
 }}
 %\details{
@@ -107,25 +107,25 @@ object.
 Ling, R.F. (1973):
 A computer generated aid for cluster analysis. 
 \emph{Communications of the ACM,} 
-\bold{16}(6), pp. 355--361.
+\bold{16}(6), 355--361.
 
 Rousseeuw, P.J. (1987): 
 Silhouettes: A graphical aid to the interpretation and 
 validation of cluster analysis. 
 \emph{Journal of Computational and Applied Mathematics,}
-\bold{20}(1), pp. 53--65.
+\bold{20}(1), 53--65.
 
 Strehl, A. and Ghosh, J. (2003):
 Relationship-based clustering and 
 visualization for high-dimensional data mining. 
 \emph{INFORMS Journal on Computing,} 
-\bold{15}(2), pp. 208--230.
+\bold{15}(2), 208--230.
 
 }
 \seealso{
   \code{\link[stats]{dist}}
-  (in package \code{stats}),
-   package \code{grid} and
+  (in package \pkg{stats}),
+   package \pkg{grid} and
    \code{\link{reorder}}.
 }
 \author{Michael Hahsler}

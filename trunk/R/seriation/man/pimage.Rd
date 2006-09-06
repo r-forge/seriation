@@ -12,7 +12,7 @@ pimage(x, col, xlab = "", ylab = "", axes = NULL, ...)
 
 \method{pimage}{matrix}(x, col, xlab = "", ylab = "", axes = NULL, ...)
 \method{pimage}{dist}(x, col, xlab = "", ylab = "", axes = NULL,
-    upper.tri = TRUE, lower.tri = TRUE, ...)
+       upper.tri = TRUE, lower.tri = TRUE, ...)
 }
 \arguments{
   \item{x}{a matrix or an object of class \code{dist}.}

@@ -39,7 +39,7 @@ recommend that it be used with ratio scale data and they question its use
 with non-binary data if the objective is to find a seriation or 
 one-dimensional ordering of rows and columns. 
       
-The BEA codes used in this package was implemented by Fionn Murtagh.
+The BEA code used in this package was implemented by Fionn Murtagh.
 }
 
 \item{\code{"murtagh"}}{Algorithm B (Murtagh 1985). 
@@ -68,16 +68,16 @@ Returns a named list with two an integer vector containing the ordering of the r
 \references{ 
 P. Arabie and L.J. Hubert (1990): The bond energy algorithm revisited, 
 \emph{IEEE Transactions on Systems, Man, and Cybernetics,}
-\bold{20}(1), pp. 268--274.
+\bold{20}(1), 268--274.
 
 W.T. McCormick, P.J. Schweitzer and T.W. White (1972): Problem decomposition
 and data reorganization by a clustering technique, 
 \emph{Operations Research,} 
-\bold{20}(5), pp. 993--1009.
+\bold{20}(5), 993--1009.
 
 F. Murtagh (1985): Multidimensional Cluster Algorithms. 
 \emph{Lectures in Computational Statistics}, Chapter 1, 
-Physica Verlag, pp. 9--31.
+Physica Verlag, 9--31.
 }
 \seealso{
 \code{\link{criterion}}

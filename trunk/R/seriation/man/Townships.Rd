@@ -8,16 +8,9 @@
 }
 \usage{data("Townships")}
 \format{
-  The format is:
- int [1:16, 1:9] 0 0 0 0 0 0 0 1 0 0 ...
- - attr(*, "dimnames")=List of 2
-  ..$ : chr [1:16] "A" "B" "C" "D" ...
-  ..$ : chr [1:9] "High.School" "Agricultural.Coop." "Railway.Station" "One.Room.School" ...
-}
-\details{
-    \code{Townships} is a matrix with 16 0-1 variables (columns)
-      indicating the presence (\code{1}) or absence (\code{0})
-        of characteristics of townships (rows).
+  A matrix with 16 0-1 variables (columns) indicating the presence
+  (\code{1}) or absence (\code{0}) of characteristics of townships
+  (rows).
 }
 \references{
     Bertin, J. (1981): \emph{Graphics and Graphic Information Processing}.

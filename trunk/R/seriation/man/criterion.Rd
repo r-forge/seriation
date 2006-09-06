@@ -28,7 +28,7 @@ criterion(x, order, method = NULL, \ldots)
   \item{\ldots}{further arguments (currently unused).}
   \item{method}{character string with the name of the criterion
       (default: \code{"path\_length"} for \code{dist} and
-      \code{"bond\_energy"} for \code{matrix}.}
+      \code{"bond\_energy"} for \code{matrix}).}
 }
 \details{
 Ordering a matrix such that large values are closer together
@@ -45,7 +45,7 @@ certain ordering of a matrix are implemented:
     and  \eqn{j=1\ldots N}, is defined as 
    
     
-    \deqn{\sum_{i=1}^{i=M} \sum_{j=1}^{j=N} a_{i,j}(a_{i,j-1}+a_{i,j+1}+a_{i-1,j}+a_{i+1,j})}
+    \deqn{\sum_{i=1}^{M} \sum_{j=1}^{N} a_{i,j}(a_{i,j-1}+a_{i,j+1}+a_{i-1,j}+a_{i+1,j})}
 
     with, by convention
 
@@ -158,20 +158,20 @@ weighted by the difference of column indices, i.e.,
 Caraux, G., and Pinloche, S. (2005): Permutmatrix: A Graphical Environment
 to Arrange Gene Expression Profiles in Optimal Linear Order, 
 \emph{Bioinformatics,}
-\bold{21}(7), pp. 1280--1281.
+\bold{21}(7), 1280--1281.
 
 Chun-Houh Chen (2002): Generalized association plots:
 Information visualization via iteratively generated correlation matrices,
-\emph{Statistica Sinica,} \bold{12}(1), pp. 7--29.
+\emph{Statistica Sinica,} \bold{12}(1), 7--29.
 
 W.S. Robinson (1951): A method for chronologically ordering archaeological 
 deposits, 
-\emph{American Antiquity,} \bold{16}, pp. 293--301.
+\emph{American Antiquity,} \bold{16}, 293--301.
 
 W.T. McCormick, P.J. Schweitzer and T.W. White (1972): 
 Problem decomposition and data reorganization by a clustering technique, 
 \emph{Operations Research,}
-\bold{20}(5), pp. 993-1009.
+\bold{20}(5), 993-1009.
 
 }
 \author{Christian Buchta and Michael Hahsler}

@@ -66,12 +66,12 @@ Returns an integer vector containing the ordering of the objects in \code{x}.
 \references{ 
 Chen, C. H. (2002):  Generalized Association Plots: Information
 Visualization via Iteratively Generated Correlation Matrices.  
-\emph{Statistica Sinica,} \bold{12}(1), pp. 7--29.
+\emph{Statistica Sinica,} \bold{12}(1), 7--29.
 
 Sharlee Climer, Weixiong Zhang (2006): Rearrangement Clustering: Pitfalls,
 Remedies, and Applications, 
 \emph{Journal of Machine Learning Research,} \bold{7}(Jun), 
-pp. 919--943.
+919--943.
 }
 \seealso{
 \code{\link[tsp]{solve_TSP}} in \pkg{tsp},
@@ -99,13 +99,13 @@ pimage(arrange(d, fpc$row), main = "first principal component")
 
 ## using some tsp solvers from pkg tsp
 greedy <- reorder(d, method="tsp", options = list(method = "greedy"))
-pimage(arrange(d, greedy), main = "TSP - greedy")
+pimage(arrange(d, greedy), main = "TSP: greedy")
 
 nins <- reorder(d, method="tsp", options = list(method = "nearest_insertion"))
-pimage(arrange(d, nins), main = "TSP - nearest insertion")
+pimage(arrange(d, nins), main = "TSP: nearest insertion")
 
 fins <- reorder(d, method="tsp", options = list(method = "farthest_insertion"))
-pimage(arrange(d, fins), main = "TSP - farthest insertion")
+pimage(arrange(d, fins), main = "TSP: farthest insertion")
 
 
 ## using hclust and reorder.hclust
