@@ -14,7 +14,7 @@ criterion.dist <- function(x, order, method = NULL, ...) {
     ## methods
     methods <- c(
         "path_length",
-        "least_square",
+        "least_squares",
         "inertia",
         "ar_i",
         "ar_s",
@@ -35,7 +35,7 @@ criterion.dist <- function(x, order, method = NULL, ...) {
     if(methodNr == 1) {
         crit <- .path_length(x, order)
     }else if (methodNr == 2) {
-        crit <- .least_square(x, order)
+        crit <- .least_squares(x, order)
     }else if (methodNr == 3) {
         crit <- .inertia(x, order)
     }else if (methodNr == 4) {
@@ -72,12 +72,12 @@ criterion.default <- criterion.dist
 }
 
 
-## least square criterion. measures the difference between the 
+## least squares criterion. measures the difference between the 
 ## dissimilarities between two elements and the rank distance
 ## (PermutMatrix)
-.least_square <- function(dist, order) {
+.least_squares <- function(dist, order) {
     if(missing(order)) order <- 1:attr(dist, "Size") 
-    .Call("least_square_criterion", dist, order)
+    .Call("least_squares_criterion", dist, order)
 }
 
 

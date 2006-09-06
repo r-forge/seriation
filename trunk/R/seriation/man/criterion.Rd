@@ -96,7 +96,7 @@ are currently implemented:
   
     If \code{order} is not unique \code{NA} is returned.
     If there are non-finite distance values \code{NA} is returned.
-\item{\code{"least\_square"}}{Least square criterion (Caraux and Pinloche 2005). 
+\item{\code{"least\_squares"}}{Least squares criterion (Caraux and Pinloche 2005). 
     
     The sum of squares of deviations between the
     dissimilarities and rank differences (distance in the matrix) between two
@@ -112,7 +112,7 @@ are currently implemented:
     Note that if Euclidean distance is used to calculate \eqn{D} from
     a data matrix \eqn{X}, the order of the elements in \eqn{X} by projecting 
     them on the first principal component of \eqn{X} minimizes this criterion.
-    The least square criterion is also related to unidimensional scaling.
+    The least squares criterion is also related to unidimensional scaling.
     }
 
 \item{\code{"inertia"}}{Inertia criterion (Caraux and Pinloche 2005). 
@@ -180,12 +180,12 @@ Problem decomposition and data reorganization by a clustering technique,
 m <- matrix(runif(10),ncol=2)
 d <- dist(m)
 
-## get an order (optimal for the least square criterion)
+## get an order (optimal for the least squares criterion)
 o <- reorder(m, method = "fpc")
 o
 
-## compare the values of the least square criterion
-criterion(d, method = "least_square")
-criterion(d, o$row, method = "least_square")
+## compare the values of the least squares criterion
+criterion(d, method = "least_squares")
+criterion(d, o$row, method = "least_squares")
 }
 \keyword{cluster}

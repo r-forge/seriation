@@ -11,10 +11,10 @@
 
 
 /* 
- * least-square criterion
+ * least-squares criterion
  */
 
-SEXP least_square_criterion(SEXP R_dist, SEXP R_order) {
+SEXP least_squares_criterion(SEXP R_dist, SEXP R_order) {
 
     double sum = 0.0;
     int p = INTEGER(getAttrib(R_dist, install("Size")))[0];

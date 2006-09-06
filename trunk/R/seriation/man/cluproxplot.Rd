@@ -47,11 +47,11 @@ cluproxplot(x, labels = NULL, method = NULL, options = NULL,
     contain a list of two named elements (\code{inter_cluster} 
     and \code{intra_cluster}) containing each a list with the options
     for the respective algorithm.}
+  \item{\dots}{ further arguments (unused). }
   \item{plot}{a logical indicating  if a plot should be produced.  if
       \code{FALSE}, the returned object can be plotted later using the function
       \code{plot} which takes as the second argument a a list of plotting
       options (see \code{plot_options} below).}
-  \item{\dots}{ further arguments (unused). }
   \item{plot_options}{a list with options for plotting the matrix. The
       list can contain the following elements:
     
@@ -100,7 +100,8 @@ generated.}
    plot (from top/left to bottom/right).}
 
 This object can be used for plotting via
-\code{plot(x, plot_options = NULL, ...)}
+\code{plot(x, plot_options = NULL, ...)}, where \code{x} is the
+object.
 }
 \references{
 Ling, R.F. (1973):
