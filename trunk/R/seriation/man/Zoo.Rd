@@ -42,5 +42,11 @@ University of California, Irvine, Dept. of Information and Computer Sciences.
 %}
 \examples{
 data("Zoo")
+
+d <- dist(Zoo[, -18])
+pimage(d)
+
+o <- reorder(d, method = "tsp")
+pimage(arrange(d, o))
 }
 \keyword{datasets}
