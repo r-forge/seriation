@@ -1,0 +1,46 @@
+\name{Zoo}
+\alias{Zoo}
+\docType{data}
+\title{Zoo database}
+\description{
+A database containing characteristics of different animals.
+The database was created and donated by Richard Forsyth.
+}
+\usage{data("Zoo")}
+\format{
+  A data frame with 101 observations on the following 18 variables.
+  \describe{
+    \item{\code{hair}}{\{0, 1\}}
+    \item{\code{feathers}}{\{0, 1\}}
+    \item{\code{eggs}}{\{0, 1\}}
+    \item{\code{milk}}{\{0, 1\}}
+    \item{\code{airborne}}{\{0, 1\}}
+    \item{\code{aquatic}}{\{0, 1\}}
+    \item{\code{predator}}{\{0, 1\}}
+    \item{\code{toothed}}{\{0, 1\}}
+    \item{\code{backbone}}{\{0, 1\}}
+    \item{\code{breathes}}{\{0, 1\}}
+    \item{\code{venomous}}{\{0, 1\}}
+    \item{\code{fins}}{\{0, 1\}}
+    \item{\code{legs}}{Numeric (set of values: \{0, 2, 4, 5, 6, 8\})}
+    \item{\code{tail}}{\{0, 1\}}
+    \item{\code{domestic}}{\{0, 1\}}
+    \item{\code{catsize}}{\{0, 1\}}
+    \item{\code{type}}{Numeric (integer values in range [1, 7])}
+    \item{\code{classes}}{a factor with levels \code{amphibian} \code{bird} \code{fish} \code{insect} \code{invertebrate} \code{mammal} \code{reptile}}
+  }
+}
+%\details{
+%}
+\source{
+D.J. Newman, S. Hettich, C.L. Blake and C.J. Merz (1998):
+UCI Repository of machine learning databases,
+\url{http://www.ics.uci.edu/~mlearn/MLRepository.html},
+University of California, Irvine, Dept. of Information and Computer Sciences.
+}
+%\references{
+%}
+\examples{
+data("Zoo")
+}
+\keyword{datasets}
