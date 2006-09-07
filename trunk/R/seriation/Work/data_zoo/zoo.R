@@ -114,6 +114,6 @@ m
 })
 
 
-Zoo <- cbind(Zoo, classes = classnames)
+Zoo <- cbind(Zoo, class = classnames)
 
 save(Zoo, file="Zoo.rda", compress = TRUE)

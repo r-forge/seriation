@@ -27,7 +27,7 @@ The database was created and donated by Richard Forsyth.
     \item{\code{domestic}}{\{0, 1\}}
     \item{\code{catsize}}{\{0, 1\}}
     \item{\code{type}}{Numeric (integer values in range [1, 7])}
-    \item{\code{classes}}{a factor with levels \code{amphibian} \code{bird} \code{fish} \code{insect} \code{invertebrate} \code{mammal} \code{reptile}}
+    \item{\code{class}}{a factor with levels \code{amphibian} \code{bird} \code{fish} \code{insect} \code{invertebrate} \code{mammal} \code{reptile}}
   }
 }
 %\details{
