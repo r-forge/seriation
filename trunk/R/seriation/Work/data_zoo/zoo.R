@@ -31,6 +31,9 @@ rownames(Zoo) <- names
 #18. type       Numeric (integer values in range [1,7])
 #
 
+# kill type
+Zoo <- Zoo[, -17]
+
 colnames(Zoo) <-
 c(
 "hair",
@@ -49,7 +52,6 @@ c(
 "tail",
 "domestic",
 "catsize",
-"type"
 )
 
 # classes

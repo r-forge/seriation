@@ -1,19 +1,30 @@
 ## grid helpers
 
-.grid_image <- function(x, name = "image", 
-    col = gray.colors(12, 1, 0), threshold = NULL, gp = gpar()) {
+.grid_image <- function(x, y, z, zlim, col = gray.colors(12, 1, 0), 
+    threshold = NULL, name = "image", gp = gpar()) {
 
-    n <-  ncol(x)
-    m <-  nrow(x)
-    max_x <- max(x)
-
+    if(is.matrix(x)){ 
+        z <- x
+        x <- 1:ncol(z)
+        y <- 1:nrow(z)
+    }
+    
+    if(missing(zlim)) zlim <- range(z, na.rm = TRUE)
+    else {# fix data for limits
+        z[z < zlim[1]] <- NA
+        z[z > zlim[2]] <- NA
+    }
+        
+    offset <- if(zlim[1] < 0) -zlim[1] else 0
+    range <- zlim[2] - zlim[1] 
+    
     if(!is.null(threshold)) x[x>threshold] <- NA
 
     div <- 1/length(col)
 
     ## create a viewport
     vp <- viewport(
-        xscale = c(0,(n+1)), yscale = c((m+1),0),
+        xscale = c(0,(length(x)+1)), yscale = c((length(y)+1),0),
         default.unit="native", name = name)
     pushViewport(vp)
 
@@ -21,15 +32,16 @@
     col[length(col)+1] <- col[length(col)]
 
     ## the highest value is lightest color!
-    xs <- sapply(c(1:n), "rep.int", times = m)
-    grid.rect(x = xs, y = c(1:m), 1, 1, 
-        gp = gpar(fill = col[floor(x/max_x/div)+1], col=0), 
+    xs <- sapply(x, "rep.int", times = length(y))
+    grid.rect(x = xs, y = y, 1, 1, 
+        gp = gpar(fill = col[floor((z + offset)/range/div)+1], col=0), 
         default.units = "native")
 
     ## make border
     gp_border       <- gp
     gp_border$fill  <- "transparent"
-    grid.rect(x = (n+1)/2, y = (m+1)/2, width = n, height = m, 
+    grid.rect(x = (length(x)+1)/2, y = (length(y)+1)/2, 
+        width = length(x), height = length(y), 
         default.units = "native", gp = gp_border)
 
     upViewport(1)

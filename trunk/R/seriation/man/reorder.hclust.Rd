@@ -63,9 +63,10 @@ Data.
 }
 \author{Christian Buchta and Michael Hahsler}
 \seealso{
-  \code{\link{dist}} and \code{\link{hclust}} for hierarchical clustering and
+  \code{\link{dist}} and \code{\link{hclust}} for hierarchical clustering,
   \code{\link{criterion}} for computing the objective value of a 
-    leaf ordering.
+  leaf ordering, and \code{link{heatmap_opt}} for optimally 
+  reordered heat maps.
 }
 \examples{
 ## generate some random data
@@ -94,7 +95,7 @@ criterion(d, hc_gru$order)
 criterion(d, hc_opt$order)
 
 
-## application: heatmap
+## application: heatmap (see also heatmap_opt)
 data("iris")
 x <- as.matrix(iris[1:4])
 d_c <- dist(t(x))
@@ -108,7 +109,7 @@ dend_r <- as.dendrogram(reorder(hclust(d_r), d_r))
 
 ## optimal leaf ordering
 heatmap(x, Colv = dend_c, Rowv = dend_r, col = rev(gray.colors(64)),
-    main = "optimally ordered heatmap")
+    margins = c(7,3), cexCol=1, labRow = "")
 }
 \keyword{optimize}
 \keyword{cluster}

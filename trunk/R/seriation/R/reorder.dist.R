@@ -5,11 +5,12 @@ reorder.dist <- function(x, method = NULL, options = NULL,...){
     
     ## build-in methods
     methods <- c(
-        "chen",         # standard
-        "tsp") 
+        "chen",    
+        "tsp"    # standard
+    ) 
 
     
-    methodNr <- if(is.null(method)) 1
+    methodNr <- if(is.null(method)) 2
     else pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:", sQuote(method)))
 

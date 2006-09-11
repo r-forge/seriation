@@ -4,11 +4,11 @@
 \title{Zoo database}
 \description{
 A database containing characteristics of different animals.
-The database was created and donated by Richard Forsyth.
+The database was created and donated by Richard S. Forsyth.
 }
 \usage{data("Zoo")}
 \format{
-  A data frame with 101 observations on the following 18 variables.
+  A data frame with 101 observations on the following 17 variables.
   \describe{
     \item{\code{hair}}{\{0, 1\}}
     \item{\code{feathers}}{\{0, 1\}}
@@ -26,7 +26,6 @@ The database was created and donated by Richard Forsyth.
     \item{\code{tail}}{\{0, 1\}}
     \item{\code{domestic}}{\{0, 1\}}
     \item{\code{catsize}}{\{0, 1\}}
-    \item{\code{type}}{Numeric (integer values in range [1, 7])}
     \item{\code{class}}{a factor with levels \code{amphibian} \code{bird} \code{fish} \code{insect} \code{invertebrate} \code{mammal} \code{reptile}}
   }
 }
@@ -42,8 +41,10 @@ University of California, Irvine, Dept. of Information and Computer Sciences.
 %}
 \examples{
 data("Zoo")
+x <- scale(Zoo[, -17])
 
-d <- dist(Zoo[, -18])
+
+d <- dist(x)
 pimage(d)
 
 o <- reorder(d, method = "tsp")

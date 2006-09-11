@@ -6,6 +6,7 @@ export(
     criterion, 
     pimage, 
     cluproxplot,
+    heatmap_opt,
     reorder.hclust      # this is just so we win over gclus
     )
 
