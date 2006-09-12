@@ -122,15 +122,21 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
         }
     }
 
-    ## remove entries > threshold
-
     if(options$silhouettes == FALSE) {
         pushViewport(viewport(layout = grid.layout(6, 3,
-                    ## space, image, space
-                    widths = unit(c(2,0.7,2), c("lines", "snpc", "lines")),
-                    ## title, space, image, space, colorkey, space
-                    heights = unit(c(2,1,0.7,1,1,2), 
-                        c("lines", "lines", "snpc", "lines", "lines", "lines"))
+                    widths = unit.c(
+                        unit(2, "lines"),                       # space
+                        unit(1, "snpc") - unit(7, "lines"),     # image
+                        unit(2, "lines")                        # space
+                        ),
+                    heights = unit.c(
+                        unit(2, "lines"),                       # title
+                        unit(1, "lines"),                       # space
+                        unit(1, "snpc") - unit(7, "lines"),     # image
+                        unit(1, "lines"),                       # space
+                        unit(1, "lines"),                       # colorkey
+                        unit(2, "lines")                        # space
+                        )
                 )))
 
         main_vp     <- viewport(layout.pos.col = 2, layout.pos.row = 1)
@@ -139,12 +145,21 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
     }else{
         pushViewport(viewport(layout = grid.layout(6, 5,
-                    ## space, image, space, sil, space
-                    widths = unit(c(2,0.6,1,0.2,2), 
-                        c("lines", "snpc", "lines", "snpc", "lines")),
-                    ## title, space, image, space, colorkey, space
-                    heights = unit(c(2,2,0.6,1,1,2), 
-                        c("lines", "lines", "snpc", "lines", "lines", "lines"))
+                    widths = unit.c(
+                        unit(2, "lines"),                       # space
+                        unit(0.7, "snpc") - unit(2.5, "lines"), # image
+                        unit(1, "lines"),                       # space
+                        unit(0.3, "snpc") - unit(2.5, "lines"), # sil
+                        unit(2, "lines")                        # space
+                        ),
+                    heights = unit.c(
+                        unit(2, "lines"),                       # title
+                        unit(2, "lines"),                       # space
+                        unit(0.7, "snpc") - unit(2.5, "lines"), # image
+                        unit(1, "lines"),                       # space
+                        unit(1, "lines"),                       # colorkey
+                        unit(2, "lines")                        # space
+                        )
                 )))
 
         main_vp     <- viewport(layout.pos.col = 2:4, layout.pos.row = 1)
@@ -166,12 +181,16 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
     ## image
     pushViewport(image_vp)
-    .grid_image(m, col = options$col, threshold = options$threshold, gp = gp)
+    
+    range_m <- range(m, na.rm = TRUE)
+    if(!is.null(options$threshold)) m[m > options$threshold] <- NA
+    
+    .grid_image(m, col = options$col, zlim = range_m, gp = gp)
     upViewport(1)
 
     if(options$colorkey == TRUE){
         pushViewport(colorkey_vp)
-        .grid_colorkey(0, max(m), col = options$col, 
+        .grid_colorkey(range_m, col = options$col, 
             threshold = options$threshold, gp = gp)
         upViewport(1)
     }

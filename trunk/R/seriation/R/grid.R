@@ -1,7 +1,7 @@
 ## grid helpers
 
 .grid_image <- function(x, y, z, zlim, col = gray.colors(12, 1, 0), 
-    threshold = NULL, name = "image", gp = gpar()) {
+    name = "image", gp = gpar()) {
 
     if(is.matrix(x)){ 
         z <- x
@@ -16,10 +16,8 @@
     }
         
     offset <- if(zlim[1] < 0) -zlim[1] else 0
-    range <- zlim[2] - zlim[1] 
+    range <- diff(zlim) 
     
-    if(!is.null(threshold)) x[x>threshold] <- NA
-
     div <- 1/length(col)
 
     ## create a viewport
@@ -79,18 +77,17 @@
     upViewport(1)
 }
 
-.grid_colorkey <- function(min_x, max_x, col, threshold = NULL, 
+.grid_colorkey <- function(range, col, threshold = NULL, 
     name = "colorkey", gp = gpar()) {
 
     vp <- viewport(
-        xscale = c(min_x, max_x), yscale = c(0,1), 
+        xscale = range, yscale = c(0,1), 
         default.unit="native", name = name)
     pushViewport(vp)
 
-    range <- max_x - min_x
     n <- length(col) 
-    width <- range/(n)
-    xs <- seq(min_x + width/2, max_x - width/2, length.out = n)
+    width <- diff(range)/n
+    xs <- seq(range[1] + width/2, range[2] - width/2, length.out = n)
 
     ## do not display the part above the threshold 
     col[xs > threshold] <- NA

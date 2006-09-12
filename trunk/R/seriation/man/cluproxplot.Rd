@@ -161,7 +161,7 @@ pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 ## more visualization options
 ## threshold
 plot(res, plot_options = list(main = "PAM + Seriation (Chen) - threshold", 
-    threshold=2, newpage = FALSE))
+    threshold = 1.5, newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
