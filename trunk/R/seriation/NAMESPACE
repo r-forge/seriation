@@ -5,7 +5,7 @@ export(
     arrange,
     criterion, 
     pimage, 
-    cluproxplot,
+    dissplot,
     heatmap_opt,
     reorder.hclust      # this is just so we win over gclus
     )
@@ -23,8 +23,8 @@ S3method(reorder, dist)
 S3method(pimage, matrix)
 S3method(pimage, dist)
 
-S3method(print,cluster_proximity_matrix)
-S3method(plot,cluster_proximity_matrix)
+S3method(print,cluster_dissimilarity_matrix)
+S3method(plot,cluster_dissimilarity_matrix)
 
 
 useDynLib(seriation)

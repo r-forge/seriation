@@ -2,7 +2,7 @@
 
 
 ## interface
-cluproxplot <- function(x, labels = NULL, method = NULL,
+dissplot <- function(x, labels = NULL, method = NULL,
     control = NULL, plot = TRUE, options = NULL, ...) {
 
     ## make x dist
@@ -12,21 +12,21 @@ cluproxplot <- function(x, labels = NULL, method = NULL,
                 sQuote("dist")))
     }
     
-    res <- .arrange_proximity_matrix(x, labels = labels,
+    res <- .arrange_dissimilarity_matrix(x, labels = labels,
         method = method, control = control, ...)
     if(plot == TRUE) plot(res, options, gp = gp)
 
     invisible(res)
 }
 
-## print for cluster_proximity_matrix
-print.cluster_proximity_matrix <- function(x, ...) {
+## print for cluster_dissimilarity_matrix
+print.cluster_dissimilarity_matrix <- function(x, ...) {
     d <- attr(x, "Size")
     k <- if(!is.null(x$k)) x$k else NA
 
     cat("object of class", sQuote(class(x)), "\n")
     cat("matrix dimensions:", d, "x", d, "\n")
-    cat("distance measure:", sQuote(x$diss_measure), "\n")
+    cat("dissimilarity measure:", sQuote(x$diss_measure), "\n")
     cat("number of clusters k:", k, "\n")
     if(!is.null(x$k)) {
         cat("\ncluster description\n")
@@ -39,8 +39,8 @@ print.cluster_proximity_matrix <- function(x, ...) {
     cat("intra cluster:", sQuote(x$method$intra), "\n")
 }
 
-## plot for cluster_proximity_matrix
-plot.cluster_proximity_matrix <- function(x, options = NULL, 
+## plot for cluster_dissimilarity_matrix
+plot.cluster_dissimilarity_matrix <- function(x, options = NULL, 
     ...) {
     
     m       <- as.matrix(x$x_reordered)
@@ -91,7 +91,7 @@ plot.cluster_proximity_matrix <- function(x, options = NULL,
 
     ## color lower triangle panels with avg. dissimilarity
     if(options$averages == TRUE 
-        && !is.null(x$cluster_distances) 
+        && !is.null(x$cluster_dissimilarities) 
         && !is.null(labels)) {
 
         for(i in 1 : k) {
@@ -105,7 +105,7 @@ plot.cluster_proximity_matrix <- function(x, options = NULL,
 
                 ## do lower panels
                 if(i > j) { 
-                    m[labels == labels_unique[i], labels == labels_unique[j]] <- x$cluster_distances[i, j] 
+                    m[labels == labels_unique[i], labels == labels_unique[j]] <- x$cluster_dissimilarities[i, j] 
                 }
 
                 ## do diagonal
@@ -113,7 +113,7 @@ plot.cluster_proximity_matrix <- function(x, options = NULL,
                     block <- m[labels == labels_unique[i], 
                         labels == labels_unique[j]]
 
-                    block[lower.tri(block, diag = FALSE)] <- x$cluster_distances[i, j]
+                    block[lower.tri(block, diag = FALSE)] <- x$cluster_dissimilarities[i, j]
 
                     m[labels == labels_unique[i],
                         labels == labels_unique[j]] <- block
@@ -270,7 +270,7 @@ plot.cluster_proximity_matrix <- function(x, options = NULL,
 
 
 ## work horse
-.arrange_proximity_matrix <- function(x, labels = NULL, method = NULL, 
+.arrange_dissimilarity_matrix <- function(x, labels = NULL, method = NULL, 
     control = NULL, ...) {
 
     ## x is already of class dist
@@ -289,7 +289,7 @@ plot.cluster_proximity_matrix <- function(x, options = NULL,
     sil                 <- NULL
     avgSil              <- NULL
     labels_ordered      <- NULL
-    cluster_distances   <- NULL
+    cluster_dissimilarities <- NULL
     used_method         <- list(inter_cluster = NA, intra_cluster = NA) 
     
     ## default is NULL which means use the default of reorder
@@ -322,10 +322,10 @@ plot.cluster_proximity_matrix <- function(x, options = NULL,
         k <- length(unique(labels))
 
         ## reorder with average pairwise dissimilarites between clusters
-        cluster_distances <- .cluster_dissimilarity(x, labels)
+        cluster_dissimilarities <- .cluster_dissimilarity(x, labels)
 
         if(k>2) {
-            cluster_order <- reorder(as.dist(cluster_distances), 
+            cluster_order <- reorder(as.dist(cluster_dissimilarities), 
                 method = method$inter, control = control$inter, ... )
            
             used_method$inter <- if(!is.null(attr(cluster_order, "method"))) 
@@ -384,9 +384,9 @@ plot.cluster_proximity_matrix <- function(x, options = NULL,
         }
 
 
-        ## reorder cluster_distances for later
-        cluster_distances  <- 
-        cluster_distances[cluster_order, cluster_order]
+        ## reorder cluster_dissimilarities for later
+        cluster_dissimilarities  <- 
+        cluster_dissimilarities[cluster_order, cluster_order]
 
         ## prepare order for labels 
         labels          <- labels[order]
@@ -418,7 +418,7 @@ plot.cluster_proximity_matrix <- function(x, options = NULL,
             position        = c(1 : k),
             label           = labels_unique, 
             size            = tabulate(labels)[labels_unique],
-            avg_dissimilarity = diag(cluster_distances)[labels_unique],
+            avg_dissimilarity = diag(cluster_dissimilarities)[labels_unique],
             avg_silhouette_width = avgSil)
     }
 
@@ -430,13 +430,13 @@ plot.cluster_proximity_matrix <- function(x, options = NULL,
         labels          = labels, 
         method          = used_method, 
         k               = k, 
-        cluster_distances =  cluster_distances,
+        cluster_dissimilarities =  cluster_dissimilarities,
         sil             = sil,
         order           = order, 
         diss_measure    = diss_measure,
         description     =  cluster_description)
     
-    class(result) <- "cluster_proximity_matrix" 
+    class(result) <- "cluster_dissimilarity_matrix" 
     invisible(result)
 }
 

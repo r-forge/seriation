@@ -1,21 +1,24 @@
-\name{cluproxplot}
-\alias{cluproxplot}
-\alias{plot.cluster_proximity_matrix}
-\title{Cluster Proximity Plot}
+\name{dissplot}
+\alias{dissplot}
+\alias{plot.cluster_dissimilarity_matrix}
+\alias{print.cluster_dissimilarity_matrix}
+\title{Dissimilarity Plot}
 \description{
-Visualizes cluster quality using shading of a rearranged proximity matrix (see
-Ling, 1973). Objects belonging to the same cluster are displayed in consecutive
-order. The placement of clusters and the within cluster order is done by
-various seriation algorithms which try to place large similarities/small
-dissimilarities close to the diagonal. Compact clusters are visible as dark
-squares (low dissimilarity) on the diagonal of the plot.
+Visualizes a reordered (seriated) dissimilarity matrix using matrix shading.
+Entries with lower dissimilarities (higher similarity) are plotted darker.
+Such a plot can be used to uncover hidden structure in the data.
 
-Additionally a Silhouette plot (Rousseeuw, 1987) is added.
-
-The visualization was also inspired by CLUSION (see Strehl and Ghosh, 2002).
-  }
+The plot can also be used to visualize cluster quality (see Ling, 1973).
+Objects belonging to the same cluster are displayed in consecutive order. The
+placement of clusters and the within cluster order is done by various seriation
+algorithms which try to place large similarities/small dissimilarities close to
+the diagonal. Compact clusters are visible as dark squares (low dissimilarity)
+on the diagonal of the plot. Additionally a Silhouette plot (Rousseeuw, 1987)
+is added. This visualization is similar to CLUSION (see Strehl and Ghosh, 2002),
+however, allows for using arbitrary reordering algorithms.
+}
 \usage{
-cluproxplot(x, labels = NULL, method = NULL, control = NULL, 
+dissplot(x, labels = NULL, method = NULL, control = NULL, 
   plot = TRUE, options = NULL, \ldots)   
 }
 \arguments{
@@ -134,10 +137,10 @@ data("iris")
 d <- dist(iris[1:4])
 
 ## plot original matrix
-res <- cluproxplot(d, method = NA)
+res <- dissplot(d, method = NA)
 
 ## plot reordered matrix using the farthest insertion algorithm (from tsp)
-res <- cluproxplot(d, method = "tsp", control = list(method = "nearest"),
+res <- dissplot(d, method = "tsp", control = list(method = "nearest"),
     options = list(main = "Seriation (farthest insertion)"))
 
 ## cluster with pam (we know iris has 3 clusters)
@@ -151,7 +154,7 @@ pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2),
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
 
 ## visualize the clustering
-res <- cluproxplot(d, l, method = "chen",  
+res <- dissplot(d, l, method = "chen",  
     options = list(main = "PAM + Seriation (Chen) - standard", 
     newpage = FALSE))
 
@@ -180,7 +183,7 @@ plot(res, options = list(main = "PAM + Seriation (Chen) - no avg.",
 
 popViewport(2)
 
-## the cluster_proximity_matrix object
+## the cluster_dissimilarity_matrix object
 res 
 names(res)
 }
