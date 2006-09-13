@@ -11,5 +11,5 @@ heatmap_opt <- function(x, dist_row = NULL, dist_col = NULL, ...) {
     
     ## heatmap by default scales rows - maybe we don't want that!
     
-    heatmap(x, Colv = dend_col, Rowv = dend_row, ...)
+    heatmap(x, Colv = dend_col, Rowv = dend_row, scale = "none", ...)
 }
