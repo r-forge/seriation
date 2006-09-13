@@ -9,5 +9,7 @@ heatmap_opt <- function(x, dist_row = NULL, dist_col = NULL, ...) {
     dend_row <- as.dendrogram(reorder(hclust(dist_row), dist_row, 
             method = "optimal"))
     
+    ## heatmap by default scales rows - maybe we don't want that!
+    
     heatmap(x, Colv = dend_col, Rowv = dend_row, ...)
 }

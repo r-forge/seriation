@@ -3,7 +3,7 @@
 
 ## interface
 cluproxplot <- function(x, labels = NULL, method = NULL,
-    options = NULL, plot = TRUE, plot_options = NULL, ...) {
+    control = NULL, plot = TRUE, options = NULL, ...) {
 
     ## make x dist
     if(!inherits(x, "dist")) {
@@ -13,8 +13,8 @@ cluproxplot <- function(x, labels = NULL, method = NULL,
     }
     
     res <- .arrange_proximity_matrix(x, labels = labels,
-        method = method, options = options, ...)
-    if(plot == TRUE) plot(res, plot_options, gp = gp)
+        method = method, control = control, ...)
+    if(plot == TRUE) plot(res, options, gp = gp)
 
     invisible(res)
 }
@@ -40,7 +40,7 @@ print.cluster_proximity_matrix <- function(x, ...) {
 }
 
 ## plot for cluster_proximity_matrix
-plot.cluster_proximity_matrix <- function(x, plot_options = NULL, 
+plot.cluster_proximity_matrix <- function(x, options = NULL, 
     ...) {
     
     m       <- as.matrix(x$x_reordered)
@@ -49,6 +49,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     labels  <- x$labels
     labels_unique <- unique(labels)
 
+    user_options <- options
     ## default plot options
     options <- list(
         cluster_labels = TRUE, 
@@ -67,14 +68,14 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     ) 
 
     ## check and add the plot options
-    if(!is.null(plot_options) && length(plot_options) != 0) {
-        o <- pmatch(names(plot_options), names(options))
+    if(!is.null(user_options) && length(user_options) != 0) {
+        o <- pmatch(names(user_options), names(options))
 
         if(any(is.na(o))) stop(paste("Unknown plot option:", 
-                names(plot_options)[is.na(o)], "\n\t"))
+                names(user_options)[is.na(o)], "\n\t"))
 
         for (i in 1:length(o)) {
-            options[[o[i]]] <- plot_options[[i]] 
+            options[[o[i]]] <- user_options[[i]] 
         }
     } 
 
@@ -270,7 +271,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
 ## work horse
 .arrange_proximity_matrix <- function(x, labels = NULL, method = NULL, 
-    options = NULL, ...) {
+    control = NULL, ...) {
 
     ## x is already of class dist
     dim <- attr(x, "Size")
@@ -296,8 +297,8 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     if(class(method) != "list"){
         method <- list(inter = method, intra = method)
     }
-    if(class(options[[1]]) != "list"){
-        options <- list(inter = options, intra = options)
+    if(class(control[[1]]) != "list"){
+        control <- list(inter = control, intra = control)
     }
         
     if(!is.null(method$inter) && 
@@ -310,7 +311,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
     }else if(is.null(labels)) {
         ## reorder whole matrix if no labels are given
         order <- reorder(x, method = method$inter, 
-            options = options$inter, ...)  
+            control = control$inter, ...)  
         
         used_method$inter <- if(!is.null(attr(order, "method"))) 
             attr(order, "method") else method$inter
@@ -325,7 +326,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
 
         if(k>2) {
             cluster_order <- reorder(as.dist(cluster_distances), 
-                method = method$inter, options = options$inter, ... )
+                method = method$inter, control = control$inter, ... )
            
             used_method$inter <- if(!is.null(attr(cluster_order, "method"))) 
                 attr(cluster_order, "method") else method$inter
@@ -367,7 +368,7 @@ plot.cluster_proximity_matrix <- function(x, plot_options = NULL,
                         block <- arrange(x, take)
                         
                         intra_order <- reorder(block, 
-                            method = method$intra, options = options$intra, ...) 
+                            method = method$intra, control = control$intra, ...) 
                     }
 
                     order <- c(order, take[intra_order])

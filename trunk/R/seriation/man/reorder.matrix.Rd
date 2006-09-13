@@ -7,13 +7,14 @@ closer together. Using a image plot of the reordered matrix can show a
 structure in the data which was not visible in the original matrix.
 }
 \usage{
-\method{reorder}{matrix}(x, method = NULL, options = NULL, \ldots)
+\method{reorder}{matrix}(x, method = NULL, control = NULL, \ldots)
 }
 \arguments{
   \item{x}{ a matrix.}
   \item{method}{ a character string with the name of the seriation method
     (default: \code{"murtagh"}).}
-  \item{options}{ a list of options passed on to the reorder algorithms.}
+  \item{control}{ a list of control options passed on to the reorder
+      algorithms.}
   \item{\ldots}{ further arguments (unused).}
     }
 \details{

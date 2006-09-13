@@ -1,6 +1,6 @@
 ## reorder dist objects
 
-reorder.dist <- function(x, method = NULL, options = NULL,...){ 
+reorder.dist <- function(x, method = NULL, control = NULL,...){ 
 
     
     ## build-in methods
@@ -19,7 +19,7 @@ reorder.dist <- function(x, method = NULL, options = NULL,...){
     if(methodNr == 1) {
         order <- .reorder_chen(x)
     }else if(methodNr == 2) {
-        order <- .reorder_tsp(x, options)
+        order <- .reorder_tsp(x, control)
     }
 
     if(is.null(attr(order, "method"))) 
@@ -69,9 +69,9 @@ reorder.dist <- function(x, method = NULL, options = NULL,...){
 
 ## TSPs
 ## Bridge to package tsp 
-.reorder_tsp <- function(x, options = NULL){
-    tour <- solve_TSP(TSP(x), method = options$method, 
-        options = options$options)
+.reorder_tsp <- function(x, control = NULL){
+    tour <- solve_TSP(TSP(x), method = control$method, 
+        control = control$control)
     order <- .cut_tsp(tour, x)
     attributes(order) <- attributes(tour)
     order

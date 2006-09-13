@@ -14,13 +14,19 @@ heatmap_opt(x, dist_row = NULL, dist_col = NULL, ...)
       dissimilarities between rows/columns. If \code{NULL} euclidean distances
       are computed.}
   \item{\dots}{further arguments are passed on to \code{heatmap} in
-      \pkg{stats}.  Note that the following arguments cannot be used
-      \code{Rowv, Colv distfun, hclustfun, reorderfun}.}
+      \pkg{stats}.  Note that the following arguments cannot be used:
+      \code{Rowv, Colv, distfun, hclustfun, reorderfun}.}
 }
 \details{
 Uses \code{reorder.hclust} with method \code{"optimal"} for arranging \code{x}.
 See the example for \code{reorder.hclust} for more possibilities 
 (e.g., using different methods for hierarchical clustering).
+}
+\value{
+An invisible list with elements: 
+\item{rowInd, colInd}{index permutation vectors.}
+\item{Rowv, Colv}{dendrograms; only if \code{keep.dendro} was set \code{TRUE}
+    (see \code{heatmap} for details).}
 }
 \author{Michael Hahsler}
 \seealso{

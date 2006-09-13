@@ -1,6 +1,6 @@
 ## reorder matrices 
 
-reorder.matrix <- function(x, method = NULL, options = NULL, ...) {
+reorder.matrix <- function(x, method = NULL, control = NULL, ...) {
     
     
     ## build-in methods
@@ -18,11 +18,11 @@ reorder.matrix <- function(x, method = NULL, options = NULL, ...) {
 
     ## work horses
     if(methodNr == 1) {
-        order <- .reorder_murtagh(x, options)
+        order <- .reorder_murtagh(x, control)
     }else if(methodNr == 2) {
-        order <- .reorder_bea(x, options)
+        order <- .reorder_bea(x, control)
     }else if(methodNr == 3) {
-        order <- .reorder_fpc(x, options)
+        order <- .reorder_fpc(x, control)
     }
 
     if(is.null(attr(order, "method"))) 
@@ -37,7 +37,7 @@ reorder.matrix <- function(x, method = NULL, options = NULL, ...) {
 ##  F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures
 ##  in Computational Statistics, Physica Verlag, pp. 15.
 
-.reorder_murtagh <- function(x, options) {
+.reorder_murtagh <- function(x, control) {
 
     if(any(x < 0)) stop("Requires a nonnegative matrix")
     ## calculate the Murtagh criterion
@@ -53,11 +53,11 @@ reorder.matrix <- function(x, method = NULL, options = NULL, ...) {
 
 ## Bond Energy Algorithm (McCormick 1972)
 
-.reorder_bea <- function(x, options = NULL){
+.reorder_bea <- function(x, control = NULL){
     
     if(any(x < 0)) stop("Requires a nonnegative matrix")
-    istart <- if(is.null(options$istart)) 0 else options$istart
-    jstart <- if(is.null(options$jstart)) 0 else options$jstart
+    istart <- if(is.null(control$istart)) 0 else control$istart
+    jstart <- if(is.null(control$jstart)) 0 else control$jstart
     
     res <- bea(x, istart = istart, jstart = jstart)
 
@@ -67,7 +67,7 @@ reorder.matrix <- function(x, method = NULL, options = NULL, ...) {
 
 ## use the projection on the first pricipal component to determine the
 ## order
-.reorder_fpc <- function(x, options) {
+.reorder_fpc <- function(x, control) {
     pr <- prcomp(x)
     scores <- pr$x[,1]
     row <- order(scores)

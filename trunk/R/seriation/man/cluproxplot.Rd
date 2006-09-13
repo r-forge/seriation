@@ -15,8 +15,8 @@ Additionally a Silhouette plot (Rousseeuw, 1987) is added.
 The visualization was also inspired by CLUSION (see Strehl and Ghosh, 2002).
   }
 \usage{
-cluproxplot(x, labels = NULL, method = NULL, options = NULL, 
-  plot = TRUE, plot_options = NULL, \ldots)   
+cluproxplot(x, labels = NULL, method = NULL, control = NULL, 
+  plot = TRUE, options = NULL, \ldots)   
 }
 \arguments{
   \item{x}{ an object of class \code{dist}.}
@@ -42,17 +42,17 @@ cluproxplot(x, labels = NULL, method = NULL, options = NULL,
       If no \code{method} is given, the default method of \code{reorder.dist}
       is used.
       }
-\item{options}{ a list of options passed on to the reorder algorithm.
-    In case of two different reorder algorithms, \code{options} can
+\item{control}{ a list of control options passed on to the reorder algorithm.
+    In case of two different reorder algorithms, \code{control} can
     contain a list of two named elements (\code{inter_cluster} 
-    and \code{intra_cluster}) containing each a list with the options
+    and \code{intra_cluster}) containing each a list with the control options
     for the respective algorithm.}
   \item{\dots}{ further arguments (unused). }
   \item{plot}{a logical indicating  if a plot should be produced.  if
       \code{FALSE}, the returned object can be plotted later using the function
-      \code{plot} which takes as the second argument a a list of plotting
-      options (see \code{plot_options} below).}
-  \item{plot_options}{a list with options for plotting the matrix. The
+      \code{plot} which takes as the second argument a list of plotting
+      options (see \code{options} below).}
+  \item{options}{a list with options for plotting the matrix. The
       list can contain the following elements:
     
   \describe{
@@ -100,7 +100,7 @@ generated.}
    plot (from top/left to bottom/right).}
 
 This object can be used for plotting via
-\code{plot(x, plot_options = NULL, ...)}, where \code{x} is the
+\code{plot(x, options = NULL, ...)}, where \code{x} is the
 object.
 }
 \references{
@@ -137,8 +137,8 @@ d <- dist(iris[1:4])
 res <- cluproxplot(d, method = NA)
 
 ## plot reordered matrix using the farthest insertion algorithm (from tsp)
-res <- cluproxplot(d, method = "tsp", options = list(method = "nearest"),
-    plot_options = list(main = "Seriation (farthest insertion)"))
+res <- cluproxplot(d, method = "tsp", control = list(method = "nearest"),
+    options = list(main = "Seriation (farthest insertion)"))
 
 ## cluster with pam (we know iris has 3 clusters)
 library("cluster")
@@ -152,7 +152,7 @@ pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
 
 ## visualize the clustering
 res <- cluproxplot(d, l, method = "chen",  
-    plot_options = list(main = "PAM + Seriation (Chen) - standard", 
+    options = list(main = "PAM + Seriation (Chen) - standard", 
     newpage = FALSE))
 
 popViewport()
@@ -160,14 +160,14 @@ pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 
 ## more visualization options
 ## threshold
-plot(res, plot_options = list(main = "PAM + Seriation (Chen) - threshold", 
+plot(res, options = list(main = "PAM + Seriation (Chen) - threshold", 
     threshold = 1.5, newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
 
 ## color: use 10 shades of blue
-plot(res, plot_options = list(main = "PAM + Seriation (Chen) - blue", 
+plot(res, options = list(main = "PAM + Seriation (Chen) - blue", 
     col = hcl(h = 260, c = seq(75,0, length=10), l = seq(30,95, length=10)),
     gp = gpar(fill = hcl(h = 260, c=30, l = 80)), newpage = FALSE))
 
@@ -175,7 +175,7 @@ popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
 
 ## supress average in lower triangle
-plot(res, plot_options = list(main = "PAM + Seriation (Chen) - no avg.", 
+plot(res, options = list(main = "PAM + Seriation (Chen) - no avg.", 
     average = FALSE, newpage = FALSE))
 
 popViewport(2)

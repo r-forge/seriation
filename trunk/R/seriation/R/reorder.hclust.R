@@ -1,6 +1,6 @@
 ## reorder existing hierarchical cluster solutions (hclust)
 
-reorder.hclust <- function(x, dist, method = NULL, options = NULL, ...) {
+reorder.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
     
     ## check arguments
     if (!inherits(dist, "dist"))

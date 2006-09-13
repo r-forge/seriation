@@ -8,13 +8,14 @@ Using a image plot of the reordered dissimilarity matrix
 can show a structure in the data which was not visible in the original matrix.
 }
 \usage{
-\method{reorder}{dist}(x, method = NULL, options = NULL, \ldots)
+\method{reorder}{dist}(x, method = NULL, control = NULL, \ldots)
 }
 \arguments{
   \item{x}{ an object of class \code{dist}.}
   \item{method}{ a character string with the name of the seriation method
       (default: \code{"tsp"}).}
-  \item{options}{ a list of options passed on to the reorder algorithms.}
+  \item{control}{ a list of control options passed on to the reorder
+      algorithms.}
   \item{\ldots}{ further arguments (unused).}
     }
 \details{
@@ -47,7 +48,7 @@ can show a structure in the data which was not visible in the original matrix.
       
       A solver in \pkg{tsp} can be used (see \code{solve_TSP} in
       package \pkg{tsp}). The solver method can be passed on via the
-      \code{options} argument, e.g. \code{options = list(method = "greedy")}.
+      \code{control} argument, e.g. \code{control = list(method = "greedy")}.
 
       Since a tour returned by a TSP solver is a connected circle and we are
 looking for a path representing a linear order, we need to find the best
@@ -98,13 +99,13 @@ fpc <- reorder(x, method = "fpc")
 pimage(arrange(d, fpc$row), main = "first principal component")
 
 ## using some tsp solvers from pkg tsp
-greedy <- reorder(d, method="tsp", options = list(method = "greedy"))
+greedy <- reorder(d, method="tsp", control = list(method = "greedy"))
 pimage(arrange(d, greedy), main = "TSP: greedy")
 
-nins <- reorder(d, method="tsp", options = list(method = "nearest_insertion"))
+nins <- reorder(d, method="tsp", control = list(method = "nearest_insertion"))
 pimage(arrange(d, nins), main = "TSP: nearest insertion")
 
-fins <- reorder(d, method="tsp", options = list(method = "farthest_insertion"))
+fins <- reorder(d, method="tsp", control = list(method = "farthest_insertion"))
 pimage(arrange(d, fins), main = "TSP: farthest insertion")
 
 

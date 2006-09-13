@@ -45,7 +45,7 @@ pimage(arrange(d, hc$order))
 
 ## use reordering
 order <- reorder(d, method = "tsp")
-#order <- reorder(d, method = "tsp", options = list(method = "concorde"))
+#order <- reorder(d, method = "tsp", control = list(method = "concorde"))
 pimage(arrange(d, order))
 }
 \keyword{datasets}
