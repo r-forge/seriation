@@ -3,7 +3,7 @@
 
 ## interface
 dissplot <- function(x, labels = NULL, method = NULL,
-    control = NULL, plot = TRUE, options = NULL, ...) {
+    control = NULL, plot = TRUE, options = NULL) {
 
     ## make x dist
     if(!inherits(x, "dist")) {
@@ -13,7 +13,7 @@ dissplot <- function(x, labels = NULL, method = NULL,
     }
     
     res <- .arrange_dissimilarity_matrix(x, labels = labels,
-        method = method, control = control, ...)
+        method = method, control = control)
     if(plot == TRUE) plot(res, options, gp = gp)
 
     invisible(res)
@@ -40,8 +40,7 @@ print.cluster_dissimilarity_matrix <- function(x, ...) {
 }
 
 ## plot for cluster_dissimilarity_matrix
-plot.cluster_dissimilarity_matrix <- function(x, options = NULL, 
-    ...) {
+plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     
     m       <- as.matrix(x$x_reordered)
     k       <- x$k
@@ -271,7 +270,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL,
 
 ## work horse
 .arrange_dissimilarity_matrix <- function(x, labels = NULL, method = NULL, 
-    control = NULL, ...) {
+    control = NULL) {
 
     ## x is already of class dist
     dim <- attr(x, "Size")
@@ -311,7 +310,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL,
     }else if(is.null(labels)) {
         ## reorder whole matrix if no labels are given
         order <- reorder(x, method = method$inter, 
-            control = control$inter, ...)  
+            control = control$inter)  
         
         used_method$inter <- if(!is.null(attr(order, "method"))) 
             attr(order, "method") else method$inter
@@ -326,7 +325,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL,
 
         if(k>2) {
             cluster_order <- reorder(as.dist(cluster_dissimilarities), 
-                method = method$inter, control = control$inter, ... )
+                method = method$inter, control = control$inter)
            
             used_method$inter <- if(!is.null(attr(cluster_order, "method"))) 
                 attr(cluster_order, "method") else method$inter
@@ -368,7 +367,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL,
                         block <- arrange(x, take)
                         
                         intra_order <- reorder(block, 
-                            method = method$intra, control = control$intra, ...) 
+                            method = method$intra, control = control$intra) 
                     }
 
                     order <- c(order, take[intra_order])

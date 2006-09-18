@@ -1,5 +1,5 @@
 importFrom(stats, reorder)  # reorder exists for factor
-import(tsp)
+import(TSP)
 
 export(
     arrange,

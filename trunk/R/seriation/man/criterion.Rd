@@ -9,14 +9,14 @@ or general matrix}
   of a dissimilarity or general matrix. 
 }
 \usage{
-criterion(x, order, method = NULL, \ldots)
+criterion(x, order, method = NULL)
 
-\method{criterion}{dist}(x, order, method = NULL, \ldots)
-\method{criterion}{matrix}(x, order, method = NULL, \ldots)
+%\method{criterion}{dist}(x, order, method = NULL)
+%\method{criterion}{matrix}(x, order, method = NULL)
 }
 \arguments{
-  \item{x}{an object of class \code{dist} or, for certain methods, a 
-      \code{matrix} (currently only for \code{"bond\_energy"}).}
+  \item{x}{an object of class \code{dist} a 
+      \code{matrix}.}
   \item{order}{
       an optional permutation vector for rows and columns.
       For matrices with different row and column orderings 
@@ -25,7 +25,6 @@ criterion(x, order, method = NULL, \ldots)
       
       If no order is given, the identity order is used.
     }
-  \item{\ldots}{further arguments (currently unused).}
   \item{method}{character string with the name of the criterion
       (default: \code{"path\_length"} for \code{dist} and
       \code{"bond\_energy"} for \code{matrix}).}

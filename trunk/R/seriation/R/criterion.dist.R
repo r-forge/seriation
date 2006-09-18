@@ -2,7 +2,7 @@
 ## matrix
 
 
-criterion.dist <- function(x, order, method = NULL, ...) {
+criterion.dist <- function(x, order, method = NULL) {
     
     ## get and check order 
     if (!missing(order)){
@@ -51,7 +51,7 @@ criterion.dist <- function(x, order, method = NULL, ...) {
 }
 
 ## generic for criterion
-criterion <- function(x, order, method = NULL, ...) UseMethod("criterion")
+criterion <- function(x, order, method = NULL) UseMethod("criterion")
 criterion.default <- criterion.dist
 
 

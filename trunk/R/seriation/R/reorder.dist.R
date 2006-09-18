@@ -1,6 +1,6 @@
 ## reorder dist objects
 
-reorder.dist <- function(x, method = NULL, control = NULL,...){ 
+reorder.dist <- function(x, method = NULL, control = NULL, ...){ 
 
     
     ## build-in methods

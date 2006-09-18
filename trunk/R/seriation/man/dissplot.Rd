@@ -19,7 +19,7 @@ however, allows for using arbitrary reordering algorithms.
 }
 \usage{
 dissplot(x, labels = NULL, method = NULL, control = NULL, 
-  plot = TRUE, options = NULL, \ldots)   
+  plot = TRUE, options = NULL)   
 }
 \arguments{
   \item{x}{ an object of class \code{dist}.}
@@ -50,7 +50,6 @@ dissplot(x, labels = NULL, method = NULL, control = NULL,
     contain a list of two named elements (\code{inter_cluster} 
     and \code{intra_cluster}) containing each a list with the control options
     for the respective algorithm.}
-  \item{\dots}{ further arguments (unused). }
   \item{plot}{a logical indicating  if a plot should be produced.  if
       \code{FALSE}, the returned object can be plotted later using the function
       \code{plot} which takes as the second argument a list of plotting
