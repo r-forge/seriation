@@ -1,15 +1,154 @@
-heatmap_opt <- function(x, dist_row = NULL, dist_col = NULL, ...) {
+hmap <- function(x, dist_row = NULL, dist_col = NULL, 
+    dendrogram = TRUE, method = NULL, 
+    control = NULL, options = NULL, ...) {
+    
     if(!is.matrix(x)) x <- as.matrix(x)
 
+    ## no dist given?
     if(is.null(dist_row)) dist_row <- dist(x)
     if(is.null(dist_col)) dist_col <- dist(t(x))
 
+    if(dendrogram == TRUE)  hmap_workhorse <- .hmap_opt
+    else                    hmap_workhorse <- .hmap_dist
+    
+    hmap_workhorse(x, dist_row, dist_col, method, control, options, ...)
+}
+
+## workhorses
+    
+## heatmap with optimal reordered dendrogram
+.hmap_opt <- function(x, dist_row, dist_col, 
+    method = NULL, control = NULL, options = NULL, ...){ 
+    
+    if(is.null(method)) method <- "optimal"
+    
     dend_col <- as.dendrogram(reorder(hclust(dist_col), dist_col, 
-            method = "optimal"))
+            method = method, control = control))
     dend_row <- as.dendrogram(reorder(hclust(dist_row), dist_row, 
-            method = "optimal"))
+            method = method, control = control))
+
+    ## heatmap by default scales rows: we don't want that!
+    ## options are ignored for now: we use ... 
+    ret <- heatmap(x, Colv = dend_col, Rowv = dend_row, scale = "none", ...)
+    ret$reorder_method <- method
+    ret
+}
+
+
+## dissimilarity plot with seriation
+.hmap_dist <- function(x, dist_row, dist_col, 
+    method = NULL, control = NULL, options = NULL, ...) {
     
-    ## heatmap by default scales rows - maybe we don't want that!
+    ## options
+    options <- c(options, list(...))
     
-    heatmap(x, Colv = dend_col, Rowv = dend_row, scale = "none", ...)
+    col     <- if(is.null(options$col)) heat.colors(256) else options$col
+    prop    <- if(is.null(options$prop)) TRUE else options$prop
+    newpage <- if(is.null(options$newpage)) TRUE else options$newpage
+    gp      <- if(is.null(options$gp)) gpar() else options$gp
+    main    <- options$main
+    
+    ## determine order
+    if(is.null(method)) {
+        method  <- "tsp"
+        control <- "farthest_insertion"  
+    }
+    
+    if(is.na(method)) {
+        row_order <- 1:nrow(x)
+        col_order <- 1:ncol(x)        
+    }else{
+        row_order <- reorder(dist_row, method = method, 
+            control = control)
+        col_order <- reorder(dist_col, method = method, 
+            control = control)
+    }
+    
+    ## reorder
+    x <- x[row_order, col_order]
+    dist_row <- arrange(dist_row, row_order)
+    dist_col <- arrange(dist_col, col_order)
+   
+    ## plot
+    if(newpage == TRUE) grid.newpage()
+
+    ## surrounding viewport
+    pushViewport(viewport(layout=grid.layout(nrow = 5 , ncol = 3, 
+                widths = unit.c(
+                 unit(2, "lines"),
+                 unit(1, "snpc") - unit(8, "lines"),
+                 unit(2, "lines")
+                ), 
+                heights = unit.c(
+                 unit(3, "lines"),  # main
+                 unit(1, "snpc") - unit(8, "lines"),
+                 unit(1, "lines"),
+                 unit(1, "lines"),  # colkey
+                 unit(3, "lines")
+                )), width = unit(1, "snpc"), height = unit(1, "snpc"),))
+
+
+    ## main title
+    if(!is.null(main)){
+        pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
+        grid.text(main, gp = gpar(cex = 1.3))
+        upViewport(1)
+    }
+    
+    
+    ## plots
+    if(prop == TRUE) {
+        widths <- unit.c(
+            unit(1-ncol(x)/sum(ncol(x), nrow(x)), "npc") - unit(.25, "lines"),
+            unit(.5, "lines"),
+            unit(ncol(x)/sum(ncol(x), nrow(x)), "npc") - unit(.25, "lines")
+        )
+
+        heights <- unit.c(
+            unit(1-nrow(x)/sum(ncol(x), nrow(x)), "npc") - unit(.25, "lines"),
+            unit(.5, "lines"),   #space
+            unit(nrow(x)/sum(ncol(x), nrow(x)), "npc") - unit(.25, "lines")
+        )
+    }else{
+        heights <- widths <- unit.c(
+            unit(1, "null"), 
+            unit(.5, "lines"),   # space
+            unit(1, "null")
+        )
+    }
+    
+    pushViewport(viewport(layout=grid.layout(nrow = 3, ncol = 3, 
+            widths = widths, heights = heights), 
+            width = unit(1, "snpc"), height = unit(1, "snpc"), 
+            layout.pos.row = 2, layout.pos.col = 2))
+
+    # data
+    pushViewport(viewport(layout.pos.row = 3, layout.pos.col = 3))
+
+    .grid_image(x, col = col, gp = gp)
+    popViewport(1)
+
+    # rows
+    pushViewport(viewport(layout.pos.row = 3, layout.pos.col = 1))
+
+    .grid_image(as.matrix(dist_row), col = col, gp = gp)
+    popViewport(1)
+
+    # cols
+    pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 3))
+
+    .grid_image(as.matrix(dist_col), col = col, gp = gp)
+    popViewport(2)
+    
+    # colorkey
+    pushViewport(viewport(layout.pos.row = 4, layout.pos.col = 2))
+    pushViewport(viewport(width = unit(0.75, "npc")))
+    .grid_colorkey(range(x, na.rm = TRUE), col = col, gp = gp) 
+    popViewport(2)
+    
+    popViewport(1)
+
+    ## return permutation indices
+    invisible(list(rowInd = row_order, colInd = col_order, 
+            reorder_method = method))
 }

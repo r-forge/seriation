@@ -18,8 +18,7 @@ is added. This visualization is similar to CLUSION (see Strehl and Ghosh, 2002),
 however, allows for using arbitrary reordering algorithms.
 }
 \usage{
-dissplot(x, labels = NULL, method = NULL, control = NULL, 
-  plot = TRUE, options = NULL)   
+dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)   
 }
 \arguments{
   \item{x}{ an object of class \code{dist}.}
@@ -31,75 +30,73 @@ dissplot(x, labels = NULL, method = NULL, control = NULL,
       seriation algorithm (\code{NA} if to plot the matrix as is). The same
       algorithm is used to reorder the clusters (inter cluster seriation) as
       well as the objects within each cluster (intra cluster seriation). 
-      
+
       If separate algorithms for inter and intra cluster seriation are
       required, \code{method} can be a \code{list} of two named elements
       (\code{inter_cluster} and \code{intra_cluster} each containing the name
       of the respective seriation method. See \code{reorder.dist} for available
       reorder algorithms. 
-      
+
       For intra cluster reordering the special
       method \code{silhouette width} is available. Objects in clusters are
       then ordered by silhouette width (the standard for silhouette plots).
-      
+
       If no \code{method} is given, the default method of \code{reorder.dist}
       is used.
       }
-\item{control}{ a list of control options passed on to the reorder algorithm.
-    In case of two different reorder algorithms, \code{control} can
-    contain a list of two named elements (\code{inter_cluster} 
-    and \code{intra_cluster}) containing each a list with the control options
-    for the respective algorithm.}
-  \item{plot}{a logical indicating  if a plot should be produced.  if
-      \code{FALSE}, the returned object can be plotted later using the function
-      \code{plot} which takes as the second argument a list of plotting
-      options (see \code{options} below).}
+  \item{control}{ a list of control options passed on to the reorder algorithm.
+      In case of two different reorder algorithms, \code{control} can
+      contain a list of two named elements (\code{inter_cluster} 
+      and \code{intra_cluster}) containing each a list with the control options
+      for the respective algorithm.}
   \item{options}{a list with options for plotting the matrix. The
       list can contain the following elements:
-    
-  \describe{
-\item{\code{cluster_labels}}{ a logical indicating whether to display cluster
+
+      \describe{
+  \item{plot}{a logical indicating  if a plot should be produced.  if
+      \code{FALSE}, the returned object can be plotted later using the function
+      \code{plot} which takes as the second argument a list of plotting options
+      (see \code{options} below).}
+  \item{\code{cluster_labels}}{ a logical indicating whether to display cluster
       labels in the plot.}
-\item{\code{averages}}{ a logical indicating whether to display the average
+  \item{\code{averages}}{ a logical indicating whether to display the average
       pair-wise dissimilarity between clusters instead of the individual
       dissimilarities in the lower triangle of the plot.}
-\item{\code{lines}}{ a logical indicating  whether to draw lines to separate
+  \item{\code{lines}}{ a logical indicating  whether to draw lines to separate
       clusters.} 
-\item{\code{silhouettes}}{ a logical indicating  whether to include a
+  \item{\code{silhouettes}}{ a logical indicating  whether to include a
       silhouette plot (see Rousseeuw, 1987).} 
-\item{\code{threshold}}{ a numeric. If used, only plot distances below the
-    threshold are displayed.} 
-\item{\code{main}}{ title for the plot.}
-\item{\code{col}}{ colors used for the image plot (default: 100 shades of gray
-    using the hcl colorspace with 
-    \code{hcl(h = 0, c = 0, l = seq(20, 95, len = 100))}). }
-\item{\code{colorkey}}{ a logical indicating  whether to place a color key
+  \item{\code{threshold}}{ a numeric. If used, only plot distances below the
+      threshold are displayed.} 
+  \item{\code{main}}{ title for the plot.}
+  \item{\code{col}}{ colors used for the image plot (default: 100 shades of gray
+      using the hcl colorspace with 
+      \code{hcl(h = 0, c = 0, l = seq(20, 95, len = 100))}). }
+  \item{\code{colorkey}}{ a logical indicating  whether to place a color key
       below the plot. }
-\item{\code{lines_col}}{ color used for the lines to separate clusters. }
-\item{\code{newpage}}{ a logical indicating  whether to start plot on a new
-    page (see \code{grid.newpage} in package \pkg{grid}). }
-\item{\code{pop}}{a logical indicating  whether to  should the viewports
-    created be popped (see package \pkg{grid})?  }
-\item{\code{gp}}{an object of class \code{gpar} containing graphical parameters
-    (see \code{gpar} in package \pkg{grid}). }
-    }
+  \item{\code{lines_col}}{ color used for the lines to separate clusters. }
+  \item{\code{newpage}}{ a logical indicating  whether to start plot on a new
+      page (see \code{grid.newpage} in package \pkg{grid}). }
+  \item{\code{pop}}{a logical indicating  whether to  should the viewports
+      created be popped (see package \pkg{grid})?  }
+  \item{\code{gp}}{an object of class \code{gpar} containing graphical
+      parameters (see \code{gpar} in package \pkg{grid}). }
+      }
 }}
 %\details{
 %}
 \value{
 An invisible object of class \code{cluster_proximity_matrix} with the folowing
 elements:
-\item{order}{ \code{NULL} or integer vector giving the order 
-used to plot \code{x}.}
+\item{order}{ \code{NULL} or integer vector giving the order used to plot
+    \code{x}.}
 \item{method}{ vector of character strings indicating the seriation methods 
-	used for plotting  \code{x}.}
+    used for plotting  \code{x}.}
 \item{k}{ \code{NULL} or integer scalar giving the number of clusters
-generated.}
-\item{description}{ a \code{data.frame}  
-   containing information (label, size, average intra-cluster dissimilarity
-   and the average silhouette) 
-   for the clusters as displayed in the 
-   plot (from top/left to bottom/right).}
+    generated.}
+\item{description}{ a \code{data.frame}  containing information (label, size,
+    average intra-cluster dissimilarity and the average silhouette) for the
+    clusters as displayed in the plot (from top/left to bottom/right).}
 
 This object can be used for plotting via
 \code{plot(x, options = NULL, ...)}, where \code{x} is the

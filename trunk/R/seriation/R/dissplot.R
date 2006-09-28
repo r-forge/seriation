@@ -3,7 +3,7 @@
 
 ## interface
 dissplot <- function(x, labels = NULL, method = NULL,
-    control = NULL, plot = TRUE, options = NULL) {
+    control = NULL, options = NULL) {
 
     ## make x dist
     if(!inherits(x, "dist")) {
@@ -14,6 +14,9 @@ dissplot <- function(x, labels = NULL, method = NULL,
     
     res <- .arrange_dissimilarity_matrix(x, labels = labels,
         method = method, control = control)
+   
+    ## supress plot?
+    plot <- if(is.null(options$plot)) TRUE else is.null(options$plot)
     if(plot == TRUE) plot(res, options, gp = gp)
 
     invisible(res)
