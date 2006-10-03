@@ -1,12 +1,13 @@
 hmap <- function(x, dist_row = NULL, dist_col = NULL, 
+    distfun = dist,
     dendrogram = TRUE, method = NULL, 
     control = NULL, options = NULL, ...) {
     
     if(!is.matrix(x)) x <- as.matrix(x)
 
     ## no dist given?
-    if(is.null(dist_row)) dist_row <- dist(x)
-    if(is.null(dist_col)) dist_col <- dist(t(x))
+    if(is.null(dist_row)) dist_row <- distfun(x)
+    if(is.null(dist_col)) dist_col <- distfun(t(x))
 
     if(dendrogram == TRUE)  hmap_workhorse <- .hmap_opt
     else                    hmap_workhorse <- .hmap_dist
@@ -21,10 +22,11 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
     method = NULL, control = NULL, options = NULL, ...){ 
     
     if(is.null(method)) method <- "optimal"
+    hclustfun <- if(is.null(control$hclustfun)) hclust else control$hclustfun
     
-    dend_col <- as.dendrogram(reorder(hclust(dist_col), dist_col, 
+    dend_col <- as.dendrogram(reorder(hclustfun(dist_col), dist_col, 
             method = method, control = control))
-    dend_row <- as.dendrogram(reorder(hclust(dist_row), dist_row, 
+    dend_row <- as.dendrogram(reorder(hclustfun(dist_row), dist_row, 
             method = method, control = control))
 
     ## heatmap by default scales rows: we don't want that!
@@ -51,7 +53,7 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
     ## determine order
     if(is.null(method)) {
         method  <- "tsp"
-        control <- "farthest_insertion"  
+        if(is.null(control)) control <- list(method = "farthest_insertion")  
     }
     
     if(is.na(method)) {
