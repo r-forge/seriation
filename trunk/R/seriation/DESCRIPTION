@@ -9,4 +9,4 @@ Maintainer: Michael Hahsler <hahsler@ai.wu-wien.ac.at>
 Description: Implements some seriation algorithms to reorder matrices,
   dissimilarity matrices, and dendrograms. Also contains some
   visualizations techniques based on seriation.
-License: GNU GENERAL PUBLIC LICENSE Version 2
+License: GPL 
