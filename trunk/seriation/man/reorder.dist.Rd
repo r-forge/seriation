@@ -48,7 +48,7 @@ can show a structure in the data which was not visible in the original matrix.
       
       A solver in \pkg{tsp} can be used (see \code{solve_TSP} in
       package \pkg{tsp}). The solver method can be passed on via the
-      \code{control} argument, e.g. \code{control = list(method = "greedy")}.
+      \code{control} argument, e.g. \code{control = list(method = "insertion")}.
 
       Since a tour returned by a TSP solver is a connected circle and we are
 looking for a path representing a linear order, we need to find the best
@@ -88,7 +88,7 @@ d <- dist(x)
 def.par <- par(no.readonly = TRUE)
 layout(rbind(1:3, 4:6, 7:9), respect = TRUE)
 
-pimage(d, main = "original")
+pimage(d, main = "original matrix")
 
 chen <- reorder(d, method = "chen")
 pimage(arrange(d, chen), main = "Chen")
@@ -99,25 +99,24 @@ fpc <- reorder(x, method = "fpc")
 pimage(arrange(d, fpc$row), main = "first principal component")
 
 ## using some tsp solvers from pkg tsp
-greedy <- reorder(d, method="tsp", control = list(method = "greedy"))
-pimage(arrange(d, greedy), main = "TSP: greedy")
-
 nins <- reorder(d, method="tsp", control = list(method = "nearest_insertion"))
 pimage(arrange(d, nins), main = "TSP: nearest insertion")
 
 fins <- reorder(d, method="tsp", control = list(method = "farthest_insertion"))
 pimage(arrange(d, fins), main = "TSP: farthest insertion")
 
+two_opt <- reorder(d, method="tsp", control = list(method = "2-opt"))
+pimage(arrange(d, two_opt), main = "TSP: 2-opt")
 
 ## using hclust and reorder.hclust
 h <- hclust(d, method = "average")
-pimage(arrange(d, h$order), main = "hclust (avg.) linkage")
+pimage(arrange(d, h$order), main = "hclust: avg. linkage")
 
 gw <- reorder(h, d, method = "gw") 
-pimage(arrange(d, gw$order), main = "hclust (avg.) linkage + Gruvaeus-Wainer")
+pimage(arrange(d, gw$order), main = "hclust: avg. linkage + Gruvaeus-Wainer")
 
 ho <- reorder(h, d, method = "optimal")
-pimage(arrange(d, ho$order), main = "hclust (avg.) linkage + optimal")
+pimage(arrange(d, ho$order), main = "hclust: avg. linkage + optimal")
 
     
 par(def.par)

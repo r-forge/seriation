@@ -77,8 +77,8 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
   \item{\code{lines_col}}{ color used for the lines to separate clusters. }
   \item{\code{newpage}}{ a logical indicating  whether to start plot on a new
       page (see \code{grid.newpage} in package \pkg{grid}). }
-  \item{\code{pop}}{a logical indicating  whether to  should the viewports
-      created be popped (see package \pkg{grid})?  }
+  \item{\code{pop}}{a logical indicating  whether to pop the created viewports
+      (see package \pkg{grid})?  }
   \item{\code{gp}}{an object of class \code{gpar} containing graphical
       parameters (see \code{gpar} in package \pkg{grid}). }
       }

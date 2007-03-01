@@ -4,6 +4,7 @@ import(TSP)
 export(
     arrange,
     criterion, 
+    bertinplot,
     pimage, 
     dissplot,
     hmap,

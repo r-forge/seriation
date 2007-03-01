@@ -70,37 +70,11 @@ reorder.dist <- function(x, method = NULL, control = NULL, ...){
 ## TSPs
 ## Bridge to package tsp 
 .reorder_tsp <- function(x, control = NULL){
-    tour <- solve_TSP(TSP(x), method = control$method, 
+    ## add a dummy city for cutting
+    tsp <- insert_dummy(TSP(x), n = 1, label = "cut_here")
+    tour <- solve_TSP(tsp, method = control$method, 
         control = control$control)
-    order <- .cut_tsp(tour, x)
-    attributes(order) <- attributes(tour)
-    order
-}
-
-## optimal cut helper
-## To find the cutting point in the tour, typically a dummy city with
-## equal distance to every other city is added. The dummy city is then
-## the optimal cutting place.
-## However, this would require to manipulate the distance matrix. 
-## Therefore, we just cut the tour between the most distant cities 
-## which should give the same result.
-.cut_tsp <- function(order, x) {
-    if(!is.matrix(x)) x <- as.matrix(x)
-    
-    maxDist <- 0.0
-    cut <- 0
-    for(i in 1:(length(order)-1)) {
-        if(x[order[i], order[i+1]] > maxDist) {
-            maxDist <- x[order[i], order[i+1]]
-            cut <- i
-        }
-    }
-    if(x[order[length(order)], order[1]] > maxDist) {
-        cut <- 0
-    }
-
-    if(cut > 0) order <- c(order[(cut+1):length(order)], order[1:cut])
-
+    order <- cut_tour(tour, cut = "cut_here", exclude_cut = TRUE)
     order
 }
 
