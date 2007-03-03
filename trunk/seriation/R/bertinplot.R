@@ -1,18 +1,20 @@
-bertinplot  <- function(x, highlight = NULL, options = NULL) {
+bertinplot  <- function(x, highlight = TRUE, options = NULL) {
 
     if(!is.matrix(x)) stop(paste(sQuote("x"), "has to be a matrix"))
+    if(!is.logical(highlight)) 
+    stop(paste(sQuote("highlight"), "has to be a logical"))
 
     ## default plot options
     user_options <- options
     options <- list(
-        panel_function     = panel.bars, 
+        panel.function     = panel.bars, 
         reverse     = FALSE,
         xlab        = NULL,
         ylab        = NULL,
         spacing     = 0.2,
         mar         = c(5, 4, 8, 8),
         gp_labels   = gpar(cex = 0.9),
-        #        gp_panel    = gpar(),
+        #        gp_panel    = gpar(fill = "black"),
         newpage     = TRUE,
         pop         = TRUE
     )
@@ -30,18 +32,15 @@ bertinplot  <- function(x, highlight = NULL, options = NULL) {
     attach(options)
     on.exit(detach("options"))
     
-    do_hl <- if(is.null(highlight)) TRUE else FALSE
-    if(do_hl) highlight <- matrix(NA, ncol = ncol(x), nrow = nrow(x))
-
-    for (variable in 1:ncol(x)) { 
-        ## scaling
-        x[,variable] <- x[,variable]/max(x[,variable], na.rm = TRUE)
-
-        ## highlight
-        if(do_hl) 
-        highlight[,variable] <- x[,variable] > mean(x[,variable], na.rm = TRUE)
-    }
-
+    ## scale each variable in x for plotting (between 0 and 1)
+    x <- x/ apply(x, 1, max, na.rm = TRUE)
+    ## highlight
+    if(length(highlight) == 1 && highlight) 
+        highlight <- x > rowMeans(x, na.rm = TRUE)
+    else if(length(highlight) == 1 && !highlight)
+        highlight <- matrix(FALSE, ncol = ncol(x), nrow = nrow(x))
+    else if(all(dim(x) != dim(highlight))) stop(sQuote("highlight"),
+        "has incorrect dimensions")
 
     ## note: Bertin switched cols and rows for his display!
     if(reverse) {
@@ -71,7 +70,7 @@ bertinplot  <- function(x, highlight = NULL, options = NULL) {
                 default.unit = "native"))
 
         ## call panel function
-        panel_function(value, spacing, hl)
+        panel.function(value, spacing, hl)
 
         upViewport(1)
     }

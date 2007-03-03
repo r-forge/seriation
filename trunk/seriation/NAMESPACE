@@ -5,6 +5,7 @@ export(
     arrange,
     criterion, 
     bertinplot,
+    panel.bars, panel.circles, panel.squares, panel.lines,
     pimage, 
     dissplot,
     hmap,
