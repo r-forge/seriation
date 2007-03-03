@@ -30,11 +30,8 @@ bertinplot  <- function(x, highlight = NULL, options = NULL) {
     attach(options)
     on.exit(detach("options"))
     
-    do_hl <- FALSE
-    if(is.null(highlight)) { 
-        do_hl <- TRUE
-        highlight <- matrix(NA, ncol = ncol(x), nrow = nrow(x))
-    } 
+    do_hl <- if(is.null(highlight)) TRUE else FALSE
+    if(do_hl) highlight <- matrix(NA, ncol = ncol(x), nrow = nrow(x))
 
     for (variable in 1:ncol(x)) { 
         ## scaling
@@ -70,7 +67,7 @@ bertinplot  <- function(x, highlight = NULL, options = NULL) {
 
         pushViewport(viewport(layout.pos.col = 1, layout.pos.row = variable,
                 xscale = xlim, 
-                yscale = c(0, 1 + spacing), 
+                yscale = c(0, 1), 
                 default.unit = "native"))
 
         ## call panel function
@@ -83,11 +80,13 @@ bertinplot  <- function(x, highlight = NULL, options = NULL) {
     rownames_x <- if(is.null(xlab)) rownames(x) else xlab
     colnames_x <- if(is.null(ylab)) colnames(x) else ylab
 
-    grid.text(rownames_x, x = 1:nrow(x), y = ncol_x, 
+    spacing_corr <- if(spacing < 0) spacing_corr <- -spacing else 0
+
+    grid.text(rownames_x, x = 1:nrow(x), y = ncol_x + spacing_corr, 
         rot = 90, just = "left",
         default.units= "native", gp = gp_labels)
 
-    grid.text(rev(colnames_x), x = 1, 
+    grid.text(rev(colnames_x), x = 1 + spacing_corr / nrow(x) / 4, 
         y = 0.5:(ncol_x-0.5)/ncol_x,
         just = "left", 
         default.units= "npc", gp = gp_labels)
@@ -99,7 +98,9 @@ bertinplot  <- function(x, highlight = NULL, options = NULL) {
 
 ## panel functions
 panel.bars <- function(value, spacing, hl) {
-    grid.rect(x = 1:length(value), y = 0, width = 1 - spacing, height = value,
+    grid.rect(x = 1:length(value), y = 0, 
+        width = 1 - spacing, 
+        height = value*(1 - spacing),
         just = c("centre", "bottom"), default.units = "native", 
         gp = gpar(fill = hl))
 }
@@ -111,6 +112,13 @@ panel.circles <- function(value, spacing, hl) {
         gp = gpar(fill = hl))
 }
 
+panel.squares <- function(value, spacing, hl) {
+    grid.rect(x = 1:length(value), y = unit(0.5, "npc"), 
+        width = value*(1 - spacing), 
+        height = value*(1 - spacing),
+        just = c("centre", "center"), default.units = "native", 
+        gp = gpar(fill = hl))
+}
 
 panel.lines <- function(value, spacing, hl) {
     grid.lines(x = c(1:length(value)), y = value*(1-spacing), 
