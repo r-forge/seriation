@@ -13,8 +13,8 @@ bertinplot  <- function(x, highlight = TRUE, options = NULL) {
         ylab        = NULL,
         spacing     = 0.2,
         mar         = c(5, 4, 8, 8),
-        gp_labels   = gpar(cex = 0.9),
-        #        gp_panel    = gpar(fill = "black"),
+        gp_labels   = gpar(),
+        gp_panels   = gpar(),
         newpage     = TRUE,
         pop         = TRUE
     )
@@ -33,7 +33,9 @@ bertinplot  <- function(x, highlight = TRUE, options = NULL) {
     on.exit(detach("options"))
     
     ## scale each variable in x for plotting (between 0 and 1)
-    x <- x/ apply(x, 1, max, na.rm = TRUE)
+    x <- x/ matrix(apply(x, 2, max, na.rm = TRUE), 
+        byrow= TRUE, ncol=ncol(x), nrow= nrow(x))
+    
     ## highlight
     if(length(highlight) == 1 && highlight) 
         highlight <- x > rowMeans(x, na.rm = TRUE)
@@ -65,9 +67,8 @@ bertinplot  <- function(x, highlight = TRUE, options = NULL) {
         hl <- highlight[, variable]
 
         pushViewport(viewport(layout.pos.col = 1, layout.pos.row = variable,
-                xscale = xlim, 
-                yscale = c(0, 1), 
-                default.unit = "native"))
+                xscale = xlim, yscale = c(0, 1), 
+                default.unit = "native", gp = gp_panels))
 
         ## call panel function
         panel.function(value, spacing, hl)
