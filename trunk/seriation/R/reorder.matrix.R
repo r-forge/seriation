@@ -28,8 +28,7 @@ reorder.matrix <- function(x, method = NULL, control = NULL, ...) {
     if(is.null(attr(order, "method"))) 
         attr(order, "method") <- methods[methodNr]
     
-    ##class(order) <- "order"
-    order
+    order_2d(order)
 }
 
 

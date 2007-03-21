@@ -88,6 +88,9 @@ Physica Verlag, 9--31.
 data("iris")
 x <- as.matrix(iris[,1:4])
 
+## to make the variables comparable, we scale the data
+x <- scale(x, center = FALSE)
+
 ## try some methods
 def.par <- par(no.readonly = TRUE)
 layout(rbind(1:2, 3:4), respect=TRUE)
@@ -96,17 +99,20 @@ pimage(x, main = "original data")
 criterion(x)
 
 order <- reorder(x)
-pimage(x[order$row, order$col], main = "Murtagh")
+pimage(x, order, main = "Murtagh")
 criterion(x, order)
 
 order <- reorder(x, method="fpc")
-pimage(x[order$row, order$col], main = "first principal component")
+pimage(x, order, main = "first principal component")
 criterion(x, order)
 
 ## 2 TSPs
-order <- list(row = reorder(dist(x), method = "tsp"),
-    col = reorder(dist(t(x)), method = "tsp"))
-pimage(x[order$row, order$col], main = "2 TSPs")
+order <- order_2d(
+    row = reorder(dist(x), method = "tsp"),
+    col = reorder(dist(t(x)), method = "tsp"),
+    method = "2 TSPs"
+)
+pimage(x, order, main = "2 TSPs")
 criterion(x, order)
 
 par(def.par)

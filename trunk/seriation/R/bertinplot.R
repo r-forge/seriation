@@ -1,8 +1,11 @@
-bertinplot  <- function(x, highlight = TRUE, options = NULL) {
+bertinplot  <- function(x, order = NULL, highlight = TRUE, options = NULL) {
 
     if(!is.matrix(x)) stop(paste(sQuote("x"), "has to be a matrix"))
     if(!is.logical(highlight)) 
     stop(paste(sQuote("highlight"), "has to be a logical"))
+
+    ## order
+    if(!is.null(order)) x <- arrange(x, order)
 
     ## default plot options
     user_options <- options

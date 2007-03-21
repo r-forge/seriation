@@ -163,6 +163,10 @@ Chun-Houh Chen (2002): Generalized association plots:
 Information visualization via iteratively generated correlation matrices,
 \emph{Statistica Sinica,} \bold{12}(1), 7--29.
 
+Niermann Stefan (2005): Optimizing the Ordering of Tables 
+With Evolutionary Computation, \emph{The American Statistician,}
+\bold{59}(1), 41--46.
+
 W.S. Robinson (1951): A method for chronologically ordering archaeological 
 deposits, 
 \emph{American Antiquity,} \bold{16}, 293--301.

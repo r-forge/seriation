@@ -10,25 +10,30 @@ hmap(x, dist_row = NULL, dist_col = NULL, distfun = dist,
 }
 \arguments{
   \item{x}{a matrix.}
-  \item{dist_row, dist_col}{objectis of class \code{dist} containing the
-      dissimilarities between rows/columns. If \code{NULL} euclidean distances
-      are computed for the matrix \code{x}.}
+  \item{dist_row, dist_col}{objects of class \code{dist} containing the
+      dissimilarities between rows/columns. If \code{NULL} distances
+      are computed for the matrix \code{x} using the function specified in
+      \code{distfun}.}
   \item{distfun}{function used to compute the distance (dissimilarity) between
       both rows and columns (default: \code{dist}). }
   \item{dendrogram}{a logical indicating whether to use dendrogram reordering 
       or distance matrix based reordering.}
   \item{method}{a character strings indicating the used reorder algorithm 
-      (see \code{reorder.hclust} and \code{reorder.dist})}
+      (see \code{reorder.hclust} for dentrogram reordering and 
+      \code{reorder.dist} for matrix based reordering).}
   \item{control}{a list of control options passed on to the reorder algorithm.
       For \code{dendrogram = TRUE} an element named \code{hclustfun} can be
       used to specify a function for hierarchical clustering (default:
       \code{hclust}).} 
-  \item{options}{a list with arguments for plotting (currently only used
-      for \code{dendrogram = FALSE}) which used \pkg{grid}. 
+  \item{options}{a list with arguments for plotting.
       The following arguments are possible:
       \describe{
   \item{\code{main}}{title for the plot.}
-  \item{\code{col}}{colors used for the  plot.}
+  \item{\code{col}}{colors used for the  plot (default: gray colors).}
+      }
+      For \code{dendrogram = FALSE} the  following arguments are also
+      possible:
+       \describe{
   \item{\code{gp}}{an object of class \code{gpar} containing graphical
       parameters (see \code{gpar} in package \pkg{grid}).}
   \item{\code{newpage}}{a logical indicating  whether to start plot on a new
@@ -38,25 +43,27 @@ hmap(x, dist_row = NULL, dist_col = NULL, distfun = dist,
       }
       }
   \item{\dots}{further arguments. For \code{dendrogram = TRUE} the 
-      arguments passed on to \code{heatmap} in
+      arguments are passed on to \code{heatmap} in
       \pkg{stats} (Note that the following arguments cannot be used:
       \code{Rowv, Colv, distfun, hclustfun, reorderfun, scale}).
       
-      For \code{dendrogram = FALSE} see argument \code{options}.}
+      For \code{dendrogram = FALSE} further arguments are used as 
+      \code{options} (see above).}
 }
 \details{
 For \code{dendrogram = TRUE}, \code{reorder.hclust} 
-with the default method \code{"optimal"} for arranging \code{x} is used.
-Then \code{heatmap} is used for plotting.
+with the default method \code{"optimal"} is used for arranging the
+dendrogramms and \code{x}. \code{heatmap} is used for plotting.
 
 For \code{dendrogram = FALSE}, \code{reorder.dist} 
 with the default method \code{"tsp"}
 (a traveling salesperson solver) for arranging \code{x} is used.
-Then \pkg{grid} code implemented in this package 
+\pkg{grid} code implemented in this package 
 is used to produce the plot.
 
-Note that unlike \code{heatmap} scaling is not automatically applied. The data
-have to be scaled before using this function.
+Note that unlike the default behavior of \code{heatmap}, 
+scaling is not automatically applied. The data
+have to be scaled before using \code{hmap}.
 }
 \value{
 An invisible list with elements: 
@@ -83,8 +90,8 @@ hmap(x)
 ## heatmap with seriated distance matrices
 hmap(x, dendrogram = FALSE)
 
-## without proportional display and a gray color palette
+## without proportional display
 hmap(x, dendrogram = FALSE, options = list(prop = FALSE, 
-    main = "Zoo Data", col = gray.colors(100)))
+    main = "Zoo Data"))
 }
 \keyword{hplot}

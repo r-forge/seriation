@@ -5,12 +5,14 @@
 
 ## large values are dark
 pimage.matrix <- 
-function(x, col, xlab="", ylab="", axes = NULL, ...) {
-    if(missing(col)) {
+function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL, ...) {
+    if(is.null(col)) {
         if(is.logical(x)) col <- c("white","black")
         else col <- rev(gray.colors(64))    
     }
     
+    if(!is.null(order)) x <- arrange(x, order)
+
     image.default(1:dim(x)[2], 1:dim(x)[1], t(x)[,dim(x)[1]:1], axes=FALSE,
         xlab=xlab, ylab=ylab, col=col, ...)
   
@@ -29,9 +31,12 @@ function(x, col, xlab="", ylab="", axes = NULL, ...) {
 
 ## small values are dark
 pimage.dist <- 
-function(x, col, xlab="", ylab="", axes = NULL, 
+function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL, 
     upper.tri = TRUE, lower.tri = TRUE, ...) { 
-    if(missing(col)) col <- gray.colors(64)    
+    if(is.null(col)) col <- gray.colors(64)    
+    
+    if(!is.null(order)) x <- arrange(x, order)
+    
     dim <- attr(x, "Size")
     labels <- labels(x)
     x <- as.matrix(x)

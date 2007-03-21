@@ -8,15 +8,19 @@
   matrix and objects of class \code{dist}.
 }
 \usage{
-pimage(x, col, xlab = "", ylab = "", axes = NULL, ...)
+pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)
 
-\method{pimage}{matrix}(x, col, xlab = "", ylab = "", axes = NULL, ...)
-\method{pimage}{dist}(x, col, xlab = "", ylab = "", axes = NULL,
+\method{pimage}{matrix}(x, order = NULL, col = NULL, 
+        xlab = "", ylab = "", axes = NULL, ...)
+\method{pimage}{dist}(x, order = NULL, col = NULL, 
+        xlab = "", ylab = "", axes = NULL,
        upper.tri = TRUE, lower.tri = TRUE, ...)
 }
 \arguments{
   \item{x}{a matrix or an object of class \code{dist}.}
-  \item{col}{a list of colors used. If missing, a gray scale is used (for
+  \item{order}{an object of class \code{order}. If \code{NULL} the order in \code{x} is
+      plotted.}
+  \item{col}{a list of colors used. If \code{NULL}, a gray scale is used (for
       matrix larger values are displayed darker and for \code{dist} smaller
       distances are darker). For matrices containing logical data, black and
       white is used. }

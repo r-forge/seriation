@@ -23,17 +23,18 @@ reorder.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
         res <- .reorder_gruvaeus(x, dist)
     }
 
-    return(res)
+    class(res$order) <- c("order", "order_1d")
+    
+    res
 }
 
 
 ## wrapper for reorder.hclust in gclus
 .reorder_gruvaeus <- function(hclust, dist) {
-    return(get("reorder.hclust",
-               envir = as.environment("package:gclus"))(hclust, dist))
-
-## in R 2.4 gclus::reorder.hclust will work 
-## even though gclus has no name space  
+    ## pre R 2.4 code
+    # return(get("reorder.hclust",
+    #           envir = as.environment("package:gclus"))(hclust, dist))
+    gclus::reorder.hclust(hclust, dist)
 }
 
 
@@ -61,5 +62,5 @@ reorder.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
     hclust$merge <- obj$merge
     hclust$order <- obj$order
 
-    return(hclust)
+    hclust
 }

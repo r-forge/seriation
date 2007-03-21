@@ -9,10 +9,13 @@ export(
     pimage, 
     dissplot,
     hmap,
+    order_1d,
+    order_2d,
     reorder.hclust      # this is just so we win over gclus
     )
 
 
+S3method(arrange, matrix)
 S3method(arrange, dist)
 
 S3method(criterion, matrix)
@@ -24,6 +27,10 @@ S3method(reorder, dist)
 
 S3method(pimage, matrix)
 S3method(pimage, dist)
+
+S3method(print,order_1d)
+S3method(print,order_2d)
+S3method(dim,order_2d)
 
 S3method(print,cluster_dissimilarity_matrix)
 S3method(plot,cluster_dissimilarity_matrix)

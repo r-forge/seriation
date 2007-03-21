@@ -12,10 +12,12 @@ highlighted.  The matrix can be rearranged to make structure in the data
 visible (see Falguerolles et al 1997).
 }
 \usage{
-bertinplot(x, highlight = TRUE,  options = NULL)   
+bertinplot(x, order = NULL, highlight = TRUE,  options = NULL)   
 }
 \arguments{
   \item{x}{ a data matrix (columns are variables and rows are cases).}
+  \item{order}{an object of class \code{order}. If \code{NULL} the order in \code{x} is
+      plotted.}
   \item{highlight}{ a logical scalar indicating whether to use highlighting.
       If \code{TRUE}, all variables with values greater than the variable-wise
       mean are  highlighted. To control highlighting, also a 
@@ -70,14 +72,14 @@ scale_by_rank <- function(x) apply(x, 2, rank)
 
 x <- scale_by_rank(Irish[,-6])
 
-order <- reorder(x, method ="murtagh")
+order <- order_2d(
+    row = reorder(dist(x, "minkowski", p = 1)),
+    col = reorder(dist(t(x), "minkowski", p = 1))
+)
 
-order$row <- reorder(dist(x, "minkowski", p = 1))
-order$col <- reorder(dist(t(x), "minkowski", p = 1))
+bertinplot(x, order)
 
-bertinplot(x[order$row, order$col])
-
-bertinplot(x[order$row, order$col], 
+bertinplot(x, order, 
     options = list(panel = panel.circles, spacing = -0.4))
 }
 \keyword{hplot}

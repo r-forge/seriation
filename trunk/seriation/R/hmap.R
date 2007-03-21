@@ -20,7 +20,10 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
 ## heatmap with optimal reordered dendrogram
 .hmap_opt <- function(x, dist_row, dist_col, 
     method = NULL, control = NULL, options = NULL, ...){ 
-    
+   
+    col     <- if(is.null(options$col)) gray.colors(256) else options$col
+    main    <- options$main
+
     if(is.null(method)) method <- "optimal"
     hclustfun <- if(is.null(control$hclustfun)) hclust else control$hclustfun
     
@@ -31,7 +34,8 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
 
     ## heatmap by default scales rows: we don't want that!
     ## options are ignored for now: we use ... 
-    ret <- heatmap(x, Colv = dend_col, Rowv = dend_row, scale = "none", ...)
+    ret <- heatmap(x, Colv = dend_col, Rowv = dend_row, 
+        scale = "none", col = col, main = main, ...)
     ret$reorder_method <- method
     ret
 }
@@ -44,7 +48,7 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
     ## options
     options <- c(options, list(...))
     
-    col     <- if(is.null(options$col)) heat.colors(256) else options$col
+    col     <- if(is.null(options$col)) gray.colors(256) else options$col
     prop    <- if(is.null(options$prop)) TRUE else options$prop
     newpage <- if(is.null(options$newpage)) TRUE else options$newpage
     gp      <- if(is.null(options$gp)) gpar() else options$gp

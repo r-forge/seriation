@@ -91,34 +91,33 @@ layout(rbind(1:3, 4:6, 7:9), respect = TRUE)
 pimage(d, main = "original matrix")
 
 chen <- reorder(d, method = "chen")
-pimage(arrange(d, chen), main = "Chen")
+pimage(d, chen, main = "Chen")
 
 ## use the projection of the data on its first principal component to
 ## determine the order 
 fpc <- reorder(x, method = "fpc")
-pimage(arrange(d, fpc$row), main = "first principal component")
+pimage(d, fpc$row, main = "first principal component")
 
 ## using some tsp solvers from pkg tsp
 nins <- reorder(d, method="tsp", control = list(method = "nearest_insertion"))
-pimage(arrange(d, nins), main = "TSP: nearest insertion")
+pimage(d, nins, main = "TSP: nearest insertion")
 
 fins <- reorder(d, method="tsp", control = list(method = "farthest_insertion"))
-pimage(arrange(d, fins), main = "TSP: farthest insertion")
+pimage(d, fins, main = "TSP: farthest insertion")
 
 two_opt <- reorder(d, method="tsp", control = list(method = "2-opt"))
-pimage(arrange(d, two_opt), main = "TSP: 2-opt")
+pimage(d, two_opt, main = "TSP: 2-opt")
 
 ## using hclust and reorder.hclust
 h <- hclust(d, method = "average")
-pimage(arrange(d, h$order), main = "hclust: avg. linkage")
+pimage(d, h$order, main = "hclust: avg. linkage")
 
 gw <- reorder(h, d, method = "gw") 
-pimage(arrange(d, gw$order), main = "hclust: avg. linkage + Gruvaeus-Wainer")
+pimage(d, gw$order, main = "hclust: avg. linkage + Gruvaeus-Wainer")
 
 ho <- reorder(h, d, method = "optimal")
-pimage(arrange(d, ho$order), main = "hclust: avg. linkage + optimal")
+pimage(d, ho$order, main = "hclust: avg. linkage + optimal")
 
-    
 par(def.par)
 }
 \keyword{optimize}
