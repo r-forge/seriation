@@ -5,7 +5,7 @@
 ## NULL means keep original order 
 
 Order <- function(order = NULL, row = NULL, col = NULL, 
-    method = NULL, ...){
+    method = NULL){
    
     if(!is.null(order)) {
         if(inherits(order, "Order")) return(order)
