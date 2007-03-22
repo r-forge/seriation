@@ -9,7 +9,7 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
         .check_order(order, x)
         order <- order$order
     }
-    
+   
     ## methods
     methods <- c(
         "path_length",
@@ -19,9 +19,15 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
         "ar_s",
         "ar_w"
     )
+
+    if(is.null(method)) method <- methods[1]
     
-    if(is.null(method)) methodNr <- 1
-    else methodNr <- pmatch(tolower(method), tolower(methods))
+    ## do more than one criterion
+    if(method == "all") method <- methods
+    if(length(method) > 1) return(sapply(method, 
+            function(m) criterion(x, order, m), USE.NAMES = FALSE))
+
+    methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
     
     ## check dist (C code only works with lower-triangle version) 
@@ -45,7 +51,7 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
         crit <- .ar(x, order, method = 3)  # w
     }
 
-    attr(crit, "method") <- methods[methodNr]
+    names(crit) <- methods[methodNr]
     return(crit)
 }
 

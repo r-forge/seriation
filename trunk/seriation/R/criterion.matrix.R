@@ -15,8 +15,14 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
         "neumann_stress"
     )
    
-    if(is.null(method)) methodNr <- 1
-    else methodNr <- pmatch(tolower(method), tolower(methods))
+    if(is.null(method)) method <- methods[1]
+
+    ## do more than one criterion
+    if(method == "all") method <- methods
+    if(length(method) > 1) return(sapply(method,
+            function(m) criterion(x, order, m), USE.NAMES = FALSE))
+
+    methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
     
     ## check matrix
@@ -35,7 +41,7 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
             type = "neumann")
     }
 
-    attr(crit, "method") <- methods[methodNr]
+    name(crit) <- methods[methodNr]
     crit
 }
     

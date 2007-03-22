@@ -21,9 +21,11 @@ criterion(x, order = NULL, method = NULL)
       an object of class \code{Order} suitable to arrange \code{x}.
       If \code{NULL}, the identity order is used.
     }
-  \item{method}{character string with the name of the criterion
+  \item{method}{a vector of character strings with the names of the criterions
       (default: \code{"path\_length"} for \code{dist} and
-      \code{"bond\_energy"} for \code{matrix}).}
+      \code{"bond\_energy"} for \code{matrix}).
+      The dummy method \code{"all"} can be used to calculate all available
+        criteria.}
 }
 \details{
 Ordering a matrix such that large values are closer together
@@ -147,7 +149,7 @@ weighted by the difference of column indices, i.e.,
 }
 }}
 \value{
-  A single real value.
+  A vector of real values.
 }
 \references{
 Caraux, G., and Pinloche, S. (2005): Permutmatrix: A Graphical Environment
@@ -184,7 +186,7 @@ o <- Order(reorder(m, method = "fpc")$row)
 o
 
 ## compare the values of the least squares criterion
-criterion(d, method = "least_squares")
-criterion(d, o, method = "least_squares")
+criterion(d, method = "all")
+criterion(d, o, method = "all")
 }
 \keyword{cluster}
