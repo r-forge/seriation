@@ -50,7 +50,7 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
 }
 
 ## generic for criterion
-criterion <- function(x, order, method = NULL) UseMethod("criterion")
+criterion <- function(x, order = NULL, method = NULL) UseMethod("criterion")
 criterion.default <- criterion.dist
 
 

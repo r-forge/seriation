@@ -62,7 +62,8 @@ function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL,
 
 }
 
-pimage <- function(x, col, xlab="", ylab="", axes = NULL, ...) 
+pimage <- function(x, order = NULL, col = NULL, 
+    xlab="", ylab="", axes = NULL, ...) 
     UseMethod("pimage")
 pimage.default <- pimage.matrix
 

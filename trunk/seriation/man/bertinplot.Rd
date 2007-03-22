@@ -16,7 +16,7 @@ bertinplot(x, order = NULL, highlight = TRUE,  options = NULL)
 }
 \arguments{
   \item{x}{ a data matrix (columns are variables and rows are cases).}
-  \item{order}{an object of class \code{order}. If \code{NULL} the order in \code{x} is
+  \item{order}{an object of class \code{Order}. If \code{NULL} the order in \code{x} is
       plotted.}
   \item{highlight}{ a logical scalar indicating whether to use highlighting.
       If \code{TRUE}, all variables with values greater than the variable-wise

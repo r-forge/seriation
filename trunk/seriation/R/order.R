@@ -16,7 +16,8 @@ Order <- function(order = NULL, row = NULL, col = NULL,
             return(order)
         }
 
-        if(is.vector(order, mode = "integer")) {
+        if(is.vector(order)) {
+            if(!is.integer(order)) order <- as.integer(order)
             order <- list(order = order)
             class(order) <- c("Order", "Order_symmetric")
             if(!is.null(method)) attr(order, "method") <- as.character(method)

@@ -62,7 +62,8 @@ distant cities and cut there.}
     }
 }
 \value{
-Returns an integer vector containing the ordering of the objects in \code{x}. 
+Returns the order as an object of class \code{Order_symmetric} which is a list
+containing the order as an integer vector as element \code{order}.
 }
 \references{ 
 Chen, C. H. (2002):  Generalized Association Plots: Information

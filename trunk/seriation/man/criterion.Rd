@@ -9,7 +9,7 @@ or general matrix}
   of a dissimilarity or general matrix. 
 }
 \usage{
-criterion(x, order, method = NULL)
+criterion(x, order = NULL, method = NULL)
 
 %\method{criterion}{dist}(x, order, method = NULL)
 %\method{criterion}{matrix}(x, order, method = NULL)
@@ -18,12 +18,8 @@ criterion(x, order, method = NULL)
   \item{x}{an object of class \code{dist} a 
       \code{matrix}.}
   \item{order}{
-      an optional permutation vector for rows and columns.
-      For matrices with different row and column orderings 
-      \code{order} can contain a \code{list} with components \code{row} and
-      \code{col} with the permutation vectors.
-      
-      If no order is given, the identity order is used.
+      an object of class \code{Order} suitable to arrange \code{x}.
+      If \code{NULL}, the identity order is used.
     }
   \item{method}{character string with the name of the criterion
       (default: \code{"path\_length"} for \code{dist} and
@@ -183,12 +179,12 @@ Problem decomposition and data reorganization by a clustering technique,
 m <- matrix(runif(10),ncol=2)
 d <- dist(m)
 
-## get an order (optimal for the least squares criterion)
-o <- reorder(m, method = "fpc")
+## get an order for rows (optimal for the least squares criterion)
+o <- Order(reorder(m, method = "fpc")$row)
 o
 
 ## compare the values of the least squares criterion
 criterion(d, method = "least_squares")
-criterion(d, o$row, method = "least_squares")
+criterion(d, o, method = "least_squares")
 }
 \keyword{cluster}

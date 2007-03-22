@@ -18,8 +18,8 @@ pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)
 }
 \arguments{
   \item{x}{a matrix or an object of class \code{dist}.}
-  \item{order}{an object of class \code{order}. If \code{NULL} the order in \code{x} is
-      plotted.}
+  \item{order}{an object of class \code{Order}. If \code{NULL} the order 
+      in \code{x} is plotted.}
   \item{col}{a list of colors used. If \code{NULL}, a gray scale is used (for
       matrix larger values are displayed darker and for \code{dist} smaller
       distances are darker). For matrices containing logical data, black and
@@ -47,14 +47,18 @@ pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)
 x <- matrix(sample(c(FALSE, TRUE), 150, rep=TRUE), ncol=10)
 
 ## matrix
-pimage(x)
+pimage(x, main = "random data")
 
-pimage(x, col = c("white", "green"), axes = FALSE)
+## plot reorderd matrix and axis separately
+pimage(x, reorder(x), col = c("white", "green"), axes = FALSE,
+    main = "reordered data")
 axis(1, at = 1:ncol(x))				            # columns
 axis(2, at = 1:nrow(x), labels= rev(1:nrow(x))) # reversed rows
 
 ## distances
 d <- dist(x, method = "binary")
 pimage(d, lower.tri = FALSE)
+
+pimage(d, reorder(d), lower.tri = FALSE)
 }
 \keyword{hplot}

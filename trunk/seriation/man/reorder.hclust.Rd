@@ -44,7 +44,9 @@ Currently, the following methods are implemented:
 }
 }
 \value{
-The reordered object of class \code{hclust}.
+The order as an object of class \code{Order_symmetric} 
+which is also an object of class \code{hclust}. The order, an integer vector, 
+is contained in the list element \code{order}.
 }
 \references{
 Z. Bar-Joseph, E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001): Fast
@@ -106,7 +108,7 @@ dend_r <- as.dendrogram(reorder(hclust(d_r), d_r))
 ## standard plot
 ## heatmap(x, col = rev(gray.colors(64)), main = "standard plot")
 
-## optimal leaf ordering
+## optimal leaf ordering (see also: hmap)
 heatmap(x, Colv = dend_c, Rowv = dend_r, col = rev(gray.colors(64)),
     margins = c(7,3), cexCol=1, labRow = "")
 }

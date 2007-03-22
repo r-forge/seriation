@@ -47,7 +47,7 @@ x <- scale(Zoo[, -17])
 d <- dist(x)
 pimage(d)
 
-o <- reorder(d, method = "tsp")
-pimage(arrange(d, o))
+order <- reorder(d, method = "tsp")
+pimage(d, order)
 }
 \keyword{datasets}

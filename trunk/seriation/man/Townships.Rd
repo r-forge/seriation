@@ -26,8 +26,8 @@ criterion(Townships, method = "moore_stress")
 
 ## reordered data
 order <- reorder(Townships, method ="bea")
-pimage(Townships[order$row, order$col])
-criterion(Townships, method = "moore_stress", order = order)
+pimage(Townships, order)
+criterion(Townships, order = order, method = "moore_stress")
 
 }
 \keyword{datasets}

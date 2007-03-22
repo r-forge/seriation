@@ -64,7 +64,9 @@ The BEA code used in this package was implemented by Fionn Murtagh.
       Euclidean distance, this methods minimizes the least square criterion.}  
 }}
 \value{
-Returns a named list with two an integer vector containing the ordering of the rows (\code{row}) and columns (\code{col}). 
+Returns an object of class \code{Order_asymmetric} which is a list
+of two elements. \code{row} contains the row order and \code{col} contains
+the column order. Both are integer vectors.
 }
 \references{ 
 P. Arabie and L.J. Hubert (1990): The bond energy algorithm revisited, 
