@@ -33,7 +33,7 @@ data("Psych24")
 
 ## create a dist object and also get rid of the one negative entry in the
 ## correlation matrix
-d <- as.dist(1-abs(Psych24))
+d <- as.dist(1 - abs(Psych24))
 
 pimage(d)
 
@@ -41,11 +41,11 @@ pimage(d)
 hc <- hclust(d, method = "complete")
 plot(hc)
 
-pimage(arrange(d, hc$order))
+pimage(d, Order(hc))
 
 ## use reordering
 order <- reorder(d, method = "tsp")
 #order <- reorder(d, method = "tsp", control = list(method = "concorde"))
-pimage(arrange(d, order))
+pimage(d, order)
 }
 \keyword{datasets}

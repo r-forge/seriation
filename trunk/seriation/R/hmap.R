@@ -60,20 +60,20 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
         if(is.null(control)) control <- list(method = "farthest_insertion")  
     }
     
-    if(is.na(method)) {
-        row_order <- 1:nrow(x)
-        col_order <- 1:ncol(x)        
-    }else{
+    ## reorder
+    row_order <- NULL
+    col_order <- NULL
+    if(!is.na(method)) {
         row_order <- reorder(dist_row, method = method, 
             control = control)
         col_order <- reorder(dist_col, method = method, 
             control = control)
+
+        x <- arrange(x, Order(row = row_order, col = col_order))
+        dist_row <- arrange(dist_row, row_order)
+        dist_col <- arrange(dist_col, col_order)
     }
     
-    ## reorder
-    x <- x[row_order, col_order]
-    dist_row <- arrange(dist_row, row_order)
-    dist_col <- arrange(dist_col, col_order)
    
     ## plot
     if(newpage == TRUE) grid.newpage()

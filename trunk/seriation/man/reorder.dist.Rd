@@ -96,7 +96,7 @@ pimage(d, chen, main = "Chen")
 ## use the projection of the data on its first principal component to
 ## determine the order 
 fpc <- reorder(x, method = "fpc")
-pimage(d, fpc$row, main = "first principal component")
+pimage(d, Order(fpc$row), main = "first principal component")
 
 ## using some tsp solvers from pkg tsp
 nins <- reorder(d, method="tsp", control = list(method = "nearest_insertion"))
@@ -109,14 +109,14 @@ two_opt <- reorder(d, method="tsp", control = list(method = "2-opt"))
 pimage(d, two_opt, main = "TSP: 2-opt")
 
 ## using hclust and reorder.hclust
-h <- hclust(d, method = "average")
-pimage(d, h$order, main = "hclust: avg. linkage")
+h <- Order(hclust(d, method = "average"))
+pimage(d, h, main = "hclust: avg. linkage")
 
 gw <- reorder(h, d, method = "gw") 
-pimage(d, gw$order, main = "hclust: avg. linkage + Gruvaeus-Wainer")
+pimage(d, gw, main = "hclust: avg. linkage + Gruvaeus-Wainer")
 
 ho <- reorder(h, d, method = "optimal")
-pimage(d, ho$order, main = "hclust: avg. linkage + optimal")
+pimage(d, ho, main = "hclust: avg. linkage + optimal")
 
 par(def.par)
 }

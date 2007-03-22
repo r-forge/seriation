@@ -2,30 +2,32 @@
 arrange.dist <- function(x, order) {
     
     if(is.null(order)) return(x)
+    
+    if(!inherits(order, "Order_symmetric")) stop(sQuote("order"),
+        " is not of class ", sQuote("Order_symmetric"))
 
-    #if(!inherits(x,"dist"))
-    #stop(paste(sQuote("dist"),"not of class dist"))
+    if(is.null(order$order)) return(x)
 
+    ## check dist
     if(attr(x, "Diag") || attr(x, "Upper"))
     stop(paste(Quote("dist"), 
             "with diagonal or upper triangle matrix not implemented"))
 
-    
-    if(!inherits(order, "order_1d")) order <- order_1d(order)
-    if(any(order > attr(x, "Size"))) stop(paste(sQuote("order"), 
-            "contains indices too large for", sQuote("x")))
-   
+    .check_order(order, x)
+
     storage.mode(x) <- "double"
-    order <- as.integer(order)
+    order <- as.integer(order$order)
     
     d <- .Call("reorder_dist", x, order)
 
-    labels <- if(is.null(labels(x))) as.character(order) else labels(x)[order]
+    ## dist never had Labels!
+    #labels <- if(is.null(labels(x))) as.character(order$both) 
+    #else labels(x)[order$both]
     
     structure(d, 
         class   = "dist", 
         Size    = length(order), 
-        Labels  = labels,
+        #Labels  = labels,
         Diag    = FALSE,
         Upper   = FALSE,
         method  = attr(x, "method")
@@ -36,12 +38,17 @@ arrange.dist <- function(x, order) {
 arrange.matrix <- function(x, order) {
    
     if(is.null(order)) return(x)
+    
+    if(!inherits(order, "Order")) stop(sQuote("order"),
+        " is not of class ", sQuote("Order"))
+    
+    .check_order(order, x)
 
-    if(!inherits(order, "order_2d")) order <- order_2d(order)
-    if(any(dim(x) != dim(order))) stop(paste("dimensions of ", sQuote("x"), 
-            "and", sQuote("order"), "no not match"))
-   
-    if(is.null(order$row) && is.null(order$col)) return(x)
+    if(is.null(order$row)
+        && is.null(order$col)
+        && is.null(order$order)) return(x)
+    
+    if(!is.null(order$order)) return(x[order$order, order$order])
     if(is.null(order$row)) return(x[, order$col])
     if(is.null(order$col)) return(x[order$row,])
     x[order$row, order$col]

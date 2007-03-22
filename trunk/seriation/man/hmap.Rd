@@ -82,7 +82,7 @@ For \code{dendrogram = TRUE} the list can contain additional elements
 \examples{
 data("Zoo")
 x <- as.matrix(Zoo[, -17])
-x <- scale(x)   # center and scale the data
+x <- scale(x, center = FALSE)   # scale the data
 
 ## optimally reordered heatmap
 hmap(x)

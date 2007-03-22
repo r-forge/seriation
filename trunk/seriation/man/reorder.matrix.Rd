@@ -107,7 +107,7 @@ pimage(x, order, main = "first principal component")
 criterion(x, order)
 
 ## 2 TSPs
-order <- order_2d(
+order <- Order(
     row = reorder(dist(x), method = "tsp"),
     col = reorder(dist(t(x)), method = "tsp"),
     method = "2 TSPs"

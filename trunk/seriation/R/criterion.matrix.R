@@ -4,10 +4,7 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
 
     ## check order
     if(!is.null(order)){
-        if(inherits(order, "order_2d")) {
-            if(any(dim(x) != dim(order))) stop(paste("dimensions of", sQuote("x"),
-                    "and", sQuote("order"), "no not match"))
-        }else stop(paste("order must be of class", sQuote("order_2d")))
+        .check_order(order, x)
     }
 
     ## methods
@@ -46,7 +43,7 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
 ## Bond energy (BEA)
 .bond_energy <- function(x, order = NULL){
     
-    if(any(x < 0)) stop("Bond energy is only defined for nonnegative matrices!")
+    if(any(x < 0)) stop("Bond energy is only defined for nonnegative matrices")
     
     n <- nrow(x)
     m <- ncol(x)
@@ -75,8 +72,11 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
     if (inherits(x, "dist")) x <- as.matrix(x)
     if (!is.matrix(x)) stop(paste(sQuote("x"),"not a matrix"))
     if (!is.double(x)) storage.mode(x) <- "double"
-    if (is.null(order$rows)) rows <- as.integer(1:dim(x)[1])
-    if (is.null(order$cols)) cols <- as.integer(1:dim(x)[2])
+    rows <- order$row
+    cols <- order$col
+    if(!is.null(order$order)) rows <- cols <- order$order
+    if (is.null(rows)) rows <- as.integer(1:dim(x)[1])
+    if (is.null(cols)) cols <- as.integer(1:dim(x)[2])
     type <- as.integer(TYPE[type])
     
     x <- .Call("stress", x, rows, cols, type)

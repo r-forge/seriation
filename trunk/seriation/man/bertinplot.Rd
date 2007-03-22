@@ -72,7 +72,7 @@ scale_by_rank <- function(x) apply(x, 2, rank)
 
 x <- scale_by_rank(Irish[,-6])
 
-order <- order_2d(
+order <- Order(
     row = reorder(dist(x, "minkowski", p = 1)),
     col = reorder(dist(t(x), "minkowski", p = 1))
 )

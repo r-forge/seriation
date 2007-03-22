@@ -1,19 +1,16 @@
 ## reorder dist objects
 
 reorder.dist <- function(x, method = NULL, control = NULL, ...){ 
-
     
     ## build-in methods
     methods <- c(
         "chen",    
         "tsp"    # standard
     ) 
-
     
     methodNr <- if(is.null(method)) 2
     else pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:", sQuote(method)))
-
 
     ## work horses
     if(methodNr == 1) {
@@ -22,10 +19,7 @@ reorder.dist <- function(x, method = NULL, control = NULL, ...){
         order <- .reorder_tsp(x, control)
     }
 
-    if(is.null(attr(order, "method"))) 
-        attr(order, "method") <- methods[methodNr]
-   
-    order_1d(order)
+    Order(order = order, method = methods[methodNr])
 }
 
 

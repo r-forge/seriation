@@ -2,13 +2,12 @@
 ## matrix
 
 
-criterion.dist <- function(x, order, method = NULL) {
+criterion.dist <- function(x, order = NULL, method = NULL) {
     
     ## get and check order 
-    if (!missing(order)){
-        if (length(order) != attr(x,"Size"))
-        stop(paste(sQuote("order"),"invalid length"))
-        if (!is.integer(order)) order <- as.integer(order)
+    if (!is.null(order)){
+        .check_order(order, x)
+        order <- order$order
     }
     
     ## methods
@@ -66,8 +65,8 @@ criterion.default <- criterion.dist
 ## 
 
 ## ceeboo 2005
-.path_length <- function(dist, order) {
-    if (missing(order)) order <- 1:attr(dist, "Size")
+.path_length <- function(dist, order = NULL) {
+    if (is.null(order)) order <- 1:attr(dist, "Size")
     .Call("order_length", dist, order)
 }
 
@@ -75,23 +74,23 @@ criterion.default <- criterion.dist
 ## least squares criterion. measures the difference between the 
 ## dissimilarities between two elements and the rank distance
 ## (PermutMatrix)
-.least_squares <- function(dist, order) {
-    if(missing(order)) order <- 1:attr(dist, "Size") 
+.least_squares <- function(dist, order = NULL) {
+    if(is.null(order)) order <- 1:attr(dist, "Size") 
     .Call("least_squares_criterion", dist, order)
 }
 
 
 ## inertia around the diagonal (see PermutMatrix)
-.inertia <- function(dist, order) {
-    if(missing(order)) order <- 1:attr(dist, "Size") 
+.inertia <- function(dist, order = NULL) {
+    if(is.null(order)) order <- 1:attr(dist, "Size") 
     .Call("inertia_criterion", dist, order)
 }
 
 
 ## anti-Robinson loss functions (Streng and Schönfelder 1978, Chen 2002)
 ## method: 1...i, 2...s, 3...w
-.ar <- function(dist, order, method = 1) {
-    if(missing(order)) order <- 1:attr(dist, "Size") 
+.ar <- function(dist, order = NULL, method = 1) {
+    if(is.null(order)) order <- 1:attr(dist, "Size") 
     .Call("ar", dist, order, as.integer(method))
 }
 

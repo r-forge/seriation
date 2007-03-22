@@ -1,20 +1,16 @@
 ## reorder matrices 
 
 reorder.matrix <- function(x, method = NULL, control = NULL, ...) {
-    
-    
     ## build-in methods
     methods <- c(
         "murtagh",      # standard
         "bea",
         "fpc"
     )
-
     
     methodNr <- if(is.null(method)) 1
     else pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:", sQuote(method)))
-
 
     ## work horses
     if(methodNr == 1) {
@@ -25,10 +21,7 @@ reorder.matrix <- function(x, method = NULL, control = NULL, ...) {
         order <- .reorder_fpc(x, control)
     }
 
-    if(is.null(attr(order, "method"))) 
-        attr(order, "method") <- methods[methodNr]
-    
-    order_2d(order)
+    Order(row = order$row, col = order$col, method = methods[methodNr])
 }
 
 

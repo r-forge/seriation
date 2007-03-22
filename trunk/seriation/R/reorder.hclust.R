@@ -23,9 +23,7 @@ reorder.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
         res <- .reorder_gruvaeus(x, dist)
     }
 
-    class(res$order) <- c("order", "order_1d")
-    
-    res
+    Order(res, method = methods[methodNr])
 }
 
 

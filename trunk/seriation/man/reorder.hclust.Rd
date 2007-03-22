@@ -82,17 +82,16 @@ plot(hc_gru, main="Gruvaeus-Wainer")
 plot(hc_opt, main="Optimal leaf ordering")
 
 ## compare images
-m <- as.matrix(d)
-pimage(m[hc$order, hc$order])
-pimage(m[hc_gru$order, hc_gru$order])
-pimage(m[hc_opt$order, hc_opt$order])
+pimage(d, Order(hc$order))
+pimage(d, Order(hc_gru$order))
+pimage(d, Order(hc_opt$order))
 par(op)
 
 ## compare lengths
 criterion(d)
-criterion(d, hc$order)
-criterion(d, hc_gru$order)
-criterion(d, hc_opt$order)
+criterion(d, Order(hc$order))
+criterion(d, Order(hc_gru$order))
+criterion(d, Order(hc_opt$order))
 
 
 ## application: heatmap (see also heatmap_opt)
