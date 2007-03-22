@@ -98,15 +98,15 @@ def.par <- par(no.readonly = TRUE)
 layout(rbind(1:2, 3:4), respect=TRUE)
 
 pimage(x, main = "original data")
-criterion(x)
+criterion(x, method = "all")
 
 order <- reorder(x)
 pimage(x, order, main = "Murtagh")
-criterion(x, order)
+criterion(x, order, method = "all")
 
 order <- reorder(x, method="fpc")
 pimage(x, order, main = "first principal component")
-criterion(x, order)
+criterion(x, order, method = "all")
 
 ## 2 TSPs
 order <- Order(
@@ -115,7 +115,7 @@ order <- Order(
     method = "2 TSPs"
 )
 pimage(x, order, main = "2 TSPs")
-criterion(x, order)
+criterion(x, order, method = "all")
 
 par(def.par)
 }

@@ -21,13 +21,13 @@ data("Townships")
 
 ## original data
 pimage(Townships)
-criterion(Townships, method = "moore_stress")
+criterion(Townships, method = "all")
 
 
 ## reordered data
 order <- reorder(Townships, method ="bea")
 pimage(Townships, order)
-criterion(Townships, order = order, method = "moore_stress")
+criterion(Townships, order = order, method = "all")
 
 }
 \keyword{datasets}

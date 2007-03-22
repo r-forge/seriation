@@ -4,11 +4,6 @@
 
 criterion.dist <- function(x, order = NULL, method = NULL) {
     
-    ## get and check order 
-    if (!is.null(order)){
-        .check_order(order, x)
-        order <- order$order
-    }
    
     ## methods
     methods <- c(
@@ -34,6 +29,12 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
     if(attr(x, "Diag") == TRUE || attr(x, "Upper") == TRUE)
         x <- as.dist(x, diag = FALSE, upper = FALSE)
     if (!is.real(x)) storage.mode(x) <- "real"
+    
+    ## get and check order 
+    if (!is.null(order)){
+        .check_order(order, x)
+        order <- order$order
+    }
 
     
     ## work horses

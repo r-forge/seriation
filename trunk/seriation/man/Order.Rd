@@ -31,7 +31,8 @@ Order(order = NULL, row = NULL, col = NULL,
       ordering of the matrix.}
   \item{method}{an optional string with the method which generated the 
       ordering.} 
-  }
+  \item{\ldots}{further arguments.}
+    }
 \details{
 }
 \value{

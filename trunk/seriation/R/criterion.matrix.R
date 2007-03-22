@@ -2,11 +2,6 @@
 
 criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
 
-    ## check order
-    if(!is.null(order)){
-        .check_order(order, x)
-    }
-
     ## methods
     methods <- c(
         "bond_energy",      # default
@@ -25,9 +20,11 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
     methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
     
-    ## check matrix
-    ##if (!is.real(x)) storage.mode(x) <- "real"
-
+    ## check order
+    if(!is.null(order)){
+        .check_order(order, x)
+    }
+    
     ## work horses
     if (methodNr == 1) {
         crit <- .bond_energy(x, order)
@@ -41,7 +38,7 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
             type = "neumann")
     }
 
-    name(crit) <- methods[methodNr]
+    names(crit) <- methods[methodNr]
     crit
 }
     

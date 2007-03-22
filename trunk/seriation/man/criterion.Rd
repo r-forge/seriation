@@ -186,7 +186,9 @@ o <- Order(reorder(m, method = "fpc")$row)
 o
 
 ## compare the values of the least squares criterion
-criterion(d, method = "all")
-criterion(d, o, method = "all")
+rbind(
+    unordered = criterion(d, method = "all"),
+    ordered = criterion(d, o, method = "all")
+)
 }
 \keyword{cluster}

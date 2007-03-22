@@ -96,8 +96,8 @@ pimage(d, chen, main = "Chen")
 
 ## use the projection of the data on its first principal component to
 ## determine the order 
-fpc <- reorder(x, method = "fpc")
-pimage(d, Order(fpc$row), main = "first principal component")
+fpc <- Order(reorder(x, method = "fpc")$row)
+pimage(d, fpc, main = "first principal component")
 
 ## using some tsp solvers from pkg tsp
 nins <- reorder(d, method="tsp", control = list(method = "nearest_insertion"))
