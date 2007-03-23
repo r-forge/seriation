@@ -2,7 +2,7 @@ importFrom(stats, reorder)  # reorder exists for factor
 import(TSP)
 
 export(
-    arrange,
+    rearrange,
     criterion, 
     bertinplot,
     panel.bars, panel.circles, panel.squares, panel.lines,
@@ -14,8 +14,8 @@ export(
     )
 
 
-S3method(arrange, matrix)
-S3method(arrange, dist)
+S3method(rearrange, matrix)
+S3method(rearrange, dist)
 
 S3method(criterion, matrix)
 S3method(criterion, dist)

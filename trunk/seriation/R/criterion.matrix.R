@@ -22,7 +22,7 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
     
     ## check order
     if(!is.null(order)){
-        .check_order(order, x)
+        if((msg <- .check_order(order, x)) != TRUE) stop(msg)
     }
     
     ## work horses
@@ -51,7 +51,7 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
     n <- nrow(x)
     m <- ncol(x)
     
-    x <- arrange(x, order)
+    x <- rearrange(x, order)
     
     storage.mode(x) <- "single"
 

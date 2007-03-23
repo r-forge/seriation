@@ -367,7 +367,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
                             decreasing = TRUE)$both
                         attr(intra_order, "method") <- "silhouette width"
                     }else{
-                        block <- arrange(x, Order(order = take))
+                        block <- rearrange(x, Order(order = take))
                         
                         intra_order <- reorder(block, method = method$intra, 
                             control = control$intra)$order
@@ -400,7 +400,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     }
 
     ## reorder matrix
-    if(!is.null(order)) x_reordered <- arrange(x, Order(order = order))
+    if(!is.null(order)) x_reordered <- rearrange(x, Order(order = order))
     else x_reordered <- x
     
     ## prepare for return value

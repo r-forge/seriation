@@ -11,7 +11,7 @@ function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL, ...) {
         else col <- rev(gray.colors(64))    
     }
     
-    if(!is.null(order)) x <- arrange(x, order)
+    if(!is.null(order)) x <- rearrange(x, order)
 
     image.default(1:dim(x)[2], 1:dim(x)[1], t(x)[,dim(x)[1]:1], axes=FALSE,
         xlab=xlab, ylab=ylab, col=col, ...)
@@ -35,7 +35,7 @@ function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL,
     upper.tri = TRUE, lower.tri = TRUE, ...) { 
     if(is.null(col)) col <- gray.colors(64)    
     
-    if(!is.null(order)) x <- arrange(x, order)
+    if(!is.null(order)) x <- rearrange(x, order)
     
     dim <- attr(x, "Size")
     labels <- labels(x)

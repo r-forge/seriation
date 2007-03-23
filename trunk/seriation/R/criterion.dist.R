@@ -32,7 +32,7 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
     
     ## get and check order 
     if (!is.null(order)){
-        .check_order(order, x)
+        if((msg <- .check_order(order, x)) != TRUE) stop(msg)
         order <- order$order
     }
 

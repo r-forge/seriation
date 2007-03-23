@@ -69,9 +69,9 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
         col_order <- reorder(dist_col, method = method, 
             control = control)
 
-        x <- arrange(x, Order(row = row_order, col = col_order))
-        dist_row <- arrange(dist_row, row_order)
-        dist_col <- arrange(dist_col, col_order)
+        x <- rearrange(x, Order(row = row_order, col = col_order))
+        dist_row <- rearrange(dist_row, row_order)
+        dist_col <- rearrange(dist_col, col_order)
     }
     
    

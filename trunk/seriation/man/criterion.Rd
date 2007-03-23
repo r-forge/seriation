@@ -15,24 +15,21 @@ criterion(x, order = NULL, method = NULL)
 %\method{criterion}{matrix}(x, order, method = NULL)
 }
 \arguments{
-  \item{x}{an object of class \code{dist} a 
-      \code{matrix}.}
+  \item{x}{an object of class \code{dist} a matrix.}
   \item{order}{
-      an object of class \code{Order} suitable to arrange \code{x}.
-      If \code{NULL}, the identity order is used.
+      an object of class \code{Order} suitable to rearrange \code{x}.
+      If \code{NULL}, the identity permutation is used.
     }
   \item{method}{a vector of character strings with the names of the criterions
       (default: \code{"path\_length"} for \code{dist} and
-      \code{"bond\_energy"} for \code{matrix}).
-      The dummy method \code{"all"} can be used to calculate all available
-        criteria.}
+      \code{"bond\_energy"} for matrix).  The dummy method \code{"all"}
+      can be used to calculate all available criteria.}
 }
 \details{
-Ordering a matrix such that large values are closer together
-may help to uncover structure (blocks) if it
-is plotted as an image.
-Currently, the following criteria to judge the quality of a
-certain ordering of a matrix are implemented:
+Ordering a matrix such that large values are closer together may help to
+uncover structure (blocks) if it is plotted as an image.  Currently, the
+following criteria to judge the quality of a certain ordering of a matrix are
+implemented:
 
 \describe{
 \item{\code{"bond\_energy"}, \code{"me"}}{Bond Energy and Measure of
@@ -149,7 +146,7 @@ weighted by the difference of column indices, i.e.,
 }
 }}
 \value{
-  A vector of real values.
+  A named vector of real values.
 }
 \references{
 Caraux, G., and Pinloche, S. (2005): Permutmatrix: A Graphical Environment
