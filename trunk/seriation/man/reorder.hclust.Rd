@@ -9,7 +9,7 @@
 \method{reorder}{hclust}(x, dist, method = NULL, control = NULL, \ldots)
 }
 \arguments{
-  \item{x}{a hclust object (see \code{\link{hclust}}).}
+  \item{x}{a \code{hclust} object (see \code{\link{hclust}}).}
   \item{dist}{the \code{dist} object used for clustering.}
   \item{method}{ a character string with the name of the reorder 
 	method (default: \code{"optimal"}).}
@@ -27,7 +27,6 @@ Currently, the following methods are implemented:
 \describe{
     \item{"optimal"}{Optimal leaf ordering (Bar-Joseph et al. 2001).
       
-        Provides an interface to the optimal leaf ordering algorithm. 
       The used objective measure for leaf ordering is the
       sum of the distances along the (Hamiltonian) path connecting the leaves
       in the given order. This algorithm produces the ordering with a minimal
@@ -63,17 +62,16 @@ Data.
 \emph{Journal of Computational and Graphical Statistics,} 
 \bold{13}(4), 788--806.
 }
-\author{Christian Buchta and Michael Hahsler}
+%\author{Christian Buchta and Michael Hahsler}
 \seealso{
   \code{\link{dist}} and \code{\link{hclust}} for hierarchical clustering,
   \code{\link{criterion}} for computing the objective value of a 
-  leaf ordering, and \code{link{heatmap_opt}} for optimally 
-  reordered heat maps.
+  leaf ordering.
 }
 \examples{
 ## generate some random data
 d <- dist(matrix(runif(30), ncol=2))
-hc <- hclust(d)
+hc <- Order(hclust(d))
 hc_opt <- reorder(hc, d, method="optimal")
 hc_gru <- reorder(hc, d, method="gw")
 
@@ -84,16 +82,16 @@ plot(hc_gru, main="Gruvaeus-Wainer")
 plot(hc_opt, main="Optimal leaf ordering")
 
 ## compare images
-pimage(d, Order(hc$order))
-pimage(d, Order(hc_gru$order))
-pimage(d, Order(hc_opt$order))
+pimage(d, hc)
+pimage(d, hc_order)
+pimage(d, hc_opt)
 par(op)
 
 ## compare lengths
 criterion(d)
-criterion(d, Order(hc$order))
-criterion(d, Order(hc_gru$order))
-criterion(d, Order(hc_opt$order))
+criterion(d, hc)
+criterion(d, hc_gru)
+criterion(d, hc_opt)
 
 
 ## application: heatmap (see also heatmap_opt)

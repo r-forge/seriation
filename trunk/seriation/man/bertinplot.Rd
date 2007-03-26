@@ -49,7 +49,7 @@ bertinplot(x, order = NULL, highlight = TRUE,  options = NULL)
 \details{
 The plot is organized as a matrix of symbols. The symbols are drawn
 by a panel function, where all symbols of a row are drawn 
-by on call of the function (using vectorization). The interface for the
+by one call of the function (using vectorization). The interface for the
 panel function is \code{panel.myfunction(value, spacing, hl)}.
 \code{value} is the vector of values for a row scaled between 0 and 1, 
 \code{spacing} contains the relative space between symbols and
@@ -67,7 +67,7 @@ In: Proceedings of the SoftStat '97 (Advances in Statistical Software 6),
     \code{\link{Order}},
     Package \pkg{grid}.
 }
-\author{Michael Hahsler}
+%\author{Michael Hahsler}
 \examples{
 data("Irish")
 scale_by_rank <- function(x) apply(x, 2, rank)

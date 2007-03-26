@@ -5,7 +5,7 @@
 \title{Criterion for the quality of a permutation of a dissimilarity 
 or general matrix}
 \description{
-  Compute different criteria to judge the quality of a permuation
+  Compute different criteria to judge the quality of a permutation
   of a dissimilarity or general matrix. 
 }
 \usage{
@@ -15,21 +15,21 @@ criterion(x, order = NULL, method = NULL)
 %\method{criterion}{matrix}(x, order, method = NULL)
 }
 \arguments{
-  \item{x}{an object of class \code{dist} a matrix.}
+  \item{x}{an object of class \code{dist} or a matrix.}
   \item{order}{
       an object of class \code{Order} suitable to rearrange \code{x}.
       If \code{NULL}, the identity permutation is used.
     }
-  \item{method}{a vector of character strings with the names of the criterions
+  \item{method}{a vector of character strings with names of the criteria
       (default: \code{"path\_length"} for \code{dist} and
       \code{"bond\_energy"} for matrix).  The dummy method \code{"all"}
       can be used to calculate all available criteria.}
 }
 \details{
-Ordering a matrix such that large values are closer together may help to
-uncover structure (blocks) if it is plotted as an image.  Currently, the
-following criteria to judge the quality of a certain ordering of a matrix are
-implemented:
+Permutations of rows and columns of a data  matrix such that large values are
+closer together may help to uncover structure (blocks).  Currently, the
+following criteria to judge the quality of a certain permutations of a matrix
+are implemented:
 
 \describe{
 \item{\code{"bond\_energy"}, \code{"me"}}{Bond Energy and Measure of
@@ -45,71 +45,67 @@ implemented:
 
     \deqn{a_{0,j}=a_{M+1,j}=a_{i,0}=a_{i,N+1}=0.}
     
-    A higher bond energy indicates a better ordering.
-    
+    A higher bond energy indicates a better arrangement.
     Maximizing the bond energy is the objective of the bond energy algorithm 
     (BEA).
-
+    
     The measure of effectiveness (ME) is defined as \eqn{1/2 * bond\ energy}.
 }
 
-\item{\code{"moore_stress"}, \code{"neumann_stress"}}{ STRESS (Niermann 2005).
+\item{\code{"moore_stress"}, \code{"neumann_stress"}}{ Stress (Niermann 2005).
 
-STRESS measures the conciseness of the presentation of a matrix/table and can
+Stress measures the conciseness of the presentation of a matrix/table and can
 be seen as a purity function which compares the values in a matrix/table with
 its neighbors. The stress measure used here is computed as the sum of squared
 distances of each matrix entry from its adjacent entries. The following types
 of neighborhoods are available:
 
   \describe{
-    \item{\code{moore}:}{comprises the eight adjacent entries (five at the
-    margins and three at the corners).}
-    \item{\code{neumann}:}{comprises the four adjacent entries (three at the
-    margins and two at the corners).}
+    \item{\code{moore}:}{comprises the eight adjacent entries.}
+    \item{\code{neumann}:}{comprises the four adjacent entries.}
   }
   }
 }
 
-For the special case for a symmetric dissimilarity matrix 
+For a symmetric dissimilarity matrix 
 \eqn{D} with elements \eqn{d(i,j)} where \eqn{i, j = 1 \ldots p}, 
 the aim is generally to place low distance values close to the diagonal.
 The following criteria to judge the quality of a
-certain ordering of a dissimilarity matrix 
+certain permutation of the objects in a dissimilarity matrix 
 are currently implemented:
 \describe{
 \item{\code{"path\_length"}}{Hamiltonian path length (Caraux and Pinloche 2005).
     
-      The order of a dissimilarity matrix corresponds to a path through a 
-    graph where each node is
-    visited only once, i.e., a Hamilton path. The length of a path is defined 
-    as the sum of the edge weights, i.e., disimilarities.
+    The order of the objects in a dissimilarity matrix corresponds to a path
+    through a graph where each node represents an object and is visited exactly
+    once, i.e., a Hamilton path. The length of the path is defined as the sum
+    of the edge weights, i.e., dissimilarities.
     
     The length of the Hamiltonian path is equal to the 
     value of the minimal span loss function (as used by Chen 2002).
-    Both notions are related to the \emph{traveling salesman problem.}}
+    Both notions are related to the \emph{traveling salesperson problem.}
   
-    If \code{order} is not unique \code{NA} is returned.
-    If there are non-finite distance values \code{NA} is returned.
+    If \code{order} is not unique or
+    there are non-finite distance values \code{NA} is returned.}
+
 \item{\code{"least\_squares"}}{Least squares criterion (Caraux and Pinloche 2005). 
     
     The sum of squares of deviations between the
-    dissimilarities and rank differences (distance in the matrix) between two
+    dissimilarities and rank differences (in the matrix) between two
     elements: 
-    
     \deqn{\sum_i \sum_j (d(i,j) - |i-j|)^2,}
-    
-    where \eqn{d(i,j)} 
-    is an element of the dissimilarity matrix \eqn{D} and
-    \eqn{|i-j|} is the rank difference.
+    where \eqn{d(i,j)} is an element of the dissimilarity matrix \eqn{D} and
+    \eqn{|i-j|} is the rank difference between the objects.
    
-    
     Note that if Euclidean distance is used to calculate \eqn{D} from
     a data matrix \eqn{X}, the order of the elements in \eqn{X} by projecting 
     them on the first principal component of \eqn{X} minimizes this criterion.
-    The least squares criterion is also related to unidimensional scaling.
+    The least squares criterion is related to 
+    \emph{unidimensional scaling.}
     }
 
 \item{\code{"inertia"}}{Inertia criterion (Caraux and Pinloche 2005). 
+    
     Measures the moment of the inertia of dissimilarity values 
     around the diagonal as
     
@@ -119,30 +115,30 @@ are currently implemented:
     \eqn{d(i,j)} gives the weight. This criterion gives higher weight
     to values farther away from the diagonal. It increases with quality.}
   
-  \item{\code{"ar\_i", "ar\_s", "ar\_w"}}{Anti-Robinson events (Chen 2002).
+\item{\code{"ar\_i", "ar\_s", "ar\_w"}}{Anti-Robinson events (Chen 2002).
     
-      A Robinson matrix (Robinson 1951) has its columns arranged such that the
-values of the cells always decrease when moving from the diagonal. In practice
-matrices rarely are Robinson matrices. The three criteria measure the
-differences to of a matrix to a Robinson matrix.  All three criteria use the 
-anti-Robinson events, but weight them differently:
+    A Robinson matrix (Robinson 1951) has its columns arranged such that the
+    values of the cells always decrease when moving away from the diagonal. In
+    practice matrices rarely are Robinson matrices. The three criteria measure
+    the differences of a matrix to a Robinson matrix.  All three criteria
+    use the anti-Robinson events, but weight them differently:
 
     \deqn{\sum_{i=1}^p (\sum_{j<k<i} I(d(i,j)<d(i,k)) w(i,j,k)%
     + \sum_{i<j<k} I(d(i,j) > d(i,k)) w(i,j,k)),}
     
     where \eqn{I} is an indicator function and \eqn{w(i,j,k)} is a weight.
-    
-For the raw number of events (\code{"ar\_i"}), the weight is 
-\deqn{w(i,j,k) = 1.}
-    
-For the sum of absolute anti-Robinson deviations (\code{"ar\_s"}), the
-deviations are used as the weight, i.e.,  
-\deqn{w(i,j,k) = |d(i,j) - d(i,k)|.}
 
-For the weighted sum of absolute anti-Robinson deviations
-(\code{"ar\_w"}), the deviations are
-weighted by the difference of column indices, i.e., 
-\deqn{w(i,j,k) = |j-k||d(i,j) - d(i,k)|.}
+    For the raw number of events (\code{"ar\_i"}), the weight is 
+    \deqn{w(i,j,k) = 1.}
+
+    For the sum of absolute anti-Robinson deviations (\code{"ar\_s"}), the
+    deviations are used as the weight, i.e.,  
+    \deqn{w(i,j,k) = |d(i,j) - d(i,k)|.}
+
+    For the weighted sum of absolute anti-Robinson deviations
+    (\code{"ar\_w"}), the deviations are
+    weighted by the difference of column indices, i.e., 
+    \deqn{w(i,j,k) = |j-k||d(i,j) - d(i,k)|.}
 }
 }}
 \value{
@@ -172,9 +168,9 @@ Problem decomposition and data reorganization by a clustering technique,
 \bold{20}(5), 993-1009.
 
 }
-\author{Christian Buchta and Michael Hahsler}
+%\author{Christian Buchta and Michael Hahsler}
 \examples{
-## create random data and calculate distance
+## create random data and calculate distances
 m <- matrix(runif(10),ncol=2)
 d <- dist(m)
 
@@ -182,7 +178,7 @@ d <- dist(m)
 o <- Order(reorder(m, method = "fpc")$row)
 o
 
-## compare the values of the least squares criterion
+## compare the values for all available criteria
 rbind(
     unordered = criterion(d, method = "all"),
     ordered = criterion(d, o, method = "all")

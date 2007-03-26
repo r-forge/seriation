@@ -12,9 +12,9 @@ For symmetric matrices and objects of class \code{dist} the subclass
 \code{Order_vector} exists. For asymmetric matrices a subclass
 \code{Order_matrix} containing a row and a column ordering is provided.
 
-Note that an order represented by this class is not checked to be a
+Note that an order represented by this class can but does not need to be a
 correct permutation (a bijection) for the original objects/rows/columns. 
-It can als be used to arrange only a subset of the original 
+It can also be used to extract only a subset of the original 
 objects/rows/columns and even duplicate some of them.
 }
 \usage{
@@ -32,7 +32,7 @@ Order(order = NULL, row = NULL, col = NULL,
   \item{order}{an integer (permutation) vector suitable for symmetric
       matrices and \code{dist} objects. As a special case, \code{order}
       can be an object of class \code{hclust}. In this case, the order in the 
-      \code{hclust} is used.}
+      \code{hclust} object is used.}
   \item{row, col}{integer (permutation) vectors for rows and columns. 
       \code{NULL} indicates an identity permutation.}
   \item{method}{an optional string with the method which generated the 

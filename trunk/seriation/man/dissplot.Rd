@@ -4,17 +4,17 @@
 \alias{print.cluster_dissimilarity_matrix}
 \title{Dissimilarity Plot}
 \description{
-Visualizes a reordered (seriated) dissimilarity matrix using matrix shading.
+Visualizes a dissimilarity matrix using seriation and matrix shading.
 Entries with lower dissimilarities (higher similarity) are plotted darker.
 Such a plot can be used to uncover hidden structure in the data.
 
-The plot can also be used to visualize cluster quality (see Ling, 1973).
+The plot can also be used to visualize cluster quality (see Ling 1973).
 Objects belonging to the same cluster are displayed in consecutive order. The
-placement of clusters and the within cluster order is done by various seriation
-algorithms which try to place large similarities/small dissimilarities close to
+placement of clusters and the within cluster order is obtained by a seriation
+algorithm which tries to place large similarities/small dissimilarities close to
 the diagonal. Compact clusters are visible as dark squares (low dissimilarity)
-on the diagonal of the plot. Additionally a Silhouette plot (Rousseeuw, 1987)
-is added. This visualization is similar to CLUSION (see Strehl and Ghosh, 2002),
+on the diagonal of the plot. Additionally, a Silhouette plot (Rousseeuw 1987)
+is added. This visualization is similar to CLUSION (see Strehl and Ghosh 2002),
 however, allows for using arbitrary reordering algorithms.
 }
 \usage{
@@ -23,11 +23,11 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
 \arguments{
   \item{x}{ an object of class \code{dist}.}
   \item{labels}{ \code{NULL} or an integer vector of the same length as
-      rows/columns in \code{x} indicating the membership for each element in
-      \code{x} as consecutive integers starting with one. The labels are used
-      to reorder the matrix.}
+      rows/columns in \code{x} indicating the cluster membership for each
+      object in \code{x} as consecutive integers starting with one. The labels
+      are used to reorder the matrix.}
   \item{method}{ a single character strings indicating the used
-      seriation algorithm (\code{NA} if to plot the matrix as is). The same
+      seriation algorithm (\code{NA} to plot the matrix as is). The same
       algorithm is used to reorder the clusters (inter cluster seriation) as
       well as the objects within each cluster (intra cluster seriation). 
 
@@ -35,7 +35,7 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
       required, \code{method} can be a \code{list} of two named elements
       (\code{inter_cluster} and \code{intra_cluster} each containing the name
       of the respective seriation method. See \code{reorder.dist} for available
-      reorder algorithms. 
+      algorithms. 
 
       For intra cluster reordering the special
       method \code{silhouette width} is available. Objects in clusters are
@@ -100,7 +100,7 @@ elements:
 
 This object can be used for plotting via
 \code{plot(x, options = NULL, ...)}, where \code{x} is the
-object.
+object and \code{options} contains a list with plotting options (see above).
 }
 \references{
 Ling, R.F. (1973):
@@ -127,7 +127,7 @@ visualization for high-dimensional data mining.
    package \pkg{grid} and
    \code{\link{reorder}}.
 }
-\author{Michael Hahsler}
+%\author{Michael Hahsler}
 \examples{
 data("iris")
 d <- dist(iris[1:4])
@@ -135,7 +135,7 @@ d <- dist(iris[1:4])
 ## plot original matrix
 res <- dissplot(d, method = NA)
 
-## plot reordered matrix using the farthest insertion algorithm (from tsp)
+## plot reordered matrix using the nearest insertion algorithm (from tsp)
 res <- dissplot(d, method = "tsp", control = list(method = "nearest"),
     options = list(main = "Seriation (farthest insertion)"))
 
@@ -143,7 +143,7 @@ res <- dissplot(d, method = "tsp", control = list(method = "nearest"),
 library("cluster")
 l <- pam(d, 3, cluster.only = TRUE)
 
-## we use a grid.layout to place several plots on a page
+## we use a grid layout to place several plots on a page
 grid.newpage()
 pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2), 
     gp = gpar(fontsize = 8)))

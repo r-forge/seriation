@@ -8,7 +8,7 @@ results of 24 psychological tests given to 145 seventh and eighth grade
 students in a Chicago suburb. This data set contains the correlation matrix
 for the 24 test results.
 
-The data set was also used as an example for vizualization of cluster analysis
+The data set was also used as an example for visualization of cluster analysis
 by Ling (1973).
 
 }

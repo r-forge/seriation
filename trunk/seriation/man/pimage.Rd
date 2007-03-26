@@ -5,7 +5,7 @@
 \title{Proper matrix image plots}
 \description{
   Provides methods for plotting proper image plots for 
-  matrix and objects of class \code{dist}.
+  matrix and \code{dist} objects.
 }
 \usage{
 pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)
@@ -24,7 +24,7 @@ pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)
       matrix larger values are displayed darker and for \code{dist} smaller
       distances are darker). For matrices containing logical data, black and
       white is used. }
-  \item{xlab, ylab}{labels for the x and y axis.}
+  \item{xlab, ylab}{labels for the x and y axes.}
   \item{axes}{ a logical indicating whether to add axes using the
       labels of \code{x}. The default value (\code{NULL}) shows only axes
       if the dimension is below 32 (so it is reasonable to show labels).}
@@ -33,12 +33,12 @@ pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)
   \item{\dots}{further arguments passed on to \code{image} in \pkg{graphics}.}
 }
 \details{
-  Plots a matrix in its original row and column
-  orientation. This means, in a plot the columns become the x-coordinates 
-  and the reversed rows the y-coordinates.
+  Plots a matrix in its original row and column orientation. This means, in a
+  plot the columns become the x-coordinates and the reversed rows the
+  y-coordinates.
 
   If \code{x} is of class \code{dist} it is converted to full-storage
-  representation and dispatched to the matrix method.
+  representation before plotting.
 }
 \author{Christian Buchta and Michael Hahsler}
 \seealso{
@@ -52,7 +52,7 @@ pimage(x, main = "random data")
 ## plot reorderd matrix and axis separately
 pimage(x, reorder(x), col = c("white", "green"), axes = FALSE,
     main = "reordered data")
-axis(1, at = 1:ncol(x))				            # columns
+axis(1, at = 1:ncol(x))                         # columns
 axis(2, at = 1:nrow(x), labels= rev(1:nrow(x))) # reversed rows
 
 ## distances

@@ -2,10 +2,8 @@
 \alias{reorder.dist}
 \title{Reorder a dissimilarity object}
 \description{
-Finds a linear order of the objects by moving small dissimilarity values
+Finds a linear order of objects by moving small dissimilarity values
 as close as possible to the diagonal of the symmetric dissimilarity matrix.
-Using a image plot of the reordered dissimilarity matrix
-can show a structure in the data which was not visible in the original matrix.
 }
 \usage{
 \method{reorder}{dist}(x, method = NULL, control = NULL, \ldots)
@@ -34,7 +32,7 @@ can show a structure in the data which was not visible in the original matrix.
       correlation matrix. 
       
       The rank of the matrix \eqn{R^n} falls with increasing \eqn{n}. The 
-      first \eqn{R^n} in the sequence is found which has a rank of 2. 
+      first \eqn{R^n} in the sequence which has a rank of 2 is found. 
       Projecting all points in this matrix on the first two eigenvectors,
       all points fall on an ellipse. The order of the points on this ellipse
       is the resulting order. 
@@ -44,7 +42,7 @@ can show a structure in the data which was not visible in the original matrix.
       In this implementation the top most cutting point is used.
       }  
     
-\item{{"tsp"}}{Traveling salesman problem solver. 
+\item{{"tsp"}}{Traveling salesperson problem solver. 
       
       A solver in \pkg{tsp} can be used (see \code{solve_TSP} in
       package \pkg{tsp}). The solver method can be passed on via the
@@ -55,15 +53,12 @@ looking for a path representing a linear order, we need to find the best
 cutting point.  Climer and Zhang (2006) suggest to add a dummy city with equal
 distance to each other city before generating the tour. The place of this dummy
 city in an optimal tour with minimal length is the best cutting point (it lies
-between the most distant cities). However, most heuristics normally
-only find suboptimal tours and thus it is not guaranteed that the dummy city
-would be the best place to cut. Therefore, we search the tour for the two most
-distant cities and cut there.}
+between the most distant cities).} 
     }
 }
 \value{
 Returns the order as an object of class \code{Order_symmetric} which is a list
-containing the order as an integer vector as element \code{order}.
+containing the order (an integer vector) as element \code{order}.
 }
 \references{ 
 Chen, C. H. (2002):  Generalized Association Plots: Information

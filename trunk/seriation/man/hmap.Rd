@@ -2,7 +2,7 @@
 \alias{hmap}
 \title{Plot heat map reordered by different algorithms}
 \description{
-Provides several reordered version of a heat map.
+Provides several reordered versions of heat map.
 }
 \usage{
 hmap(x, dist_row = NULL, dist_col = NULL, distfun = dist,
@@ -74,7 +74,7 @@ For \code{dendrogram = TRUE} the list can contain additional elements
 (see \code{heatmap} for details).
     
     }
-\author{Michael Hahsler}
+%\author{Michael Hahsler}
 \seealso{
 \code{\link{reorder.hclust}},
 \code{\link{reorder.dist}} and
@@ -82,7 +82,7 @@ For \code{dendrogram = TRUE} the list can contain additional elements
 \examples{
 data("Zoo")
 x <- as.matrix(Zoo[, -17])
-x <- scale(x, center = FALSE)   # scale the data
+x <- scale(x, center = FALSE)
 
 ## optimally reordered heatmap
 hmap(x)

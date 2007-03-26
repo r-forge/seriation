@@ -2,9 +2,8 @@
 \alias{reorder.matrix}
 \title{Reorder a matrix}
 \description{
-Tries to find an order for the objects (rows or columns) by moving large values
-closer together. Using a image plot of the reordered matrix can show a
-structure in the data which was not visible in the original matrix.
+Tries to find an order for the rows and columns of a matrix by moving large
+values closer together creating a block structure.
 }
 \usage{
 \method{reorder}{matrix}(x, method = NULL, control = NULL, \ldots)
@@ -14,7 +13,7 @@ structure in the data which was not visible in the original matrix.
   \item{method}{ a character string with the name of the seriation method
     (default: \code{"murtagh"}).}
   \item{control}{ a list of control options passed on to the reorder
-      algorithms.}
+      algorithm.}
   \item{\ldots}{ further arguments (unused).}
     }
 \details{
@@ -23,22 +22,21 @@ structure in the data which was not visible in the original matrix.
     \item{\code{"bea"}}{Bond Energy Algorithm (BEA; McCormick 1972).
      
 The algorithm tries to maximize the summed bond energy (see bond energy
-     in \code{criterion}) of a nonnegative matrix. Due to the definition
+     in \code{criterion}) of a non-negative matrix. Due to the definition
      of this measure, the tasks of ordering rows and columns is separable
      and can  be solved independently.
      
     A row is arbitrarily placed; then rows are positioned one by one. When this
     is completed, the columns are treated similarly. The overall procedure
-    amounts to two approximate traveling salesman problems (TSP), one on the
+    amounts to two approximate traveling salesperson problems (TSP), one on the
     rows and one on the columns. The so-called `best insertion strategy' is
     used: rows (or columns) are inserted into the current permuted list of rows
     (or columns). Several consecutive runs of the algorithm might improve the
     energy.  
       
-Note that Arabie and Hubert (1990)
-recommend that it be used with ratio scale data and they question its use 
-with non-binary data if the objective is to find a seriation or 
-one-dimensional ordering of rows and columns. 
+Note that Arabie and Hubert (1990) question its use with non-binary data if the
+objective is to find a seriation or one-dimensional orderings of rows and
+columns. 
       
 The BEA code used in this package was implemented by Fionn Murtagh.
 }
