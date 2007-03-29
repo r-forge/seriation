@@ -4,22 +4,21 @@ reorder.dist <- function(x, method = NULL, control = NULL, ...){
     
     ## build-in methods
     methods <- c(
+        "tsp",    # standard
         "chen",    
-        "tsp"    # standard
+        "mds"
     ) 
     
-    methodNr <- if(is.null(method)) 2
+    methodNr <- if(is.null(method)) 1
     else pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:", sQuote(method)))
 
-    ## work horses
-    if(methodNr == 1) {
-        order <- .reorder_chen(x)
-    }else if(methodNr == 2) {
-        order <- .reorder_tsp(x, control)
-    }
+    workhorse <- 
+    if(methodNr == 1) .reorder_tsp
+    else if(methodNr == 2) .reorder_chen
+    else if(methodNr == 3) .reorder_mds
 
-    Order(order = order, method = methods[methodNr])
+    Order(order = workhorse(x, control), method = methods[methodNr])
 }
 
 
@@ -28,7 +27,7 @@ reorder.dist <- function(x, method = NULL, control = NULL, ...){
 ## with rank 2. The elements are projected into the plane spanned by the 
 ## first two eigenvectors. All points are lying on a ellipse. The order
 ## of the elements on the ellipse is returned (see Chen 2002). 
-.reorder_chen <- function(x){
+.reorder_chen <- function(x, control){
     x <- as.matrix(x)
     
     rank <- qr(x)$rank
@@ -54,20 +53,39 @@ reorder.dist <- function(x, method = NULL, control = NULL, ...){
     right <- right[order(e[right,2], decreasing = TRUE)]
     left <- which(e[,1] < 0)
     left <- left[order(e[left,2])]
-    o <- c(right,left)
-
-    o
+    
+    c(right,left)
 }
 
 
-## TSPs
 ## Bridge to package tsp 
 .reorder_tsp <- function(x, control = NULL){
     ## add a dummy city for cutting
     tsp <- insert_dummy(TSP(x), n = 1, label = "cut_here")
+   
     tour <- solve_TSP(tsp, method = control$method, 
         control = control$control)
-    order <- cut_tour(tour, cut = "cut_here", exclude_cut = TRUE)
-    order
+    
+    cut_tour(tour, cut = "cut_here", exclude_cut = TRUE)
 }
+
+
+## Multidimensional scaling
+.reorder_mds <- function(x, control = NULL){
+    if(is.null(control$method) || control$method == "cmdscale" ) {
+        sc <- cmdscale(x, k=1)
+        return(order(sc[,1]))
+    
+    }else if(control$method == "isoMDS"){
+        sc <- isoMDS(x+1e-6, trace = FALSE, k=1)
+        return(order(sc$points[,1]))
+    
+    }else if(control$method == "sammon") {
+        sc <- sammon(x+1e-6, trace = FALSE, k=1)
+        return(order(sc$points[,1]))
+
+    }else stop("unknown method")
+
+}
+
 

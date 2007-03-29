@@ -17,23 +17,17 @@ reorder.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
 
     ## work horses
-    if(methodNr == 1) {
-        res <- .reorder_optimal(x, dist)
-    }else if (methodNr == 2) {
-        res <- .reorder_gruvaeus(x, dist)
-    }
-
-    Order(res, method = methods[methodNr])
+    workhorse <-
+    if(methodNr == 1) .reorder_optimal
+    else if (methodNr == 2) .reorder_gruvaeus
+    
+    Order(workhorse(x, dist), method = methods[methodNr])
 }
 
 
 ## wrapper for reorder.hclust in gclus
-.reorder_gruvaeus <- function(hclust, dist) {
-    ## pre R 2.4 code
-    # return(get("reorder.hclust",
-    #           envir = as.environment("package:gclus"))(hclust, dist))
-    gclus::reorder.hclust(hclust, dist)
-}
+.reorder_gruvaeus <- function(hclust, dist) gclus::reorder.hclust(hclust, dist)
+
 
 
 ## wrapper to the optimal leaf ordering algorithm

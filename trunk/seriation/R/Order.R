@@ -8,11 +8,15 @@ Order <- function(order = NULL, row = NULL, col = NULL,
     method = NULL){
    
     if(!is.null(order)) {
-        if(inherits(order, "Order")) return(order)
+        if(inherits(order, "Order")) {
+            if(!is.null(method)) attr(order, "method") <- as.character(method)
+            return(order)
+        }
 
         if(inherits(order, "hclust")) {
             class(order) <- c("Order", "Order_vector", class(order))
             if(!is.null(method)) attr(order, "method") <- as.character(method)
+            else attr(order, "method") <- "hclust"
             return(order)
         }
 
@@ -59,6 +63,8 @@ print.Order <- function(x, ...) {
             "not of class", sQuote("Order")))
 
     if(inherits(order, "Order_vector")) {
+        if(is.null(order$order)) return(TRUE)
+
         if(inherits(x, "dist")) {
             if(length(order$order) > attr(x, "Size")
                 || any(order$order > attr(x, "Size")))

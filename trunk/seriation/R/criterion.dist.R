@@ -12,7 +12,10 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
         "inertia",
         "ar_i",
         "ar_s",
-        "ar_w"
+        "ar_w",
+        "me",
+        "moore_stress",
+        "neumann_stress"
     )
 
     if(is.null(method)) method <- methods[1]
@@ -50,6 +53,9 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
         crit <- .ar(x, order, method = 2)  # s
     }else if (methodNr == 6) {
         crit <- .ar(x, order, method = 3)  # w
+    }else if (methodNr > 6) {
+        crit <- criterion.matrix(as.matrix(x), order = Order(order), 
+            method = method)
     }
 
     names(crit) <- methods[methodNr]

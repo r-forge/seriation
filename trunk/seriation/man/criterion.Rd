@@ -22,7 +22,7 @@ criterion(x, order = NULL, method = NULL)
     }
   \item{method}{a vector of character strings with names of the criteria
       (default: \code{"path\_length"} for \code{dist} and
-      \code{"bond\_energy"} for matrix).  The dummy method \code{"all"}
+      \code{"me"} for matrix).  The dummy method \code{"all"}
       can be used to calculate all available criteria.}
 }
 \details{
@@ -175,7 +175,7 @@ m <- matrix(runif(10),ncol=2)
 d <- dist(m)
 
 ## get an order for rows (optimal for the least squares criterion)
-o <- Order(reorder(m, method = "fpc")$row)
+o <- reorder(m, method = "pca", margin = 1)
 o
 
 ## compare the values for all available criteria

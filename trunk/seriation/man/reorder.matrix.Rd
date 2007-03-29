@@ -6,7 +6,8 @@ Tries to find an order for the rows and columns of a matrix by moving large
 values closer together creating a block structure.
 }
 \usage{
-\method{reorder}{matrix}(x, method = NULL, control = NULL, \ldots)
+\method{reorder}{matrix}(x, method = NULL, control = NULL, 
+    margin = c(1,2),\ldots)
 }
 \arguments{
   \item{x}{ a matrix.}
@@ -14,6 +15,9 @@ values closer together creating a block structure.
     (default: \code{"murtagh"}).}
   \item{control}{ a list of control options passed on to the reorder
       algorithm.}
+  \item{margin}{ a vector giving the margins to be reordered. \code{1} 
+      indicates rows, \code{2} indicates columns, \code{c(1,2)} indicates 
+      rows and columns.}
   \item{\ldots}{ further arguments (unused).}
     }
 \details{
@@ -53,7 +57,7 @@ The BEA code used in this package was implemented by Fionn Murtagh.
     Note that the ordering can change from run to run since ties are broken
     randomly.}
 
-\item{\code{"fpc"}}{First principal component. 
+\item{\code{"pca"}}{ Principal component analysis.
       
         Uses the projection of the data on its
       first principal component to determine the order. 
@@ -102,7 +106,7 @@ order <- reorder(x)
 pimage(x, order, main = "Murtagh")
 criterion(x, order, method = "all")
 
-order <- reorder(x, method="fpc")
+order <- reorder(x, method="pca")
 pimage(x, order, main = "first principal component")
 criterion(x, order, method = "all")
 

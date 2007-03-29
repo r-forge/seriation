@@ -4,8 +4,8 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
 
     ## methods
     methods <- c(
-        "bond_energy",      # default
-        "me",
+        "me",                   # default
+        "bond_energy",      
         "moore_stress",
         "neumann_stress"
     )
@@ -27,9 +27,9 @@ criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
     
     ## work horses
     if (methodNr == 1) {
-        crit <- .bond_energy(x, order)
-    }else if (methodNr == 2) {
         crit <- 0.5 * .bond_energy(x, order)
+    }else if (methodNr == 2) {
+        crit <- .bond_energy(x, order)
     }else if (methodNr == 3) {
         crit <- .stress(x, order, 
             type = "moore")
