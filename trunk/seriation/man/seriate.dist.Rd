@@ -98,7 +98,7 @@ Remedies, and Applications,
 %\author{Michael Hahsler}
 \examples{
 data("iris")
-x <- as.matrix(iris[,1:4])
+x <- as.matrix(iris[-5])
 d <- dist(x)
 
 ## compare the different methods

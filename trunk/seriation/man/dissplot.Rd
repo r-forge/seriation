@@ -130,14 +130,14 @@ visualization for high-dimensional data mining.
 %\author{Michael Hahsler}
 \examples{
 data("iris")
-d <- dist(iris[1:4])
+d <- dist(iris[-5])
 
 ## plot original matrix
 res <- dissplot(d, method = NA)
 
 ## plot reordered matrix using the nearest insertion algorithm (from tsp)
-res <- dissplot(d, method = "tsp", control = list(method = "nearest"),
-    options = list(main = "Seriation (farthest insertion)"))
+res <- dissplot(d, method = "tsp",
+    options = list(main = "Seriation (TSP)"))
 
 ## cluster with pam (we know iris has 3 clusters)
 library("cluster")

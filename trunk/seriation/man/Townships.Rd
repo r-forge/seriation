@@ -21,13 +21,13 @@ data("Townships")
 
 ## original data
 pimage(Townships)
-criterion(Townships, method = "all")
+criterion(Townships)
 
 
 ## seriated data
-order <- seriate(Townships, method ="bea")
+order <- seriate(Townships, method = "bea")
 pimage(Townships, order)
-criterion(Townships, order = order, method = "all")
+criterion(Townships, order)
 
 }
 \keyword{datasets}

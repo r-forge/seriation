@@ -59,7 +59,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         lines       = TRUE, 
         silhouettes = TRUE,
         threshold   = NULL,
-        main        = paste("cluster proximity plot:", 
+        main        = paste("Dissimilarity plot:", 
             dim,"x",dim),
         col         = hcl(h = 0, c = 0, l = seq(20, 95, len = 100)), 
         colorkey    = TRUE, 

@@ -96,7 +96,7 @@ criterion(d, hc_opt)
 
 ## application: heatmap (see also heatmap_opt)
 data("iris")
-x <- scale(as.matrix(iris[1:4]), center = FALSE)
+x <- scale(as.matrix(iris[-5]), center = FALSE)
 d_c <- dist(t(x))
 dend_c <- as.dendrogram(seriate(hclust(d_c), d_c))
 

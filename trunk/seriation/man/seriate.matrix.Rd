@@ -98,7 +98,7 @@ Physica Verlag, 9--31.
 %\author{Michael Hahsler}
 \examples{
 data("iris")
-x <- as.matrix(iris[,1:4])
+x <- as.matrix(iris[-5])
 
 ## to make the variables comparable, we scale the data
 x <- scale(x, center = FALSE)
