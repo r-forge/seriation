@@ -51,9 +51,9 @@ lead to an  \code{Order\_matrix} object.
 %\author{}
 \seealso{
 \code{\link{rearrange}},
-\code{\link{reorder.matrix}},
-\code{\link{reorder.dist}},
-\code{\link{reorder.hclust}}
+\code{\link{seriate.matrix}},
+\code{\link{seriate.dist}},
+\code{\link{seriate.hclust}}
 }
 \examples{
 o <- Order(c(1:10))

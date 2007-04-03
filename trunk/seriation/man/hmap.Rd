@@ -16,12 +16,12 @@ hmap(x, dist_row = NULL, dist_col = NULL, distfun = dist,
       \code{distfun}.}
   \item{distfun}{function used to compute the distance (dissimilarity) between
       both rows and columns (default: \code{dist}). }
-  \item{dendrogram}{a logical indicating whether to use dendrogram reordering 
-      or distance matrix based reordering.}
-  \item{method}{a character strings indicating the used reorder algorithm 
-      (see \code{reorder.hclust} for dentrogram reordering and 
-      \code{reorder.dist} for matrix based reordering).}
-  \item{control}{a list of control options passed on to the reorder algorithm.
+  \item{dendrogram}{a logical indicating whether to use dendrogram seriation
+      or distance matrix based seriation.}
+  \item{method}{a character strings indicating the used seriation algorithm 
+      (see \code{seriate.hclust} for dentrogram seriation and 
+      \code{seriate.dist} for matrix based seriation).}
+  \item{control}{a list of control options passed on to the seriation algorithm.
       For \code{dendrogram = TRUE} an element named \code{hclustfun} can be
       used to specify a function for hierarchical clustering (default:
       \code{hclust}).} 
@@ -51,11 +51,11 @@ hmap(x, dist_row = NULL, dist_col = NULL, distfun = dist,
       \code{options} (see above).}
 }
 \details{
-For \code{dendrogram = TRUE}, \code{reorder.hclust} 
+For \code{dendrogram = TRUE}, \code{seriate.hclust} 
 with the default method \code{"optimal"} is used for arranging the
 dendrogramms and \code{x}. \code{heatmap} is used for plotting.
 
-For \code{dendrogram = FALSE}, \code{reorder.dist} 
+For \code{dendrogram = FALSE}, \code{seriate.dist} 
 with the default method \code{"tsp"}
 (a traveling salesperson solver) for arranging \code{x} is used.
 \pkg{grid} code implemented in this package 
@@ -76,8 +76,8 @@ For \code{dendrogram = TRUE} the list can contain additional elements
     }
 %\author{Michael Hahsler}
 \seealso{
-\code{\link{reorder.hclust}},
-\code{\link{reorder.dist}} and
+\code{\link{seriate.hclust}},
+\code{\link{seriate.dist}} and
 \code{\link[stats]{heatmap}} in \pkg{stats}.}
 \examples{
 data("Zoo")

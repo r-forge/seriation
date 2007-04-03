@@ -65,6 +65,7 @@ In: Proceedings of the SoftStat '97 (Advances in Statistical Software 6),
 }
 \seealso{
     \code{\link{Order}},
+    \code{\link{seriate}},
     Package \pkg{grid}.
 }
 %\author{Michael Hahsler}
@@ -75,8 +76,8 @@ x <- scale_by_rank(Irish[,-6])
 
 ## use the the sum of absolute rank differences
 order <- Order(
-    row = reorder(dist(x, "minkowski", p = 1)),
-    col = reorder(dist(t(x), "minkowski", p = 1))
+    row = seriate(dist(x, "minkowski", p = 1)),
+    col = seriate(dist(t(x), "minkowski", p = 1))
 )
 
 ## plot

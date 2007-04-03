@@ -9,10 +9,10 @@ or general matrix}
   of a dissimilarity or general matrix. 
 }
 \usage{
-criterion(x, order = NULL, method = NULL)
+criterion(x, order = NULL, method = "all")
 
-%\method{criterion}{dist}(x, order, method = NULL)
-%\method{criterion}{matrix}(x, order, method = NULL)
+%\method{criterion}{dist}(x, order = NULL, method = "all")
+%\method{criterion}{matrix}(x, order = NULL, method = "all")
 }
 \arguments{
   \item{x}{an object of class \code{dist} or a matrix.}
@@ -21,8 +21,7 @@ criterion(x, order = NULL, method = NULL)
       If \code{NULL}, the identity permutation is used.
     }
   \item{method}{a vector of character strings with names of the criteria
-      (default: \code{"path\_length"} for \code{dist} and
-      \code{"me"} for matrix).  The dummy method \code{"all"}
+      The dummy method \code{"all"}
       can be used to calculate all available criteria.}
 }
 \details{
@@ -175,7 +174,7 @@ m <- matrix(runif(10),ncol=2)
 d <- dist(m)
 
 ## get an order for rows (optimal for the least squares criterion)
-o <- reorder(m, method = "pca", margin = 1)
+o <- seriate(m, method = "pca", margin = 1)
 o
 
 ## compare the values for all available criteria

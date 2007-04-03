@@ -1,17 +1,17 @@
-\name{reorder.hclust}
-\alias{reorder.hclust}
-\title{Reorder the leaves of a hierarchical clustering}
+\name{seriate.hclust}
+\alias{seriate.hclust}
+\title{Seriate the leaves of a hierarchical clustering}
 \description{
-  Find a good (or optimal) linear leaf ordering of a dendrogram as
+  Find a good (or optimal) linear leaf ordering for a dendrogram as
   produced by a hierarchical cluster algorithm.
 }
 \usage{
-\method{reorder}{hclust}(x, dist, method = NULL, control = NULL, \ldots)
+\method{seriate}{hclust}(x, dist, method = NULL, control = NULL, \ldots)
 }
 \arguments{
   \item{x}{a \code{hclust} object (see \code{\link{hclust}}).}
   \item{dist}{the \code{dist} object used for clustering.}
-  \item{method}{ a character string with the name of the reorder 
+  \item{method}{ a character string with the name of the seriation 
 	method (default: \code{"optimal"}).}
   \item{control}{ a list of control options passed on to the algorithms.}
   \item{\ldots}{ further arguments (unused).}
@@ -65,32 +65,32 @@ Data.
 %\author{Christian Buchta and Michael Hahsler}
 \seealso{
   \code{\link{dist}} and \code{\link{hclust}} for hierarchical clustering,
-  \code{\link{criterion}} for computing the objective value of a 
-  leaf ordering.
+  \code{\link{criterion}},
+  \code{\link{seriate.dist}}.
 }
 \examples{
 ## generate some random data
 d <- dist(matrix(runif(30), ncol=2))
 hc <- Order(hclust(d))
-hc_opt <- reorder(hc, d, method="optimal")
-hc_gru <- reorder(hc, d, method="gw")
+hc_wg <- seriate(hc, d, method="gw")
+hc_opt <- seriate(hc, d, method="optimal")
 
 ## compare dendrograms
 op <- par(mfrow=c(2,3), pty="s")
 plot(hc, main="hclust")
-plot(hc_gru, main="Gruvaeus-Wainer")
+plot(hc_wg, main="Gruvaeus-Wainer")
 plot(hc_opt, main="Optimal leaf ordering")
 
 ## compare images
 pimage(d, hc)
-pimage(d, hc_order)
+pimage(d, hc_wg)
 pimage(d, hc_opt)
 par(op)
 
 ## compare lengths
 criterion(d)
 criterion(d, hc)
-criterion(d, hc_gru)
+criterion(d, hc_wg)
 criterion(d, hc_opt)
 
 
@@ -98,10 +98,10 @@ criterion(d, hc_opt)
 data("iris")
 x <- scale(as.matrix(iris[1:4]), center = FALSE)
 d_c <- dist(t(x))
-dend_c <- as.dendrogram(reorder(hclust(d_c), d_c))
+dend_c <- as.dendrogram(seriate(hclust(d_c), d_c))
 
 d_r <- dist(x)
-dend_r <- as.dendrogram(reorder(hclust(d_r), d_r))
+dend_r <- as.dendrogram(seriate(hclust(d_r), d_r))
 
 ## standard plot
 ## heatmap(x, col = rev(gray.colors(64)), main = "standard plot")

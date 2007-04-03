@@ -1,8 +1,7 @@
 ## Criterion for the quality of a permutation of a dissimilarity
 ## matrix
 
-
-criterion.dist <- function(x, order = NULL, method = NULL) {
+criterion.dist <- function(x, order = NULL, method = "all") {
     
    
     ## methods
@@ -18,8 +17,6 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
         "neumann_stress"
     )
 
-    if(is.null(method)) method <- methods[1]
-    
     ## do more than one criterion
     if(method == "all") method <- methods
     if(length(method) > 1) return(sapply(method, 
@@ -62,10 +59,6 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
     return(crit)
 }
 
-## generic for criterion
-criterion <- function(x, order = NULL, method = NULL) UseMethod("criterion")
-criterion.default <- criterion.dist
-
 
 ## wrapper to computing the length of the order
 ## under a distance matrix, e.g. a tour where the
@@ -106,4 +99,8 @@ criterion.default <- criterion.dist
     if(is.null(order)) order <- 1:attr(dist, "Size") 
     .Call("ar", dist, order, as.integer(method))
 }
+
+## generic for criterion
+criterion <- function(x, order = NULL, method = "all") UseMethod("criterion")
+criterion.default <- criterion.dist
 

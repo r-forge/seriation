@@ -312,7 +312,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         
     }else if(is.null(labels)) {
         ## reorder whole matrix if no labels are given
-        order <- reorder(x, method = method$inter, 
+        order <- seriate(x, method = method$inter, 
             control = control$inter)$order 
         
         used_method$inter <- if(!is.null(attr(order, "method"))) 
@@ -327,7 +327,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         cluster_dissimilarities <- .cluster_dissimilarity(x, labels)
 
         if(k>2) {
-            cluster_order <- reorder(as.dist(cluster_dissimilarities), 
+            cluster_order <- seriate(as.dist(cluster_dissimilarities), 
                 method = method$inter, control = control$inter)$order
            
             used_method$inter <- if(!is.null(attr(cluster_order, "method"))) 
@@ -369,7 +369,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
                     }else{
                         block <- rearrange(x, Order(order = take))
                         
-                        intra_order <- reorder(block, method = method$intra, 
+                        intra_order <- seriate(block, method = method$intra, 
                             control = control$intra)$order
                     }
 

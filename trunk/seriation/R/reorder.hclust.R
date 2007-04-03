@@ -1,6 +1,6 @@
-## reorder existing hierarchical cluster solutions (hclust)
+## seriate existing hierarchical cluster solutions (hclust)
 
-reorder.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
+seriate.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
     
     ## check arguments
     if (!inherits(dist, "dist"))
@@ -18,15 +18,15 @@ reorder.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
 
     ## work horses
     workhorse <-
-    if(methodNr == 1) .reorder_optimal
-    else if (methodNr == 2) .reorder_gruvaeus
+    if(methodNr == 1) .seriate_optimal
+    else if (methodNr == 2) .seriate_gruvaeus
     
     Order(workhorse(x, dist), method = methods[methodNr])
 }
 
 
 ## wrapper for reorder.hclust in gclus
-.reorder_gruvaeus <- function(hclust, dist) gclus::reorder.hclust(hclust, dist)
+.seriate_gruvaeus <- function(hclust, dist) gclus::reorder.hclust(hclust, dist)
 
 
 
@@ -34,7 +34,7 @@ reorder.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
 ##
 ## ceeboo 2005
 
-.reorder_optimal <- function(hclust, dist) {
+.seriate_optimal <- function(hclust, dist) {
     
     ## check hclust
     merge <- hclust$merge

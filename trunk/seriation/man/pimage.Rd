@@ -49,8 +49,8 @@ x <- matrix(sample(c(FALSE, TRUE), 150, rep=TRUE), ncol=10)
 ## matrix
 pimage(x, main = "random data")
 
-## plot reorderd matrix and axis separately
-pimage(x, reorder(x), col = c("white", "green"), axes = FALSE,
+## plot seriated matrix and axis separately
+pimage(x, seriate(x), col = c("white", "green"), axes = FALSE,
     main = "reordered data")
 axis(1, at = 1:ncol(x))                         # columns
 axis(2, at = 1:nrow(x), labels= rev(1:nrow(x))) # reversed rows
@@ -59,6 +59,6 @@ axis(2, at = 1:nrow(x), labels= rev(1:nrow(x))) # reversed rows
 d <- dist(x, method = "binary")
 pimage(d, lower.tri = FALSE)
 
-pimage(d, reorder(d), lower.tri = FALSE)
+pimage(d, seriate(d), lower.tri = FALSE)
 }
 \keyword{hplot}

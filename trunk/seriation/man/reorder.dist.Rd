@@ -1,18 +1,24 @@
-\name{reorder.dist}
-\alias{reorder.dist}
-\title{Reorder a dissimilarity object}
+\name{seriate.dist}
+\alias{seriate.dist}
+\alias{seriate}
+\title{Seriation of objects in a dissimilarity matrix}
 \description{
-Finds a linear order of objects by moving small dissimilarity values
-as close as possible to the diagonal of the symmetric dissimilarity matrix.
+Unidimensional seriation ties to arrange objects in linear order given
+available data.
+
+Given a dissimilarity matrix seriation typically tries to
+move small dissimilarity values as close as possible to the diagonal of the 
+symmetric dissimilarity matrix or tries to minimize the
+dissimilarites between neighboring objects.
 }
 \usage{
-\method{reorder}{dist}(x, method = NULL, control = NULL, \ldots)
+\method{seriate}{dist}(x, method = NULL, control = NULL, \ldots)
 }
 \arguments{
   \item{x}{ an object of class \code{dist}.}
   \item{method}{ a character string with the name of the seriation method
       (default: \code{"tsp"}).}
-  \item{control}{ a list of control options passed on to the reorder
+  \item{control}{ a list of control options passed on to the seriation
       algorithms.}
   \item{\ldots}{ further arguments (unused).}
     }
@@ -20,7 +26,7 @@ as close as possible to the diagonal of the symmetric dissimilarity matrix.
     Currently the following methods are implemented:
    
 \describe{    
-\item{{"tsp"}}{Traveling salesperson problem solver. 
+\item{\code{"tsp"}}{Traveling salesperson problem solver. 
       
       A solver in \pkg{tsp} can be used (see \code{solve_TSP} in
       package \pkg{tsp}). The solver method can be passed on via the
@@ -85,7 +91,9 @@ Remedies, and Applications,
 }
 \seealso{
 \code{\link[tsp]{solve_TSP}} in \pkg{tsp},
-\code{\link{criterion}}.
+\code{\link{criterion}},
+\code{\link{seriate.matrix}} and
+\code{\link{seriate.hclust}} for special seriation cases.
 }
 %\author{Michael Hahsler}
 \examples{
@@ -94,39 +102,35 @@ x <- as.matrix(iris[,1:4])
 d <- dist(x)
 
 ## compare the different methods
+hc <- Order(hclust(d, method = "average"))
+
+order <- list(
+    orig_matrix = NULL,
+    chen = seriate(d, method = "chen"),
+    mds =  seriate(d, method = "mds"),
+    tsp_nearest = seriate(d, method="tsp", 
+        control = list(method = "nearest_insertion")),
+    tsp_farthest = seriate(d, method="tsp", 
+        control = list(method = "farthest_insertion")),
+    tsp_two_opt =  seriate(d, method="tsp", 
+        control = list(method = "2-opt")),
+    hc = hc,
+    hc_gw = seriate(hc, d, method = "gw"),
+    hc_opt = seriate(hc, d, method = "optimal")
+)
+
+
+## plot
 def.par <- par(no.readonly = TRUE)
-layout(rbind(1:3, 4:6, 7:9), respect = TRUE)
+layout(matrix(1:9, ncol = 3, byrow = TRUE))
 
-pimage(d, main = "original matrix")
-
-chen <- reorder(d, method = "chen")
-pimage(d, chen, main = "Chen")
-
-## use MDS
-mds <- reorder(d, method = "mds")
-pimage(d, mds, main = "MDS")
-
-## using some tsp solvers from pkg tsp
-nins <- reorder(d, method="tsp", control = list(method = "nearest_insertion"))
-pimage(d, nins, main = "TSP: nearest insertion")
-
-fins <- reorder(d, method="tsp", control = list(method = "farthest_insertion"))
-pimage(d, fins, main = "TSP: farthest insertion")
-
-two_opt <- reorder(d, method="tsp", control = list(method = "2-opt"))
-pimage(d, two_opt, main = "TSP: 2-opt")
-
-## using hclust and reorder.hclust
-h <- Order(hclust(d, method = "average"))
-pimage(d, h, main = "hclust: avg. linkage")
-
-gw <- reorder(h, d, method = "gw") 
-pimage(d, gw, main = "hclust: avg. linkage + Gruvaeus-Wainer")
-
-ho <- reorder(h, d, method = "optimal")
-pimage(d, ho, main = "hclust: avg. linkage + optimal")
+tmp <- sapply(order, FUN = function(o) pimage(d, o, main = attr(o, "method")))
 
 par(def.par)
+
+## calculate criteria
+crit <- sapply(order, FUN = function(o) criterion(d, o))
+crit
 }
 \keyword{optimize}
 \keyword{cluster}

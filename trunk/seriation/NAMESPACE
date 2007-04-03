@@ -1,16 +1,15 @@
-importFrom(stats, reorder)  # reorder exists for factor
 import(TSP)
 
 export(
-    rearrange,
-    criterion, 
+    Order,
     bertinplot,
-    panel.bars, panel.circles, panel.squares, panel.lines,
-    pimage, 
+    criterion, 
     dissplot,
     hmap,
-    Order,
-    reorder.hclust      # this is just so we win over gclus
+    panel.bars, panel.circles, panel.squares, panel.lines,
+    pimage, 
+    rearrange,
+    seriate
     )
 
 
@@ -20,9 +19,9 @@ S3method(rearrange, dist)
 S3method(criterion, matrix)
 S3method(criterion, dist)
 
-S3method(reorder, hclust)
-S3method(reorder, matrix)
-S3method(reorder, dist)
+S3method(seriate, hclust)
+S3method(seriate, matrix)
+S3method(seriate, dist)
 
 S3method(pimage, matrix)
 S3method(pimage, dist)

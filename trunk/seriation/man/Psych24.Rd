@@ -43,9 +43,9 @@ plot(hc)
 
 pimage(d, Order(hc))
 
-## use reordering
-order <- reorder(d, method = "tsp")
-#order <- reorder(d, method = "tsp", control = list(method = "concorde"))
+## use seriation
+order <- seriate(d, method = "tsp")
+#order <- seriate(d, method = "tsp", control = list(method = "concorde"))
 pimage(d, order)
 }
 \keyword{datasets}

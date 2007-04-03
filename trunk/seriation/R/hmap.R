@@ -17,7 +17,7 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
 
 ## workhorses
     
-## heatmap with optimal reordered dendrogram
+## heatmap with optimal seriateed dendrogram
 .hmap_opt <- function(x, dist_row, dist_col, 
     method = NULL, control = NULL, options = NULL, ...){ 
    
@@ -27,16 +27,16 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
     if(is.null(method)) method <- "optimal"
     hclustfun <- if(is.null(control$hclustfun)) hclust else control$hclustfun
     
-    dend_col <- as.dendrogram(reorder(hclustfun(dist_col), dist_col, 
+    dend_col <- as.dendrogram(seriate(hclustfun(dist_col), dist_col, 
             method = method, control = control))
-    dend_row <- as.dendrogram(reorder(hclustfun(dist_row), dist_row, 
+    dend_row <- as.dendrogram(seriate(hclustfun(dist_row), dist_row, 
             method = method, control = control))
 
     ## heatmap by default scales rows: we don't want that!
     ## options are ignored for now: we use ... 
     ret <- heatmap(x, Colv = dend_col, Rowv = dend_row, 
         scale = "none", col = col, main = main, ...)
-    ret$reorder_method <- method
+    ret$seriation_method <- method
     ret
 }
 
@@ -60,13 +60,13 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
         if(is.null(control)) control <- list(method = "farthest_insertion")  
     }
     
-    ## reorder
+    ## seriate
     row_order <- NULL
     col_order <- NULL
     if(!is.na(method)) {
-        row_order <- reorder(dist_row, method = method, 
+        row_order <- seriate(dist_row, method = method, 
             control = control)
-        col_order <- reorder(dist_col, method = method, 
+        col_order <- seriate(dist_col, method = method, 
             control = control)
 
         x <- rearrange(x, Order(row = row_order, col = col_order))
@@ -156,5 +156,5 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
 
     ## return permutation indices
     invisible(list(rowInd = row_order, colInd = col_order, 
-            reorder_method = method))
+            seriation_method = method))
 }

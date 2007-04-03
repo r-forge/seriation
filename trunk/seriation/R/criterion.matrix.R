@@ -1,16 +1,14 @@
 ## Criterion for the quality of a permutation of a matrix
 
-criterion.matrix <- function(x, order = NULL, method = NULL, ...) {
+criterion.matrix <- function(x, order = NULL, method = "all", ...) {
 
     ## methods
     methods <- c(
-        "me",                   # default
+        "me",
         "bond_energy",      
         "moore_stress",
         "neumann_stress"
     )
-   
-    if(is.null(method)) method <- methods[1]
 
     ## do more than one criterion
     if(method == "all") method <- methods

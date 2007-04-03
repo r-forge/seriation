@@ -1,21 +1,21 @@
-\name{reorder.matrix}
-\alias{reorder.matrix}
-\title{Reorder a matrix}
+\name{seriate.matrix}
+\alias{seriate.matrix}
+\title{Seriation of rows and columns of a matrix}
 \description{
 Tries to find an order for the rows and columns of a matrix by moving large
 values closer together creating a block structure.
 }
 \usage{
-\method{reorder}{matrix}(x, method = NULL, control = NULL, 
-    margin = c(1,2),\ldots)
+\method{seriate}{matrix}(x, method = NULL, control = NULL, 
+    margin = c(1,2), \ldots)
 }
 \arguments{
   \item{x}{ a matrix.}
   \item{method}{ a character string with the name of the seriation method
     (default: \code{"murtagh"}).}
-  \item{control}{ a list of control options passed on to the reorder
+  \item{control}{ a list of control options passed on to the seriation
       algorithm.}
-  \item{margin}{ a vector giving the margins to be reordered. \code{1} 
+  \item{margin}{ a vector giving the margins to be seriated. \code{1} 
       indicates rows, \code{2} indicates columns, \code{c(1,2)} indicates 
       rows and columns.}
   \item{\ldots}{ further arguments (unused).}
@@ -23,27 +23,27 @@ values closer together creating a block structure.
 \details{
     Currently the following methods are implemented:
 \describe{
-    \item{\code{"bea"}}{Bond Energy Algorithm (BEA; McCormick 1972).
+\item{\code{"bea"}}{Bond Energy Algorithm (BEA; McCormick 1972).
      
-The algorithm tries to maximize the summed bond energy (see bond energy
+     The algorithm tries to maximize the summed bond energy (see bond energy
      in \code{criterion}) of a non-negative matrix. Due to the definition
      of this measure, the tasks of ordering rows and columns is separable
      and can  be solved independently.
-     
-    A row is arbitrarily placed; then rows are positioned one by one. When this
-    is completed, the columns are treated similarly. The overall procedure
-    amounts to two approximate traveling salesperson problems (TSP), one on the
-    rows and one on the columns. The so-called `best insertion strategy' is
-    used: rows (or columns) are inserted into the current permuted list of rows
-    (or columns). Several consecutive runs of the algorithm might improve the
-    energy.  
-      
-Note that Arabie and Hubert (1990) question its use with non-binary data if the
-objective is to find a seriation or one-dimensional orderings of rows and
-columns. 
-      
-The BEA code used in this package was implemented by Fionn Murtagh.
-}
+
+     A row is arbitrarily placed; then rows are positioned one by one. When
+     this is completed, the columns are treated similarly. The overall
+     procedure amounts to two approximate traveling salesperson problems (TSP),
+     one on the rows and one on the columns. The so-called `best insertion
+     strategy' is used: rows (or columns) are inserted into the current
+     permuted list of rows (or columns). Several consecutive runs of the
+     algorithm might improve the energy.  
+
+     Note that Arabie and Hubert (1990) question its use with non-binary data
+     if the objective is to find a seriation or one-dimensional orderings of
+     rows and columns. 
+
+     The BEA code used in this package was implemented by Fionn Murtagh.
+     }
 
 \item{\code{"murtagh"}}{Algorithm B (Murtagh 1985). 
       
@@ -55,20 +55,27 @@ The BEA code used in this package was implemented by Fionn Murtagh.
     starts with a random leaf and uses tie-breaking.
       
     Note that the ordering can change from run to run since ties are broken
-    randomly.}
+    randomly.
+    }
 
 \item{\code{"pca"}}{ Principal component analysis.
       
-        Uses the projection of the data on its
-      first principal component to determine the order. 
+      Uses the projection of the data on its first principal component to
+      determine the order. 
       
-      Note that for a distance matrix calculated from \code{x} with 
-      Euclidean distance, this methods minimizes the least square criterion.}  
-}}
+      Note that for a distance matrix calculated from \code{x} with Euclidean
+      distance, this methods minimizes the least square criterion.
+      }  
+
+\item{\code{"ca"}}{ Correspondence analysis.
+        Uses correspondence analysis to determine the order.
+      }
+    }
+}
 \value{
-Returns an object of class \code{Order_asymmetric} which is a list
-of two elements. \code{row} contains the row order and \code{col} contains
-the column order. Both are integer vectors.
+Returns an object of class \code{Order_asymmetric} which is a list of two
+elements. \code{row} contains the row order and \code{col} contains the column
+order. Both are integer vectors.
 }
 \references{ 
 P. Arabie and L.J. Hubert (1990): The bond energy algorithm revisited, 
@@ -85,7 +92,8 @@ F. Murtagh (1985): Multidimensional Cluster Algorithms.
 Physica Verlag, 9--31.
 }
 \seealso{
-\code{\link{criterion}}
+\code{\link{criterion}},
+\code{\link{seriate}}.
 }
 %\author{Michael Hahsler}
 \examples{
@@ -97,27 +105,27 @@ x <- scale(x, center = FALSE)
 
 ## try some methods
 def.par <- par(no.readonly = TRUE)
-layout(rbind(1:2, 3:4), respect=TRUE)
+layout(matrix(1:4, ncol = 2, byrow = TRUE), respect=TRUE)
 
 pimage(x, main = "original data")
-criterion(x, method = "all")
+criterion(x)
 
-order <- reorder(x)
+order <- seriate(x)
 pimage(x, order, main = "Murtagh")
 criterion(x, order, method = "all")
 
-order <- reorder(x, method="pca")
+order <- seriate(x, method="pca")
 pimage(x, order, main = "first principal component")
-criterion(x, order, method = "all")
+criterion(x, order)
 
 ## 2 TSPs
 order <- Order(
-    row = reorder(dist(x), method = "tsp"),
-    col = reorder(dist(t(x)), method = "tsp"),
+    row = seriate(dist(x), method = "tsp"),
+    col = seriate(dist(t(x)), method = "tsp"),
     method = "2 TSPs"
 )
 pimage(x, order, main = "2 TSPs")
-criterion(x, order, method = "all")
+criterion(x, order)
 
 par(def.par)
 }

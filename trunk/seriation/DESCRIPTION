@@ -2,7 +2,7 @@ Package: seriation
 Type: Package
 Title: Infrastructure for seriation
 Version: 0.1-1
-Depends: stats, grid, TSP, gclus, cluster, MASS
+Depends: stats, grid, TSP, gclus, cluster, MASS, ade4
 Date: 2006-xx-xx
 Author: Michael Hahsler, Christian Buchta and Kurt Hornik 
 Maintainer: Michael Hahsler <hahsler@ai.wu-wien.ac.at>

@@ -1,6 +1,6 @@
-## reorder dist objects
+## seriate dist objects
 
-reorder.dist <- function(x, method = NULL, control = NULL, ...){ 
+seriate.dist <- function(x, method = NULL, control = NULL, ...){ 
     
     ## build-in methods
     methods <- c(
@@ -14,9 +14,9 @@ reorder.dist <- function(x, method = NULL, control = NULL, ...){
     if(is.na(methodNr)) stop (paste("Unknown method:", sQuote(method)))
 
     workhorse <- 
-    if(methodNr == 1) .reorder_tsp
-    else if(methodNr == 2) .reorder_chen
-    else if(methodNr == 3) .reorder_mds
+    if(methodNr == 1) .seriate_tsp
+    else if(methodNr == 2) .seriate_chen
+    else if(methodNr == 3) .seriate_mds
 
     Order(order = workhorse(x, control), method = methods[methodNr])
 }
@@ -27,7 +27,7 @@ reorder.dist <- function(x, method = NULL, control = NULL, ...){
 ## with rank 2. The elements are projected into the plane spanned by the 
 ## first two eigenvectors. All points are lying on a ellipse. The order
 ## of the elements on the ellipse is returned (see Chen 2002). 
-.reorder_chen <- function(x, control){
+.seriate_chen <- function(x, control){
     x <- as.matrix(x)
     
     rank <- qr(x)$rank
@@ -59,7 +59,7 @@ reorder.dist <- function(x, method = NULL, control = NULL, ...){
 
 
 ## Bridge to package tsp 
-.reorder_tsp <- function(x, control = NULL){
+.seriate_tsp <- function(x, control = NULL){
     ## add a dummy city for cutting
     tsp <- insert_dummy(TSP(x), n = 1, label = "cut_here")
    
@@ -71,7 +71,7 @@ reorder.dist <- function(x, method = NULL, control = NULL, ...){
 
 
 ## Multidimensional scaling
-.reorder_mds <- function(x, control = NULL){
+.seriate_mds <- function(x, control = NULL){
     if(is.null(control$method) || control$method == "cmdscale" ) {
         sc <- cmdscale(x, k=1)
         return(order(sc[,1]))
@@ -88,4 +88,8 @@ reorder.dist <- function(x, method = NULL, control = NULL, ...){
 
 }
 
+
+## generic for criterion
+seriate <- function(x, ...) UseMethod("seriate")
+seriate.default <- seriate.dist
 

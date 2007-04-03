@@ -15,7 +15,7 @@ algorithm which tries to place large similarities/small dissimilarities close to
 the diagonal. Compact clusters are visible as dark squares (low dissimilarity)
 on the diagonal of the plot. Additionally, a Silhouette plot (Rousseeuw 1987)
 is added. This visualization is similar to CLUSION (see Strehl and Ghosh 2002),
-however, allows for using arbitrary reordering algorithms.
+however, allows for using arbitrary seriateing algorithms.
 }
 \usage{
 dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)   
@@ -34,18 +34,18 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
       If separate algorithms for inter and intra cluster seriation are
       required, \code{method} can be a \code{list} of two named elements
       (\code{inter_cluster} and \code{intra_cluster} each containing the name
-      of the respective seriation method. See \code{reorder.dist} for available
+      of the respective seriation method. See \code{seriate.dist} for available
       algorithms. 
 
       For intra cluster reordering the special
       method \code{silhouette width} is available. Objects in clusters are
       then ordered by silhouette width (the standard for silhouette plots).
 
-      If no \code{method} is given, the default method of \code{reorder.dist}
+      If no \code{method} is given, the default method of \code{seriate.dist}
       is used.
       }
-  \item{control}{ a list of control options passed on to the reorder algorithm.
-      In case of two different reorder algorithms, \code{control} can
+  \item{control}{ a list of control options passed on to the seriation algorithm.
+      In case of two different seriation algorithms, \code{control} can
       contain a list of two named elements (\code{inter_cluster} 
       and \code{intra_cluster}) containing each a list with the control options
       for the respective algorithm.}
@@ -125,7 +125,7 @@ visualization for high-dimensional data mining.
   \code{\link[stats]{dist}}
   (in package \pkg{stats}),
    package \pkg{grid} and
-   \code{\link{reorder}}.
+   \code{\link{seriate}}.
 }
 %\author{Michael Hahsler}
 \examples{

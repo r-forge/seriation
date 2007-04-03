@@ -1,6 +1,6 @@
-## reorder matrices 
+## seriate matrices 
 
-reorder.matrix <- function(x, method = NULL, control = NULL, 
+seriate.matrix <- function(x, method = NULL, control = NULL, 
     margin = c(1,2), ...) {
     
     ## margin 1...rows, 2...cols
@@ -9,7 +9,8 @@ reorder.matrix <- function(x, method = NULL, control = NULL,
     methods <- c(
         "murtagh",      # standard
         "bea",
-        "pca"
+        "pca",
+        "ca"
     )
     
     methodNr <- if(is.null(method)) 1
@@ -18,9 +19,10 @@ reorder.matrix <- function(x, method = NULL, control = NULL,
 
     ## work horses
     workhorse <-
-    if(methodNr == 1) .reorder_murtagh
-    else if(methodNr == 2) .reorder_bea
-    else if(methodNr == 3) .reorder_fpc
+    if(methodNr == 1) .seriate_murtagh
+    else if(methodNr == 2) .seriate_bea
+    else if(methodNr == 3) .seriate_fpc
+    else if(methodNr == 4) .seriate_ca
     
     order <- workhorse(x, control)
     method <- methods[methodNr]
@@ -39,7 +41,7 @@ reorder.matrix <- function(x, method = NULL, control = NULL,
 ##  F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures
 ##  in Computational Statistics, Physica Verlag, pp. 15.
 
-.reorder_murtagh <- function(x, control) {
+.seriate_murtagh <- function(x, control) {
 
     if(any(x < 0)) stop("Requires a nonnegative matrix")
     ## calculate the Murtagh criterion
@@ -55,7 +57,7 @@ reorder.matrix <- function(x, method = NULL, control = NULL,
 
 ## Bond Energy Algorithm (McCormick 1972)
 
-.reorder_bea <- function(x, control = NULL){
+.seriate_bea <- function(x, control = NULL){
     
     if(any(x < 0)) stop("Requires a nonnegative matrix")
     istart <- if(is.null(control$istart)) 0 else control$istart
@@ -69,7 +71,7 @@ reorder.matrix <- function(x, method = NULL, control = NULL,
 
 ## use the projection on the first pricipal component to determine the
 ## order
-.reorder_fpc <- function(x, control) {
+.seriate_fpc <- function(x, control) {
     
     center  <- if(!is.null(control$center)) control$center else TRUE
     scale.  <- if(!is.null(control$scale.)) control$scale. else FALSE
@@ -79,16 +81,26 @@ reorder.matrix <- function(x, method = NULL, control = NULL,
     scores <- pr$x[,1]
     row <- order(scores)
     cat("row: first principal component explains", 
-        pr$sdev[1]/ sum(pr$sdev)* 100,"%\n")
+        pr$sdev[1] / sum(pr$sdev)* 100,"%\n")
 
 
     pr <- prcomp(t(x), center = center, scale. = scale., tol = tol)
     scores <- pr$x[,1]
     col <- order(scores)
     cat("col: first principal component explains", 
-        pr$sdev[1]/ sum(pr$sdev)* 100,"%\n")
+        pr$sdev[1] / sum(pr$sdev)* 100,"%\n")
 
     list(row = row, col = col)
 }
+
+
+.seriate_ca <- function(x, control) {
+    coa <- dudi.coa(as.data.frame(x), scannf=FALSE, nf=1)
+    
+    cat("correspondence analysis  explains", coa$eig[1] / sum(coa$eig) * 100, 
+        "% of the eigen values\n")
+    list(row = order(coa$li[,1]), col = order(coa$co[,1]))
+}
+
 
 
