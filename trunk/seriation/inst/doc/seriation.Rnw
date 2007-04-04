@@ -390,6 +390,10 @@ all points fall on an ellipse. The order of the points on this ellipse
 is the resulting order where the ellipse can be cut at any of the 
 two interception points (top or bottom) with the vertical axis.
 
+\subsection{Bond energy algorithm}
+BEA
+
+Also talk about Murtagh's algorithm B.
 
 \section{The \pkg{seriation} package infrastructure}
 
@@ -647,7 +651,7 @@ tmp <- dev.off()
 
 \begin{figure}
     \centering
-    \includegraphics{seriation-pimage3}
+    \includegraphics[width=\linewidth]{seriation-pimage3}
     \caption{Image plot the distance matrix for the iris data
     using rearrangement by different seriation methods.}
     \label{fig:pimage3}
@@ -685,6 +689,64 @@ concerning the path length.  For the least squares criterion and the
 anti-Robinson events, using the first dimension of MDS provides the best
 results.Regarding stress, TSP and MDS provide the best results.
 
+
+\subsection{Heat maps}
+
+\marginpar{Write something about heatmaps.}
+
+We use again the randomly reordered iris data set \code{x} 
+from the above example. To make the variables (columns) comparable,
+we use standard scaling.
+
+<<>>=
+x <- scale(x, center = FALSE)
+@
+
+To produce a heat map with optimally reordered, the function \func{hmap} can be
+used with its default settings. With this settings, the Euclidean distances
+between rows and between columns are calculated (with \func{dist}),
+hierarchical clustering (\func{hclust}) is performed, the resulting dendrograms
+are optimally reordered, and \func{heatmap} in package \pkg{stats} is used
+for plotting. 
+
+<<eval=FALSE>>=
+hmap(x)
+hmap(x, dendrogram = FALSE)
+@
+
+If \code{dendrogram = FALSE} is used, instead of hierarchical clustering,
+seriation on the dissimilarity matrices for rows and columns is performed
+(per default a TSP heuristic)
+and the reordered matrix with the reordered dissimilarity matrices to the left
+and on top is displayed. A \code{method} argument can be used to choose 
+different seriation methods.
+
+
+<<echo=FALSE, fig=TRUE, include=FALSE, label=heatmap1>>=
+hmap(x, cexCol=1, labRow = "")
+@
+<<echo=FALSE, fig=TRUE, include=FALSE, label=heatmap2>>=
+hmap(x, dendrogram = FALSE)
+@
+
+\begin{figure}
+    \begin{minipage}[b]{.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{seriation-heatmap1} \\
+            (a)
+    \end{minipage}
+    \begin{minipage}[b]{.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{seriation-heatmap2} \\
+            (b)
+    \end{minipage}
+    \caption{Two presentations of the rearranged iris data matrix. (a) as an
+optimally reordered heat map and (b) as a seriated data matrix with reordered
+dissimilarity matrices to the left and on top.}
+    \label{fig:heatmap}
+\end{figure}
+
+
 \subsection{Bertin's permutation matrix}
 
 \cite{seriation:Bertin:1999} introduced permutation matrices to analyze
@@ -697,8 +759,10 @@ To quantify homogeneity, a purity function
 \begin{displaymath}
   \phi = \Phi(\mathbf{X})  
 \end{displaymath}
-is defined. Given $\Pi$, the set of all row and column permutations
-$\pi$ of matrix $\mathbf{X}$, the optimal permutation with respect to
+is defined. Let $\Pi$ be the set of all permutation
+$\pi$ for matrix $\mathbf{X}$.
+Note that function $\pi$ performs row and column permutations on a matrix.
+The optimal permutation with respect to
 purity
 \begin{displaymath}
   \pi^* = \argmax\nolimits_{\pi \in \Pi} \Phi(\pi(\mathbf{X}))  
@@ -736,8 +800,8 @@ matrix using \func{bertinplot}.
 
 <<>>=
 order <- Order(
-    row = seriate(dist(orig_matrix, "minkowski", p = 1), method=  "mds"),
-    col = seriate(dist(t(orig_matrix), "minkowski", p = 1), method = "mds")
+    row = seriate(dist(orig_matrix, "minkowski", p = 1), method=  "tsp"),
+    col = seriate(dist(t(orig_matrix), "minkowski", p = 1), method = "tsp")
 )
 @
 
@@ -784,21 +848,11 @@ but makes the structure much more apparent. Especially the contribution of low
 values (which are not highlighted) to the overall structure becomes only
 visible after rearrangement.
 
-\subsection{Heat maps}
-
-Optimally reordered heat map.
-<<fig=TRUE>>=
-hmap(orig_matrix, distfun=function(x) dist(x, "minkowski", p = 1))
-@
-
-<<fig=TRUE>>=
-hmap(orig_matrix, dendrogram = FALSE, 
-    distfun=function(x) dist(x, "minkowski", p = 1))
-@
-
 \subsection{Binary data matrices}
 
-Incidence Matrices.
+\marginpar{Write about incidence matrices.}
+\marginpar{Write about townships.}
+
 
 
 <<>>=
@@ -806,14 +860,30 @@ library("seriation")
 data("Townships")
 @
 
-<<fig=TRUE>>=
-pimage(Townships)
+<<fig=TRUE, include=FALSE, label=binary1, width=9>>=
+bertinplot(Townships, options = list(panel=panel.squares, spacing = 0))
 @
 
-<<fig=TRUE>>=
-order <- seriate(Townships, method = "bea")
-pimage(Townships, order)
+
+To get a good solution, we repeat BEA $10$ times and take the best solution.
+
+<<fig=TRUE, include=FALSE, label=binary2, width=9>>=
+order <- seriate(Townships, method = "bea", control = list(rep = 10))
+bertinplot(Townships,order, options = list(panel=panel.squares, spacing = 0))
 @
+
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm]{seriation-binary1} \\
+    (a)    
+
+    \includegraphics[width=10cm]{seriation-binary2} \\
+    (b)   
+
+    \caption{Original and reordered (BEA) townships data set.}
+    \label{fig:heatmap}
+\end{figure}
+
 
 <<>>=
 rbind(original = criterion(Townships), reordered = criterion(Townships, order))
@@ -827,16 +897,33 @@ data("iris")
 d <- dist(iris[-5])
 @
 
-<<fig=TRUE>>=
+<<fig=TRUE, include=FALSE, label=dissplot1>>=
 ## plot original matrix
 res <- dissplot(d, method = NA)
 @
 
-<<fig=TRUE>>=
+<<fig=TRUE, include=FALSE, label=dissplot2>>=
 ## plot reordered matrix using the nearest insertion algorithm (from tsp)
 res <- dissplot(d, method = "tsp", control = list(method = "nearest"),
     options = list(main = "Seriation (TSP)"))
 @
+
+\begin{figure}
+    \begin{minipage}[b]{.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{seriation-dissplot1} \\
+    (a)    
+    \end{minipage}
+    \begin{minipage}[b]{.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{seriation-dissplot2} \\
+    (b)   
+    \end{minipage}
+    \caption{Two dissimilarity plots. 
+    (a) the original dissimilarity matrix and 
+    (b) the seriated dissimilarity matrix.}
+    \label{fig:dissplot1}
+\end{figure}
 
 
 <<>>=
@@ -845,7 +932,7 @@ library("cluster")
 l <- pam(d, 3, cluster.only = TRUE)
 @
 
-<<fig=TRUE>>=
+<<fig=TRUE, include=FALSE, label=dissplot3>>=
 ## we use a grid layout to place several plots on a page
 grid.newpage()
 pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2), 
@@ -886,6 +973,14 @@ popViewport(2)
 res 
 names(res)
 @
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{seriation-dissplot3}
+    \caption{Dissimilarity plot for pam solution with $k=3$ using several
+    presentation options.}
+    \label{fig:dissplot3}
+\end{figure}
 
 
 \section{Conclusion}

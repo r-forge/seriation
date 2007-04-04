@@ -83,7 +83,7 @@ bertinplot  <- function(x, order = NULL, highlight = TRUE, options = NULL) {
     rownames_x <- if(is.null(xlab)) rownames(x) else xlab
     colnames_x <- if(is.null(ylab)) colnames(x) else ylab
 
-    spacing_corr <- if(spacing < 0) spacing_corr <- -spacing else 0
+    spacing_corr <- if(spacing <= 0) spacing_corr <- -spacing+0.1 else 0
 
     grid.text(rownames_x, x = 1:nrow(x), y = ncol_x + spacing_corr, 
         rot = 90, just = "left",
@@ -116,6 +116,9 @@ panel.circles <- function(value, spacing, hl) {
 }
 
 panel.squares <- function(value, spacing, hl) {
+    ## do not plot zero squares
+    value[value == 0] <- NA
+    
     grid.rect(x = 1:length(value), y = unit(0.5, "npc"), 
         width = value*(1 - spacing), 
         height = value*(1 - spacing),

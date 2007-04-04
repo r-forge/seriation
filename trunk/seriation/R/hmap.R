@@ -37,7 +37,7 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
     ret <- heatmap(x, Colv = dend_col, Rowv = dend_row, 
         scale = "none", col = col, main = main, ...)
     ret$seriation_method <- method
-    ret
+    invisible(ret)
 }
 
 
@@ -49,7 +49,7 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
     options <- c(options, list(...))
     
     col     <- if(is.null(options$col)) gray.colors(256) else options$col
-    prop    <- if(is.null(options$prop)) TRUE else options$prop
+    prop    <- if(is.null(options$prop)) FALSE else options$prop
     newpage <- if(is.null(options$newpage)) TRUE else options$newpage
     gp      <- if(is.null(options$gp)) gpar() else options$gp
     main    <- options$main

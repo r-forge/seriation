@@ -19,7 +19,7 @@ values closer together creating a block structure.
       indicates rows, \code{2} indicates columns, \code{c(1,2)} indicates 
       rows and columns.}
   \item{\ldots}{ further arguments (unused).}
-    }
+}
 \details{
     Currently the following methods are implemented:
 \describe{
