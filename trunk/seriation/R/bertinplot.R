@@ -14,6 +14,7 @@ bertinplot  <- function(x, order = NULL, highlight = TRUE, options = NULL) {
         reverse     = FALSE,
         xlab        = NULL,
         ylab        = NULL,
+        frame       = FALSE,
         spacing     = 0.2,
         mar         = c(5, 4, 8, 8),
         gp_labels   = gpar(),
@@ -65,6 +66,12 @@ bertinplot  <- function(x, order = NULL, highlight = TRUE, options = NULL) {
             xscale = xlim, 
             yscale = c(1, ncol_x), default.unit = "native"))
 
+    ## do frame
+    #if(frame) {
+        #    grid.rect(width = 1/ncol_x*(ncol_x-.52))
+        ## why .52?
+        #}
+
     for (variable in 1:ncol_x) { 
         value <- x[, variable]
         hl <- highlight[, variable]
@@ -76,14 +83,20 @@ bertinplot  <- function(x, order = NULL, highlight = TRUE, options = NULL) {
         ## call panel function
         panel.function(value, spacing, hl)
 
+        ## do frame
+        if(frame) grid.rect(x = 1:length(value), 
+            width = 1,
+            default.unit = "native")
+
         upViewport(1)
     }
+
 
     ## do labels
     rownames_x <- if(is.null(xlab)) rownames(x) else xlab
     colnames_x <- if(is.null(ylab)) colnames(x) else ylab
 
-    spacing_corr <- if(spacing <= 0) spacing_corr <- -spacing+0.1 else 0
+    spacing_corr <- if(spacing <= 0) spacing_corr <- -spacing+0.2 else 0
 
     grid.text(rownames_x, x = 1:nrow(x), y = ncol_x + spacing_corr, 
         rot = 90, just = "left",
@@ -109,7 +122,10 @@ panel.bars <- function(value, spacing, hl) {
 }
 
 panel.circles <- function(value, spacing, hl) {
-    grid.circle(x = c(1:length(value)), y = unit(0.5, "npc"), 
+    ## do not plot zero circles
+    value[value == 0] <- NA
+    
+    grid.circle(x = c(1:length(value)), 
         r = value/2*(1 - spacing),
         default.units = "native", 
         gp = gpar(fill = hl))
@@ -119,10 +135,10 @@ panel.squares <- function(value, spacing, hl) {
     ## do not plot zero squares
     value[value == 0] <- NA
     
-    grid.rect(x = 1:length(value), y = unit(0.5, "npc"), 
+    grid.rect(x = 1:length(value), 
         width = value*(1 - spacing), 
         height = value*(1 - spacing),
-        just = c("centre", "center"), default.units = "native", 
+        default.units = "native",
         gp = gpar(fill = hl))
 }
 

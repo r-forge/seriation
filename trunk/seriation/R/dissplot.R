@@ -291,6 +291,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     sil                 <- NULL
     avgSil              <- NULL
     labels_ordered      <- NULL
+    labels_unique       <- NULL
     cluster_dissimilarities <- NULL
     used_method         <- list(inter_cluster = NA, intra_cluster = NA) 
     
@@ -435,6 +436,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         cluster_dissimilarities =  cluster_dissimilarities,
         sil             = sil,
         order           = order, 
+        cluster_order   = labels_unique,
         diss_measure    = diss_measure,
         description     =  cluster_description)
     

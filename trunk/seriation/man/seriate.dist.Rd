@@ -9,7 +9,7 @@ available data.
 Given a dissimilarity matrix seriation typically tries to
 move small dissimilarity values as close as possible to the diagonal of the 
 symmetric dissimilarity matrix or tries to minimize the
-dissimilarites between neighboring objects.
+dissimilarities between neighboring objects.
 }
 \usage{
 \method{seriate}{dist}(x, method = NULL, control = NULL, \ldots)
@@ -21,7 +21,7 @@ dissimilarites between neighboring objects.
   \item{control}{ a list of control options passed on to the seriation
       algorithms.}
   \item{\ldots}{ further arguments (unused).}
-    }
+}
 \details{
     Currently the following methods are implemented:
    
@@ -73,6 +73,18 @@ dissimilarites between neighboring objects.
     The method can be specified as the element \code{method} 
     (\code{"cmdscale"}, \code{"isoMDS"} or \code{"sammon"}) in \code{control}.
     }  
+\item{\code{"hc"}, \code{"gw"}, \code{"optimal"}}{Hierarchical 
+    clustering with optional reordering. 
+    
+    Apply hierarchical clustering (\code{hclust}) to \code{x} and use the
+    order of the leaf nodes in the dendrogram. 
+    The default clustering method is \code{"complete"} and can be changed using
+    a \code{"method"} element in \code{control}.
+    
+    For information on the
+    two available reordering algorithms (\code{"gw"} and 
+    \code{"optimal"}) see \code{seriate.hclust}.
+    }
     }
 }
 \value{
@@ -91,6 +103,7 @@ Remedies, and Applications,
 }
 \seealso{
 \code{\link[tsp]{solve_TSP}} in \pkg{tsp},
+\code{\link{hclust}} in \pkg{stats},
 \code{\link{criterion}},
 \code{\link{seriate.matrix}} and
 \code{\link{seriate.hclust}} for special seriation cases.

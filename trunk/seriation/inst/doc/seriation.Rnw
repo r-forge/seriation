@@ -41,8 +41,9 @@ set.seed(1234)
 \maketitle
 \sloppy
 
-\abstract{}
+\abstract{To come\dots}
 \section{Introduction}
+\marginpar{rewrite introduction}
 A basic problem in data analysis is to arrange objects in linear order given
 available data. For example, political scientists may want to order judges from
 the most liberal to the most conservative person according to their rulings,
@@ -338,7 +339,26 @@ tour~\citep{seriation:Rosenkrantz:1977} to complex heuristics like the
 Lin-Kernighan heuristic~\citep{seriation:Lin:1973}.
 A comprehensive overview can be found in \cite{seriation:Gutin:2002}.
 
+\subsection{Rank-two ellipse seriation}
+
+\cite{seriation:Chen:2002} proposes to
+generate a sequence of correlation matrices
+$R^1, R^2, \ldots$. $R^1$ is the correlation matrix
+of the original distance matrix $\mathbf{D}$ and
+\begin{equation}
+R^{n+1} = \phi R^n,
+\end{equation}
+where $\phi(\cdot)$ calculates a correlation matrix.
+
+The rank of the matrix $R^n$ falls with increasing $n$. The sequence
+is continued till the first matrix in the sequence has a rank of 2.
+Projecting all points in this matrix on the first two eigenvectors,
+all points fall on an ellipse. The order of the points on this ellipse
+is the resulting order where the ellipse can be cut at any of the 
+two interception points (top or bottom) with the vertical axis.
+
 \subsection{Hierarchical clustering}
+\label{sec:hierarchical_clustering}
 
 Hierarchical clustering produces a series of nested clusterings which can be
 visualized by a dendrogram, a binary tree where each internal node splits two
@@ -370,7 +390,12 @@ reduces the number of permissible permutations making the problem easier.
 
 
 \subsection{Scaling}
-MDS, PCA,\dots
+MDS, PCA, CA,\dots
+
+\subsection{Bond energy algorithm}
+BEA
+
+Also talk about Murtagh's algorithm B.
 
 \subsection{Rank-two ellipse seriation}
 
@@ -389,11 +414,6 @@ Projecting all points in this matrix on the first two eigenvectors,
 all points fall on an ellipse. The order of the points on this ellipse
 is the resulting order where the ellipse can be cut at any of the 
 two interception points (top or bottom) with the vertical axis.
-
-\subsection{Bond energy algorithm}
-BEA
-
-Also talk about Murtagh's algorithm B.
 
 \section{The \pkg{seriation} package infrastructure}
 
@@ -455,12 +475,13 @@ dendrogram reordering.
         Traveling salesperson problem solver & \code{"tsp"} & \code{dist} \\
         Rank-two ellipse seriation & \code{"chen"} & \code{dist} \\
         Multidimensional scaling & \code{"mds"} & \code{dist} \\
+        Hierarchical clustering & \code{"hc"} & \code{dist} \\
+        Gruvaeus and Wainer & \code{"gw"} & \code{hclust}, \code{dist} \\
+        Optimal leaf ordering & \code{"optimal"} & \code{hclust}, \code{dist} \\
+        Principal component analysis & \code{"pca"} & \code{matrix} \\
+        Correspondence analysis & \code{"ca"} & \code{matrix} \\
         Bond Energy Algorithm & \code{"bea"} & \code{matrix} \\
-        Murtagh's Algorithm B& \code{"murtagh"} & \code{matrix} \\
-        Principal component analysis& \code{"pca"} & \code{matrix} \\
-        Correspondence analysis& \code{"ca"} & \code{matrix} \\
-        Optimal leaf ordering& \code{"optimal"} & \code{hclust}, \code{dist} \\
-        Gruvaeus and Wainer& \code{"gw"} & \code{hclust}, \code{dist} \\
+        Murtagh's Algorithm B & \code{"murtagh"} & \code{matrix} \\
         \hline
     \end{tabular}
 \caption{Implemented seriation methods.}
@@ -559,7 +580,7 @@ pimage(d, order, main = "Reordered")
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 bitmap(file = "seriation-pimage1.png", type = "pnggray", 
-    height = 2.8, width = 5, res = 300)
+    height = 2.8, width = 5, res = 300,pointsize=10)
 def.par <- par(no.readonly = TRUE)
 layout(t(1:2))
 <<pimage1>>
@@ -595,7 +616,7 @@ pimage(x, Order(row = order), main = "Reordered")
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 bitmap(file = "seriation-pimage2.png", type = "pnggray", 
-    height = 2.8, width = 5, res = 300)
+    height = 2.8, width = 5, res = 300,pointsize=8)
 def.par <- par(no.readonly = TRUE)
 layout(t(1:2))
 <<pimage2>>
@@ -641,7 +662,7 @@ tmp <- sapply(order, FUN = function(o) pimage(d, o, main = attr(o, "method")))
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 bitmap(file = "seriation-pimage3.png", type = "pnggray", height = 4.5, 
-    width = 6, res = 300, pointsize = 9)
+    width = 6, res = 300, pointsize = 10)
 def.par <- par(no.readonly = TRUE)
 layout(matrix(1:6, ncol = 3, byrow = TRUE))
 <<pimage3>>
@@ -692,11 +713,25 @@ results.Regarding stress, TSP and MDS provide the best results.
 
 \subsection{Heat maps}
 
-\marginpar{Write something about heatmaps.}
+A heat map is a shaded/color coded data matrix with a dendrogram added to the
+one side and to the top to indicate the order of rows and columns. Typically,
+reordering is done according to some row or column means within the
+restrictions imposed by the dendrogram. Heat maps recently became popular for
+visualizing genome expression data obtained via DNA microarray techology
+\citep[see, e.g.,][]{seriation:Eisen:1998}. 
 
-We use again the randomly reordered iris data set \code{x} 
-from the above example. To make the variables (columns) comparable,
-we use standard scaling.
+From Section~\ref{sec:hierarchical_clustering} we know that it is possible to
+find the optimal ordering of the leaf nodes of a dendrogramm which minimizes
+the distances between adjacent objects in reasonable time.  Such an order might
+provide an improvement over using simple reordering such as the row or column
+means with respect to presentation. In \pkg{seriation} we provide
+the function \func{hmap} which uses optimal ordering and can also use 
+seriation direcly on distance matrices without using hierarchical
+clustering to produce dendrogramms first.
+
+For the following example, we use again the randomly reordered iris data set
+\code{x} from the above example. To make the variables (columns) comparable, we
+use standard scaling.
 
 <<>>=
 x <- scale(x, center = FALSE)
@@ -721,12 +756,17 @@ and the reordered matrix with the reordered dissimilarity matrices to the left
 and on top is displayed. A \code{method} argument can be used to choose 
 different seriation methods.
 
-
-<<echo=FALSE, fig=TRUE, include=FALSE, label=heatmap1>>=
-hmap(x, cexCol=1, labRow = "")
+<<echo=FALSE, fig=FALSE, include=FALSE>>=
+bitmap(file = "seriation-heatmap1.png", type = "pnggray", 
+    height = 6, width = 6, res = 300, pointsize=14)
+hmap(x, cexCol=1, labRow = "", margin =c(7,7))
+tmp <- dev.off()
 @
-<<echo=FALSE, fig=TRUE, include=FALSE, label=heatmap2>>=
+<<echo=FALSE, fig=FALSE, include=FALSE>>=
+bitmap(file = "seriation-heatmap2.png", type = "pnggray", 
+    height = 6, width = 6, res = 300,pointsize=14)
 hmap(x, dendrogram = FALSE)
+tmp <- dev.off()
 @
 
 \begin{figure}
@@ -749,7 +789,8 @@ dissimilarity matrices to the left and on top.}
 
 \subsection{Bertin's permutation matrix}
 
-\cite{seriation:Bertin:1999} introduced permutation matrices to analyze
+\cite{seriation:Bertin:1981,seriation:Bertin:1999} 
+introduced permutation matrices to analyze
 multivariate data with medium to low sample size.  The idea is to reveal a more
 homogeneous structure in a data matrix $\mathbf{X}$ by simultaneously
 rearranging rows and columns. The rearranged matrix is displayed and cases and
@@ -850,38 +891,79 @@ visible after rearrangement.
 
 \subsection{Binary data matrices}
 
-\marginpar{Write about incidence matrices.}
-\marginpar{Write about townships.}
+Binary or $0$-$1$ data matrices are quite common.  Often such matrices are
+called \emph{incidence matrices} since a $1$ in a cell indicates the incidence
+of an event. In archaeology such an event could be that a special type of
+artifact was found at a certain archaelogical site.
+This can be seen as a simplification of a so called \emph{arbundance matrix}
+which codes in each cell the (relative) frequency or quantity of a an artifact
+type at a site. For a comparison of incidence and arbundance matrices
+in archaeology we we refer the reader to~\citep{seriation:Ihm:2005}. 
 
+Here we are interested in binary data.
+For the example we use an artificial data set from~\cite{seriation:Bertin:1981}
+called \emph{Townships}.  The data set contains $9$ binay characteristics
+(e.g., has a veterinary or has a high school) for $16$ townships. The idea of
+the data set is that townships evolve from a rural to an urban environment over
+time.
 
-
-<<>>=
-library("seriation")
-data("Townships")
-@
+After loading the data set (which comes with the package), we use
+\func{bertinplot} to visualize the data (\func{pimage} could also be used).
+Bars, the standard visualization of \func{bertinplot}, do not
+make much sense for binary data. We therefore use the 
+panel function \func{panel.squares} without spacing 
+to plot just black squares.
 
 <<fig=TRUE, include=FALSE, label=binary1, width=9>>=
-bertinplot(Townships, options = list(panel=panel.squares, spacing = 0))
+library("seriation")
+data("Townships")
+
+bertinplot(Townships, options = list(panel=panel.squares, spacing = 0, 
+    frame = TRUE))
 @
 
+The original data in Figure~\ref{fig:binary}(a) does not reveal structure in
+the data. To improve the display, we run the  bond energy algorithm (BEA) for
+columns and rows $10$ times with random starting points and keep the best
+solution. 
 
-To get a good solution, we repeat BEA $10$ times and take the best solution.
+<<echo=FALSE>>=
+## to get consistent results
+set.seed(5)
+@
 
 <<fig=TRUE, include=FALSE, label=binary2, width=9>>=
 order <- seriate(Townships, method = "bea", control = list(rep = 10))
-bertinplot(Townships,order, options = list(panel=panel.squares, spacing = 0))
+bertinplot(Townships, order, options = list(panel=panel.squares, spacing = 0,
+    frame = TRUE))
 @
+
+The reordered matrix is displayed in Figure~\ref{fig:binary}(b).
+A clear structure is visible. The variables (rows in a Bertin plot)
+can be split into the three categories describing different evolution states
+of townships:
+\begin{enumerate}
+    \item {\bf Urban:} Railway station, high school and police station
+    \item {\bf Intermediate:} Land reallocation, veterinary and agricultural 
+        cooperative
+    \item {\bf Rural:} No doctor, one-room school and no water supply
+\end{enumerate}
+
+The townships also clearly fall into these three groups which tentatively can
+be called villages (first $7$), towns (next 5) and cities (final 2).  The
+townships B and C are on the transition to the next higher group.
 
 \begin{figure}
     \centering
-    \includegraphics[width=10cm]{seriation-binary1} \\
+    \includegraphics[width=12cm, trim=0 40 0 30]{seriation-binary1} \\
     (a)    
 
-    \includegraphics[width=10cm]{seriation-binary2} \\
+    \includegraphics[width=12cm, trim=0 40 0 30]{seriation-binary2} \\
     (b)   
 
-    \caption{Original and reordered (BEA) townships data set.}
-    \label{fig:heatmap}
+    \caption{The townships data set in original order (a) and 
+    reordered using BEA (b).}
+    \label{fig:binary}
 \end{figure}
 
 
@@ -889,24 +971,43 @@ bertinplot(Townships,order, options = list(panel=panel.squares, spacing = 0))
 rbind(original = criterion(Townships), reordered = criterion(Townships, order))
 @
 
+BEA tries to maximize the measure of effectivenes (and bond energy) which is
+much higher in the reorderd matrix. Also the two types of stress are improved
+significantly.
+
 \subsection{Dissimilarity plot}
+
+
 
 <<>>=
 library("seriation")
 data("iris")
+iris <- iris[sample(1:nrow(iris)),]
 d <- dist(iris[-5])
 @
 
-<<fig=TRUE, include=FALSE, label=dissplot1>>=
+<<eval=FALSE, label=dissplot1>>=
 ## plot original matrix
 res <- dissplot(d, method = NA)
 @
 
-<<fig=TRUE, include=FALSE, label=dissplot2>>=
+<<eval=FALSE, label=dissplot2>>=
 ## plot reordered matrix using the nearest insertion algorithm (from tsp)
 res <- dissplot(d, method = "tsp", control = list(method = "nearest"),
     options = list(main = "Seriation (TSP)"))
 @
+
+<<echo=FALSE, fig=FALSE, include=FALSE>>=
+bitmap(file = "seriation-dissplot1.png", type = "pnggray", 
+    height = 6, width = 6, res = 300, pointsize=11)
+<<dissplot1>>
+tmp <- dev.off()
+bitmap(file = "seriation-dissplot2.png", type = "pnggray", 
+    height = 6, width = 6, res = 300, pointsize=11)
+<<dissplot2>>
+tmp <- dev.off()
+@
+
 
 \begin{figure}
     \begin{minipage}[b]{.48\linewidth}
@@ -929,10 +1030,31 @@ res <- dissplot(d, method = "tsp", control = list(method = "nearest"),
 <<>>=
 ## cluster with pam (we know iris has 3 clusters)
 library("cluster")
-l <- pam(d, 3, cluster.only = TRUE)
+l <- pam(d, 5, cluster.only = TRUE)
 @
 
-<<fig=TRUE, include=FALSE, label=dissplot3>>=
+
+<<eval=FALSE>>=
+res <- dissplot(d, l, method = "tsp",
+    options = list(main = "Seriation - standard",
+    newpage = FALSE))
+@
+
+<<eval=FALSE>>=
+plot(res, options = list(main = "Seriation - no averages",
+    average = FALSE, newpage = FALSE))
+plot(res, options = list(main = "Seriation - 5 shades of blue",
+    col = hcl(h = 260, c = seq(75,0, length=5), l = seq(30,95, length=5)),
+    gp = gpar(fill = hcl(h = 260, c=30, l = 80)), newpage = FALSE))
+plot(res, options = list(main = "Seriation - threshold",
+    threshold = 1.5, newpage = FALSE))
+@
+
+
+<<echo=FALSE, fig=FALSE, include=FALSE>>=
+bitmap(file = "seriation-dissplot3.png", type = "png16m", 
+    height = 8, width = 8, res = 300, pointsize=10)
+
 ## we use a grid layout to place several plots on a page
 grid.newpage()
 pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2), 
@@ -940,15 +1062,15 @@ pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2),
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
 
 ## visualize the clustering
-res <- dissplot(d, l, method = "chen",  
-    options = list(main = "PAM + Seriation (Chen) - standard", 
+res <- dissplot(d, l, method = "tsp",  
+    options = list(main = "Seriation - standard", 
     newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 
 ## supress average in lower triangle
-plot(res, options = list(main = "PAM + Seriation (Chen) - no avg.", 
+plot(res, options = list(main = "Seriation - no averages", 
     average = FALSE, newpage = FALSE))
 
 
@@ -956,7 +1078,7 @@ popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
 
 ## color: use 5 shades of blue
-plot(res, options = list(main = "PAM + Seriation (Chen) - blue", 
+plot(res, options = list(main = "Seriation - 5 shades of blue", 
     col = hcl(h = 260, c = seq(75,0, length=5), l = seq(30,95, length=5)),
     gp = gpar(fill = hcl(h = 260, c=30, l = 80)), newpage = FALSE))
 
@@ -964,15 +1086,25 @@ popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
 
 ## threshold
-plot(res, options = list(main = "PAM + Seriation (Chen) - threshold", 
+plot(res, options = list(main = "Seriation - threshold", 
     threshold = 1.5, newpage = FALSE))
 
 popViewport(2)
+tmp <- dev.off()
+@
 
+
+<<>>=
 ## the cluster_dissimilarity_matrix object
 res 
 names(res)
 @
+
+<<>>=
+table(iris[res$order, 5], res$label)[,res$cluster_order]
+@
+
+
 
 \begin{figure}
     \centering
@@ -984,6 +1116,8 @@ names(res)
 
 
 \section{Conclusion}
+
+Write conclusion\dots
 
 %\section*{Acknowledgments}
 

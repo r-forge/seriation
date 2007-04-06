@@ -6,7 +6,10 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
     methods <- c(
         "tsp",    # standard
         "chen",    
-        "mds"
+        "mds",
+        "hc",
+        "gw",
+        "optimal"
     ) 
     
     methodNr <- if(is.null(method)) 1
@@ -17,6 +20,9 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
     if(methodNr == 1) .seriate_tsp
     else if(methodNr == 2) .seriate_chen
     else if(methodNr == 3) .seriate_mds
+    else if(methodNr == 4) .seriate_hc
+    else if(methodNr == 5) .seriate_hc_gw
+    else if(methodNr == 6) .seriate_hc_optimal
 
     Order(order = workhorse(x, control), method = methods[methodNr])
 }
@@ -87,6 +93,24 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
     }else stop("unknown method")
 
 }
+
+
+
+## Hierarchical clustering related seriations
+
+.hclust_helper <- function(d, control = NULL){
+    if(is.null(control$method)) hclust(d) 
+    else hclust(d, method = control$method)
+}
+
+.seriate_hc <- function(x, control = NULL) 
+.hclust_helper(x, control)$order
+
+.seriate_hc_gw <- function(x, control = NULL) 
+seriate(.hclust_helper(x, control), x, method = "gw")$order
+
+.seriate_hc_optimal <- function(x, control = NULL)
+seriate(.hclust_helper(x, control), x, method = "optimal")$order
 
 
 ## generic for criterion

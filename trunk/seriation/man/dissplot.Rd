@@ -90,6 +90,8 @@ An invisible object of class \code{cluster_proximity_matrix} with the folowing
 elements:
 \item{order}{ \code{NULL} or integer vector giving the order used to plot
     \code{x}.}
+\item{cluster_order}{ \code{NULL} or integer vector giving the order 
+    of the clusters as plotted.}
 \item{method}{ vector of character strings indicating the seriation methods 
     used for plotting  \code{x}.}
 \item{k}{ \code{NULL} or integer scalar giving the number of clusters

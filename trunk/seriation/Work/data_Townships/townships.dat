@@ -1,4 +1,4 @@
- "High School" "Agricultural Coop." "Railway Station" "One-Room School" "Veterinary" "No Doctor" "No Water Supply" "Police Station" "Land Reallocation"
+ "High school" "Agricultural coop." "Railway station" "One-room school" "Veterinary" "No doctor" "No water supply" "Police station" "Land reallocation"
 A   0     0    0    1   0   1    0    0     0
 B   0     1    0    1   1   1    0    0     1
 C   0     1    0    0   1   0    0    1     1
@@ -7,11 +7,11 @@ E   0     0    0    1   0   1    0    0     0
 F   0     0    0    1   0   1    0    0     0
 G   0     1    0    0   1   0    0    0     1
 H   1     0    1    0   0   0    0    1     0
-I   0     0    0    1   0   1    1    0     0
-J   0     0    0    1   0   1    0    0     0
+I   0     0    0    1   0   1    0    0     0
+J   0     0    0    1   0   1    1    0     0
 K   1     0    1    0   0   0    0    1     0
 L   0     1    0    0   1   0    0    0     1
-M   0     0    0    1   0   1    1    0     0
-N   0     0    0    1   0   1    0    0     0
+M   0     0    0    1   0   1    0    0     0
+N   0     0    0    1   0   1    1    0     0
 O   0     1    0    0   1   0    0    0     1
 P   0     0    0    1   0   1    0    0     0
