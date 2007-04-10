@@ -239,6 +239,7 @@ and both notions are related to the
 
 
 \subsection{Measure of effectiveness (bond energy)}
+\label{sec:ME}
 
 \cite{seriation:McCormick:1972} defined the
 the \emph{measure of effectiveness (ME)} for 
@@ -259,9 +260,9 @@ to its four neighboring elements.
 %dependent on the order of the columns (left product in the sum) and on of 
 %the order of the rows (right product in the sum).
 
-Although ME was developed for general matrices, it can be used as a measure of
-seriation quality for symmetric similarity matrices since it gets maximal only
-if all large values are grouped together around the main diagonal. 
+Although ME was developed for general (positive) matrices, it can be used as a
+measure of seriation quality for symmetric similarity matrices since it gets
+maximal only if all large values are grouped together around the main diagonal. 
 
 \subsection{Stress}
 
@@ -390,12 +391,38 @@ reduces the number of permissible permutations making the problem easier.
 
 
 \subsection{Scaling}
-MDS, PCA, CA,\dots
+\marginpar{MDS, PCA, CA,\dots}
 
 \subsection{Bond energy algorithm}
-BEA
 
-Also talk about Murtagh's algorithm B.
+\marginpar{more BEA}
+The \emph{bond energy algorithm}~\citep[BEA;][]{seriation:McCormick:1972} 
+is a simple heuristic to rearrange columns and rows of a matrix 
+such that each entry is as closly numerically related to its four
+neighbors as possible. This is equal to maximizing 
+the measure of effectiveness (ME) defined in Section~\ref{sec:ME}.
+
+The heuristic follows the following steps:
+\begin{enumerate}
+    \item Place one randomly chosen column.  
+    \item Try to place each remaining
+        column at each possible positions left, right and between the already
+        placed columns and calulate every time the increase in ME.  Choose the
+        column and position which gives the largest increase in ME and place
+        the column. Repeat till all colums are placed.
+    \item Repeat procedure with rows.
+\end{enumerate}
+
+This greedy algorithm works fast and is only dependent on the choice of the
+first column/row. This dependence can be reduced by repeading the
+procedure several times with different choices and return the solution
+with the higherst ME.
+
+Although \cite{seriation:McCormick:1972} use BEA also for non-binary data,
+\cite{seriation:Arabie:1990} conclude, that BEA should only be used
+for binary data.
+
+Also talk about Murtagh's algorithm B~\cite{seriation:Murtagh:1985}.
 
 \subsection{Rank-two ellipse seriation}
 
@@ -476,8 +503,8 @@ dendrogram reordering.
         Rank-two ellipse seriation & \code{"chen"} & \code{dist} \\
         Multidimensional scaling & \code{"mds"} & \code{dist} \\
         Hierarchical clustering & \code{"hc"} & \code{dist} \\
-        Gruvaeus and Wainer & \code{"gw"} & \code{hclust}, \code{dist} \\
-        Optimal leaf ordering & \code{"optimal"} & \code{hclust}, \code{dist} \\
+        Gruvaeus and Wainer & \code{"gw"} &  \code{dist}, \code{hclust} \\
+        Optimal leaf ordering & \code{"optimal"} &  \code{dist}, \code{hclust} \\
         Principal component analysis & \code{"pca"} & \code{matrix} \\
         Correspondence analysis & \code{"ca"} & \code{matrix} \\
         Bond Energy Algorithm & \code{"bea"} & \code{matrix} \\
@@ -580,7 +607,7 @@ pimage(d, order, main = "Reordered")
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 bitmap(file = "seriation-pimage1.png", type = "pnggray", 
-    height = 2.8, width = 5, res = 300,pointsize=10)
+    height = 2.8, width = 5, res = 300,pointsize=7)
 def.par <- par(no.readonly = TRUE)
 layout(t(1:2))
 <<pimage1>>
@@ -616,7 +643,7 @@ pimage(x, Order(row = order), main = "Reordered")
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 bitmap(file = "seriation-pimage2.png", type = "pnggray", 
-    height = 2.8, width = 5, res = 300,pointsize=8)
+    height = 2.8, width = 5, res = 300,pointsize=7)
 def.par <- par(no.readonly = TRUE)
 layout(t(1:2))
 <<pimage2>>
@@ -634,31 +661,17 @@ tmp <- dev.off()
 
 To compare different seriation methods we use again the randomized 
 iris data set and the distance matrix from the previous example.
-
-First, we use some seriation methods for dissimilarity matrices.
-
+We use some seriation methods described in Section~\ref{sec:methods} 
+for dissimilarity matrices.
 <<>>=
-methods <- c("chen", "mds", "tsp")
+methods <- c("tsp", "chen", "mds", "hc", "gw", "optimal")
 order <- sapply(methods, simplify = FALSE, FUN = function(m) seriate(d, m))
 @
 
-Next, we add hierarchical clustering plus the implemented methods
-for leaf node ordering.
-
-<<>>=
-hc <- Order(hclust(d, method = "average"))
-
-order$hc <- hc
-order$hc_gw <- seriate(hc, d, method = "gw")
-order$hc_opt <- seriate(hc, d, method = "optimal")
-#$
-@
-
-We use matrix shading to plot the resulting orderings 
+The resulting orderings are displayed using matrix shading
 (see Figure~\ref{fig:pimage3}).
-
 <<label=pimage3, eval=FALSE>>=
-tmp <- sapply(order, FUN = function(o) pimage(d, o, main = attr(o, "method")))
+lapply(order, FUN = function(o) pimage(d, o, main = attr(o, "method")))
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 bitmap(file = "seriation-pimage3.png", type = "pnggray", height = 4.5, 
@@ -678,7 +691,7 @@ tmp <- dev.off()
     \label{fig:pimage3}
 \end{figure}
 
-And finally, we compare the criterion values for the different seriation
+Finally, we compare the criterion values for the different seriation
 methods. 
 <<>>=
 crit <- sapply(order, FUN = function(o) criterion(d, o))
@@ -717,17 +730,17 @@ A heat map is a shaded/color coded data matrix with a dendrogram added to the
 one side and to the top to indicate the order of rows and columns. Typically,
 reordering is done according to some row or column means within the
 restrictions imposed by the dendrogram. Heat maps recently became popular for
-visualizing genome expression data obtained via DNA microarray techology
+visualizing genome expression data obtained via DNA microarray technology
 \citep[see, e.g.,][]{seriation:Eisen:1998}. 
 
 From Section~\ref{sec:hierarchical_clustering} we know that it is possible to
-find the optimal ordering of the leaf nodes of a dendrogramm which minimizes
+find the optimal ordering of the leaf nodes of a dendrogram which minimizes
 the distances between adjacent objects in reasonable time.  Such an order might
 provide an improvement over using simple reordering such as the row or column
 means with respect to presentation. In \pkg{seriation} we provide
 the function \func{hmap} which uses optimal ordering and can also use 
-seriation direcly on distance matrices without using hierarchical
-clustering to produce dendrogramms first.
+seriation directly on distance matrices without using hierarchical
+clustering to produce dendrograms first.
 
 For the following example, we use again the randomly reordered iris data set
 \code{x} from the above example. To make the variables (columns) comparable, we
@@ -893,16 +906,16 @@ visible after rearrangement.
 
 Binary or $0$-$1$ data matrices are quite common.  Often such matrices are
 called \emph{incidence matrices} since a $1$ in a cell indicates the incidence
-of an event. In archaeology such an event could be that a special type of
-artifact was found at a certain archaelogical site.
-This can be seen as a simplification of a so called \emph{arbundance matrix}
+of an event. In archeology such an event could be that a special type of
+artifact was found at a certain archaeological site.
+This can be seen as a simplification of a so called \emph{abundance matrix}
 which codes in each cell the (relative) frequency or quantity of a an artifact
-type at a site. For a comparison of incidence and arbundance matrices
-in archaeology we we refer the reader to~\citep{seriation:Ihm:2005}. 
+type at a site. For a comparison of incidence and abundance matrices
+in archeology we we refer the reader to~\citep{seriation:Ihm:2005}. 
 
 Here we are interested in binary data.
 For the example we use an artificial data set from~\cite{seriation:Bertin:1981}
-called \emph{Townships}.  The data set contains $9$ binay characteristics
+called \emph{Townships}.  The data set contains $9$ binary characteristics
 (e.g., has a veterinary or has a high school) for $16$ townships. The idea of
 the data set is that townships evolve from a rural to an urban environment over
 time.
@@ -971,13 +984,65 @@ townships B and C are on the transition to the next higher group.
 rbind(original = criterion(Townships), reordered = criterion(Townships, order))
 @
 
-BEA tries to maximize the measure of effectivenes (and bond energy) which is
-much higher in the reorderd matrix. Also the two types of stress are improved
+BEA tries to maximize the measure of effectiveness (and bond energy) which is
+much higher in the reordered matrix. Also the two types of stress are improved
 significantly.
 
 \subsection{Dissimilarity plot}
+Judging the quality of a found cluster solution is a research topic since the
+invention of cluster analysis. This is especially important since all popular
+cluster algorithms produce a clustering even for data without a structure.
 
+%A method to judge the quality of a cluster solution is by inspecting a
+%visualization. For hierarchical clustering
+%dendrogramms~\cite{seriation:Hartigan:1967} are available which show the
+%hierarchical structure of the clustering as a binary tree and cluster quality 
+%can be judged by looking at the dissimilarities between objects in a cluster
+%and objects in other clusters. However, such a visualization is
+%only possible for heirarchical/nested clusterings. 
+%
+%\marginpar{Cite Pison et al 1999 and Kaufmann and Rousseeuw}
+%For the an arbitrary partitional clustering, the original objects can
+%be displayed in a 2 dimensional scatter plot
+%after using dimensionality reduction (e.g., PCA, MDS).
+%Objects belonging to the same cluster can be marked and thus, if the
+%dimensionality reduction preserves a large proportion of the
+%variavility in the original data, the separation between clusters can be
+%visually judged.
+%
+%Silhouettes
 
+Matrix shading is an old technique to visualize clustering by displaying the
+rearranged
+matrices~\cite{seriation:Sneath:1973,seriation:Ling:1973,seriation:Gale:1984}.
+Initially matrix shading was used in connection with hierarchical clustering,
+where the order of the dendrograms leaf nodes was used to arrange the matrix.
+However, with some extensions, matrix shading can be also used with any
+partitional clustering method. 
+
+\cite{seriation:Strehl:2003} suggest 
+a matrix shading visualization called \emph{CLUSION} where the 
+dissimilarity matrix is arranged such that all objects pertaining to 
+a single cluster appear in consecutive order in the matrix. The authors call
+this \emph{coarse seriation}. The result of a ``good'' clustering 
+should be a matrix with low dissimilarity values forming blocks around
+the main diagonal.
+However, using coarse seriation, the order of the clusters has to be predefined
+and the objects within each cluster are unordered.
+
+\func{dissplot} aims at reflecting global structure between clusters as well as
+the micro structure within clusters. To achieve this, we arrange the clusters as
+well as the objects within each cluster using seriation techniques. 
+To arrange clusters,
+an inter-cluster dissimilarity matrix is calculated using the average between
+cluster dissimilarities. \func{reorder.dist} is used on this inter-cluster
+dissimilarity matrix to arrange the clusters relative to each other resulting
+in on average more similar clusters to appear closer together.
+Within each cluster, \func{reorder.dist} is used on the sub-matrix 
+of the dissimilarity matrix concerning only the objects in the cluster.
+
+For the example, we use again Euclidean distance between the 
+objects in the iris data set.
 
 <<>>=
 library("seriation")
@@ -986,6 +1051,15 @@ iris <- iris[sample(1:nrow(iris)),]
 d <- dist(iris[-5])
 @
 
+First, we use \func{dissplot} without a clustering. We set \code{method}
+to \code{NA} to prevent reordering and display the original matrix. Then
+we omit the method argument which results in using the default seriation
+technique from \func{seriate.dist} which is a TSP heuristic. Since we did
+not provide a clustering, the whole matrix is reordered in one piece.
+The result in shown in Figure~\ref{fig:dissplot1}.
+From Figure~\ref{fig:dissplot1}(b) it seems that there is a clear structure in
+the data which suggesting a two cluster solution.
+
 <<eval=FALSE, label=dissplot1>>=
 ## plot original matrix
 res <- dissplot(d, method = NA)
@@ -993,8 +1067,7 @@ res <- dissplot(d, method = NA)
 
 <<eval=FALSE, label=dissplot2>>=
 ## plot reordered matrix using the nearest insertion algorithm (from tsp)
-res <- dissplot(d, method = "tsp", control = list(method = "nearest"),
-    options = list(main = "Seriation (TSP)"))
+res <- dissplot(d, options = list(main = "Seriation (TSP)"))
 @
 
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
@@ -1026,94 +1099,107 @@ tmp <- dev.off()
     \label{fig:dissplot1}
 \end{figure}
 
+Next, we create a cluster solution using k-means. Although we know
+that the data set should contain $3$ groups representing the three species
+of iris, we let k-means produce a $10$ cluster solution to study how such a 
+misspecification can be spotted using \func{dissplot}.
 
+
+<<echo=FALSE>>=
+set.seed(1234)
+@
 <<>>=
-## cluster with pam (we know iris has 3 clusters)
-library("cluster")
-l <- pam(d, 5, cluster.only = TRUE)
+l <- kmeans(d, 10)$cluster
+#$
 @
 
+We create a standard dissimilarity plot by providing the cluster
+solution as a vector of labels. The function rearranges the matrix and
+plots the result. Since rearrangement can be a time consuming procedure for
+large matrices, the rearranged matrix and all
+information needed for plotting is returned as the result. 
 
 <<eval=FALSE>>=
-res <- dissplot(d, l, method = "tsp",
-    options = list(main = "Seriation - standard",
-    newpage = FALSE))
+res <- dissplot(d, labels = l,
+    options = list(main = "Seriation - standard"))
 @
-
-<<eval=FALSE>>=
-plot(res, options = list(main = "Seriation - no averages",
-    average = FALSE, newpage = FALSE))
-plot(res, options = list(main = "Seriation - 5 shades of blue",
-    col = hcl(h = 260, c = seq(75,0, length=5), l = seq(30,95, length=5)),
-    gp = gpar(fill = hcl(h = 260, c=30, l = 80)), newpage = FALSE))
-plot(res, options = list(main = "Seriation - threshold",
-    threshold = 1.5, newpage = FALSE))
-@
-
-
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
-bitmap(file = "seriation-dissplot3.png", type = "png16m", 
-    height = 8, width = 8, res = 300, pointsize=10)
-
-## we use a grid layout to place several plots on a page
-grid.newpage()
-pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2), 
-    gp = gpar(fontsize = 8)))
-pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+bitmap(file = "seriation-dissplot3.png", type = "pnggray", 
+    height = 8, width = 8, res = 300, pointsize=12)
 
 ## visualize the clustering
-res <- dissplot(d, l, method = "tsp",  
-    options = list(main = "Seriation - standard", 
-    newpage = FALSE))
-
-popViewport()
-pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
-
-## supress average in lower triangle
-plot(res, options = list(main = "Seriation - no averages", 
-    average = FALSE, newpage = FALSE))
+res <- dissplot(d, l, options = list(main = "Seriation - standard"))
+tmp <- dev.off()
 
 
-popViewport()
-pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
-
-## color: use 5 shades of blue
-plot(res, options = list(main = "Seriation - 5 shades of blue", 
-    col = hcl(h = 260, c = seq(75,0, length=5), l = seq(30,95, length=5)),
-    gp = gpar(fill = hcl(h = 260, c=30, l = 80)), newpage = FALSE))
-
-popViewport()
-pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
-
+bitmap(file = "seriation-dissplot4.png", type = "pnggray", 
+    height = 8, width = 8, res = 300, pointsize=12)
 ## threshold
 plot(res, options = list(main = "Seriation - threshold", 
-    threshold = 1.5, newpage = FALSE))
+    threshold = 1.5))
 
-popViewport(2)
 tmp <- dev.off()
 @
 
-
-<<>>=
-## the cluster_dissimilarity_matrix object
-res 
-names(res)
-@
-
-<<>>=
-table(iris[res$order, 5], res$label)[,res$cluster_order]
-@
-
-
-
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{seriation-dissplot3}
-    \caption{Dissimilarity plot for pam solution with $k=3$ using several
-    presentation options.}
+    \includegraphics[width=10cm]{seriation-dissplot3}\\
+    (a)
+    
+    \includegraphics[width=10cm]{seriation-dissplot4}\\
+    (b)
+    \caption{Dissimilarity plot for k-means solution with 10 clusters. 
+    (a) standard plot and (b) plot with threshold.}
     \label{fig:dissplot3}
 \end{figure}
 
+<<>>=
+res
+@
+
+The resulting plot is shown in Figure~\ref{fig:dissplot3}(a).  The
+inter-cluster dissimilarities are shown as gray blocks and the average object
+dissimilarity within each clusters as gray triangles below the main diagonal of
+the matrix. Since the clusters are arranged such that more similar clusters
+are closer together, it is easy to see in Figure~\ref{fig:dissplot3}(a)
+that clusters 1, 3 and 6 as well as clusters 2, 4, 8, 5, 7, 9 and 10 
+are very similar and build two blocks. 
+This suggests again that a two cluster solution would
+be reasonable.
+
+Since slight variations of gray values are hard to distinguish,
+we plot the matrix again (using \func{plot} on the result above) and
+use a threshold on the dissimilarity to suppress high dissimilarity
+values in the plot. 
+
+<<eval=FALSE>>=
+plot(res, options = list(main = "Seriation - threshold",
+    threshold = 2))
+@
+
+In resulting plot in Figure~\ref{fig:dissplot3}(b), we see that the
+block containing 2, 4, 8, 5, 7, 9 and 10 is very well defined and
+cleanly separated from the other block. This suggests that these clusters
+in a solution with less clusters should form together a cluster.
+The other block is less well defined. There is considerable overlap between
+clusters 3 and 6, but also cluster 1 and 3 share similar objects.
+
+
+
+Using the information stored in the result of \func{dissplot} and
+the class information available for the iris data set, we can analyze
+the cluster solution and the interpretations of the dissimilarity plot.
+
+<<>>=
+#names(res)
+table(iris[res$order, 5], res$label)[,res$cluster_order]
+#$
+@
+
+As the plot in Figure~\ref{fig:dissplot3} indicated, the clusters 2, 4, 8, 5,
+7, 9 and 10 should be a single cluster containing only flowers of the species
+Iris setosa. The clusters 1, 3 and 6 are more problematic since they contain a
+mixture of Iris versicolor and virginica.
 
 \section{Conclusion}
 

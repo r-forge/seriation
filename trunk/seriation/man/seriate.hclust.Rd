@@ -70,7 +70,7 @@ Data.
 }
 \examples{
 ## generate some random data
-d <- dist(matrix(runif(30), ncol=2))
+d <- dist(matrix(runif(50), ncol=2))
 hc <- Order(hclust(d))
 hc_wg <- seriate(hc, d, method="gw")
 hc_opt <- seriate(hc, d, method="optimal")

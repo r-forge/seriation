@@ -57,7 +57,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         cluster_labels = TRUE, 
         averages    = TRUE, 
         lines       = TRUE, 
-        silhouettes = TRUE,
+        silhouettes = FALSE,
         threshold   = NULL,
         main        = paste("Dissimilarity plot:", 
             dim,"x",dim),

@@ -112,38 +112,28 @@ Remedies, and Applications,
 \examples{
 data("iris")
 x <- as.matrix(iris[-5])
+x <- x[sample(1:nrow(x)),]
 d <- dist(x)
 
-## compare the different methods
-hc <- Order(hclust(d, method = "average"))
-
-order <- list(
-    orig_matrix = NULL,
-    chen = seriate(d, method = "chen"),
-    mds =  seriate(d, method = "mds"),
-    tsp_nearest = seriate(d, method="tsp", 
-        control = list(method = "nearest_insertion")),
-    tsp_farthest = seriate(d, method="tsp", 
-        control = list(method = "farthest_insertion")),
-    tsp_two_opt =  seriate(d, method="tsp", 
-        control = list(method = "2-opt")),
-    hc = hc,
-    hc_gw = seriate(hc, d, method = "gw"),
-    hc_opt = seriate(hc, d, method = "optimal")
-)
-
+## default seriation
+order <- seriate(d)
+order
 
 ## plot
 def.par <- par(no.readonly = TRUE)
-layout(matrix(1:9, ncol = 3, byrow = TRUE))
+layout(cbind(1,2), respect = TRUE)
 
-tmp <- sapply(order, FUN = function(o) pimage(d, o, main = attr(o, "method")))
+pimage(d, main = "Random")
+pimage(d, order, main = "Reordered")
 
 par(def.par)
 
-## calculate criteria
-crit <- sapply(order, FUN = function(o) criterion(d, o))
-crit
+## compare quality
+rbind(
+    random = criterion(d),
+    reordered = criterion(d, order)
+)
+
 }
 \keyword{optimize}
 \keyword{cluster}
