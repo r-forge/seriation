@@ -37,6 +37,7 @@ bertinplot(x, order = NULL, highlight = TRUE,  options = NULL)
       is to plot cases as columns and variables as rows.}
   \item{\code{xlab, ylab}}{ labels (default: use labels from \code{x}).}
   \item{\code{spacing}}{ relative space between symbols (default: 0.2).}
+  \item{\code{frame}}{ plot a grid to separate symbols (default: code{FALSE}).}
   \item{\code{mar}}{ margins (see \code{par}).}
   \item{\code{gp_labels}}{ gpar object for labels (see \code{gpar}).}
   \item{\code{gp_panels}}{ gpar object for panels (see \code{gpar}).}

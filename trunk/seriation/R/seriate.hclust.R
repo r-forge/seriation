@@ -9,8 +9,8 @@ seriate.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
 
     ## methods
     methods <- c(
-        "optimal",      # standard
-        "gw")
+        "OLO",      # standard
+        "GW")
 
     if(is.null(method)) methodNr <- 1
     else methodNr <- pmatch(tolower(method), tolower(methods))

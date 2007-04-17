@@ -12,7 +12,7 @@ values closer together creating a block structure.
 \arguments{
   \item{x}{ a matrix.}
   \item{method}{ a character string with the name of the seriation method
-    (default: \code{"murtagh"}).}
+    (default: \code{"ME\_TSP"}).}
   \item{control}{ a list of control options passed on to the seriation
       algorithm.}
   \item{margin}{ a vector giving the margins to be seriated. \code{1} 
@@ -23,10 +23,10 @@ values closer together creating a block structure.
 \details{
     Currently the following methods are implemented:
 \describe{
-\item{\code{"bea"}}{Bond Energy Algorithm (BEA; McCormick 1972).
+\item{\code{"BEA"}}{Bond Energy Algorithm (BEA; McCormick 1972).
      
-     The algorithm tries to maximize the summed bond energy (see bond energy
-     in \code{criterion}) of a non-negative matrix. Due to the definition
+     The algorithm tries to maximize the measure of effectiveness
+     (see \code{criterion}) of a non-negative matrix. Due to the definition
      of this measure, the tasks of ordering rows and columns is separable
      and can  be solved independently.
 
@@ -43,22 +43,36 @@ values closer together creating a block structure.
      rows and columns. 
 
      The BEA code used in this package was implemented by Fionn Murtagh.
+     
+     In \code{control} as element \code{"rep"} the number of runs can be 
+     specified. The results of the best run will be returned.
      }
 
-\item{\code{"murtagh"}}{Algorithm B (Murtagh 1985). 
+\item{\code{"BEA_TSP"}}{Use a TSP to optimize the measure od effectiveness 
+    (Lenstra 1974). 
       
-    A simple heuristic which also tries to maximize the summed bond energy (see
-    BEA) of a nonnegative matrix. It uses the cross-product of the matrix (an
-    unnormalized form of the Pearson correlation) and a greedy hierarchical
-    clustering scheme. In each step a single cluster is constructed by merging
-    the leaf closest to one of the two endpoints of the cluster. The algorithm
-    starts with a random leaf and uses tie-breaking.
-      
-    Note that the ordering can change from run to run since ties are broken
-    randomly.
+    Use a TSP solver to optimize ME. 
+     
+    In \code{control} as element \code{"method"} a TSP solver method can be
+    specified (see package \pkg{TSP}).
     }
 
-\item{\code{"pca"}}{ Principal component analysis.
+
+
+%\item{\code{"Murtagh"}}{Algorithm B (Murtagh 1985). 
+%      
+%    A simple heuristic which also tries to maximize the summed bond energy (see
+%    BEA) of a nonnegative matrix. It uses the cross-product of the matrix (an
+%    unnormalized form of the Pearson correlation) and a greedy hierarchical
+%    clustering scheme. In each step a single cluster is constructed by merging
+%    the leaf closest to one of the two endpoints of the cluster. The algorithm
+%    starts with a random leaf and uses tie-breaking.
+%      
+%    Note that the ordering can change from run to run since ties are broken
+%    randomly.
+%    }
+
+\item{\code{"PCA"}}{ Principal component analysis.
       
       Uses the projection of the data on its first principal component to
       determine the order. 
@@ -67,7 +81,7 @@ values closer together creating a block structure.
       distance, this methods minimizes the least square criterion.
       }  
 
-\item{\code{"ca"}}{ Correspondence analysis.
+\item{\code{"CA"}}{ Correspondence analysis.
         Uses correspondence analysis to determine the order.
       }
     }
@@ -82,14 +96,17 @@ P. Arabie and L.J. Hubert (1990): The bond energy algorithm revisited,
 \emph{IEEE Transactions on Systems, Man, and Cybernetics,}
 \bold{20}(1), 268--274.
 
+J.K. Lenstra (1974): Clustering a Data Array and the Traveling-Salesman 
+Problem, \emph{Operations Research,} \bf{22}(2) 413--414. 
+
 W.T. McCormick, P.J. Schweitzer and T.W. White (1972): Problem decomposition
 and data reorganization by a clustering technique, 
 \emph{Operations Research,} 
 \bold{20}(5), 993--1009.
 
-F. Murtagh (1985): Multidimensional Cluster Algorithms. 
-\emph{Lectures in Computational Statistics}, Chapter 1, 
-Physica Verlag, 9--31.
+%F. Murtagh (1985): Multidimensional Cluster Algorithms. 
+%\emph{Lectures in Computational Statistics}, Chapter 1, 
+%Physica Verlag, 9--31.
 }
 \seealso{
 \code{\link{criterion}},
@@ -111,17 +128,17 @@ pimage(x, main = "original data")
 criterion(x)
 
 order <- seriate(x)
-pimage(x, order, main = "Murtagh")
+pimage(x, order, main = "TSP to optimize ME")
 criterion(x, order, method = "all")
 
-order <- seriate(x, method="pca")
+order <- seriate(x, method="PCA")
 pimage(x, order, main = "first principal component")
 criterion(x, order)
 
 ## 2 TSPs
 order <- Order(
-    row = seriate(dist(x), method = "tsp"),
-    col = seriate(dist(t(x)), method = "tsp"),
+    row = seriate(dist(x), method = "TSP"),
+    col = seriate(dist(t(x)), method = "TSP"),
     method = "2 TSPs"
 )
 pimage(x, order, main = "2 TSPs")

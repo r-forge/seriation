@@ -6,15 +6,15 @@ criterion.dist <- function(x, order = NULL, method = "all") {
    
     ## methods
     methods <- c(
-        "path_length",
-        "least_squares",
-        "inertia",
-        "ar_i",
-        "ar_s",
-        "ar_w",
-        "me",
-        "moore_stress",
-        "neumann_stress"
+        "Path_length",
+        "Least_squares",
+        "Inertia",
+        "AR_i",
+        "AR_s",
+        "AR_w",
+        "ME",
+        "Moore_stress",
+        "Neumann_stress"
     )
 
     ## do more than one criterion

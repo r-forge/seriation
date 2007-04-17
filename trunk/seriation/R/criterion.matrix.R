@@ -4,10 +4,9 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
 
     ## methods
     methods <- c(
-        "me",
-        "bond_energy",      
-        "moore_stress",
-        "neumann_stress"
+        "ME",
+        "Moore_stress",
+        "Neumann_stress"
     )
 
     ## do more than one criterion
@@ -27,11 +26,9 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
     if (methodNr == 1) {
         crit <- 0.5 * .bond_energy(x, order)
     }else if (methodNr == 2) {
-        crit <- .bond_energy(x, order)
-    }else if (methodNr == 3) {
         crit <- .stress(x, order, 
             type = "moore")
-    }else if (methodNr == 4) {
+    }else if (methodNr == 3) {
         crit <- .stress(x, order, 
             type = "neumann")
     }

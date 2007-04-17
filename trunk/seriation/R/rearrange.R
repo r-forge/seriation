@@ -20,14 +20,13 @@ rearrange.dist <- function(x, order) {
     
     d <- .Call("reorder_dist", x, order)
 
-    ## dist never had Labels!
-    #labels <- if(is.null(labels(x))) as.character(order$both) 
-    #else labels(x)[order$both]
+    labels <- if(is.null(labels(x))) NULL
+    else labels(x)[order]
     
     structure(d, 
         class   = "dist", 
         Size    = length(order), 
-        #Labels  = labels,
+        Labels  = labels,
         Diag    = FALSE,
         Upper   = FALSE,
         method  = attr(x, "method")
@@ -48,7 +47,10 @@ rearrange.matrix <- function(x, order) {
         && is.null(order$col)
         && is.null(order$order)) return(x)
     
-    if(!is.null(order$order)) return(x[order$order, order$order])
+    if(!is.null(order$order)) {
+        if(!isSymmetric(x)) stop("Order_vector can only be applied to a symmetric matrix")
+        return(x[order$order, order$order])
+    }
     if(is.null(order$row)) return(x[, order$col])
     if(is.null(order$col)) return(x[order$row,])
     x[order$row, order$col]

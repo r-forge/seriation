@@ -24,7 +24,7 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
     col     <- if(is.null(options$col)) gray.colors(256) else options$col
     main    <- options$main
 
-    if(is.null(method)) method <- "optimal"
+    if(is.null(method)) method <- "OLO"
     hclustfun <- if(is.null(control$hclustfun)) hclust else control$hclustfun
     
     dend_col <- as.dendrogram(seriate(hclustfun(dist_col), dist_col, 

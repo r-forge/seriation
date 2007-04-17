@@ -25,16 +25,16 @@ flipped.
 Currently, the following methods are implemented:
 
 \describe{
-    \item{"optimal"}{Optimal leaf ordering (Bar-Joseph et al. 2001).
+    \item{"OLO"}{Optimal leaf ordering (Bar-Joseph et al. 2001).
       
       The used objective measure for leaf ordering is the
       sum of the distances along the (Hamiltonian) path connecting the leaves
       in the given order. This algorithm produces the ordering with a minimal
       path length. The time complexity of the algorithm is
-      \eqn{o(n^3)}.
+      \eqn{O(n^3)}.
 
       Note that non-finite distance values are not allowed.}
-    \item{"gw"}{Gruvaeus and Wainer (1972). 
+    \item{"GW"}{Gruvaeus and Wainer (1972). 
       
         Uses the algorithm implemented in package \pkg{gclus} (Hurley 2004).
       The clusters are ordered at each level so that the objects at
@@ -72,8 +72,8 @@ Data.
 ## generate some random data
 d <- dist(matrix(runif(50), ncol=2))
 hc <- Order(hclust(d))
-hc_wg <- seriate(hc, d, method="gw")
-hc_opt <- seriate(hc, d, method="optimal")
+hc_wg <- seriate(hc, d, method="GW")
+hc_opt <- seriate(hc, d, method="OLO")
 
 ## compare dendrograms
 op <- par(mfrow=c(2,3), pty="s")

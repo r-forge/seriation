@@ -25,7 +25,7 @@ criterion(Townships)
 
 
 ## seriated data
-order <- seriate(Townships, method = "bea")
+order <- seriate(Townships, method = "BEA", control = list(rep = 5))
 pimage(Townships, order)
 criterion(Townships, order)
 

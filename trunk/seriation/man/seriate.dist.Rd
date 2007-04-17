@@ -17,7 +17,7 @@ dissimilarities between neighboring objects.
 \arguments{
   \item{x}{ an object of class \code{dist}.}
   \item{method}{ a character string with the name of the seriation method
-      (default: \code{"tsp"}).}
+      (default: \code{"TSP"}).}
   \item{control}{ a list of control options passed on to the seriation
       algorithms.}
   \item{\ldots}{ further arguments (unused).}
@@ -26,10 +26,10 @@ dissimilarities between neighboring objects.
     Currently the following methods are implemented:
    
 \describe{    
-\item{\code{"tsp"}}{Traveling salesperson problem solver. 
+\item{\code{"TSP"}}{Traveling salesperson problem solver. 
       
-      A solver in \pkg{tsp} can be used (see \code{solve_TSP} in
-      package \pkg{tsp}). The solver method can be passed on via the
+      A solver in \pkg{TSP} can be used (see \code{solve_TSP} in
+      package \pkg{TSP}). The solver method can be passed on via the
       \code{control} argument, e.g. \code{control = list(method = "insertion")}.
 
       Since a tour returned by a TSP solver is a connected circle and we are
@@ -39,7 +39,7 @@ dissimilarities between neighboring objects.
       of this dummy city in an optimal tour with minimal length is the best
       cutting point (it lies between the most distant cities).} 
 
-\item{\code{"chen"}}{Rank-two ellipse seriation (Chen 2002).
+\item{\code{"Chen"}}{Rank-two ellipse seriation (Chen 2002).
       
         This method starts with generating a sequence of correlation matrices
       \eqn{R^1, R^2, \ldots}. \eqn{R^1} is the correlation matrix
@@ -61,7 +61,7 @@ dissimilarities between neighboring objects.
       In this implementation the top most cutting point is used.
       }  
 
-\item{\code{"mds"}}{Multidimensional scaling (MDS).
+\item{\code{"MDS"}}{Multidimensional scaling (MDS).
     
     Use multidimensional scaling techniques to find an linear order. Note 
     that unidimensional scaling would be more appropriate but is very hard to 
@@ -73,7 +73,7 @@ dissimilarities between neighboring objects.
     The method can be specified as the element \code{method} 
     (\code{"cmdscale"}, \code{"isoMDS"} or \code{"sammon"}) in \code{control}.
     }  
-\item{\code{"hc"}, \code{"gw"}, \code{"optimal"}}{Hierarchical 
+\item{\code{"HC"}, \code{"GW"}, \code{"OLO"}}{Hierarchical 
     clustering with optional reordering. 
     
     Apply hierarchical clustering (\code{hclust}) to \code{x} and use the
@@ -82,8 +82,8 @@ dissimilarities between neighboring objects.
     a \code{"method"} element in \code{control}.
     
     For information on the
-    two available reordering algorithms (\code{"gw"} and 
-    \code{"optimal"}) see \code{seriate.hclust}.
+    two available reordering algorithms (\code{"GW"} and 
+    \code{"OLO"}) see \code{seriate.hclust}.
     }
     }
 }
@@ -102,7 +102,7 @@ Remedies, and Applications,
 919--943.
 }
 \seealso{
-\code{\link[tsp]{solve_TSP}} in \pkg{tsp},
+\code{\link[TSP]{solve_TSP}} in \pkg{TSP},
 \code{\link{hclust}} in \pkg{stats},
 \code{\link{criterion}},
 \code{\link{seriate.matrix}} and

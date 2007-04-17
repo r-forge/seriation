@@ -4,12 +4,12 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
     
     ## build-in methods
     methods <- c(
-        "tsp",    # standard
-        "chen",    
-        "mds",
-        "hc",
-        "gw",
-        "optimal"
+        "TSP",    # standard
+        "Chen",    
+        "MDS",
+        "HC",
+        "GW",
+        "OLO"
     ) 
     
     methodNr <- if(is.null(method)) 1
@@ -107,10 +107,10 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
 .hclust_helper(x, control)$order
 
 .seriate_hc_gw <- function(x, control = NULL) 
-seriate(.hclust_helper(x, control), x, method = "gw")$order
+seriate(.hclust_helper(x, control), x, method = "GW")$order
 
 .seriate_hc_optimal <- function(x, control = NULL)
-seriate(.hclust_helper(x, control), x, method = "optimal")$order
+seriate(.hclust_helper(x, control), x, method = "OLO")$order
 
 
 ## generic for criterion

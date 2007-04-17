@@ -41,34 +41,51 @@ set.seed(1234)
 \maketitle
 \sloppy
 
-\abstract{To come\dots}
+\abstract{Unidimensional
+seriation, i.e., finding a linear order for a set of objects given data, is a
+basic problem in data analysis.  In this paper we present the
+package~\pkg{seriation} which provides an infrastructure for unidimensional
+seriation for R. This infrastructure comprises data structures to represent the
+linear order, a wide array of seriation methods, quality criteria, and several
+visualization techniques which build on seriation. To illustrate how easily the
+package can be used for a variety of applications, a comprehensive collection
+of examples is presented.
+}
+
 \section{Introduction}
-\marginpar{rewrite introduction}
 A basic problem in data analysis is to arrange objects in linear order given
 available data. For example, political scientists may want to order judges from
-the most liberal to the most conservative person according to their rulings,
+the most liberal to the most conservative according to their rulings,
 psychologists may try to order subjects by their developmental stage using
-questionnaire data, or archaeologists may order graves according to age given the
-found artifacts. This type of problem is 
-sometimes referred to as \emph{ordination} usually called \emph{unidimensional 
-seriation.} 
+questionnaire data, or archaeologists may order graves according to age given
+the found artifacts. This type of problem is usually referred to as
+\emph{unidimensional seriation.}
 
 Seriation was first used as a formal method by \cite{seriation:Petrie:1899} to
 find a chronological order for graves discovered in the Nile area given objects
-found there. The idea was that different objects continuously go in and out
-of fashion and a contingency table of grave sites times objects can be
-rearranged using row and column permutations till all large values are close to
-the diagonal. Initially, the rearrangement of rows and columns of the
-contingency was done manually and the adequacy was only judged subjectively 
-by the researcher. Later, \cite{seriation:Robinson:1951}, 
-\cite{seriation:Kendall:1971} and others 
-proposed measures of agreement between rows to quantify optimality of the 
-resulting table. A comprehensive description of the development of seriation
-in archeology can be found in \cite{seriation:Ihm:2005}.
+found there. The idea was that different objects continuously go in and out of
+fashion and a contingency table of grave sites times objects can be rearranged
+using row and column permutations till all large values are close to the
+diagonal. Initially, the rearrangement of rows and columns of the contingency
+table was done manually and the adequacy was only judged subjectively by the
+researcher. Later, \cite{seriation:Robinson:1951},
+\cite{seriation:Kendall:1971} and others proposed measures of agreement between
+rows to quantify optimality of the resulting table. A comprehensive description
+of the development of seriation in archeology is presented by
+\cite{seriation:Ihm:2005}.
 
-Today \dots blabla \dots
+In this paper we present the package~\pkg{seriation} which provides the
+infrastructure to represent and solve seriation problems in R.  We start with a
+formal introduction of the seriation problem in Section~\ref{sec:seriation}.
+In Sections~\ref{sec:criteria} and \ref{sec:methods} we give an overview of
+seriation criteria and methods. In Section~\ref{sec:infrastructure} we present
+the infrastructure provided by the package~\pkg{seriation}.  In
+Section~\ref{sec:example} we present several examples and applications for
+seriation. We conclude with Section~\ref{sec:conclusion}.
 
 \section{Unidimensional seriation}
+\label{sec:seriation}
+
 To seriate a set of $n$ objects $\{O_1,\dots,O_n\}$ one typically starts with a
 $n \times n$ symmetric matrix $\mathbf{S} = (s_{ij})$ where $s_{ij}$ represents
 the proximity between the objects $O_i$ and $O_j$.  We assume that the
@@ -91,30 +108,32 @@ a matrix $\mathbf{S}$ is in Robinson form if, and only if
     s_{i,j-1} \le s_{ij} \quad \text{for all} \quad j \le i
 \end{equation}
 holds. Since in such a matrix the largest values appear close to the main
-diagonal, the closer objects are together in the order of the matrix,
-the higher their proximity. This provides a natural way to define 
-consistency and results in the
-objective of seriation: find the permutation $\pi^*$ which
-results in a rearranged proximity matrix $\mathbf{S'} = (s_{\pi(i)\pi(j)})$
-which is in Robinson form. However, there are two problems:
+diagonal, the closer objects are together in the order of the matrix, the
+higher their proximity. This provides a natural way to define consistency
+between the proximity matrix and the order and results in the objective of
+seriation: find the permutation $\pi^*$ which results in a rearranged proximity
+matrix $\mathbf{S'} = (s_{\pi(i)\pi(j)})$ which is in Robinson form. However,
+using this objective poses two problems:
 \begin{enumerate}
     \item For most data sets, proximity matrices cannot be rearranged into a
         perfect Robinson form.
     \item The number of possible permutations is $n!$ which makes an exhaustive 
-        search for medium to large $n$ infeasible.
+        search for sets with a medium to large number of objects infeasible.
 \end{enumerate}
 
-The first problem
-indicates that one needs to find a permutation which results into a matrix as
-close to the Robinson form as possible. To quantify closeness, measures of
-divergence from the Robinson form have to be defined. Such measures are
-defined in Section~\ref{sec:criteria}.
+The first problem can be addressed by relaxing the objective to finding a
+permutation which results into a matrix as close to the Robinson form as
+possible. To quantify closeness, measures of divergence from the Robinson form
+have to be defined. Such measures together with other quality measures not
+directly related to the Robinson form but with a similar goal are defined in
+Section~\ref{sec:criteria}.
 
 The second problem, to find the permutation that minimized the measure of
-divergence from the Robinson form can be addressed by using search heuristics
-or methods which reduce the search space (e.g., dynamic
-programming~\citep{seriation:Hubert:1981}). Search heuristics for
-different measures are presented in Section~\ref{sec:methods}.
+divergence from the Robinson form or other quality measures can be addressed by
+using search heuristics or methods which reduce the search space 
+\citep[e.g., for dynamic programming see][]{seriation:Hubert:1981}. 
+Search heuristics which improve different quality measures are presented in
+Section~\ref{sec:methods}.
 
 
 \section{Seriation criteria}
@@ -151,7 +170,7 @@ anti-Robinson events, but weight them differently:
     \sum_{i=1}^p \biggl( \sum_{j<k<i}^n I(d_{ij}<d_{ik})\; w_{ijk}%
     + \sum_{i<j<k} I(d_{ij} > d_{ik})\; w_{ijk} \biggr),
 \end{equation}
-where $I$ is an indicator function and $w_{ijk}$ is a weight.
+where $I(\cdot)$ is an indicator function and $w_{ijk}$ is a weight.
 
 For the raw number of anti-Robinson events, the weight is 
 \begin{equation}
@@ -159,16 +178,20 @@ For the raw number of anti-Robinson events, the weight is
 \end{equation}
 
 For the sum of absolute anti-Robinson deviations, the
-deviations are used as the weight, i.e.,  
+magnitude of the deviations are used as weights, i.e.,  
 \begin{equation}
     w_{ijk} = |d_{ij} - d_{ik}|.
 \end{equation}
 
-For the weighted sum of absolute anti-Robinson deviations, the deviations are
-weighted by the difference of column indices, i.e., 
+For the weighted sum of absolute anti-Robinson deviations, in addition
+to the magnitude also the difference of column indices 
+enters the weights, i.e.,
 \begin{equation}
     w_{ijk} = |j-k||d_{ij} - d_{ik}|.
 \end{equation}
+
+
+
 
 \subsection{Least squares criterion} 
 A natural seriation criterion is to quantify the deviations between the 
@@ -200,27 +223,27 @@ them on the first principal component of $\mathbf{X}$ minimizes this criterion.
 \subsection{Inertia criterion} 
 Another way to look at the seriation problem is not to 
 focus on placing small dissimilarity values close to the diagonal, but to
-push large values away from it. A measure to quantify this,
+push large values away from it. A measure to quantify this is
 the moment of inertia of dissimilarity values 
-around the diagonal \citep{seriation:Caraux:2005} is defined as
+around the diagonal \citep{seriation:Caraux:2005} defined as
 \begin{equation}
     \sum_{i=1}^n \sum_{j=1}^n d_{ij}|i-j|^2.
 \end{equation}
 $|i-j|$ is used as a measure for the distance to the diagonal and
 $d_{ij}$ gives the weight. 
-The criterion increases when higher dissimilarity values are placed
+The criterion clearly increases when higher dissimilarity values are placed
 farther away from the diagonal.
 
 \subsection{Hamiltonian path length}
 The dissimilarity matrix $\mathbf{D}$ can be represented as a finite weighted
-graph $G = (O,E)$ where the set of objects $O$ constitute the vertices and each
-edge $e_{ij} \in E$ between the objects $O_i$ and $O_j$ has a weight $w_ij$
-associated which represents the dissimilarity $d_{ij}$.
+graph $G = (\Omega,E)$ where the set of objects $\Omega$ constitute the
+vertices and each edge $e_{ij} \in E$ between the objects $O_i, O_j \in \Omega$ 
+has a weight $w_{ij}$ associated which represents the dissimilarity $d_{ij}$.
 
 Such a graph can be used for 
 seriation~\citep[see, e.g.,][]{seriation:Hubert:1974,seriation:Caraux:2005}. 
 An order $\pi$ of the objects can be seen as a path through the graph where
-each node is visited only once, i.e., a Hamilton path. The length of such a
+each node is visited exactly once, i.e., a Hamilton path. The length of such a
 path is given by
 \begin{equation}
     \sum_{i=1}^{n-1} d_{\pi(i)\pi(i+1)}.
@@ -233,16 +256,16 @@ measure. Therefore, this criterion does not enforce a full Robinson form.
 
 Note that the length of the Hamiltonian path is equal to the 
 value of the \emph{minimal span loss function} 
-\citep[as used by][]{seriation:Chen:2002}),
+\citep[as used by][]{seriation:Chen:2002},
 and both notions are related to the 
 \emph{traveling salesperson problem}~\citep{seriation:Gutin:2002}.
 
 
-\subsection{Measure of effectiveness (bond energy)}
+\subsection{Measure of effectiveness}
 \label{sec:ME}
 
 \cite{seriation:McCormick:1972} defined the
-the \emph{measure of effectiveness (ME)} for 
+\emph{measure of effectiveness (ME)} for 
 a $n \times m$ matrix $\mathbf{X} = (x_{ij})$ as
 \begin{equation}
     \frac{1}{2}
@@ -252,7 +275,7 @@ a $n \times m$ matrix $\mathbf{X} = (x_{ij})$ as
 \end{equation}
 with, by convention $x_{0,j}=x_{n+1,j}=x_{i,0}=x_{i,m+1}=0$.
 ME is maximized if each element is as closely related numerically
-to its four neighboring elements.
+to its four neighboring elements as possible.
 \marginpar{check n and m for consistency}
 
 %From the definition in (\ref{equ:BE}), it is easy to see that the
@@ -265,21 +288,20 @@ measure of seriation quality for symmetric similarity matrices since it gets
 maximal only if all large values are grouped together around the main diagonal. 
 
 \subsection{Stress}
+\label{sec:stress}
 
-Stress~\citep{seriation:Niermann:2005} measures
-the conciseness of the presentation of a matrix/table and can
-be seen as a purity function which compares the values in a matrix/table with
-their neighbors. The stress measures used here 
-are computed as the sum of squared
-distances of each matrix entry from its adjacent entries. 
-We define for a $n \times m$ matrix $\mathbf{X} = x_{ij}$
-two types of neighborhoods:
+Stress measures the conciseness of the presentation of a matrix and can
+be seen as a purity function which compares the values in a matrix with
+their neighbors. The stress measures used here are computed as the sum of
+squared distances of each matrix entry from its adjacent entries.
+\cite{seriation:Niermann:2005} defined for a $n \times m$ matrix $\mathbf{X} =
+(x_{ij})$ two types of neighborhoods:
 
 \begin{itemize}
     \item The Moore neighborhood comprises the eight adjacent entries.
         The local stress measure for element $x_{ij}$ is defined as
         \begin{equation}
-            stress_{ij} = \sum_{k=\max(1,i-1)}^{\min(n,i+1)} 
+            \sigma_{ij} = \sum_{k=\max(1,i-1)}^{\min(n,i+1)} 
                 \sum_{l=\max(1,j-1)}^{\min(m,j+1)} 
                 (x_{ij} - x_{kl})^2
         \end{equation}
@@ -287,7 +309,7 @@ two types of neighborhoods:
     \item The Neumann neighborhood comprises the four adjacent entries
         resulting in the local stress of $x_{ij}$ of
         \begin{equation}
-            stress_{ij} = 
+            \sigma_{ij} = 
             \sum_{k=\max(1,i-1)}^{\min(n,i+1)} (x_{ij} - x_{kj})^2 + 
             \sum_{l=\max(1,j-1)}^{\min(m,j+1)} (x_{ij} - x_{il})^2
             %(x_{ij} - x(i-1,j))^2 + (x_{ij} - x(i+1,j))^2 +
@@ -295,23 +317,27 @@ two types of neighborhoods:
         \end{equation}
 \end{itemize}
 
-Both local stress measures can be used to construct measures for the whole
-table by summing over all entries:
+Both local stress measures can be used to construct a global measure for the
+whole matrix by summing over all entries:
 \begin{equation}
-    \sum_{i=1}^n \sum_{j=1}^m stress_{ij}
+    \sum_{i=1}^n \sum_{j=1}^m \sigma_{ij}
 \end{equation}
 
 The major difference between the Moore and the Neumann neighborhood is that
-for the later row and column permutations are separable and can
-be optimized independently.
+only for the later row and column permutations are separable and can be
+optimized independently. 
 
 Obviously, stress can be also used to measure the quality of seriation for
-symmetric proximity matrices, since it can only be optimal, if large values
-are concentrated around the main diagonal.
+symmetric proximity matrices, since it can only be optimal, if large values are
+concentrated around the main diagonal. Note also, that stress with Neumann
+neighborhood is related to the measure of effectiveness defined above (in
+Section~\ref{sec:ME}) since both measures are optimal if for each cell the cell
+and its four neighbors are numerically as similar as possible.
 
 \section{Seriation methods}
 \label{sec:methods}
-
+In the literature many methods for seriation have been proposed. In this
+section we present the most commonly used methods.
 
 \subsection{Traveling salesperson problem solver}
 
@@ -328,7 +354,7 @@ column of 0's is added (sometimes this is referred to as a \emph{dummy city}).
 The solution of this $(n+1)$-city TSP, gives the shortest path where the city
 representing the added row/column cuts the cycle into a linear path.
 
-Despite this simple problem statement, solving the TSP is difficult since it
+Despite the simple problem statement, solving the TSP is difficult since it
 belongs to the class of NP-complete problems. In the seriation case with $n+1$
 cities, $n!$ tours have to be checked. However, despite this vast searching
 space, small instances can be solved efficiently using dynamic programming
@@ -362,87 +388,94 @@ two interception points (top or bottom) with the vertical axis.
 \label{sec:hierarchical_clustering}
 
 Hierarchical clustering produces a series of nested clusterings which can be
-visualized by a dendrogram, a binary tree where each internal node splits two
-subtrees has a measure of similarity/dissimilarity attached to it.  A heuristic
-to find a linear order of objects, the order of the leaf nodes in a dendrogram
-structure can be used.  This idea is used, e.g.,  by heatmaps to reorder rows
-and columns with the aim to place more similar objects and variables closer
-together.  For hierarchical clustering several methods are available (e.g.,
-single linkage, average linkage, complete linkage, ward method) resulting in
-different dendrograms. 
-However, the order of leaf nodes in a dendrogram is not unique.  A dendrogram
-for $n$ objects has $2^{n-1}$ internal nodes (subtrees) and at  each internal
-node the left and right subtree (or leaves) can be swapped resulting in
-$2^{n-1}$ distinct leaf orderings.  
+visualized by a dendrogram, a binary tree where each internal node represents a
+split into two subtrees and has a measure of similarity/dissimilarity attached
+to it.  As a simple heuristic to find a linear order of objects, the order of
+the leaf nodes in a dendrogram structure can be used. This idea is used, e.g.,
+by heatmaps to reorder rows and columns with the aim to place more similar
+objects and variables closer together. 
 
-To find a unique or optimal order, an additional criterion
-has to be defined.
-\cite{seriation:Gruvaeus:1972} suggest to obtain a unique order by requiring to
-order the leaf nodes such that at each level the objects at the edge of each
-cluster are adjacent to that object outside the cluster to which it is nearest.
+%For hierarchical clustering several methods are available (e.g.,
+%single linkage, average linkage, complete linkage, ward method) resulting in
+%different dendrograms. 
+%However, 
+The order of leaf nodes in a dendrogram is not unique. A dendrogram for $n$
+objects has $2^{n-1}$ internal nodes and at each internal node the left and
+right subtree (or leaves) can be swapped resulting in $2^{n-1}$ distinct leaf
+orderings.  To find an unique or optimal order, an additional criterion has to
+be defined.  \cite{seriation:Gruvaeus:1972} suggest to obtain an unique order by
+requiring to order the leaf nodes such that at each level the objects at the
+edge of each cluster are adjacent to that object outside the cluster to which
+it is nearest.
 
-\cite{seriation:Bar-Joseph:2001} 
-suggest to rearrange the dendrogram such that the 
-Hamiltonian path connecting the leaves is minimized.
-The  authors also present a algorithm with time complexity $O(n^4)$
-to solve this optimization problem. Note that this problem is related to 
-the TSP described above, however, the given dendrogram structure significantly
-reduces the number of permissible permutations making the problem easier.
+\cite{seriation:Bar-Joseph:2001} suggest to rearrange the dendrogram such that
+the Hamiltonian path connecting the leaves is minimized and called this the
+optimal leaf order. The authors also present a fast algorithm with time
+complexity $O(n^4)$ to solve this optimization problem. Note that this problem
+is related to the TSP described above, however, the given dendrogram structure
+significantly reduces the number of permissible permutations making the problem
+easier.
 
 
 \subsection{Scaling}
-\marginpar{MDS, PCA, CA,\dots}
+Multidimensional scaling is a technique to transform a matrix containing all
+pairwise dissimilarities between a set of objects into a set of coordinates
+such that the distances between the coordinates approximate the original
+pairwise dissimilarities as well as possible.
+
+\marginpar{MDS,UDS} 
+
+
+\subsection{Principle components analysis and correspondence analysis}
+\marginpar{PCA, CA,\dots}
+
+
 
 \subsection{Bond energy algorithm}
 
-\marginpar{more BEA}
-The \emph{bond energy algorithm}~\citep[BEA;][]{seriation:McCormick:1972} 
-is a simple heuristic to rearrange columns and rows of a matrix 
-such that each entry is as closly numerically related to its four
-neighbors as possible. This is equal to maximizing 
-the measure of effectiveness (ME) defined in Section~\ref{sec:ME}.
-
-The heuristic follows the following steps:
+The \emph{bond energy algorithm}~\citep[BEA;][]{seriation:McCormick:1972} is a
+simple heuristic to rearrange columns and rows of a matrix such that each entry
+is as closely numerically related to its four neighbors as possible.  To
+achieve this, BEA tries to maximize the measure of effectiveness (ME) defined
+in Section~\ref{sec:ME}.  For optimizing the ME, columns and rows can be
+treated separately since changing the order of rows does not influence the ME
+contributions of the columns and vice versa. BEA consists of the
+following three steps:
 \begin{enumerate}
     \item Place one randomly chosen column.  
     \item Try to place each remaining
         column at each possible positions left, right and between the already
-        placed columns and calulate every time the increase in ME.  Choose the
+        placed columns and calculate every time the increase in ME. Choose the
         column and position which gives the largest increase in ME and place
-        the column. Repeat till all colums are placed.
+        the column. Repeat till all columns are placed.
     \item Repeat procedure with rows.
 \end{enumerate}
 
 This greedy algorithm works fast and is only dependent on the choice of the
-first column/row. This dependence can be reduced by repeading the
+first column/row. This dependence can be reduced by repeating the
 procedure several times with different choices and return the solution
-with the higherst ME.
+with the highest ME.
 
 Although \cite{seriation:McCormick:1972} use BEA also for non-binary data,
-\cite{seriation:Arabie:1990} conclude, that BEA should only be used
-for binary data.
+\cite{seriation:Arabie:1990} argue that the measure of effectiveness only
+serves its indented purpose of finding a arrangement which is
+close to Robinson form for binary data and should therefore only be
+used for binary data.
 
-Also talk about Murtagh's algorithm B~\cite{seriation:Murtagh:1985}.
+\cite{seriation:Lenstra:1974} notes that the optimization problem 
+of BEA can be stated as two independent traveling salesperson problems (TSPs).
+For example,
+the row TSP for a $n \times m$ matrix $\mathbf{X}$ consists of $n$ cities with
+distances defined as
+\begin{displaymath}
+    d_{ij} = -\sum_{k=1}^m x_{ik}x_{jk}.
+\end{displaymath}
+\marginpar{check formulas}
+BEA is in fact a simple suboptimal TSP heuristic using this distances
+and instead of BEA any TSP solver can be used to obtain a order.
 
-\subsection{Rank-two ellipse seriation}
-
-\cite{seriation:Chen:2002} proposes to
-generate a sequence of correlation matrices
-$R^1, R^2, \ldots$. $R^1$ is the correlation matrix
-of the original distance matrix $\mathbf{D}$ and
-\begin{equation}
-R^{n+1} = \phi R^n,
-\end{equation}
-where $\phi(\cdot)$ calculates a correlation matrix.
-
-The rank of the matrix $R^n$ falls with increasing $n$. The sequence
-is continued till the first matrix in the sequence has a rank of 2.
-Projecting all points in this matrix on the first two eigenvectors,
-all points fall on an ellipse. The order of the points on this ellipse
-is the resulting order where the ellipse can be cut at any of the 
-two interception points (top or bottom) with the vertical axis.
-
-\section{The \pkg{seriation} package infrastructure}
+\section{The package infrastructure}
+\label{sec:infrastructure}
 
 \begin{figure}[tp]
     \centerline{
@@ -499,16 +532,16 @@ dendrogram reordering.
         \hline
         Seriation method & Argument \code{method} & Input data \\
         \hline
-        Traveling salesperson problem solver & \code{"tsp"} & \code{dist} \\
-        Rank-two ellipse seriation & \code{"chen"} & \code{dist} \\
-        Multidimensional scaling & \code{"mds"} & \code{dist} \\
-        Hierarchical clustering & \code{"hc"} & \code{dist} \\
-        Gruvaeus and Wainer & \code{"gw"} &  \code{dist}, \code{hclust} \\
-        Optimal leaf ordering & \code{"optimal"} &  \code{dist}, \code{hclust} \\
-        Principal component analysis & \code{"pca"} & \code{matrix} \\
-        Correspondence analysis & \code{"ca"} & \code{matrix} \\
-        Bond Energy Algorithm & \code{"bea"} & \code{matrix} \\
-        Murtagh's Algorithm B & \code{"murtagh"} & \code{matrix} \\
+        Traveling salesperson problem solver & \code{"TSP"} & \code{dist} \\
+        Rank-two ellipse seriation & \code{"Chen"} & \code{dist} \\
+        Multidimensional scaling & \code{"MDS"} & \code{dist} \\
+        Hierarchical clustering & \code{"HC"} & \code{dist} \\
+        Gruvaeus and Wainer & \code{"GW"} &  \code{dist}, \code{hclust} \\
+        Optimal leaf ordering & \code{"OLO"} &  \code{dist}, \code{hclust} \\
+        Principal component analysis & \code{"PCA"} & \code{matrix} \\
+        Correspondence analysis & \code{"CA"} & \code{matrix} \\
+        Bond Energy Algorithm & \code{"BEA"} & \code{matrix} \\
+        TSP to optimize bond energy & \code{"BEA\_TSP"} & \code{matrix} \\
         \hline
     \end{tabular}
 \caption{Implemented seriation methods.}
@@ -533,13 +566,13 @@ Table~\ref{tab:criteria} we summarize available criteria.
         \hline
         Seriation criterion & Argument \code{method} & Input data \\
         \hline
-        Hamiltonian path length & \code{"path\_length"} & \code{dist} \\
-        Least squares criterion& \code{"least\_squares"} & \code{dist} \\
-        Inertia criterion& \code{"inertia"} & \code{dist} \\
-        Anti-Robinson events& \code{"ar\_i"}, \code{"ar\_s"}, \code{"ar\_w"} & \code{dist} \\
-        Measure of effectiveness and bond energy& \code{"me"}, \code{"bond\_energy"} & \code{matrix} \\
-        Stress (Neumann neighborhood)& \code{"neumann\_stress"} & \code{matrix} \\
-        Stress (Moore neighborhood)& \code{"moore\_stress"} & \code{matrix} \\
+        Hamiltonian path length & \code{"Path\_length"} & \code{dist} \\
+        Least squares criterion& \code{"Least\_squares"} & \code{dist} \\
+        Inertia criterion& \code{"Inertia"} & \code{dist} \\
+        Anti-Robinson events& \code{"AR\_i"}, \code{"AR\_s"}, \code{"AR\_w"} & \code{dist} \\
+        Measure of effectiveness and bond energy& \code{"ME"} & \code{matrix} \\
+        Stress (Neumann neighborhood)& \code{"Neumann\_stress"} & \code{matrix} \\
+        Stress (Moore neighborhood)& \code{"Moore\_stress"} & \code{matrix} \\
         \hline
     \end{tabular}
 \caption{Implemented seriation criteria.}
@@ -561,10 +594,19 @@ several options:
 quality using matrix shading with \func{dissplot}.
 \end{itemize}
 
+We will introduce the package usage and the visualization options
+in the examples in the next section.
+
 \section{Examples and applications}
+\label{sec:example}
+
 <<echo=FALSE>>=
 options(scipen=3, digits=4)
 @
+
+We start this section with a simple first session to demonstrate the basic
+usage of the package. Then we present and discuss several seriation 
+applications.
 
 \subsection{A first session using \pkg{seriation}}
 In the following example, we use the well known iris data set which gives the
@@ -664,7 +706,7 @@ iris data set and the distance matrix from the previous example.
 We use some seriation methods described in Section~\ref{sec:methods} 
 for dissimilarity matrices.
 <<>>=
-methods <- c("tsp", "chen", "mds", "hc", "gw", "optimal")
+methods <- c("TSP", "Chen", "MDS", "HC", "GW", "OLO")
 order <- sapply(methods, simplify = FALSE, FUN = function(m) seriate(d, m))
 @
 
@@ -700,10 +742,10 @@ crit
 
 <<echo=FALSE, fig=TRUE, include=FALSE, label=crit1, width=6, height=10>>=
 def.par <- par(no.readonly = TRUE)
-m <- c("path_length", "least_squares", "ar_i", "moore_stress")
+m <- c("Path_length", "Least_squares", "AR_i", "Moore_stress")
 layout(matrix(1:length(m), ncol=1))
-#tmp <- apply(crit[m,], 1, dotchart, sub =m)
-tmp <- sapply(m, FUN = function(i) dotchart(crit[i,],sub = i))
+#tmp <- apply(crit[m,], 1, dotchart, sub = m)
+lapply(m, FUN = function(i) dotchart(crit[i,], sub = i))
 par(def.par)
 @
 
@@ -854,8 +896,8 @@ matrix using \func{bertinplot}.
 
 <<>>=
 order <- Order(
-    row = seriate(dist(orig_matrix, "minkowski", p = 1), method=  "tsp"),
-    col = seriate(dist(t(orig_matrix), "minkowski", p = 1), method = "tsp")
+    row = seriate(dist(orig_matrix, "minkowski", p = 1), method ="TSP"),
+    col = seriate(dist(t(orig_matrix), "minkowski", p = 1), method = "TSP")
 )
 @
 
@@ -946,7 +988,7 @@ set.seed(5)
 @
 
 <<fig=TRUE, include=FALSE, label=binary2, width=9>>=
-order <- seriate(Townships, method = "bea", control = list(rep = 10))
+order <- seriate(Townships, method = "BEA", control = list(rep = 10))
 bertinplot(Townships, order, options = list(panel=panel.squares, spacing = 0,
     frame = TRUE))
 @
@@ -1202,10 +1244,26 @@ Iris setosa. The clusters 1, 3 and 6 are more problematic since they contain a
 mixture of Iris versicolor and virginica.
 
 \section{Conclusion}
+\label{sec:conclusion}
 
-Write conclusion\dots
+In this paper we presented the infrastructure 
+provided by the package~\pkg{seriation}. The infrastructure contains
+the necessary data structures to store the linear order of objects or rows and 
+columns of a data matrix. It also provides a wide array of seriation methods
+for different input data, e.g., dissimilarities, binary data matrices, and 
+dendrograms. For visualization, especially the optimally reordered heat map,
+the bertin plot and the dissimilarity plot have to be mentioned
+since they present clear improvements over standard plots.
+
+The package infrastructure is extensible. A possible future extension could be
+to add methods for block seriation with the aim to finding simultaneous
+partitions of rows and columns in a data 
+matrix~\citep[see, e.g.,][]{seriation:Marcotorchino:1987}.
+
 
 %\section*{Acknowledgments}
+
+
 
 %
 \bibliographystyle{abbrvnat}

@@ -7,10 +7,10 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
 
     ## build-in methods
     methods <- c(
-        "murtagh",      # standard
-        "bea",
-        "pca",
-        "ca"
+        "BEA_TSP",   # standard
+        "BEA",
+        "PCA",
+        "CA"
     )
     
     methodNr <- if(is.null(method)) 1
@@ -19,7 +19,7 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
 
     ## work horses
     workhorse <-
-    if(methodNr == 1) .seriate_murtagh
+    if(methodNr == 1) .seriate_bea_tsp
     else if(methodNr == 2) .seriate_bea
     else if(methodNr == 3) .seriate_fpc
     else if(methodNr == 4) .seriate_ca
@@ -40,19 +40,36 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
 ## Algorithm B
 ##  F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures
 ##  in Computational Statistics, Physica Verlag, pp. 15.
+#
+# this is actually just the same as BEA
+#    
+#.seriate_murtagh <- function(x, control) {
+#
+#    if(any(x < 0)) stop("Requires a nonnegative matrix")
+#    
+#    criterion <- as.dist(tcrossprod(x))
+#    row <- hclust_greedy(-criterion)$order
+#    criterion <- as.dist(crossprod(x))
+#    col <- hclust_greedy(-criterion)$order
+#    
+#    list(row = row, col = col)
+#}
 
-.seriate_murtagh <- function(x, control) {
+
+.seriate_bea_tsp <- function(x, control) {
 
     if(any(x < 0)) stop("Requires a nonnegative matrix")
-    ## calculate the Murtagh criterion
+    
     criterion <- as.dist(tcrossprod(x))
-    row <- hclust_greedy(-criterion)$order
+    row <- seriate(max(criterion)-criterion, 
+        method = "TSP", control = control)$order
+
     criterion <- as.dist(crossprod(x))
-    col <- hclust_greedy(-criterion)$order
+    col <- seriate(max(criterion)-criterion, 
+        method = "TSP", control = control)$order
     
     list(row = row, col = col)
 }
-
 
 
 ## Bond Energy Algorithm (McCormick 1972)
