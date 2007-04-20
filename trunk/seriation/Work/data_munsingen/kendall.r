@@ -19,7 +19,7 @@ SoS <- function(x) S(S(x))
 ## example
 library("seriation")
 
-load("Munsingen.rda")
+data("Munsingen")
 library("MASS")
 
 

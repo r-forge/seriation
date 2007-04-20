@@ -9,9 +9,9 @@ criterion.dist <- function(x, order = NULL, method = "all") {
         "Path_length",
         "Least_squares",
         "Inertia",
-        "AR_i",
-        "AR_s",
-        "AR_w",
+        "AR_events",
+        "AR_deviations",
+        "AR_weighted",
         "ME",
         "Moore_stress",
         "Neumann_stress"

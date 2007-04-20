@@ -1,31 +1,27 @@
-hmap <- function(x, dist_row = NULL, dist_col = NULL, 
-    distfun = dist,
-    dendrogram = TRUE, method = NULL, 
-    control = NULL, options = NULL, ...) {
+hmap <- function(x, distfun = dist, hclustfun = hclust, 
+    method = NULL, control = NULL, options = NULL, ...) {
     
     if(!is.matrix(x)) x <- as.matrix(x)
 
-    ## no dist given?
-    if(is.null(dist_row)) dist_row <- distfun(x)
-    if(is.null(dist_col)) dist_col <- distfun(t(x))
+    dist_row <- distfun(x)
+    dist_col <- distfun(t(x))
 
-    if(dendrogram == TRUE)  hmap_workhorse <- .hmap_opt
-    else                    hmap_workhorse <- .hmap_dist
+    hmap_workhorse <- if(is.function(hclustfun)) .hmap_opt else .hmap_dist
     
-    hmap_workhorse(x, dist_row, dist_col, method, control, options, ...)
+    hmap_workhorse(x, dist_row, dist_col, hclustfun, 
+        method, control, options, ...)
 }
 
 ## workhorses
     
 ## heatmap with optimal seriateed dendrogram
-.hmap_opt <- function(x, dist_row, dist_col, 
+.hmap_opt <- function(x, dist_row, dist_col, hclustfun = hclust,
     method = NULL, control = NULL, options = NULL, ...){ 
    
     col     <- if(is.null(options$col)) gray.colors(256) else options$col
     main    <- options$main
 
     if(is.null(method)) method <- "OLO"
-    hclustfun <- if(is.null(control$hclustfun)) hclust else control$hclustfun
     
     dend_col <- as.dendrogram(seriate(hclustfun(dist_col), dist_col, 
             method = method, control = control))
@@ -42,7 +38,7 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
 
 
 ## dissimilarity plot with seriation
-.hmap_dist <- function(x, dist_row, dist_col, 
+.hmap_dist <- function(x, dist_row, dist_col, hclustfun, 
     method = NULL, control = NULL, options = NULL, ...) {
     
     ## options
@@ -56,7 +52,7 @@ hmap <- function(x, dist_row = NULL, dist_col = NULL,
     
     ## determine order
     if(is.null(method)) {
-        method  <- "tsp"
+        method  <- "TSP"
         if(is.null(control)) control <- list(method = "farthest_insertion")  
     }
     

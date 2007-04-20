@@ -38,8 +38,8 @@ print.cluster_dissimilarity_matrix <- function(x, ...) {
 
     cat("\n")
     cat("used seriation methods\n")
-    cat("inter cluster:", sQuote(x$method$inter), "\n")
-    cat("intra cluster:", sQuote(x$method$intra), "\n")
+    cat("inter-cluster:", sQuote(x$method$inter), "\n")
+    cat("intra-cluster:", sQuote(x$method$intra), "\n")
 }
 
 ## plot for cluster_dissimilarity_matrix
@@ -314,10 +314,12 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     }else if(is.null(labels)) {
         ## reorder whole matrix if no labels are given
         order <- seriate(x, method = method$inter, 
-            control = control$inter)$order 
+            control = control$inter) 
         
         used_method$inter <- if(!is.null(attr(order, "method"))) 
             attr(order, "method") else method$inter
+
+        order <- order$order
 
     }else if (!is.null(labels)){
         ## reorder clusters for given labels
@@ -329,11 +331,12 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
 
         if(k>2) {
             cluster_order <- seriate(as.dist(cluster_dissimilarities), 
-                method = method$inter, control = control$inter)$order
+                method = method$inter, control = control$inter)
            
             used_method$inter <- if(!is.null(attr(cluster_order, "method"))) 
                 attr(cluster_order, "method") else method$inter
        
+            cluster_order <- cluster_order$order
         }else{
             cluster_order <- 1:k
         }
@@ -366,12 +369,19 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
                             nomatch = FALSE)) {
                         intra_order <-  order(sil[take, "sil_width"], 
                             decreasing = TRUE)$both
-                        attr(intra_order, "method") <- "silhouette width"
+                        
+                        used_method$intra <- "silhouette width"
                     }else{
                         block <- rearrange(x, Order(order = take))
                         
                         intra_order <- seriate(block, method = method$intra, 
-                            control = control$intra)$order
+                            control = control$intra)
+
+                        used_method$intra <- 
+                        if(!is.null(attr(intra_order, "method")))
+                        attr(intra_order, "method") else method$intra
+                    
+                        intra_order <- intra_order$order
                     }
 
                     order <- c(order, take[intra_order])
@@ -381,9 +391,6 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
                 }
 
             }
-            
-            used_method$intra <- if(!is.null(attr(intra_order, "method"))) 
-                attr(intra_order, "method") else method$intra
         }
 
 

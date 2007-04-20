@@ -113,7 +113,7 @@ are currently implemented:
     \eqn{d(i,j)} gives the weight. This criterion gives higher weight
     to values farther away from the diagonal. It increases with quality.}
   
-\item{\code{"AR\_i", "AR\_s", "AR\_w"}}{Anti-Robinson events (Chen 2002).
+\item{\code{"AR\_events", "AR\_deviations", "AR\_weighted"}}{Anti-Robinson events (Chen 2002).
     
     A Robinson matrix (Robinson 1951) has its columns arranged such that the
     values of the cells always decrease when moving away from the diagonal. In
@@ -126,15 +126,15 @@ are currently implemented:
     
     where \eqn{I} is an indicator function and \eqn{w(i,j,k)} is a weight.
 
-    For the raw number of events (\code{"ar\_i"}), the weight is 
+    For the raw number of events (\code{"AR\_events"}), the weight is 
     \deqn{w(i,j,k) = 1.}
 
-    For the sum of absolute anti-Robinson deviations (\code{"ar\_s"}), the
+    For the sum of absolute anti-Robinson deviations (\code{"AR\_deviations"}), the
     deviations are used as the weight, i.e.,  
     \deqn{w(i,j,k) = |d(i,j) - d(i,k)|.}
 
     For the weighted sum of absolute anti-Robinson deviations
-    (\code{"ar\_w"}), the deviations are
+    (\code{"AR\_weighted"}), the deviations are
     weighted by the difference of column indices, i.e., 
     \deqn{w(i,j,k) = |j-k||d(i,j) - d(i,k)|.}
 }

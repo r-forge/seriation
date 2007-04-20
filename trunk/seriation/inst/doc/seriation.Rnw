@@ -63,7 +63,8 @@ the found artifacts. This type of problem is usually referred to as
 
 Seriation was first used as a formal method by \cite{seriation:Petrie:1899} to
 find a chronological order for graves discovered in the Nile area given objects
-found there. The idea was that different objects continuously go in and out of
+found there. The idea was that different objects continuously come into and 
+go out of
 fashion and a contingency table of grave sites times objects can be rearranged
 using row and column permutations till all large values are close to the
 diagonal. Initially, the rearrangement of rows and columns of the contingency
@@ -269,14 +270,13 @@ and both notions are related to the
 a $n \times m$ matrix $\mathbf{X} = (x_{ij})$ as
 \begin{equation}
     \frac{1}{2}
-    \sum_{i=1}^{n} \sum_{j=1}^{m} x_{ij}[x_{i,j-1}+x_{i,j+1}+
-        x_{i-1,j}+x_{i+1,j}]
+    \sum_{i=1}^{n} \sum_{j=1}^{m} x_{ij}[x_{i,j+1}+x_{i,j-1}+
+        x_{i+1,j}+x_{i-1,j}]
     \label{equ:ME}
 \end{equation}
 with, by convention $x_{0,j}=x_{n+1,j}=x_{i,0}=x_{i,m+1}=0$.
 ME is maximized if each element is as closely related numerically
 to its four neighboring elements as possible.
-\marginpar{check n and m for consistency}
 
 %From the definition in (\ref{equ:BE}), it is easy to see that the
 %measure can be decomposed into two independent terms, one only 
@@ -323,9 +323,9 @@ whole matrix by summing over all entries:
     \sum_{i=1}^n \sum_{j=1}^m \sigma_{ij}
 \end{equation}
 
-The major difference between the Moore and the Neumann neighborhood is that
-only for the later row and column permutations are separable and can be
-optimized independently. 
+The major difference between the Moore and the Neumann neighborhood is that for
+the later the contribution of row and column permutations to stress are
+independent and thus can be optimized independently. 
 
 Obviously, stress can be also used to measure the quality of seriation for
 symmetric proximity matrices, since it can only be optimal, if large values are
@@ -466,13 +466,13 @@ used for binary data.
 of BEA can be stated as two independent traveling salesperson problems (TSPs).
 For example,
 the row TSP for a $n \times m$ matrix $\mathbf{X}$ consists of $n$ cities with
-distances defined as
+a $n \times n$ distance matrix $\mathbf{D}$ where the distances are 
 \begin{displaymath}
     d_{ij} = -\sum_{k=1}^m x_{ik}x_{jk}.
 \end{displaymath}
-\marginpar{check formulas}
 BEA is in fact a simple suboptimal TSP heuristic using this distances
-and instead of BEA any TSP solver can be used to obtain a order.
+and instead of BEA any TSP solver can be used to obtain an order.
+With an exact TSP solver, the optimal solution can be found.
 
 \section{The package infrastructure}
 \label{sec:infrastructure}
@@ -489,28 +489,32 @@ The basic infrastructure of the package is depicted in
 Figure~\ref{fig:infrastructure}.
 It consists of a method called \func{seriate} which takes 
 objects of different R classes as input and returns an order
-as an object of class \code{Order}. The class \code{Order} is virtual
-has the following two concrete subclasses: 
+as an object of class \code{Order}. Class \code{Order} is virtual
+and has the following two concrete subclasses: 
 \begin{itemize}
-    \item \code{Order\_vector} which stores a single permutation vector to
-        reorder, e.g., the objects in a dissimilarity matrix or the columns and
-        rows of a symmetric matrix.  The class is implemented as a list with
-        the element \code{order} containing the integer permutation vector.
-    \item \code{Order\_matrix} which stores two permutation vectors, one
-        for the columns and one for the rows of a matrix.
-        The class is a list with the elements \code{row} and \code{column}.
+    \item \code{Order\_matrix} stores two (integer) permutation vectors, one
+        for the columns and one for the rows of a matrix.  The class is
+        implimented as a list with the two elements \code{row} and
+        \code{column}.
+    \item \code{Order\_vector} stores a single permutation vector to reorder
+        the objects in a dissimilarity matrix or the columns and rows of a
+        symmetric matrix. For consistency with \code{Order\_matrix}, the class
+        is not implemeted as just a vector, but as a list with the element
+        \code{order} containing the integer permutation vector. This has also
+        the advantage, that for the special case of the seriation of the leaf
+        nodes of a dendrogram (class \code{hclust}) the resulting object can be
+        at the same time a \code{Order\_vector} and also a valid \code{hclust}
+        object. Therefore, all methods for \code{hclust} (e.g., drawing a
+        dendrogram) can still be used with such a special \code{Order\_vector}
+        object.
 \end{itemize}
 
-For the special case of seriation of the leaf nodes of a dendrogram (class 
-\code{hclust}) the resulting \code{Order\_vector} at the same time is also
-a valid \code{hclust} object. This has the advantage, that all methods for
-\code{hclust} (e.g., drawing a dendrogram) can still be used with the reordered
-object.
+All \code{Order} objects can store the seriation method used to generate the
+order as an attribute with name \code{method}.
 
-For the subclasses of \code{Order} a simple construction function 
-\code{Order(order, row, col)} is provided. Depending on whether 
-\code{order} or \code{row} and \code{col} is given (each is a integer
-permutation vector), the necessary subclass is created.
+A simple construction function \code{Order(order, row, col)} is provided.
+Depending on whether \code{order} or \code{row} and \code{col} are given (each
+is a integer permutation vector), the necessary subclass is created.
 
 From Figure~\ref{fig:infrastructure} we see that the arguments of 
 \func{seriate} are almost identical for different input data and
@@ -521,7 +525,7 @@ seriation method (\code{control}). For \code{matrix} the additional argument
 \code{margin} can be used if only column or row seriation is needed and not 
 both. Is this the case, the result will be an object of class 
 \code{Order\_vector} containing the respective order. For \code{hclust}
-in second place the additional argument \code{dist} is inserted since
+the additional argument \code{dist} is inserted in second place since
 the dissimilarity information is needed by all seriation methods for
 dendrogram reordering.
 
@@ -541,24 +545,27 @@ dendrogram reordering.
         Principal component analysis & \code{"PCA"} & \code{matrix} \\
         Correspondence analysis & \code{"CA"} & \code{matrix} \\
         Bond Energy Algorithm & \code{"BEA"} & \code{matrix} \\
-        TSP to optimize bond energy & \code{"BEA\_TSP"} & \code{matrix} \\
+        TSP to optimize ME & \code{"BEA\_TSP"} & \code{matrix} \\
         \hline
     \end{tabular}
 \caption{Implemented seriation methods.}
 \label{tab:methods}
 \end{table}
 
-Seriation methods were already introduced in this paper in 
+Various seriation methods were already introduced in this paper in 
 Section~\ref{sec:methods}. In Table~\ref{tab:methods} we summarize the
-methods available for seriation.
+methods available in the package for seriation.
 
-To judge the quality of an order obtained by a seriation method, the 
-method \code{criterion(x, order, method)} can be used to calculate different 
-seriation criteria. \code{x} is the dissimilarity or data matrix, 
-\code{order} contains a suitable object of class \code{Order} and
-\code{method} specifies the criteria to calculate. We already defined
-different seriation criteria in Section~\ref{sec:criteria}. In 
-Table~\ref{tab:criteria} we summarize available criteria.
+To judge the quality of an order obtained by a seriation method, the method
+\code{criterion(x, order, method)} can be used to calculate the value for
+different seriation criteria. \code{x} is the dissimilarity or data matrix,
+\code{order} contains a suitable object of class \code{Order} and \code{method}
+specifies the criteria to calculate. A vector of several methods can be used
+resulting in a named vector containing the values for the different criteria.
+We already defined different seriation criteria in Section~\ref{sec:criteria}.
+In Table~\ref{tab:criteria} we indicate the criteria currently available in the
+package.  Additionally, the pseudo method \code{"all"} (which is the default)
+can be used which calculated the values for all applicable criteria.
 
 \begin{table}[t]
 \centering
@@ -569,7 +576,9 @@ Table~\ref{tab:criteria} we summarize available criteria.
         Hamiltonian path length & \code{"Path\_length"} & \code{dist} \\
         Least squares criterion& \code{"Least\_squares"} & \code{dist} \\
         Inertia criterion& \code{"Inertia"} & \code{dist} \\
-        Anti-Robinson events& \code{"AR\_i"}, \code{"AR\_s"}, \code{"AR\_w"} & \code{dist} \\
+        Number of anti-Robinson events& \code{"AR\_events"} & \code{dist} \\
+        Sum of absolute anti-Robinson deviations& \code{"AR\_deviations"} & \code{dist} \\
+        Weighted sum of absolute anti-Robinson deviations& \code{"AR\_weighted"} & \code{dist} \\
         Measure of effectiveness and bond energy& \code{"ME"} & \code{matrix} \\
         Stress (Neumann neighborhood)& \code{"Neumann\_stress"} & \code{matrix} \\
         Stress (Moore neighborhood)& \code{"Moore\_stress"} & \code{matrix} \\
@@ -579,19 +588,26 @@ Table~\ref{tab:criteria} we summarize available criteria.
 \label{tab:criteria}
 \end{table}
 
-In addition the package offers the convenience method \func{rearrange(x,
-order)} to rearrange the objects in a dissimilarity matrix (\code{dist}) or
-rows and columns of a matrix using a suitable \code{Order} object. 
+In addition the package offers the convenience method \code{rearrange(x,
+order)} to rearrange the objects in a dissimilarity matrix (stored in 
+\code{dist} as a vector containing the upper/lower triangle) or
+rows and columns of a matrix using a suitable \code{Order} object.
 
-For visualization, the package offers 
-several options:
+For visualization, the package offers several options:
 \begin{itemize}
-\item Matrix shading with \func{pimage}.
+\item Matrix shading with \func{pimage}. In contrast to the 
+        standard \func{image} in package~\pkg{graphics}, \func{pimage}
+        displays the matrix as is with the first element in the top
+        left-hand corner and using a gamma-corrected grey scale.
+
 \item Different heat maps (e.g., with optimally reordered
     dendrograms) with \func{hmap}.
+
 \item Visualization of data matrices with \func{bertinplot}.
-\item \emph{Dissimilarity plot}, a new visualization for cluster 
-quality using matrix shading with \func{dissplot}.
+
+\item \emph{Dissimilarity plot}, a new visualization to judge the
+    quality of a clustering using matrix shading 
+    and seriation with \func{dissplot}.
 \end{itemize}
 
 We will introduce the package usage and the visualization options
@@ -611,13 +627,13 @@ applications.
 \subsection{A first session using \pkg{seriation}}
 In the following example, we use the well known iris data set which gives the
 measurements in centimeters of the variables sepal length and width and petal
-length and width, respectively, for 50 flowers from each of 3 species of iris
-(Iris setosa, versicolor and virginica). 
+length and width, respectively, for 50 flowers from each of 3 species of the
+iris family (Iris setosa, versicolor and virginica). 
 
 First, we load the package \pkg{seriation} and the iris data set. We
 remove the class attribute and reorder the objects randomly since they 
-are sorted by species in the data set. Then we calculate the Euclidean
-distances between the objects.
+are already sorted by species in the data set. Then we calculate the Euclidean
+distances between objects.
 
 <<>>=
 library("seriation")
@@ -640,8 +656,8 @@ The result is an object of class \code{Order\_vector} for the
 $150$ objects in the iris data set. The default method, a traveling
 salesperson heuristic, was used.
 
-To visually compare the random and the seriated data, 
-we use matrix shading with \func{pimage}.
+To visually inspect the effect of seriation on the distance matrix, we use
+matrix shading with \func{pimage}.
 
 <<label=pimage1, eval=FALSE>>=
 pimage(d, main = "Random")
@@ -676,8 +692,10 @@ larger values are better).
 
 Also the original data matrix can be easily inspected using \code{pimage}.
 To rearrange the data matrix, a \code{Order\_matrix} is needed which
-can be easily created by telling the construction \func{Order} 
-to use \code{order} for row arrangement.
+can be created by telling the constructor function \func{Order} 
+to use the \code{order} obtained for the distance matrix
+(a \code{Order\_vector} object) for row arrangement in a \code{Order\_matrix}
+object.
 
 <<label=pimage2, eval=FALSE>>=
 pimage(x, main = "Random")
@@ -701,10 +719,11 @@ tmp <- dev.off()
 
 \subsection{Comparing different seriation methods}
 
-To compare different seriation methods we use again the randomized 
-iris data set and the distance matrix from the previous example.
-We use some seriation methods described in Section~\ref{sec:methods} 
-for dissimilarity matrices.
+To compare different seriation methods we use again the randomized iris data
+set and the distance matrix \code{d} from the previous example.  We include in
+the comparision several seriation methods for dissimilarity matrices described
+in Section~\ref{sec:methods}. 
+
 <<>>=
 methods <- c("TSP", "Chen", "MDS", "HC", "GW", "OLO")
 order <- sapply(methods, simplify = FALSE, FUN = function(m) seriate(d, m))
@@ -742,7 +761,7 @@ crit
 
 <<echo=FALSE, fig=TRUE, include=FALSE, label=crit1, width=6, height=10>>=
 def.par <- par(no.readonly = TRUE)
-m <- c("Path_length", "Least_squares", "AR_i", "Moore_stress")
+m <- c("Path_length", "Least_squares", "AR_events", "Moore_stress")
 layout(matrix(1:length(m), ncol=1))
 #tmp <- apply(crit[m,], 1, dotchart, sub = m)
 lapply(m, FUN = function(i) dotchart(crit[i,], sub = i))
@@ -756,23 +775,23 @@ par(def.par)
     \label{fig:crit1}
 \end{figure}
 
-For easier comparison, we plotted the results for the measures Hamiltonian
-path length, least squares criterion, anti-Robinson events and stress using the
-Moore neighborhood in Figure~\ref{fig:crit1}.  Clearly, the methods which
-directly try to minimize the Hamiltonian path length (hierarchical clustering
-with optimal leaf ordering and the TSP heuristic) provide the best results
-concerning the path length.  For the least squares criterion and the
+For easier comparison, Figure~\ref{fig:crit1} contains a plot of the criteria
+Hamiltonian path length, least squares criterion, anti-Robinson events (AR\_i)
+and stress using the Moore neighborhood. Clearly, the methods which directly
+try to minimize the Hamiltonian path length (hierarchical clustering with
+optimal leaf ordering (OLO) and the TSP heuristic) provide the best results
+concerning the path length. For the least squares criterion and the
 anti-Robinson events, using the first dimension of MDS provides the best
-results.Regarding stress, TSP and MDS provide the best results.
+results. Regarding stress, TSP, OLO and MDS provide the best results.
 
 
 \subsection{Heat maps}
 
-A heat map is a shaded/color coded data matrix with a dendrogram added to the
-one side and to the top to indicate the order of rows and columns. Typically,
-reordering is done according to some row or column means within the
-restrictions imposed by the dendrogram. Heat maps recently became popular for
-visualizing genome expression data obtained via DNA microarray technology
+A heat map is a shaded/color coded data matrix with a dendrogram added to one
+side and to the top to indicate the order of rows and columns. Typically,
+reordering is done according to row or column means within the restrictions
+imposed by the dendrogram. Heat maps recently became popular for visualizing
+large scale genome expression data obtained via DNA microarray technology
 \citep[see, e.g.,][]{seriation:Eisen:1998}. 
 
 From Section~\ref{sec:hierarchical_clustering} we know that it is possible to
@@ -785,26 +804,26 @@ seriation directly on distance matrices without using hierarchical
 clustering to produce dendrograms first.
 
 For the following example, we use again the randomly reordered iris data set
-\code{x} from the above example. To make the variables (columns) comparable, we
-use standard scaling.
+\code{x} from the examples above. To make the variables (columns) comparable,
+we use standard scaling.
 
 <<>>=
 x <- scale(x, center = FALSE)
 @
 
-To produce a heat map with optimally reordered, the function \func{hmap} can be
-used with its default settings. With this settings, the Euclidean distances
-between rows and between columns are calculated (with \func{dist}),
-hierarchical clustering (\func{hclust}) is performed, the resulting dendrograms
-are optimally reordered, and \func{heatmap} in package \pkg{stats} is used
-for plotting. 
+To produce a heat map with optimally reordered dendrogramms, the function
+\func{hmap} can be used with its default settings. With this settings, the
+Euclidean distances between rows and between columns are calculated (with
+\func{dist}), hierarchical clustering (\func{hclust}) is performed, the
+resulting dendrograms are optimally reordered, and \func{heatmap} in package
+\pkg{stats} is used for plotting. 
 
 <<eval=FALSE>>=
 hmap(x)
-hmap(x, dendrogram = FALSE)
+hmap(x, hclustfun = NULL)
 @
 
-If \code{dendrogram = FALSE} is used, instead of hierarchical clustering,
+If \code{hclustfun = NULL} is used, instead of hierarchical clustering,
 seriation on the dissimilarity matrices for rows and columns is performed
 (per default a TSP heuristic)
 and the reordered matrix with the reordered dissimilarity matrices to the left
@@ -820,7 +839,7 @@ tmp <- dev.off()
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 bitmap(file = "seriation-heatmap2.png", type = "pnggray", 
     height = 6, width = 6, res = 300,pointsize=14)
-hmap(x, dendrogram = FALSE)
+hmap(x, hclustfun = NULL)
 tmp <- dev.off()
 @
 
@@ -875,7 +894,7 @@ one for the columns and one for the rows.
 
 As an example, we use the results of $8$ constitutional referenda for $41$
 Irish communities~\citep{seriation:Falguerolles:1997}\footnote{The Irish data
-set is included in this package. The original numbers and the text of the
+set is included in this package. The original data and the text of the
 referenda can be obtained from~\url{http://www.electionsireland.org/}}.  To
 make values comparable across columns (variables), the ranks of the values in
 each row are used instead of the original values.  
@@ -890,9 +909,9 @@ orig_matrix <- scale_by_rank(Irish[,-6])
 
 For seriation, we calculate distances between rows and between columns using
 the sum of absolute rank differences (this is equal to the Minkowski distance
-with power $1$). Then we apply seriation (using MDS) to both distance matrices
-and create a \code{Order} object.  And plot the original and the reordered
-matrix using \func{bertinplot}. 
+with power $1$). Then we apply seriation (using a TSP heuristic) to both
+distance matrices and create an \code{Order} object. The original and
+the reordered matrix are plotted using \func{bertinplot}. 
 
 <<>>=
 order <- Order(
@@ -953,7 +972,7 @@ artifact was found at a certain archaeological site.
 This can be seen as a simplification of a so called \emph{abundance matrix}
 which codes in each cell the (relative) frequency or quantity of a an artifact
 type at a site. For a comparison of incidence and abundance matrices
-in archeology we we refer the reader to~\citep{seriation:Ihm:2005}. 
+in archeology we refer the reader to~\citep{seriation:Ihm:2005}. 
 
 Here we are interested in binary data.
 For the example we use an artificial data set from~\cite{seriation:Bertin:1981}
@@ -963,11 +982,12 @@ the data set is that townships evolve from a rural to an urban environment over
 time.
 
 After loading the data set (which comes with the package), we use
-\func{bertinplot} to visualize the data (\func{pimage} could also be used).
+\func{bertinplot} to visualize the data (\func{pimage} could also be used
+but \func{bertinplot} allows for a nicer visualization).
 Bars, the standard visualization of \func{bertinplot}, do not
 make much sense for binary data. We therefore use the 
 panel function \func{panel.squares} without spacing 
-to plot just black squares.
+to plot black squares.
 
 <<fig=TRUE, include=FALSE, label=binary1, width=9>>=
 library("seriation")
@@ -979,7 +999,7 @@ bertinplot(Townships, options = list(panel=panel.squares, spacing = 0,
 
 The original data in Figure~\ref{fig:binary}(a) does not reveal structure in
 the data. To improve the display, we run the  bond energy algorithm (BEA) for
-columns and rows $10$ times with random starting points and keep the best
+columns and rows $10$ times with random starting points and report the best
 solution. 
 
 <<echo=FALSE>>=
@@ -998,10 +1018,11 @@ A clear structure is visible. The variables (rows in a Bertin plot)
 can be split into the three categories describing different evolution states
 of townships:
 \begin{enumerate}
-    \item {\bf Urban:} Railway station, high school and police station
+    \item {\bf Rural:} No doctor, one-room school and possibly also
+        no water supply
     \item {\bf Intermediate:} Land reallocation, veterinary and agricultural 
         cooperative
-    \item {\bf Rural:} No doctor, one-room school and no water supply
+    \item {\bf Urban:} Railway station, high school and police station
 \end{enumerate}
 
 The townships also clearly fall into these three groups which tentatively can
@@ -1026,8 +1047,9 @@ townships B and C are on the transition to the next higher group.
 rbind(original = criterion(Townships), reordered = criterion(Townships, order))
 @
 
-BEA tries to maximize the measure of effectiveness (and bond energy) which is
-much higher in the reordered matrix. Also the two types of stress are improved
+BEA tries to maximize the measure of effectiveness which is
+much higher in the reordered matrix (in fact, 65 is the maximum for 
+the data set). Also the two types of stress are improved
 significantly.
 
 \subsection{Dissimilarity plot}
@@ -1055,36 +1077,33 @@ cluster algorithms produce a clustering even for data without a structure.
 %Silhouettes
 
 Matrix shading is an old technique to visualize clustering by displaying the
-rearranged
-matrices~\cite{seriation:Sneath:1973,seriation:Ling:1973,seriation:Gale:1984}.
+rearranged matrices~\citep[see,
+e.g.,][]{seriation:Sneath:1973,seriation:Ling:1973,seriation:Gale:1984}.
 Initially matrix shading was used in connection with hierarchical clustering,
 where the order of the dendrograms leaf nodes was used to arrange the matrix.
 However, with some extensions, matrix shading can be also used with any
 partitional clustering method. 
 
-\cite{seriation:Strehl:2003} suggest 
-a matrix shading visualization called \emph{CLUSION} where the 
-dissimilarity matrix is arranged such that all objects pertaining to 
-a single cluster appear in consecutive order in the matrix. The authors call
-this \emph{coarse seriation}. The result of a ``good'' clustering 
-should be a matrix with low dissimilarity values forming blocks around
-the main diagonal.
-However, using coarse seriation, the order of the clusters has to be predefined
-and the objects within each cluster are unordered.
+\cite{seriation:Strehl:2003} suggest a matrix shading visualization called
+\emph{CLUSION} where the dissimilarity matrix is arranged such that all objects
+pertaining to a single cluster appear in consecutive order in the matrix. The
+authors call this \emph{coarse seriation}. The result of a ``good'' clustering
+should be a matrix with low dissimilarity values forming blocks around the main
+diagonal.  However, using coarse seriation, the order of the clusters has to be
+predefined and the objects within each cluster are unordered.
 
 \func{dissplot} aims at reflecting global structure between clusters as well as
-the micro structure within clusters. To achieve this, we arrange the clusters as
-well as the objects within each cluster using seriation techniques. 
-To arrange clusters,
-an inter-cluster dissimilarity matrix is calculated using the average between
-cluster dissimilarities. \func{reorder.dist} is used on this inter-cluster
-dissimilarity matrix to arrange the clusters relative to each other resulting
-in on average more similar clusters to appear closer together.
-Within each cluster, \func{reorder.dist} is used on the sub-matrix 
-of the dissimilarity matrix concerning only the objects in the cluster.
+the micro structure within clusters. To achieve this, we arrange the clusters
+as well as the objects within each cluster using seriation techniques.  To
+arrange clusters, an inter-cluster dissimilarity matrix is calculated using the
+average between cluster dissimilarities. \func{reorder.dist} is used on this
+inter-cluster dissimilarity matrix to arrange the clusters relative to each
+other resulting in on average more similar clusters to appear closer together.
+Within each cluster, \func{reorder.dist} is used on the sub-matrix of the
+dissimilarity matrix concerning only the objects in the cluster.
 
-For the example, we use again Euclidean distance between the 
-objects in the iris data set.
+For the example, we use again Euclidean distance between the objects in the
+iris data set.
 
 <<>>=
 library("seriation")
@@ -1104,12 +1123,12 @@ the data which suggesting a two cluster solution.
 
 <<eval=FALSE, label=dissplot1>>=
 ## plot original matrix
-res <- dissplot(d, method = NA)
+dissplot(d, method = NA)
 @
 
 <<eval=FALSE, label=dissplot2>>=
 ## plot reordered matrix using the nearest insertion algorithm (from tsp)
-res <- dissplot(d, options = list(main = "Seriation (TSP)"))
+dissplot(d, options = list(main = "Seriation (TSP)"))
 @
 
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
@@ -1161,7 +1180,7 @@ plots the result. Since rearrangement can be a time consuming procedure for
 large matrices, the rearranged matrix and all
 information needed for plotting is returned as the result. 
 
-<<eval=FALSE>>=
+<<eval=FALSE, label=dissplot3>>=
 res <- dissplot(d, labels = l,
     options = list(main = "Seriation - standard"))
 @
@@ -1170,7 +1189,7 @@ bitmap(file = "seriation-dissplot3.png", type = "pnggray",
     height = 8, width = 8, res = 300, pointsize=12)
 
 ## visualize the clustering
-res <- dissplot(d, l, options = list(main = "Seriation - standard"))
+<<dissplot3>>
 tmp <- dev.off()
 
 

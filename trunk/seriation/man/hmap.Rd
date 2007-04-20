@@ -2,37 +2,34 @@
 \alias{hmap}
 \title{Plot heat map reordered by different algorithms}
 \description{
-Provides several reordered versions of heat map.
+Provides several reordered versions of heat map including dendrogram based
+reordering with optimal leaf order and matrix seriation based heat maps.
 }
 \usage{
-hmap(x, dist_row = NULL, dist_col = NULL, distfun = dist,
-    dendrogram = TRUE, method = NULL, control = NULL, options = NULL, ...)
+hmap(x, distfun = dist, hclustfun = hclust,
+    method = NULL, control = NULL, options = NULL, ...)
 }
 \arguments{
   \item{x}{a matrix.}
-  \item{dist_row, dist_col}{objects of class \code{dist} containing the
-      dissimilarities between rows/columns. If \code{NULL} distances
-      are computed for the matrix \code{x} using the function specified in
-      \code{distfun}.}
   \item{distfun}{function used to compute the distance (dissimilarity) between
       both rows and columns (default: \code{dist}). }
-  \item{dendrogram}{a logical indicating whether to use dendrogram seriation
-      or distance matrix based seriation.}
+  \item{hclustfun}{function used for hierarchical clustering.
+      If \code{hclustfun = NULL}, no hierarchical clustering in performed and
+      matrix based seriation is performed to reorder rows and columns
+      for the heat map.}
   \item{method}{a character strings indicating the used seriation algorithm 
       (see \code{seriate.hclust} for dentrogram seriation and 
       \code{seriate.dist} for matrix based seriation).}
-  \item{control}{a list of control options passed on to the seriation algorithm.
-      For \code{dendrogram = TRUE} an element named \code{hclustfun} can be
-      used to specify a function for hierarchical clustering (default:
-      \code{hclust}).} 
+  \item{control}{a list of control options passed on to the seriation 
+      algorithm.} 
   \item{options}{a list with arguments for plotting.
       The following arguments are possible:
       \describe{
   \item{\code{main}}{title for the plot.}
   \item{\code{col}}{colors used for the  plot (default: gray colors).}
       }
-      For \code{dendrogram = FALSE} the  following arguments are also
-      possible:
+      For matrix based seriation (\code{hclustfun = NULL}), the following
+      additional arguments are possible:
        \describe{
   \item{\code{gp}}{an object of class \code{gpar} containing graphical
       parameters (see \code{gpar} in package \pkg{grid}).}
@@ -42,7 +39,7 @@ hmap(x, dist_row = NULL, dist_col = NULL, distfun = dist,
       \code{x} should be plotted proportional to its dimensions.}
       }
       }
-  \item{\dots}{further arguments. For \code{dendrogram = TRUE} the 
+  \item{\dots}{further arguments. For dendrogram based heat maps the 
       arguments are passed on to \code{heatmap} in
       \pkg{stats} (Note that the following arguments cannot be used:
       \code{Rowv, Colv, distfun, hclustfun, reorderfun, scale}).
@@ -88,10 +85,10 @@ x <- scale(x, center = FALSE)
 hmap(x)
 
 ## heatmap with seriated distance matrices
-hmap(x, dendrogram = FALSE)
+hmap(x, hclustfun = NULL)
 
 ## without proportional display
-hmap(x, dendrogram = FALSE, options = list(prop = FALSE, 
+hmap(x, hclustfun = NULL, options = list(prop = FALSE, 
     main = "Zoo Data"))
 }
 \keyword{hplot}

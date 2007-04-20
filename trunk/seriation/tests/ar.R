@@ -11,7 +11,7 @@ d <- dist(m)
 as.matrix(d)
 
 
-criterion(d, method="ar_i")
-criterion(d, method="ar_s")
-criterion(d, method="ar_w")
+criterion(d, method="AR_events")
+criterion(d, method="AR_deviations")
+criterion(d, method="AR_weighted")
 
