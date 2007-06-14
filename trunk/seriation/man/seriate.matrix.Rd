@@ -97,7 +97,7 @@ P. Arabie and L.J. Hubert (1990): The bond energy algorithm revisited,
 \bold{20}(1), 268--274.
 
 J.K. Lenstra (1974): Clustering a Data Array and the Traveling-Salesman 
-Problem, \emph{Operations Research,} \bf{22}(2) 413--414. 
+Problem, \emph{Operations Research,} \bold{22}(2) 413--414. 
 
 W.T. McCormick, P.J. Schweitzer and T.W. White (1972): Problem decomposition
 and data reorganization by a clustering technique, 
@@ -136,10 +136,9 @@ pimage(x, order, main = "first principal component")
 criterion(x, order)
 
 ## 2 TSPs
-order <- Order(
-    row = seriate(dist(x), method = "TSP"),
-    col = seriate(dist(t(x)), method = "TSP"),
-    method = "2 TSPs"
+order <- c.seriation(
+    seriate(dist(x), method = "TSP"),
+    seriate(dist(t(x)), method = "TSP")
 )
 pimage(x, order, main = "2 TSPs")
 criterion(x, order)

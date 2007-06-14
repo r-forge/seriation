@@ -24,7 +24,9 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
     else if(methodNr == 5) .seriate_hc_gw
     else if(methodNr == 6) .seriate_hc_optimal
 
-    Order(order = workhorse(x, control), method = methods[methodNr])
+    order <- workhorse(x, control)
+    
+    seriation(permutation(order, method = methods[methodNr]))
 }
 
 
@@ -115,5 +117,7 @@ seriate(.hclust_helper(x, control), x, method = "OLO")$order
 
 ## generic for criterion
 seriate <- function(x, ...) UseMethod("seriate")
-seriate.default <- seriate.dist
+seriate.default <- function(x, ...) 
+stop(paste("\nseriate not implemented for class: ", class(x)))
+
 

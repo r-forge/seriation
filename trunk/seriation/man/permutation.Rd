@@ -5,6 +5,10 @@
 \alias{print.Order}
 \title{Class Order -- Order for rearranging matrices and dissimilarity objects}
 \description{
+
+THIS NEEDS TO BE CHANGED AND seriation IS MISSING
+
+
 This class represents an order to rearrange \code{dist} objects and
 matrices.
 

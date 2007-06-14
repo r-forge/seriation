@@ -41,7 +41,7 @@ pimage(d)
 hc <- hclust(d, method = "complete")
 plot(hc)
 
-pimage(d, Order(hc))
+pimage(d, seriation(hc))
 
 ## use seriation
 order <- seriate(d, method = "tsp")

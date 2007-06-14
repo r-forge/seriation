@@ -98,10 +98,10 @@ criterion(d, hc_opt)
 data("iris")
 x <- scale(as.matrix(iris[-5]), center = FALSE)
 d_c <- dist(t(x))
-dend_c <- as.dendrogram(seriate(hclust(d_c), d_c))
+dend_c <- as.dendrogram(seriate(hclust(d_c), d_c)[[1]])
 
 d_r <- dist(x)
-dend_r <- as.dendrogram(seriate(hclust(d_r), d_r))
+dend_r <- as.dendrogram(seriate(hclust(d_r), d_r)[[1]])
 
 ## standard plot
 ## heatmap(x, col = rev(gray.colors(64)), main = "standard plot")

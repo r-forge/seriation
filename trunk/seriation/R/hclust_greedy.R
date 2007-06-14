@@ -7,7 +7,7 @@ hclust_greedy <- function(dist) {
     if (!inherits(dist, "dist"))
     stop(paste(sQuote("dist"),"not of class dist"))
     if (!is.real(dist))
-    storage.mode(dist) <- "real"
+    mode(dist) <- "real"
     obj <- .Call("order_greedy", dist)
     names(obj) <- c("merge", "order", "height");
     class(obj) <- "hclust"

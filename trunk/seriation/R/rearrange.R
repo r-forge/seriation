@@ -1,31 +1,44 @@
-## rearrange a dist object
+## rearrange 
+
+## helper
+.rearrange_kd <- function(x, order) {
+    .check_matrix_perm(x, order)
+
+    perm <- lapply(order, get_permutation)    
+    do.call("[", c(list(x), perm))          #]
+}
+
+.rearrange_1d <- function(x, order) {
+    if(!inherits(order, "ser_seriation")) order <- seriation(order)
+    
+    if(length(order) != 1) stop("dimensions do not match")
+    
+    perm <- get_permutation(order[[1]])
+    if(length(x) != length(perm))     
+    stop("some permutation vectors do not fit dimension of data")
+
+    x[perm]
+}
+
+
 rearrange.dist <- function(x, order) {
+    if(!inherits(order, "ser_seriation")) order <- seriation(order)
+    .check_dist_perm(x, order)
+
+    perm <- get_permutation(order[[1]])
     
-    if(is.null(order)) return(x)
+    ## make C call
+    mode(x) <- "double"
+    mode(perm) <- "integer"
     
-    if(!inherits(order, "Order_vector")) stop(sQuote("order"),
-        " is not of class ", sQuote("Order_vector"))
-
-    if(is.null(order$order)) return(x)
-
-    ## check dist
-    if(attr(x, "Diag") || attr(x, "Upper"))
-    stop(paste(Quote("dist"), 
-            "with diagonal or upper triangle matrix not implemented"))
-
-    if((msg <- .check_order(order, x)) != TRUE) stop(msg)
-
-    storage.mode(x) <- "double"
-    order <- as.integer(order$order)
-    
-    d <- .Call("reorder_dist", x, order)
+    d <- .Call("reorder_dist", x, perm)
 
     labels <- if(is.null(labels(x))) NULL
-    else labels(x)[order]
+    else labels(x)[perm]
     
     structure(d, 
         class   = "dist", 
-        Size    = length(order), 
+        Size    = length(perm), 
         Labels  = labels,
         Diag    = FALSE,
         Upper   = FALSE,
@@ -33,30 +46,36 @@ rearrange.dist <- function(x, order) {
     )
 }
 
-## rearrange for matrix
-rearrange.matrix <- function(x, order) {
-   
-    if(is.null(order)) return(x)
-    
-    if(!inherits(order, "Order")) stop(sQuote("order"),
-        " is not of class ", sQuote("Order"))
-    
-    if((msg <- .check_order(order, x)) != TRUE) stop(msg)
+## methods
+rearrange.array     <- .rearrange_kd
+rearrange.matrix    <- .rearrange_kd
+rearrange.numeric   <- .rearrange_1d
+rearrange.list      <- .rearrange_1d
+rearrange.default <- function(x, order) 
+stop(paste("\nrearrange not implemented for class: ", class(x)))
 
-    if(is.null(order$row)
-        && is.null(order$col)
-        && is.null(order$order)) return(x)
+rearrange <- function(x, order) UseMethod("rearrange")
+
+
+## more helper
+.check_dist_perm <- function(x, order) {
+    if(length(order) != 1) stop("dimensions do not match")
+
+    if(attr(x, "Size") != length(get_permutation(order[[1]])))
+    stop("some permutation vectors do not fit dimension of data")
     
-    if(!is.null(order$order)) {
-        if(!isSymmetric(x)) stop("Order_vector can only be applied to a symmetric matrix")
-        return(x[order$order, order$order])
-    }
-    if(is.null(order$row)) return(x[, order$col])
-    if(is.null(order$col)) return(x[order$row,])
-    x[order$row, order$col]
+    ## check dist
+    if(attr(x, "Diag") || attr(x, "Upper"))
+    stop(paste(Quote("dist"), 
+            "with diagonal or upper triangle matrix not implemented"))
 }
 
-## create a generic function
-rearrange <- function(x, order) UseMethod("rearrange")
-rearrange.default <- rearrange.dist
+.check_matrix_perm <- function(x, order) {
+    if(length(dim(x)) != length(order)) stop("dimensions do not match")
+    if(any(dim(x) != sapply(order, length)))
+    stop("some permutation vectors do not fit dimension of data")
+}
+
+
+
 

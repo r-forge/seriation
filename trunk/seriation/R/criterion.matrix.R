@@ -19,7 +19,10 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
     
     ## check order
     if(!is.null(order)){
-        if((msg <- .check_order(order, x)) != TRUE) stop(msg)
+        if(!inherits(order, "ser_seriation")) 
+        stop("order has to be an object of class ", sQuote("ser_seriation"))
+
+        .check_matrix_perm(x, order)
     }
     
     ## work horses
@@ -46,9 +49,9 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
     n <- nrow(x)
     m <- ncol(x)
     
-    x <- rearrange(x, order)
+    if(!is.null(order)) x <- rearrange(x, order)
     
-    storage.mode(x) <- "single"
+    mode(x) <- "single"
 
     energy <- .Fortran("energy",
         n = n,
@@ -69,12 +72,16 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
     names(TYPE) <- c("moore", "neumann")
     if (inherits(x, "dist")) x <- as.matrix(x)
     if (!is.matrix(x)) stop(paste(sQuote("x"),"not a matrix"))
-    if (!is.double(x)) storage.mode(x) <- "double"
-    rows <- order$row
-    cols <- order$col
-    if(!is.null(order$order)) rows <- cols <- order$order
-    if (is.null(rows)) rows <- as.integer(1:dim(x)[1])
-    if (is.null(cols)) cols <- as.integer(1:dim(x)[2])
+    if (!is.double(x)) mode(x) <- "double"
+    
+    if(is.null(order)) {
+        rows <- as.integer(1:dim(x)[1])
+        cols <- as.integer(1:dim(x)[2])
+    }else{
+        rows <- get_permutation(order[[1]])
+        cols <- get_permutation(order[[2]])
+    }
+    
     type <- as.integer(TYPE[type])
     
     x <- .Call("stress", x, rows, cols, type)

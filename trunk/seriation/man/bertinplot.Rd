@@ -76,9 +76,9 @@ scale_by_rank <- function(x) apply(x, 2, rank)
 x <- scale_by_rank(Irish[,-6])
 
 ## use the the sum of absolute rank differences
-order <- Order(
-    row = seriate(dist(x, "minkowski", p = 1)),
-    col = seriate(dist(t(x), "minkowski", p = 1))
+order <- c.seriation(
+  seriate(dist(x, "minkowski", p = 1)),
+  seriate(dist(t(x), "minkowski", p = 1))
 )
 
 ## plot

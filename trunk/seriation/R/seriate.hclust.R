@@ -5,7 +5,7 @@ seriate.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
     ## check arguments
     if (!inherits(dist, "dist"))
     stop(paste(sQuote("dist"),"not of class dist"))
-    if (!is.real(dist)) storage.mode(dist) <- "real"
+    if (!is.real(dist)) mode(dist) <- "real"
 
     ## methods
     methods <- c(
@@ -21,7 +21,10 @@ seriate.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
     if(methodNr == 1) .seriate_optimal
     else if (methodNr == 2) .seriate_gruvaeus
     
-    Order(workhorse(x, dist), method = methods[methodNr])
+    order <- workhorse(x, dist)
+    attr(order, "method") <- methods[methodNr]
+
+    seriation(order)
 }
 
 
@@ -45,7 +48,7 @@ seriate.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
     if (dim(merge)[1] != attr(dist,"Size")-1)
     stop(paste(sQuote("dist"),"and",sQuote("merge"),"in",sQuote("hclust"),
             "do not conform"))
-    storage.mode(merge) <- "integer"
+    mode(merge) <- "integer"
     
     obj <- .Call("order_optimal", dist, merge)
     

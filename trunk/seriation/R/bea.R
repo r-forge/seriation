@@ -7,8 +7,8 @@ bea <- function(a, istart=0, jstart=0)
            n <- nrow(a)
            m <- ncol(a)
            b    <- matrix(0.0, n, m)
-           storage.mode(a) <- "single"
-           storage.mode(b) <- "single"
+           mode(a) <- "single"
+           mode(b) <- "single"
            ib   <- integer(n)
            jb   <- integer(m)
            ifin <- integer(n)

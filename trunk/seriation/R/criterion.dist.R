@@ -25,17 +25,20 @@ criterion.dist <- function(x, order = NULL, method = "all") {
     methodNr <- pmatch(tolower(method), tolower(methods))
     if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
     
+    ## get and check order 
+    if (!is.null(order)){
+        if(!inherits(order, "ser_seriation")) order <- seriation(order)
+
+        .check_dist_perm(x, order)
+
+        order <- get_permutation(order[[1]])
+    }
+
     ## check dist (C code only works with lower-triangle version) 
     if(attr(x, "Diag") == TRUE || attr(x, "Upper") == TRUE)
         x <- as.dist(x, diag = FALSE, upper = FALSE)
-    if (!is.real(x)) storage.mode(x) <- "real"
+    if (!is.real(x)) mode(x) <- "real"
     
-    ## get and check order 
-    if (!is.null(order)){
-        if((msg <- .check_order(order, x)) != TRUE) stop(msg)
-        order <- order$order
-    }
-
     
     ## work horses
     if(methodNr == 1) {
@@ -51,8 +54,11 @@ criterion.dist <- function(x, order = NULL, method = "all") {
     }else if (methodNr == 6) {
         crit <- .ar(x, order, method = 3)  # w
     }else if (methodNr > 6) {
-        crit <- criterion.matrix(as.matrix(x), order = Order(order), 
-            method = method)
+        if(!is.null(order)) 
+        order <- seriation(permutation(order), permutation(order))
+        x <- as.matrix(x)
+
+        crit <- criterion.matrix(x, order, method) 
     }
 
     names(crit) <- methods[methodNr]

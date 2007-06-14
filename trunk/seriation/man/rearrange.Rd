@@ -24,18 +24,19 @@ rearrange a matrix.
 }
 %\author{Michael Hahsler}
 \seealso{
-\code{\link{Order}},
+\code{\link{seriation}},
 \code{\link{dist}} in package \pkg{stats}.
   }
 \examples{
 m <- matrix(rnorm(10), 5, 2)
 m
 
-rearrange(m, Order(row = 5:1, col = 2:1))
+rearrange(m, seriation(5:1, 2:1))
 
 d <- dist(m)
 d
 
-rearrange(d, Order(c(3,2,1)))
+rearrange(d, seriation(c(3,2,1,4,5)))
+## rearrange(d, permutation(c(3,2,1,4,5))) # same result
 }
 \keyword{manip}

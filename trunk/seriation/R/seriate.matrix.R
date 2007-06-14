@@ -27,13 +27,16 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
     order <- workhorse(x, control)
     method <- methods[methodNr]
 
+    row <- permutation(order$row, method)
+    col <- permutation(order$col, method)
+
     ## this is inefficient since the workhorse does both
     if(length(margin) == 1) {
-        if(margin == 1) return(Order(order = order$row, method = method))
-        if(margin == 2) return(Order(order = order$col, method = method))
+        if(margin == 1) return(seriation(row))
+        if(margin == 2) return(seriation(col))
     }
 
-    Order(row = order$row, col = order$col, method = methods[methodNr])
+    seriation(row, col)
 }
 
 
@@ -62,11 +65,11 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
     
     criterion <- as.dist(tcrossprod(x))
     row <- seriate(max(criterion)-criterion, 
-        method = "TSP", control = control)$order
+        method = "TSP", control = control)[[1]]
 
     criterion <- as.dist(crossprod(x))
     col <- seriate(max(criterion)-criterion, 
-        method = "TSP", control = control)$order
+        method = "TSP", control = control)[[1]]
     
     list(row = row, col = col)
 }
