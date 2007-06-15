@@ -479,9 +479,10 @@ With an exact TSP solver, the optimal solution can be found.
 
 \begin{figure}[tp]
     \centerline{
-    \includegraphics[width=12cm]{infrastructure}}
+    %\includegraphics[width=12cm]{infrastructure}}
+    \includegraphics[width=12cm]{classes}}
 
-    \caption{The \pkg{seriation} package infrastructure}
+    \caption{The class infrastructure provided by \pkg{seriation}}
     \label{fig:infrastructure}
 \end{figure}
 
@@ -697,9 +698,10 @@ to use the \code{order} obtained for the distance matrix
 (a \code{Order\_vector} object) for row arrangement in a \code{Order\_matrix}
 object.
 
+\marginpar{do the identity vector better}
 <<label=pimage2, eval=FALSE>>=
 pimage(x, main = "Random")
-pimage(x, Order(row = order), main = "Reordered")
+pimage(x, c(order,permutations(1:ncol(x))), main = "Reordered")
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 bitmap(file = "seriation-pimage2.png", type = "pnggray", 
@@ -724,8 +726,10 @@ set and the distance matrix \code{d} from the previous example.  We include in
 the comparision several seriation methods for dissimilarity matrices described
 in Section~\ref{sec:methods}. 
 
+\marginpar{fixme: the hclust based seriations fail}
 <<>>=
-methods <- c("TSP", "Chen", "MDS", "HC", "GW", "OLO")
+#methods <- c("TSP", "Chen", "MDS", "HC", "GW", "OLO", "ARSA")
+methods <- c("TSP", "Chen", "MDS", "ARSA")
 order <- sapply(methods, simplify = FALSE, FUN = function(m) seriate(d, m))
 @
 
@@ -914,10 +918,11 @@ distance matrices and create an \code{Order} object. The original and
 the reordered matrix are plotted using \func{bertinplot}. 
 
 <<>>=
-order <- Order(
-    row = seriate(dist(orig_matrix, "minkowski", p = 1), method ="TSP"),
-    col = seriate(dist(t(orig_matrix), "minkowski", p = 1), method = "TSP")
+order <- c(
+    seriate(dist(orig_matrix, "minkowski", p = 1), method ="TSP"),
+    seriate(dist(t(orig_matrix), "minkowski", p = 1), method = "TSP")
 )
+order
 @
 
 
