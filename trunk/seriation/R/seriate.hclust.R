@@ -24,7 +24,7 @@ seriate.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
     order <- workhorse(x, dist)
     attr(order, "method") <- methods[methodNr]
 
-    seriation(order)
+    permutations(permutation(order))
 }
 
 

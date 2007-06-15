@@ -1,9 +1,18 @@
-\name{Order}
-\alias{Order}
-\alias{Order_symmetric}
-\alias{Order_asymmetric}
-\alias{print.Order}
-\title{Class Order -- Order for rearranging matrices and dissimilarity objects}
+\name{ser_permutations}
+\alias{ser_permutations}
+\alias{ser_permutation}
+\alias{permutations}
+\alias{permutation}
+\alias{print.ser_permutations}
+\alias{print.ser_permutation}
+\alias{get_order}
+\alias{get_order.integer}
+\alias{get_order.hclust}
+\alias{get_order.ser_permutations}
+\alias{length.ser_permutation}
+\alias{c.ser_permutations}
+\title{Classes ser_permutations and ser_permutation -- 
+permutation vectors for seriation}
 \description{
 
 THIS NEEDS TO BE CHANGED AND seriation IS MISSING
@@ -54,7 +63,7 @@ lead to an  \code{Order\_matrix} object.
 %\references{}
 %\author{}
 \seealso{
-\code{\link{rearrange}},
+\code{\link{permute}},
 \code{\link{seriate.matrix}},
 \code{\link{seriate.dist}},
 \code{\link{seriate.hclust}}

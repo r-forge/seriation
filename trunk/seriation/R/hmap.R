@@ -67,9 +67,9 @@ hmap <- function(x, distfun = dist, hclustfun = hclust,
         col_order <- seriate(dist_col, method = method, 
             control = control)
 
-        x <- rearrange(x, c.seriation(row_order, col_order))
-        dist_row <- rearrange(dist_row, row_order)
-        dist_col <- rearrange(dist_col, col_order)
+        x <- permute(x, c(row_order, col_order))
+        dist_row <- permute(dist_row, row_order)
+        dist_col <- permute(dist_col, col_order)
     }
     
    

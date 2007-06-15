@@ -9,7 +9,9 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
         "MDS",
         "HC",
         "GW",
-        "OLO"
+        "OLO",
+        "ARSA",
+        "BBURG"
     ) 
     
     methodNr <- if(is.null(method)) 1
@@ -23,10 +25,12 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
     else if(methodNr == 4) .seriate_hc
     else if(methodNr == 5) .seriate_hc_gw
     else if(methodNr == 6) .seriate_hc_optimal
+    else if(methodNr == 7) .seriate_arsa
+    else if(methodNr == 8) .seriate_bburg
 
     order <- workhorse(x, control)
     
-    seriation(permutation(order, method = methods[methodNr]))
+    permutations(permutation(order, method = methods[methodNr]))
 }
 
 
@@ -113,6 +117,62 @@ seriate(.hclust_helper(x, control), x, method = "GW")$order
 
 .seriate_hc_optimal <- function(x, control = NULL)
 seriate(.hclust_helper(x, control), x, method = "OLO")$order
+
+## brusco: simulated annealing for anti-robinson
+.seriate_arsa <- function(x, control = NULL) {
+    param <- list(
+        cool = 0.5,
+        tmin = 0.1,
+        nreps = 1L
+    )
+    for(n in names(control)) {
+        if(is.null(param[[n]])) stop("unknown control parameter: ", n)
+        param[[n]] <- control[[n]] 
+    }
+
+    A <- as.matrix(x)
+    # SUBROUTINE arsa(N, A, COOL, TMIN, NREPS, IPERM, R1, R2, D, U,
+        #      S, T, SB)
+    N <- ncol(A)
+    IPERM <- integer(N)
+    R1 <- double(N*N/2)
+    R2 <- double(N*N/2)
+    D <- double(N*N)
+    U <- integer(N)
+    S <- integer(N)
+    T <- integer(100*N)
+    SB <- integer(N)
+
+    ret <- .Fortran("arsa", N, A, param$cool, param$tmin, param$nreps, IPERM,
+        R1, R2, D, U, S, T, SB)
+
+    ret[[6]]
+}
+
+## brusco: branch-and-bound - unweighted row gradient 
+.seriate_bburg <- function(x, control = NULL) {
+    param <- list(
+        eps = 1e-7
+    )
+    for(n in names(control)) {
+        if(is.null(param[[n]])) stop("unknown control parameter: ", n)
+        param[[n]] <- control[[n]] 
+    }
+    
+    A <- as.matrix(x)
+    N <- ncol(A)
+
+    # SUBROUTINE bburg(N, A, EPS, X, Q, D, DD, S, UNSEL)
+    X <- integer(N)
+    Q <- integer(N)
+    D <- integer(N*N*N)
+    DD <- integer(N*N*N)
+    S <- integer(N)
+    UNSEL <- integer(N)
+
+    ret <- .Fortran("bburg", N, A, eps, X, Q, D, DD, S, UNSEL)
+    ret[[4]]
+}
 
 
 ## generic for criterion

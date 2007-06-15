@@ -87,9 +87,7 @@ values closer together creating a block structure.
     }
 }
 \value{
-Returns an object of class \code{Order_asymmetric} which is a list of two
-elements. \code{row} contains the row order and \code{col} contains the column
-order. Both are integer vectors.
+Returns an object of class \code{ser_permutations}.
 }
 \references{ 
 P. Arabie and L.J. Hubert (1990): The bond energy algorithm revisited, 
@@ -129,14 +127,14 @@ criterion(x)
 
 order <- seriate(x)
 pimage(x, order, main = "TSP to optimize ME")
-criterion(x, order, method = "all")
+criterion(x, order)
 
 order <- seriate(x, method="PCA")
 pimage(x, order, main = "first principal component")
 criterion(x, order)
 
 ## 2 TSPs
-order <- c.seriation(
+order <- c(
     seriate(dist(x), method = "TSP"),
     seriate(dist(t(x)), method = "TSP")
 )

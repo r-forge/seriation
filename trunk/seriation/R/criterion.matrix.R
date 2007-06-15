@@ -19,8 +19,8 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
     
     ## check order
     if(!is.null(order)){
-        if(!inherits(order, "ser_seriation")) 
-        stop("order has to be an object of class ", sQuote("ser_seriation"))
+        if(!inherits(order, "ser_permutations")) 
+        stop("order has to be an object of class ", sQuote("ser_permutations"))
 
         .check_matrix_perm(x, order)
     }
@@ -49,7 +49,7 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
     n <- nrow(x)
     m <- ncol(x)
     
-    if(!is.null(order)) x <- rearrange(x, order)
+    if(!is.null(order)) x <- permute(x, order)
     
     mode(x) <- "single"
 
@@ -78,8 +78,8 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
         rows <- as.integer(1:dim(x)[1])
         cols <- as.integer(1:dim(x)[2])
     }else{
-        rows <- get_permutation(order[[1]])
-        cols <- get_permutation(order[[2]])
+        rows <- get_order(order, 1)
+        cols <- get_order(order, 2)
     }
     
     type <- as.integer(TYPE[type])

@@ -5,7 +5,7 @@ bertinplot  <- function(x, order = NULL, highlight = TRUE, options = NULL) {
     stop(paste(sQuote("highlight"), "has to be a logical"))
 
     ## order
-    if(!is.null(order)) x <- rearrange(x, order)
+    if(!is.null(order)) x <- permute(x, order)
 
     ## default plot options
     user_options <- options

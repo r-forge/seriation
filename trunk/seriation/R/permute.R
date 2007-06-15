@@ -1,44 +1,38 @@
-## rearrange 
+## permute 
 
 ## helper
-.rearrange_kd <- function(x, order) {
+.permute_kd <- function(x, order) {
     .check_matrix_perm(x, order)
 
-    perm <- lapply(order, get_permutation)    
+    perm <- lapply(order, get_order)    
     do.call("[", c(list(x), perm))          #]
 }
 
-.rearrange_1d <- function(x, order) {
-    if(!inherits(order, "ser_seriation")) order <- seriation(order)
+.permute_1d <- function(x, order) {
+    if(!inherits(order, "ser_permutations")) order <- permutations(order)
     
     if(length(order) != 1) stop("dimensions do not match")
     
-    perm <- get_permutation(order[[1]])
+    perm <- get_order(order[[1]])
     if(length(x) != length(perm))     
     stop("some permutation vectors do not fit dimension of data")
 
     x[perm]
 }
 
-
-rearrange.dist <- function(x, order) {
-    if(!inherits(order, "ser_seriation")) order <- seriation(order)
-    .check_dist_perm(x, order)
-
-    perm <- get_permutation(order[[1]])
-    
+.rearrange_dist <- function (x, order) {
     ## make C call
     mode(x) <- "double"
-    mode(perm) <- "integer"
-    
-    d <- .Call("reorder_dist", x, perm)
+    mode(order) <- "integer"
+
+    d <- .Call("reorder_dist", x, order)
 
     labels <- if(is.null(labels(x))) NULL
-    else labels(x)[perm]
-    
+    else labels(x)[order]
+
     structure(d, 
         class   = "dist", 
-        Size    = length(perm), 
+        Size    = length(order), 
         Labels  = labels,
         Diag    = FALSE,
         Upper   = FALSE,
@@ -46,22 +40,30 @@ rearrange.dist <- function(x, order) {
     )
 }
 
-## methods
-rearrange.array     <- .rearrange_kd
-rearrange.matrix    <- .rearrange_kd
-rearrange.numeric   <- .rearrange_1d
-rearrange.list      <- .rearrange_1d
-rearrange.default <- function(x, order) 
-stop(paste("\nrearrange not implemented for class: ", class(x)))
+permute.dist <- function(x, order) {
+    if(!inherits(order, "ser_permutations")) order <- permutations(order)
+    .check_dist_perm(x, order)
 
-rearrange <- function(x, order) UseMethod("rearrange")
+    order <- get_order(order, 1)
+    .rearrange_dist(x, order)
+}
+
+## methods
+permute.array     <- .permute_kd
+permute.matrix    <- .permute_kd
+permute.numeric   <- .permute_1d
+permute.list      <- .permute_1d
+permute.default <- function(x, order) 
+stop(paste("\npermute not implemented for class: ", class(x)))
+
+permute <- function(x, order) UseMethod("permute")
 
 
 ## more helper
 .check_dist_perm <- function(x, order) {
     if(length(order) != 1) stop("dimensions do not match")
 
-    if(attr(x, "Size") != length(get_permutation(order[[1]])))
+    if(attr(x, "Size") != length(get_order(order[[1]])))
     stop("some permutation vectors do not fit dimension of data")
     
     ## check dist

@@ -314,12 +314,12 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     }else if(is.null(labels)) {
         ## reorder whole matrix if no labels are given
         order <- seriate(x, method = method$inter, 
-            control = control$inter) 
+            control = control$inter)[[1]] 
         
         used_method$inter <- if(!is.null(attr(order, "method"))) 
             attr(order, "method") else method$inter
 
-        order <- order$order
+        order <- get_order(order)
 
     }else if (!is.null(labels)){
         ## reorder clusters for given labels
@@ -331,12 +331,12 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
 
         if(k>2) {
             cluster_order <- seriate(as.dist(cluster_dissimilarities), 
-                method = method$inter, control = control$inter)
+                method = method$inter, control = control$inter)[[1]]
            
             used_method$inter <- if(!is.null(attr(cluster_order, "method"))) 
                 attr(cluster_order, "method") else method$inter
        
-            cluster_order <- cluster_order$order
+            cluster_order <- get_order(cluster_order)
         }else{
             cluster_order <- 1:k
         }
@@ -372,16 +372,18 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
                         
                         used_method$intra <- "silhouette width"
                     }else{
-                        block <- rearrange(x, Order(order = take))
+                        ## we use .rearrange_dist instead of permute
+                        ## since we take only a subset!
+                        block <- .rearrange_dist(x, take)
                         
                         intra_order <- seriate(block, method = method$intra, 
-                            control = control$intra)
+                            control = control$intra)[[1]]
 
                         used_method$intra <- 
                         if(!is.null(attr(intra_order, "method")))
                         attr(intra_order, "method") else method$intra
                     
-                        intra_order <- intra_order$order
+                        intra_order <- get_order(intra_order)
                     }
 
                     order <- c(order, take[intra_order])
@@ -408,7 +410,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     }
 
     ## reorder matrix
-    if(!is.null(order)) x_reordered <- rearrange(x, Order(order = order))
+    if(!is.null(order)) x_reordered <- permute(x, order)
     else x_reordered <- x
     
     ## prepare for return value

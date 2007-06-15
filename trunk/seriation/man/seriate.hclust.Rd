@@ -43,9 +43,10 @@ Currently, the following methods are implemented:
 }
 }
 \value{
-The order as an object of class \code{Order_symmetric} 
-which is also an object of class \code{hclust}. The order, an integer vector, 
-is contained in the list element \code{order}.
+The order as an object of class \code{ser_permutations}.
+The first permutation vector in the result contains
+a full \code{hclust} object which can be used to plot a dendrogram 
+(see example section).
 }
 \references{
 Z. Bar-Joseph, E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001): Fast
@@ -71,15 +72,17 @@ Data.
 \examples{
 ## generate some random data
 d <- dist(matrix(runif(50), ncol=2))
-hc <- Order(hclust(d))
+hc <- hclust(d)
 hc_wg <- seriate(hc, d, method="GW")
 hc_opt <- seriate(hc, d, method="OLO")
 
-## compare dendrograms
+## compare dendrograms 
+## note that for the results of seriation (class ser_permutations),
+## the 1. dimension is also a hclust object
 op <- par(mfrow=c(2,3), pty="s")
 plot(hc, main="hclust")
-plot(hc_wg, main="Gruvaeus-Wainer")
-plot(hc_opt, main="Optimal leaf ordering")
+plot(hc_wg[[1]], main="Gruvaeus-Wainer")
+plot(hc_opt[[1]], main="Optimal leaf ordering")
 
 ## compare images
 pimage(d, hc)
@@ -88,11 +91,12 @@ pimage(d, hc_opt)
 par(op)
 
 ## compare lengths
-criterion(d)
-criterion(d, hc)
-criterion(d, hc_wg)
-criterion(d, hc_opt)
-
+rbind(
+    original = criterion(d),
+    hclust = criterion(d, hc),
+    gw = criterion(d, hc_wg),
+    opt = criterion(d, hc_opt)
+)
 
 ## application: heatmap (see also heatmap_opt)
 data("iris")

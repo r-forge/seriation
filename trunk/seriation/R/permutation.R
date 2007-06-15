@@ -1,4 +1,7 @@
-## S3 permutation class
+## S3 permutation and permutations classes
+## permutations consists of instances of permutation
+
+## permutation
 
 ## constructor
 permutation <- function(x, method = NULL) {
@@ -15,15 +18,15 @@ permutation <- function(x, method = NULL) {
 }
 
 ## accessors
-get_permutation <- function(x) UseMethod("get_permutation")
-get_permutation.default <- function(x) 
+get_order <- function(x, ...) UseMethod("get_order")
+get_order.default <- function(x) 
     stop(paste("\nNo permutation accessor implemented for class: ", class(x)))
 
-get_permutation.hclust <- function(x) x$order
-get_permutation.integer <- function(x) unclass(x)
+get_order.hclust <- function(x) x$order
+get_order.integer <- function(x) unclass(x)
 
 ## print et al
-length.ser_permutation <- function(x) length(get_permutation(x)) 
+length.ser_permutation <- function(x) length(get_order(x)) 
 
 print.ser_permutation <- function(x, ...) {
     cat("object of class", sQuote(class(x)), "\n")
@@ -37,9 +40,49 @@ print.ser_permutation <- function(x, ...) {
 
 ## helpers
 .valid_permutation <- function(x) {
-    perm <- get_permutation(x)
+    perm <- get_order(x)
     if(max(perm) > length(perm)) stop("Invalid permutation vector")
     if(any(table(perm) != 1)) stop("Invalid permutation vector")
 }
 
 
+######################################################
+## permutations
+
+## constructor
+permutations <- function(x,...) {
+    ddd <- list(...)
+    if(inherits(x, "ser_permutations")) {
+        if(length(ddd) != 0) warning(sQuote("x"),
+            " is already ser_permutations, ... ignorred")
+        return(x)
+    }
+
+    x <- c(list(x), ddd)
+
+    ## check if all elements are ser_permutation
+    #if(any(!sapply(x, inherits, "ser_permutation")))
+    #stop("some elements are not of class ", sQuote("ser_permutation"))
+    ## we make them ser_permutation
+    x <- lapply(x, "permutation")
+
+    class(x) <- c("ser_permutations", "list")
+    x
+}
+
+## so we can say get_order to permutations
+get_order.ser_permutations <- function(x, dim = 1) get_order(x[[dim]])
+
+## print et al
+print.ser_permutations <- function(x, ...) {
+    cat("object of class", sQuote(class(x)), "\n")
+
+    cat("contains permutation vectors for ", length(x), 
+        "dimensional data\n")
+}
+
+c.ser_permutations <- function(..., recursive = FALSE) 
+    do.call("permutations", 
+        unlist(lapply(list(...), unclass), recursive = FALSE))
+
+## fixme [[<- needs to check for permutations

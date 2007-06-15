@@ -27,11 +27,11 @@ criterion.dist <- function(x, order = NULL, method = "all") {
     
     ## get and check order 
     if (!is.null(order)){
-        if(!inherits(order, "ser_seriation")) order <- seriation(order)
+        if(!inherits(order, "ser_permutations")) order <- permutations(order)
 
         .check_dist_perm(x, order)
 
-        order <- get_permutation(order[[1]])
+        order <- get_order(order)
     }
 
     ## check dist (C code only works with lower-triangle version) 
@@ -55,7 +55,7 @@ criterion.dist <- function(x, order = NULL, method = "all") {
         crit <- .ar(x, order, method = 3)  # w
     }else if (methodNr > 6) {
         if(!is.null(order)) 
-        order <- seriation(permutation(order), permutation(order))
+        order <- permutations(permutation(order), permutation(order))
         x <- as.matrix(x)
 
         crit <- criterion.matrix(x, order, method) 

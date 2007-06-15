@@ -4,7 +4,7 @@ C   by Brusco, M., Kohn, H.F., and Stahl, S.
 C   R Interface by Michael Hahsler
 
 C      PROGRAM SANNEAL
-      SUBROUTINE sanneal(N, A, COOL, TMIN, NREPS, IPERM, R1, R2, D, U, 
+      SUBROUTINE arsa(N, A, COOL, TMIN, NREPS, IPERM, R1, R2, D, U, 
      1 S, T, SB)
       IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       DIMENSION A(N,N)
@@ -17,6 +17,12 @@ C      DOUBLE PRECISION A(400,400), SOLS(100), RMED(100),
       print *, 'Anti-Robinson seriation by simulated annealing'
       print *, 'based on arsa.f by Brusco, M., Kohn, H.F.,',
      1 'and Stahl, S. (2007)'
+
+      print *, ''
+      print *, 'COOL =', COOL
+      print *, 'TMIN =', TMIN
+      print *, 'NREPS =', NREPS
+      print *, ''
 
 C      INTEGER U(400), S(400), UNSEL, T(100,400), SB(400), Q, GB(400)
 C      CHARACTER JNK

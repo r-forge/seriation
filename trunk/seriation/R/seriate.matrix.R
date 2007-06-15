@@ -9,8 +9,7 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
     methods <- c(
         "BEA_TSP",   # standard
         "BEA",
-        "PCA",
-        "CA"
+        "PCA"
     )
     
     methodNr <- if(is.null(method)) 1
@@ -22,7 +21,6 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
     if(methodNr == 1) .seriate_bea_tsp
     else if(methodNr == 2) .seriate_bea
     else if(methodNr == 3) .seriate_fpc
-    else if(methodNr == 4) .seriate_ca
     
     order <- workhorse(x, control)
     method <- methods[methodNr]
@@ -32,11 +30,11 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
 
     ## this is inefficient since the workhorse does both
     if(length(margin) == 1) {
-        if(margin == 1) return(seriation(row))
-        if(margin == 2) return(seriation(col))
+        if(margin == 1) return(permutations(row))
+        if(margin == 2) return(permutations(col))
     }
 
-    seriation(row, col)
+    permutations(row, col)
 }
 
 
@@ -116,15 +114,6 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
         pr$sdev[1] / sum(pr$sdev)* 100,"%\n")
 
     list(row = row, col = col)
-}
-
-
-.seriate_ca <- function(x, control) {
-    coa <- dudi.coa(as.data.frame(x), scannf=FALSE, nf=1)
-    
-    cat("correspondence analysis  explains", coa$eig[1] / sum(coa$eig) * 100, 
-        "% of the eigen values\n")
-    list(row = order(coa$li[,1]), col = order(coa$co[,1]))
 }
 
 

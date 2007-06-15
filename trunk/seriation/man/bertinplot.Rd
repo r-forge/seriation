@@ -17,7 +17,7 @@ bertinplot(x, order = NULL, highlight = TRUE,  options = NULL)
   \item{x}{ a data matrix. Note that following Bertin, 
       columns are variables and rows are cases. This behavior can be 
       reversed using \code{reverse = TRUE} in \code{options}.}
-  \item{order}{an object of class \code{Order} to rearrange \code{x} before
+  \item{order}{an object of class \code{ser_permutations} to rearrange \code{x} before
       plotting.  If \code{NULL}, no rearrangement is performed.}
   \item{highlight}{ a logical scalar indicating whether to use highlighting.
       If \code{TRUE}, all variables with values greater than the variable-wise
@@ -65,7 +65,7 @@ In: Proceedings of the SoftStat '97 (Advances in Statistical Software 6),
 11--20.
 }
 \seealso{
-    \code{\link{Order}},
+    \code{\link{ser_permutations}},
     \code{\link{seriate}},
     Package \pkg{grid}.
 }
@@ -76,7 +76,7 @@ scale_by_rank <- function(x) apply(x, 2, rank)
 x <- scale_by_rank(Irish[,-6])
 
 ## use the the sum of absolute rank differences
-order <- c.seriation(
+order <- c(
   seriate(dist(x, "minkowski", p = 1)),
   seriate(dist(t(x), "minkowski", p = 1))
 )

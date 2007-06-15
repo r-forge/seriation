@@ -60,7 +60,7 @@ tour <- cut_tour(tour, "cut")
 lines(mds[tour,], col = "red", lwd = 2)
 
 ## create and plot order
-order <- Order(row = tour)
+order <- seriation(tour, 1:ncol(x))
 bertinplot(x, order, options= list(panel=panel.circles,
     rev = TRUE))
 

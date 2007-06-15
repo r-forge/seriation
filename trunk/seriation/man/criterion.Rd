@@ -17,7 +17,7 @@ criterion(x, order = NULL, method = "all")
 \arguments{
   \item{x}{an object of class \code{dist} or a matrix.}
   \item{order}{
-      an object of class \code{Order} suitable to rearrange \code{x}.
+      an object of class \code{ser_permutations} suitable for \code{x}.
       If \code{NULL}, the identity permutation is used.
     }
   \item{method}{a vector of character strings with names of the criteria
@@ -178,8 +178,8 @@ o
 
 ## compare the values for all available criteria
 rbind(
-    unordered = criterion(d, method = "all"),
-    ordered = criterion(d, o, method = "all")
+    unordered = criterion(d),
+    ordered = criterion(d, o)
 )
 }
 \keyword{cluster}

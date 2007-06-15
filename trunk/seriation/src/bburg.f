@@ -6,7 +6,7 @@ C   R Interface by Michael Hahsler
 
 C      PROGRAM DYNAMIC
 C      SUBROUTINE dynamic(N, A, EPS, X)
-      SUBROUTINE dynamic(N, A, EPS, X, Q, D, DD, S, UNSEL)
+      SUBROUTINE bburg(N, A, EPS, X, Q, D, DD, S, UNSEL)
       IMPLICIT INTEGER(A-Z)
 C      DOUBLE PRECISION TIMEA,TIMEB,TIMTOT,A(50,50),EPS
       DOUBLE PRECISION A(N,N), EPS

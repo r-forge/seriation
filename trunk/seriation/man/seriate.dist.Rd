@@ -88,8 +88,7 @@ dissimilarities between neighboring objects.
     }
 }
 \value{
-Returns the order as an object of class \code{Order_symmetric} which is a list
-containing the order (an integer vector) as element \code{order}.
+Returns the order as an object of class \code{ser_permutations}.
 }
 \references{ 
 Chen, C. H. (2002):  Generalized Association Plots: Information
