@@ -1,48 +1,37 @@
 ## Criterion for the quality of a permutation of a matrix
 
 criterion.matrix <- function(x, order = NULL, method = "all", ...) {
-
-    ## methods
-    methods <- c(
-        "ME",
-        "Moore_stress",
-        "Neumann_stress"
-    )
-
-    ## do more than one criterion
-    if(method == "all") method <- methods
-    if(length(method) > 1) return(sapply(method,
-            function(m) criterion(x, order, m), USE.NAMES = FALSE))
-
-    methodNr <- pmatch(tolower(method), tolower(methods))
-    if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
     
     ## check order
     if(!is.null(order)){
         if(!inherits(order, "ser_permutations")) 
         stop("order has to be an object of class ", sQuote("ser_permutations"))
-
         .check_matrix_perm(x, order)
     }
     
-    ## work horses
-    if (methodNr == 1) {
-        crit <- 0.5 * .bond_energy(x, order)
-    }else if (methodNr == 2) {
-        crit <- .stress(x, order, 
-            type = "moore")
-    }else if (methodNr == 3) {
-        crit <- .stress(x, order, 
-            type = "neumann")
-    }
+    
+    ## methods
+    methods <- list(
+        "ME"            = .ME,
+        "Moore_stress"  = .stress_moore,
+        "Neumann_stress"= .stress_neumann
+    )
+    
+    ## do more than one criterion
+    if(method == "all") method <- names(methods)
+    if(length(method) > 1) return(sapply(method,
+            function(m) criterion(x, order, m), USE.NAMES = FALSE))
 
-    names(crit) <- methods[methodNr]
+    method <- .choose_method(method, methods)
+   
+    crit <- methods[[method]](x, order)
+    names(crit) <- method
     crit
 }
     
 
 ## Bond energy (BEA)
-.bond_energy <- function(x, order = NULL){
+.ME <- function(x, order = NULL){
     
     if(any(x < 0)) stop("Bond energy is only defined for nonnegative matrices")
     
@@ -59,7 +48,7 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
         b = x,
         ener = as.single(0.0))
     
-    as.numeric(energy$ener)
+    0.5 * as.numeric(energy$ener)
 }
 
 
@@ -89,5 +78,9 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
     ## does only half of the matrix!
     2 * x
 }
+
+.stress_moore <- .stress
+.stress_neumann <- function(x, order) .stress(x, order, "neumann")
+
 
 

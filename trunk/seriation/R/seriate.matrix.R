@@ -6,24 +6,15 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
     ## margin 1...rows, 2...cols
 
     ## build-in methods
-    methods <- c(
-        "BEA_TSP",   # standard
-        "BEA",
-        "PCA"
+    methods <- list(
+        "BEA_TSP"   = .seriate_bea_tsp,
+        "BEA"       = .seriate_bea,
+        "PCA"       = .seriate_fpc
     )
     
-    methodNr <- if(is.null(method)) 1
-    else pmatch(tolower(method), tolower(methods))
-    if(is.na(methodNr)) stop (paste("Unknown method:", sQuote(method)))
-
-    ## work horses
-    workhorse <-
-    if(methodNr == 1) .seriate_bea_tsp
-    else if(methodNr == 2) .seriate_bea
-    else if(methodNr == 3) .seriate_fpc
+    method <- .choose_method(method, methods, "BEA_TSP")
     
-    order <- workhorse(x, control)
-    method <- methods[methodNr]
+    order <- methods[[method]](x, control)
 
     row <- permutation(order$row, method)
     col <- permutation(order$col, method)

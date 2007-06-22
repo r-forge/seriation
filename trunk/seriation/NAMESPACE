@@ -1,9 +1,9 @@
-import(TSP)
 
 export(
     bertinplot,
     criterion, 
     dissplot,
+    get_method,
     get_order,
     hmap,
     panel.bars, 
@@ -18,6 +18,7 @@ export(
     )
 
 S3method("c", "ser_permutations")
+S3method("[", "ser_permutations")
 
 S3method(criterion, matrix)
 S3method(criterion, dist)

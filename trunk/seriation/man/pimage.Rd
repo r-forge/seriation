@@ -2,10 +2,10 @@
 \alias{pimage}
 \alias{pimage.matrix}
 \alias{pimage.dist}
-\title{Proper matrix image plots}
+\title{Permutation image plot}
 \description{
-  Provides methods for plotting proper image plots for 
-  matrix and \code{dist} objects.
+  Provides methods for plotting image plots for 
+  matrix and \code{dist} objects given a permutation.
 }
 \usage{
 pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)

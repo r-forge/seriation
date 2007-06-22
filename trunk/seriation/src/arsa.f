@@ -5,7 +5,7 @@ C   R Interface by Michael Hahsler
 
 C      PROGRAM SANNEAL
       SUBROUTINE arsa(N, A, COOL, TMIN, NREPS, IPERM, R1, R2, D, U, 
-     1 S, T, SB)
+     1 S, T, SB, IVERB)
       IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       DIMENSION A(N,N)
       DIMENSION IPERM(N)
@@ -14,15 +14,17 @@ C      DOUBLE PRECISION A(400,400), SOLS(100), RMED(100),
       REAL S1, RCRIT
       INTEGER U(N), S(N), UNSEL, T(100,N), SB(N), Q
 
-      print *, 'Anti-Robinson seriation by simulated annealing'
-      print *, 'based on arsa.f by Brusco, M., Kohn, H.F.,',
-     1 'and Stahl, S. (2007)'
+      IF (IVERB == 1) THEN
+          PRINT *, 'Anti-Robinson seriation by simulated annealing'
+          PRINT *, 'based on arsa.f by Brusco, M., Kohn, H.F.,',
+     1 'anD sTAHl, S. (2007)'
 
-      print *, ''
-      print *, 'COOL =', COOL
-      print *, 'TMIN =', TMIN
-      print *, 'NREPS =', NREPS
-      print *, ''
+          PRINT *, ''
+          PRINT *, 'COOL =', COOL
+          PRINT *, 'TMIN =', TMIN
+          PRINT *, 'NREPS =', NREPS
+          PRINT *, ''
+      ENDIF
 
 C      INTEGER U(400), S(400), UNSEL, T(100,400), SB(400), Q, GB(400)
 C      CHARACTER JNK
@@ -133,7 +135,9 @@ C        TMAX = Z
         NLOOP = (LOG(TMIN)-LOG(TMAX))/LOG(COOL)
 C        WRITE(*,21) TMIN,TMAX,NLOOP
 C  21    FORMAT(2F14.5,I6)
-        WRITE(*,21) NLOOP
+        IF (IVERB == 1) THEN
+            WRITE(*,21) NLOOP
+        ENDIF
   21    FORMAT('   Steps needed: ',I10)
 C        GO TO 889
         TEMP = TMAX
@@ -142,7 +146,14 @@ C        GO TO 889
         END DO
 C
         DO 2000 IJK = 1,NLOOP
-        WRITE(*,22) TEMP
+        IF (IVERB == 1) THEN
+            WRITE(*,22) TEMP
+        ENDIF
+
+C   R interrupt
+        CALL rchkusr()
+C
+
   22    FORMAT('   Temp = ', F14.5)
           DO 2001 KKK = 1,ILOOP
             S1 = rand(0)

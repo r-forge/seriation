@@ -7,19 +7,21 @@
 \alias{permute.array}
 \title{Permute a dist object, a matrix, an array, a list, or a numeric vector}
 \description{
-A convenience method for permuting 
+A method for permuting 
 %and/or subsetting 
 various classes including 
 the observations in a
 \code{dist} object, the rows and columns of a matrix,
-and all dimensions of an array-
+and all dimensions of an array given a suitable \code{ser_permutations}
+object.
 }
 \usage{
 permute(x, order)
 }
 \arguments{
-  \item{x}{an object (a list, a numeric vector, a \code{dist} object, a matrix
-      or an array).} 
+  \item{x}{an object (a list, a numeric vector, a \code{dist} object, a matrix,
+      an array or any other object which provides \code{dim} and standard 
+      subsetting with \code{"["}).} 
   \item{order}{an object of class \code{ser_permutations}
       which contains suitable permutation vectors for \code{x}.}
 }

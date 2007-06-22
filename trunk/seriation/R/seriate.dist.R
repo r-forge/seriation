@@ -3,34 +3,22 @@
 seriate.dist <- function(x, method = NULL, control = NULL, ...){ 
     
     ## build-in methods
-    methods <- c(
-        "TSP",    # standard
-        "Chen",    
-        "MDS",
-        "HC",
-        "GW",
-        "OLO",
-        "ARSA",
-        "BBURG"
-    ) 
+    methods <- list(
+        "ARSA"  = .seriate_arsa,   
+        "BBURCG"= .seriate_bburcg,
+        "BBWRCG"= .seriate_bbwrcg,
+        "TSP"   = .seriate_tsp,
+        "Chen"  = .seriate_chen,
+        "MDS"   = .seriate_mds,
+        "HC"    = .seriate_hc,
+        "GW"    = .seriate_hc_gw,
+        "OLO"   = .seriate_hc_optimal
+    )
     
-    methodNr <- if(is.null(method)) 1
-    else pmatch(tolower(method), tolower(methods))
-    if(is.na(methodNr)) stop (paste("Unknown method:", sQuote(method)))
+    method <- .choose_method(method, methods, "ARSA")
 
-    workhorse <- 
-    if(methodNr == 1) .seriate_tsp
-    else if(methodNr == 2) .seriate_chen
-    else if(methodNr == 3) .seriate_mds
-    else if(methodNr == 4) .seriate_hc
-    else if(methodNr == 5) .seriate_hc_gw
-    else if(methodNr == 6) .seriate_hc_optimal
-    else if(methodNr == 7) .seriate_arsa
-    else if(methodNr == 8) .seriate_bburg
-
-    order <- workhorse(x, control)
-    
-    permutations(permutation(order, method = methods[methodNr]))
+    order <- methods[[method]](x, control)
+    permutations(permutation(order, method = method))
 }
 
 
@@ -123,16 +111,18 @@ seriate(.hclust_helper(x, control), x, method = "OLO")$order
     param <- list(
         cool = 0.5,
         tmin = 0.1,
-        nreps = 1L
+        nreps = 1L,
+        verbose = FALSE
     )
     for(n in names(control)) {
-        if(is.null(param[[n]])) stop("unknown control parameter: ", n)
-        param[[n]] <- control[[n]] 
+        i <- pmatch(n, names(param))
+        if(is.na(i)) stop("unknown control parameter: ", n)
+        param[i] <- control[[n]] 
     }
 
     A <- as.matrix(x)
     # SUBROUTINE arsa(N, A, COOL, TMIN, NREPS, IPERM, R1, R2, D, U,
-        #      S, T, SB)
+        #      S, T, SB, verbose)
     N <- ncol(A)
     IPERM <- integer(N)
     R1 <- double(N*N/2)
@@ -144,25 +134,28 @@ seriate(.hclust_helper(x, control), x, method = "OLO")$order
     SB <- integer(N)
 
     ret <- .Fortran("arsa", N, A, param$cool, param$tmin, param$nreps, IPERM,
-        R1, R2, D, U, S, T, SB)
+        R1, R2, D, U, S, T, SB, param$verbose)
 
     ret[[6]]
 }
 
+
 ## brusco: branch-and-bound - unweighted row gradient 
-.seriate_bburg <- function(x, control = NULL) {
+.seriate_bburcg <- function(x, control = NULL) {
     param <- list(
-        eps = 1e-7
+        eps = 1e-7,
+        verbose = FALSE
     )
     for(n in names(control)) {
-        if(is.null(param[[n]])) stop("unknown control parameter: ", n)
-        param[[n]] <- control[[n]] 
+        i <- pmatch(n, names(param))
+        if(is.na(i)) stop("unknown control parameter: ", n)
+        param[i] <- control[[n]] 
     }
     
     A <- as.matrix(x)
     N <- ncol(A)
 
-    # SUBROUTINE bburg(N, A, EPS, X, Q, D, DD, S, UNSEL)
+    # SUBROUTINE bburcg(N, A, EPS, X, Q, D, DD, S, UNSEL, IVERB)
     X <- integer(N)
     Q <- integer(N)
     D <- integer(N*N*N)
@@ -170,9 +163,42 @@ seriate(.hclust_helper(x, control), x, method = "OLO")$order
     S <- integer(N)
     UNSEL <- integer(N)
 
-    ret <- .Fortran("bburg", N, A, eps, X, Q, D, DD, S, UNSEL)
+    ret <- .Fortran("bburcg", N, A, param$eps, X, Q, D, DD, S, UNSEL,
+        param$verbose)
+    
     ret[[4]]
 }
+
+
+## brusco: branch-and-bound - weighted row gradient 
+.seriate_bbwrcg <- function(x, control = NULL) {
+    param <- list(
+        eps = 1e-7,
+        verbose = FALSE
+    )
+    for(n in names(control)) {
+        i <- pmatch(n, names(param))
+        if(is.na(i)) stop("unknown control parameter: ", n)
+        param[i] <- control[[n]] 
+    }
+    
+    A <- as.matrix(x)
+    N <- ncol(A)
+
+    # SUBROUTINE bbwrcg(N, A, EPS, X, Q, D, DD, S, UNSEL, IVERB)
+    X <- integer(N)
+    Q <- integer(N)
+    D <- double(N*N*N)
+    DD <- double(N*N*N)
+    S <- integer(N)
+    UNSEL <- integer(N)
+
+    ret <- .Fortran("bbwrcg", N, A, param$eps, X, Q, D, DD, S, UNSEL,
+        param$verbose)
+    
+    ret[[4]]
+}
+
 
 
 ## generic for criterion

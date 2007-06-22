@@ -19,11 +19,21 @@ permutation <- function(x, method = NULL) {
 
 ## accessors
 get_order <- function(x, ...) UseMethod("get_order")
+get_order.ser_permutation <- function(x) NextMethod()
 get_order.default <- function(x) 
     stop(paste("\nNo permutation accessor implemented for class: ", class(x)))
 
 get_order.hclust <- function(x) x$order
-get_order.integer <- function(x) unclass(x)
+get_order.integer <- function(x) as.integer(x)
+
+## currently method is an attribute of permutation
+get_method <- function(x, printable = FALSE) {
+    method <- attr(x, "method")
+
+    if(printable && is.null(method)) method <- "unknown"
+    method
+}
+
 
 ## print et al
 length.ser_permutation <- function(x) length(get_order(x)) 
@@ -33,9 +43,7 @@ print.ser_permutation <- function(x, ...) {
 
     cat("contains a permutation vector of length", length(x), "\n")
     
-    method <- attr(x, "method")
-    if(is.null(method)) method <- "unknown"
-    cat("used seriation method:", sQuote(method), "\n")
+    cat("used seriation method:", sQuote(get_method(x, printable = TRUE)), "\n")
 }
 
 ## helpers
@@ -77,8 +85,13 @@ get_order.ser_permutations <- function(x, dim = 1) get_order(x[[dim]])
 print.ser_permutations <- function(x, ...) {
     cat("object of class", sQuote(class(x)), "\n")
 
-    cat("contains permutation vectors for ", length(x), 
-        "dimensional data\n")
+    cat("contains permutation vectors for", length(x), 
+        "dimensional data\n\n")
+   
+    print(data.frame(
+        "vector length" = sapply(x, length),
+        "seriation method" = sapply(x, get_method, printable = TRUE)
+    ))
 }
 
 c.ser_permutations <- function(..., recursive = FALSE) 
@@ -86,3 +99,6 @@ c.ser_permutations <- function(..., recursive = FALSE)
         unlist(lapply(list(...), unclass), recursive = FALSE))
 
 ## fixme [[<- needs to check for permutations
+
+"[.ser_permutations" <- function(object, i, ...) 
+    do.call("permutations", unclass(object)[i])

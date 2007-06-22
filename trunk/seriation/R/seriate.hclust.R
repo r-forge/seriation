@@ -8,21 +8,15 @@ seriate.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
     if (!is.real(dist)) mode(dist) <- "real"
 
     ## methods
-    methods <- c(
-        "OLO",      # standard
-        "GW")
+    methods <- list(
+        "OLO"   = .seriate_optimal,  
+        "GW"    = .seriate_gruvaeus
+    )
 
-    if(is.null(method)) methodNr <- 1
-    else methodNr <- pmatch(tolower(method), tolower(methods))
-    if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
+    method <- .choose_method(method, methods, "OLO")
 
-    ## work horses
-    workhorse <-
-    if(methodNr == 1) .seriate_optimal
-    else if (methodNr == 2) .seriate_gruvaeus
-    
-    order <- workhorse(x, dist)
-    attr(order, "method") <- methods[methodNr]
+    order <- methods[[method]](x, dist)
+    attr(order, "method") <- methods
 
     permutations(permutation(order))
 }

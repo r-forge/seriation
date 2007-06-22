@@ -6,19 +6,26 @@ C   R Interface by Michael Hahsler
 
 C      PROGRAM DYNAMIC
 C      SUBROUTINE dynamic(N, A, EPS, X)
-      SUBROUTINE bburg(N, A, EPS, X, Q, D, DD, S, UNSEL)
+      SUBROUTINE bbwrcg(N, A, EPS, X, Q, D, DD, S, UNSEL, IVERB)
       IMPLICIT INTEGER(A-Z)
 C      DOUBLE PRECISION TIMEA,TIMEB,TIMTOT,A(50,50),EPS
-      DOUBLE PRECISION A(N,N), EPS
+      DOUBLE PRECISION A(N,N), EPS, D(N,N,N),
+     1    DD(N,N,N),ZBEST,Z,ACT,DELTA,ZBD,IDX1,IDX2
       REAL S1
-      INTEGER X(N),Q(N),D(N,N,N),S(N),DD(N,N,N),UNSEL(N)
+      INTEGER X(N),Q(N),S(N),UNSEL(N)
 
-      print *,'Anti-Robinson Seriation by branch-and-bound'
-      print *,'based on bburg.f by Brusco, and Stahl, S. (2005)'
+      IF (IVERB == 1) THEN
+          PRINT *,'Anti-Robinson Seriation by branch-and-bound'
+          PRINT *,'based on bbwrcg.f by Brusco, and Stahl, S. (2005)'
+      ENDIF
+
+      OLDM=0
+      CHECKS=0
+
 
 C
 C #################################################################
-C 10/13/01 This program fits an "unweighted" row gradient criterion
+C 10/13/01 This program fits an "weighted" row gradient criterion
 C         to a symmetric proximity matrix.  Count +1 if the anti-
 C         Robinson triple is satisfied, -1 if its not, and 0 for
 C         ties.  Only look at upper half of matrix
@@ -59,10 +66,11 @@ C
           IF(I.EQ.J) GO TO 849
           DO 850 K = 1,N
             IF(I.EQ.K.OR.J.EQ.K) GO TO 850
-            IF(A(I,K).GT.A(I,J)+EPS) D(I,J,K)=1
-            IF(A(I,K).LT.A(I,J)-EPS) D(I,J,K)=-1
-C            IF(A(I,K).GT.A(J,K)+EPS) D(I,J,K)=D(I,J,K)+1
-C            IF(A(I,K).LT.A(J,K)-EPS) D(I,J,K)=D(I,J,K)-1
+C bbwrg
+C            D(I,J,K) = A(I,K) - A(I,J)
+            D(I,J,K) = 2.*A(I,K) - A(I,J) - A(J,K)
+
+
  850      CONTINUE
  849    CONTINUE
  848  CONTINUE
@@ -80,7 +88,8 @@ C
  852    CONTINUE
  851  CONTINUE
 C
-      ZBEST = 0
+      ZBEST = 0.0D0
+C      DO 3500 JJJ = 1,100
       DO 3500 JJJ = 1,20
         DO I = 1,N
           UNSEL(I) = I
@@ -99,7 +108,7 @@ C 3501   CALL RANDOM(S1)
         IF(NNSEL.GT.0) GO TO 3501
 C        WRITE(*,72) (Q(J),J=1,N)
 C 72     FORMAT(20I3)
-        Z = 0
+        Z = 0.0D0
         DO I = 1,N-2
           R1 = Q(I)
           DO J = I+1,N-1
@@ -113,9 +122,12 @@ C 72     FORMAT(20I3)
  3502   ITRIG = 0
         DO II = 1,N-1
           DO JJ = II+1,N
+C   R interrupt
+            CALL rchkusr()
+C
             R3 = Q(JJ)
             R2 = Q(II)
-            DELTA=0
+            DELTA=0.0D0
             DO I = 1,II-1
               R1 = Q(I)
               DELTA = DELTA + D(R1,R3,R2) - D(R1,R2,R3)
@@ -158,8 +170,10 @@ C 72     FORMAT(20I3)
         IF(Z.GT.ZBEST) ZBEST = Z
  3500 CONTINUE
 C      WRITE(2,3505) ZBEST
-      WRITE(*,3505) ZBEST
- 3505 FORMAT(' HEURISTIC OBJ VALUE ',I12)
+C      IF (IVERB == 1) THEN
+C          WRITE(*,3505) ZBEST
+C      ENDIF
+C 3505 FORMAT(' HEURISTIC OBJ VALUE ',F20.4)
       Z = ZBEST-1
       DO I = 1,N
         Q(I) = 0
@@ -175,23 +189,37 @@ C
 C
   1   M = M + 1
 C
+C
+      CHECKS=CHECKS+1
+      IF (IVERB == 1 .AND. M .GT. OLDM) THEN
+          WRITE (*,6000) M+1, CHECKS
+ 6000 FORMAT('reached position ', I5, ' with ', I9, ' checks')
+          OLDM=M
+      ENDIF
+
+C
+C   R interrupt
+      CALL rchkusr()
+C
 C   main loop
 C
   2   Q(M)=Q(M)+1
 C
-C      print *, 'M = ', M, 'Q(M) =', Q(M)
-C
       IF(S(Q(M)).EQ.1) GO TO 2               ! REDUNDANCY
       IF(M.EQ.1.AND.Q(M).GT.N) GO TO 9       ! TERMINATE
       IF(M.GT.1.AND.Q(M).GT.N) GO TO 7       ! GO TO RETRACTION
-C      IF(TRIG.EQ.0.AND.Q(M).EQ.2) GO TO 2    ! SYMMETRY FATHOM
+C only for bbwrcg
+      IF(TRIG.EQ.0.AND.Q(M).EQ.2) GO TO 2    ! SYMMETRY FATHOM
+C
       S(Q(M))=1
  22   IF(M.EQ.1) GO TO 1
       IF(M.EQ.N-1) THEN
-        CALL EVAL(ZBD,Q,N,D)
+        CALL EVALBBWRCG(ZBD,Q,N,D)
         IF(ZBD.GT.Z) THEN
           Z=ZBD
-          write(*,*) 'Eval =',z
+C          IF (IVERB == 1) THEN
+C              WRITE(*,*) 'Eval =',z
+C          ENDIF
           DO I = 1,N
             X(I)=Q(I)
           END DO
@@ -303,7 +331,7 @@ C            ism = ism + 1
           END IF
   151   CONTINUE
 C
-  253   CALL BOUND2(ZBD,N,Q,M,D,S,DD)
+  253   CALL BOUND2BBWRCG(ZBD,N,Q,M,D,S,DD)
         IF(ZBD.LE.Z) THEN
           S(Q(M))=0
 C          ism3 = ism3 + 1
@@ -339,12 +367,19 @@ C 69   FORMAT(' MAXIMUM UNWEIGHTED ROW GRADIENT INDEX ',I7,' CPU TIME ',
 C     1        F8.2)
 C 70   FORMAT(30I3)
 C
-  9   RETURN
+  9   IF (IVERB == 1) THEN
+          PRINT *, 'total number of checks: ', CHECKS
+      ENDIF
+  
+      RETURN
       END
 C
-      SUBROUTINE BOUND2(ZBD,N,Q,M,D,S,DD)
+      SUBROUTINE BOUND2BBWRCG(ZBD,N,Q,M,D,S,DD)
       IMPLICIT INTEGER(A-Z)
-      INTEGER Q(N),D(N,N,N),S(N),DD(N,N,N)
+      DOUBLE PRECISION D(N,N,N),ZBD,DD(N,N,N),Z1,Z2,Z3,ZA,ZB,
+     1   ZCT,ACT,N4
+
+      INTEGER Q(N),S(N)
       Z1=0
       DO I = 1,M-2
         R1=Q(I)
@@ -415,9 +450,10 @@ C 98   FORMAT(9I7)
       RETURN
       END
 C
-      SUBROUTINE EVAL(ZBD,Q,N,D)
+      SUBROUTINE EVALBBWRCG(ZBD,Q,N,D)
       IMPLICIT INTEGER(A-Z)
-      INTEGER Q(N),D(N,N,N)
+      DOUBLE PRECISION D(N,N,N),ZBD
+      INTEGER Q(N)
       ZBD=0
       DO 85 I = 1,N
         DO J = 1,N-1

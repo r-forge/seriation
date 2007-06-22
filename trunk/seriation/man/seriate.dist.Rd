@@ -26,6 +26,19 @@ dissimilarities between neighboring objects.
     Currently the following methods are implemented:
    
 \describe{    
+\item{\code{"ARSA"}}{Anti-Robinson seriation by simulated annealing.
+    
+    A heuristic developed by Brusco et al (2007).
+    } 
+\item{\code{"BBURCG"}}{Anti-Robinson seriation (unweighted)
+    
+    A branch-and-bound implementation by Brusco and Stahl (2005).
+    } 
+\item{\code{"BBWRCG"}}{Anti-Robinson seriation (weighted)
+
+    A branch-and-bound implementation by Brusco and Stahl (2005).
+    }
+
 \item{\code{"TSP"}}{Traveling salesperson problem solver. 
       
       A solver in \pkg{TSP} can be used (see \code{solve_TSP} in
@@ -91,6 +104,15 @@ dissimilarities between neighboring objects.
 Returns the order as an object of class \code{ser_permutations}.
 }
 \references{ 
+Brusco, M., Kohn, H.F., and Stahl, S. (2007): Heuristic Implementation of 
+Dynamic Programming for Matrix Permutation Problems in Combinatorial 
+Data Analysis. \emph{Psychometrika,} conditionally accepted.
+
+Brusco, M., and Stahl, S. (2005): 
+\emph{Branch-and-Bound Applications in Combinatorial Data Analysis.} 
+New York: Springer.
+
+
 Chen, C. H. (2002):  Generalized Association Plots: Information
 Visualization via Iteratively Generated Correlation Matrices.  
 \emph{Statistica Sinica,} \bold{12}(1), 7--29.

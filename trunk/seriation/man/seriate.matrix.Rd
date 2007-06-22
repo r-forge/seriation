@@ -81,9 +81,6 @@ values closer together creating a block structure.
       distance, this methods minimizes the least square criterion.
       }  
 
-\item{\code{"CA"}}{ Correspondence analysis.
-        Uses correspondence analysis to determine the order.
-      }
     }
 }
 \value{
@@ -110,7 +107,6 @@ and data reorganization by a clustering technique,
 \code{\link{criterion}},
 \code{\link{seriate}}.
 }
-%\author{Michael Hahsler}
 \examples{
 data("iris")
 x <- as.matrix(iris[-5])

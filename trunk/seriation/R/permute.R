@@ -53,8 +53,9 @@ permute.array     <- .permute_kd
 permute.matrix    <- .permute_kd
 permute.numeric   <- .permute_1d
 permute.list      <- .permute_1d
-permute.default <- function(x, order) 
-stop(paste("\npermute not implemented for class: ", class(x)))
+##permute.default <- function(x, order) 
+##stop(paste("\npermute not implemented for class: ", class(x)))
+permute.default   <- .permute_kd
 
 permute <- function(x, order) UseMethod("permute")
 

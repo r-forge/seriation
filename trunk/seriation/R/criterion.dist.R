@@ -3,65 +3,44 @@
 
 criterion.dist <- function(x, order = NULL, method = "all") {
     
-   
-    ## methods
-    methods <- c(
-        "Path_length",
-        "Least_squares",
-        "Inertia",
-        "AR_events",
-        "AR_deviations",
-        "AR_weighted",
-        "ME",
-        "Moore_stress",
-        "Neumann_stress"
-    )
-
-    ## do more than one criterion
-    if(method == "all") method <- methods
-    if(length(method) > 1) return(sapply(method, 
-            function(m) criterion(x, order, m), USE.NAMES = FALSE))
-
-    methodNr <- pmatch(tolower(method), tolower(methods))
-    if(is.na(methodNr)) stop (paste("Unknown method:",sQuote(method)))
-    
     ## get and check order 
     if (!is.null(order)){
         if(!inherits(order, "ser_permutations")) order <- permutations(order)
 
         .check_dist_perm(x, order)
-
-        order <- get_order(order)
     }
-
+    
     ## check dist (C code only works with lower-triangle version) 
     if(attr(x, "Diag") == TRUE || attr(x, "Upper") == TRUE)
         x <- as.dist(x, diag = FALSE, upper = FALSE)
     if (!is.real(x)) mode(x) <- "real"
     
     
-    ## work horses
-    if(methodNr == 1) {
-        crit <- .path_length(x, order)
-    }else if (methodNr == 2) {
-        crit <- .least_squares(x, order)
-    }else if (methodNr == 3) {
-        crit <- .inertia(x, order)
-    }else if (methodNr == 4) {
-        crit <- .ar(x, order, method = 1)  # i
-    }else if (methodNr == 5) {
-        crit <- .ar(x, order, method = 2)  # s
-    }else if (methodNr == 6) {
-        crit <- .ar(x, order, method = 3)  # w
-    }else if (methodNr > 6) {
-        if(!is.null(order)) 
-        order <- permutations(permutation(order), permutation(order))
-        x <- as.matrix(x)
+    ## methods
+    methods <- list(
+        "Path_length"   = .path_length,
+        "Least_squares" = .least_squares,
+        "Inertia"       = .inertia,
+        "AR_events"     = .ar_i,
+        "AR_deviations" = .ar_s,
+        "AR_weighted"   = .ar_w,
+        "ME"            = .crit_matrix,
+        "Moore_stress"  = .crit_matrix,
+        "Neumann_stress"= .crit_matrix
+    )
+    
+    ## do more than one criterion
+    if(method == "all") method <- names(methods)
+    if(length(method) > 1) return(sapply(method, 
+            function(m) criterion(x, order, m), USE.NAMES = FALSE))
+   
+    if(!is.null(order)) order <- get_order(order)
 
-        crit <- criterion.matrix(x, order, method) 
-    }
+    method <- .choose_method(method, methods)
 
-    names(crit) <- methods[methodNr]
+    ## we need method for .crit_matrix
+    crit <- methods[[method]](x, order, method = method)
+    names(crit) <- method
     return(crit)
 }
 
@@ -75,9 +54,7 @@ criterion.dist <- function(x, order = NULL, method = "all") {
 ## along the first off diagonal of the ordered distance
 ## matrix.
 ## 
-
-## ceeboo 2005
-.path_length <- function(dist, order = NULL) {
+.path_length <- function(dist, order = NULL, ...) {
     if (is.null(order)) order <- 1:attr(dist, "Size")
     .Call("order_length", dist, order)
 }
@@ -86,25 +63,39 @@ criterion.dist <- function(x, order = NULL, method = "all") {
 ## least squares criterion. measures the difference between the 
 ## dissimilarities between two elements and the rank distance
 ## (PermutMatrix)
-.least_squares <- function(dist, order = NULL) {
+.least_squares <- function(dist, order = NULL, ...) {
     if(is.null(order)) order <- 1:attr(dist, "Size") 
     .Call("least_squares_criterion", dist, order)
 }
 
 
 ## inertia around the diagonal (see PermutMatrix)
-.inertia <- function(dist, order = NULL) {
+.inertia <- function(dist, order = NULL, ...) {
     if(is.null(order)) order <- 1:attr(dist, "Size") 
     .Call("inertia_criterion", dist, order)
 }
 
 
-## anti-Robinson loss functions (Streng and Schönfelder 1978, Chen 2002)
+## anti-Robinson loss functions (Streng and Schoenfelder 1978, Chen 2002)
 ## method: 1...i, 2...s, 3...w
 .ar <- function(dist, order = NULL, method = 1) {
     if(is.null(order)) order <- 1:attr(dist, "Size") 
     .Call("ar", dist, order, as.integer(method))
 }
+
+.ar_i <- function(dist, order, ...) .ar(dist, order, 1)
+.ar_s <- function(dist, order, ...) .ar(dist, order, 2)
+.ar_w <- function(dist, order, ...) .ar(dist, order, 3)
+
+## wrapper for criteria in matrix
+.crit_matrix <- function(x, order, method) {
+    ## uses method from the calling function
+
+    if(!is.null(order)) 
+    order <- permutations(permutation(order), permutation(order))
+    criterion.matrix(as.matrix(x), order, method) 
+}
+
 
 ## generic for criterion
 criterion <- function(x, order = NULL, method = "all") UseMethod("criterion")
