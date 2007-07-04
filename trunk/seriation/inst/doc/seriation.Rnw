@@ -41,134 +41,122 @@ set.seed(1234)
 \maketitle
 \sloppy
 
-\abstract{Unidimensional
-seriation, i.e., finding a linear order for a set of objects given data, is a
-basic problem in data analysis.  In this paper we present the
-package~\pkg{seriation} which provides an infrastructure for unidimensional
-seriation for R. This infrastructure comprises data structures to represent the
-linear order, a wide array of seriation methods, quality criteria, and several
+\abstract{Seriation, i.e., finding a linear order for a set of objects given
+data, is a basic problem in data analysis which is, caused by its combinatorial
+nature, hard to solve for all but very small sets.  In this paper we present
+the package~\pkg{seriation} which provides an infrastructure for seriation with
+R. This infrastructure comprises data structures to represent the linear order
+as a permutation vector, a wide array of seriation methods, quality criteria
+which can be used as objective functions for seriation, and several
 visualization techniques which build on seriation. To illustrate how easily the
 package can be used for a variety of applications, a comprehensive collection
-of examples is presented.
-}
+of examples is presented.}
 
 \section{Introduction}
-A basic problem in data analysis is to arrange objects in linear order given
-available data. For example, political scientists may want to order judges from
-the most liberal to the most conservative according to their rulings,
-psychologists may try to order subjects by their developmental stage using
-questionnaire data, or archaeologists may order graves according to age given
-the found artifacts. This type of problem is usually referred to as
-\emph{unidimensional seriation.}
-
-Seriation was first used as a formal method by \cite{seriation:Petrie:1899} to
-find a chronological order for graves discovered in the Nile area given objects
-found there. The idea was that different objects continuously come into and 
-go out of
-fashion and a contingency table of grave sites times objects can be rearranged
-using row and column permutations till all large values are close to the
-diagonal. Initially, the rearrangement of rows and columns of the contingency
-table was done manually and the adequacy was only judged subjectively by the
-researcher. Later, \cite{seriation:Robinson:1951},
-\cite{seriation:Kendall:1971} and others proposed measures of agreement between
-rows to quantify optimality of the resulting table. A comprehensive description
-of the development of seriation in archeology is presented by
-\cite{seriation:Ihm:2005}.
+A basic problem in data analysis is to arrange all objects in a set in a linear
+order given available data and some loss criterion. Techniques to
+solve such problems are known as seriation which is part of the field of
+\emph{combinatorial data analysis} \citep{seriation:Arabie:1996}.  Solving
+problems in combinatorial data analysis require the solution of discrete
+optimization problems which involve evaluating all feasible solutions. Due to
+the combinatorial nature the number of solutions grows exponentially with the
+number of objects making enumerative evaluation of all feasible solutions
+infeasible for all but very small problems. 
+To solve larger problems, partial enumeration methods can be used.
+For example, \cite{seriation:Hubert:1987} propose dynamic programming 
+and \cite{seriation:Brusco:2005} use branch-and-bound. For
+even larger problems only heuristics can be used.
 
 In this paper we present the package~\pkg{seriation} which provides the
 infrastructure to represent and solve seriation problems in R.  We start with a
 formal introduction of the seriation problem in Section~\ref{sec:seriation}.
 In Sections~\ref{sec:criteria} and \ref{sec:methods} we give an overview of
-seriation criteria and methods. In Section~\ref{sec:infrastructure} we present
+commonly used loss criteria and seriation methods. 
+In Section~\ref{sec:infrastructure} we present
 the infrastructure provided by the package~\pkg{seriation}.  In
 Section~\ref{sec:example} we present several examples and applications for
 seriation. We conclude with Section~\ref{sec:conclusion}.
 
-\section{Unidimensional seriation}
+\section{Seriation in other fields}
+\label{sec:other}
+
+It has to be noted, that seriation has a rich history in archeology.
+\cite{seriation:Petrie:1899} first used seriation to find a chronological
+order for graves discovered in the Nile area given objects found there. The
+idea was that different objects continuously come into and go out of fashion
+and a contingency table of grave sites times objects can be rearranged using
+row and column permutations till all large values are close to the diagonal.
+Initially, the rearrangement of rows and columns of the contingency table was
+done manually and the adequacy was only judged subjectively by the researcher.
+Later, \cite{seriation:Robinson:1951}, \cite{seriation:Kendall:1971} and others
+proposed measures of agreement between rows to quantify optimality of the
+resulting table. A comprehensive description of the development of seriation in
+archeology is presented by \cite{seriation:Ihm:2005}.
+
+\marginpar{fix}
+
+R Software for ecology: ADE-4, vegan, cocorresp
+
+\marginpar{block seriation missing}
+
+\section{Seriation as a combinatorial optimization problem}
 \label{sec:seriation}
 
 To seriate a set of $n$ objects $\{O_1,\dots,O_n\}$ one typically starts with a
-$n \times n$ symmetric matrix $\mathbf{S} = (s_{ij})$ where $s_{ij}$ represents
-the proximity between the objects $O_i$ and $O_j$.  We assume that the
-proximities increase with object similarity.  The problem is now to find a
-permutation function $\pi: \{1,\dots,n\} \rightarrow \{1,\dots,n\}$, i.e. a
+$n \times n$ symmetric dissimilarity matrix $\mathbf{D} = (d_{ij})$ where
+$d_{ij}$ for $1 \le i,j \le n$ represents the proximity between the objects
+$O_i$ and $O_j$ and all $d_{ii} = 0$.  
+The seriation problem is to find a
+permutation function $\Psi: \{1,\dots,n\} \rightarrow \{1,\dots,n\}$, i.e. a
 bijection that maps the set of indices of the objects (and equally of rows and
-columns of $\mathbf{S}$) onto itself, which results in an order of objects most
-consistent with the proximities in $\mathbf{S}$.
-%The permutation function can also be used to relabel rows and columns
-%of the proximity matrix resulting in a rearranged matrix 
-%$\mathbf{R'} = [r(\pi(i),\pi(j))]$. 
+columns of $\mathbf{D}$) onto itself, which 
+optimizes the value of a given loss function $Q$. This results in the
+optimization problem:
 
-A symmetric matrix where the values in all rows and columns only decrease when
-moving away from the main diagonal is called a \emph{Robinson matrix} after the
-statistician \cite{seriation:Robinson:1951}. Formally, 
-a matrix $\mathbf{S}$ is in Robinson form if, and only if 
 \begin{equation}
-    s_{ij} \ge s_{i,j+1} \quad \text{for all} \quad j \ge i 
-    \quad \text{and} \quad
-    s_{i,j-1} \le s_{ij} \quad \text{for all} \quad j \le i
+    Q(\Psi(\mathbf{D})) \rightarrow \mathrm{min}_\Psi
 \end{equation}
-holds. Since in such a matrix the largest values appear close to the main
-diagonal, the closer objects are together in the order of the matrix, the
-higher their proximity. This provides a natural way to define consistency
-between the proximity matrix and the order and results in the objective of
-seriation: find the permutation $\pi^*$ which results in a rearranged proximity
-matrix $\mathbf{S'} = (s_{\pi(i)\pi(j)})$ which is in Robinson form. However,
-using this objective poses two problems:
-\begin{enumerate}
-    \item For most data sets, proximity matrices cannot be rearranged into a
-        perfect Robinson form.
-    \item The number of possible permutations is $n!$ which makes an exhaustive 
-        search for sets with a medium to large number of objects infeasible.
-\end{enumerate}
 
-The first problem can be addressed by relaxing the objective to finding a
-permutation which results into a matrix as close to the Robinson form as
-possible. To quantify closeness, measures of divergence from the Robinson form
-have to be defined. Such measures together with other quality measures not
-directly related to the Robinson form but with a similar goal are defined in
-Section~\ref{sec:criteria}.
+%This is clearly a hard discrete optimization problem since the number of 
+%possible permutations is $n!$ which makes an exhaustive 
+%search for sets with a medium to large number of objects infeasible.
+%Partial enumeration methods and heuristics can be used. Such methods are 
+%presented in Section~\ref{sec:methods}.
+%But first, we review commonly used loss functions in the following section.
+%\marginpar{two-mode data missing}
 
-The second problem, to find the permutation that minimized the measure of
-divergence from the Robinson form or other quality measures can be addressed by
-using search heuristics or methods which reduce the search space 
-\citep[e.g., for dynamic programming see][]{seriation:Hubert:1981}. 
-Search heuristics which improve different quality measures are presented in
-Section~\ref{sec:methods}.
+In the following subsections, we review some commonly used loss functions.
 
-
-\section{Seriation criteria}
+%\section{Loss functions}
 \label{sec:criteria}
-In the literature several criteria to judge the quality of a seriation are
-suggested. In the following, we define some commonly used criteria.
-
-Without loss of generality, we assume in the definitions that 
-the proximity matrix contains dissimilarities (instead of similarities 
-as used above).
-This has just the technical reason that dissimilarity matrices are 
-currently the most common from to store proximities in R (see \code{dist} in
-package~\pkg{stats}). To reflect this change we will use the letter 
-$\mathbf{D}$ for the $n \times n$ dissimilarity matrix. Typically,
-similarities can be transformed into dissimilarities by
-$\mathbf{D} = 1 / (1 + \mathbf{S})$ or by  $\mathbf{D} = 1 - \mathbf{S}$.
-
+In the literature several loss functions are suggested.
+We review the most commonly used functions.
 
 \subsection{Anti-Robinson events}
 
-A Robinson matrix \citep{seriation:Robinson:1951} has its columns arranged such
-that the values of the cells always decrease when moving away from the
-diagonal. To measure the divergence from the Robinson form, the number of
-anti-Robinson events (the value increases instead of decreases) can be counted.
-The more anti-Robinson events occur in a matrix, the larger the divergence.
-Note that we use a dissimilarity matrix instead of a similarity matrix used by
-Robinson. Therefore cell values have to increase moving away from the main
-diagonal to represent decreasing similarity.
-
-Following~\cite{seriation:Chen:2002}, we define three criteria to measure the
-divergence of a matrix from the Robinson form.  All three criteria use the
-anti-Robinson events, but weight them differently:
+A symmetric similarity (dissimilarity) matrix 
+where the values in all rows and columns only decrease (increase) when
+moving away from the main diagonal is called a \emph{Robinson matrix} after the
+statistician \cite{seriation:Robinson:1951}. Formally, 
+a $n \times n$ dissimilarity matrix $\mathbf{D}$ is in Robinson form if, 
+and only if 
 \begin{equation}
-    \sum_{i=1}^p \biggl( \sum_{j<k<i}^n I(d_{ij}<d_{ik})\; w_{ijk}%
+    d_{ij} \le d_{i,j+1} \quad \text{for all} \quad n \ge j \ge i 
+    \quad \text{and} \quad
+    d_{i,j-1} \ge d_{ij} \quad \text{for all} \quad j \le i \le n
+\end{equation}
+holds. Since in such a matrix the smallest dissimilarity values appear close to
+the main diagonal, the closer objects are together in the order of the matrix,
+the higher their proximity. This provides a natural objective for seriation. 
+
+A suitable loss measure which quantifies the divergence of a matrix from the
+Robinson uses anti-Robinson events (i.e. value decreases when moving away from
+the main diagonal).
+%Following~\cite{seriation:Chen:2002}, we define the 
+The loss functions based on anti-Robinson events can be defined as: 
+\begin{equation}
+    Q(\mathbf{D}) = \sum_{i=1}^p \biggl( %
+    \sum_{j<k<i}^n I(d_{ij}<d_{ik})\; w_{ijk}%
     + \sum_{i<j<k} I(d_{ij} > d_{ik})\; w_{ijk} \biggr),
 \end{equation}
 where $I(\cdot)$ is an indicator function and $w_{ijk}$ is a weight.
@@ -191,16 +179,49 @@ enters the weights, i.e.,
     w_{ijk} = |j-k||d_{ij} - d_{ik}|.
 \end{equation}
 
+\subsection{Hamiltonian path length}
+The dissimilarity matrix $\mathbf{D}$ can be represented as a finite weighted
+graph $G = (\Omega,E)$ where the set of objects $\Omega$ constitute the
+vertices and each edge $e_{ij} \in E$ between the objects $O_i, O_j \in \Omega$ 
+has a weight $w_{ij}$ associated which represents the dissimilarity $d_{ij}$.
 
+Such a graph can be used for seriation~\citep[see,
+e.g.,][]{seriation:Hubert:1974,seriation:Caraux:2005}.  An order $\Phi$ of the
+objects can be seen as a path through the graph where each node is visited
+exactly once, i.e., a Hamilton path. Minimizing the Hamiltonian path length
+results in an seriation optimal with respect to dissimilarities between
+neighboring objects. The loss function based on the Hamiltonian path length is: 
+\begin{equation}
+    Q(\mathbf{D}) = \sum_{i=1}^{n-1} d_{i,i+1}.
+\end{equation}
 
+Note that the length of the Hamiltonian path is equal to the 
+value of the \emph{minimal span loss function} 
+\citep[as used by][]{seriation:Chen:2002},
+and both notions are related to the 
+\emph{traveling salesperson problem}~\citep{seriation:Gutin:2002}.
+
+\subsection{Inertia criterion} 
+Another way to look at the seriation problem is not to 
+focus on placing small dissimilarity values close to the diagonal, but to
+push large values away from it. A function to quantify this is
+the moment of inertia of dissimilarity values 
+around the diagonal \citep{seriation:Caraux:2005} defined as
+\begin{equation}
+    Q_{merit}(\mathbf{D}) = \sum_{i=1}^n \sum_{j=1}^n d_{ij}|i-j|^2.
+\end{equation}
+$|i-j|$ is used as a measure for the distance to the diagonal and $d_{ij}$
+gives the weight.  This is a merit function since the sum increases when higher
+dissimilarity values are placed farther away from the diagonal.
 
 \subsection{Least squares criterion} 
-A natural seriation criterion is to quantify the deviations between the 
-dissimilarities in $\mathbf{D}$ and the rank differences of the objects
-in the order $\pi$. Such deviations can be measured, e.g, by the
+Another natural loss function for seriation is to quantify the deviations 
+between the 
+dissimilarities in $\mathbf{D}$ and the rank differences of the objects. 
+Such deviations can be measured, e.g, by the
 sum of squares of deviations \citep{seriation:Caraux:2005} defined by
 \begin{equation}
-    \sum_{i=1}^n \sum_{j=1}^n (d_{ij} - |i-j|)^2,
+    Q(\mathbf{D}) = \sum_{i=1}^n \sum_{j=1}^n (d_{ij} - |i-j|)^2,
 \end{equation}
 where $|i-j|$ is the rank difference or gap between $O_i$ and $O_j$ in the 
 order $\pi$.
@@ -221,50 +242,11 @@ matrix $\mathbf{X}$, the order of the elements in $\mathbf{X}$ by projecting
 them on the first principal component of $\mathbf{X}$ minimizes this criterion.
 \marginpar{is that correct?}
 
-\subsection{Inertia criterion} 
-Another way to look at the seriation problem is not to 
-focus on placing small dissimilarity values close to the diagonal, but to
-push large values away from it. A measure to quantify this is
-the moment of inertia of dissimilarity values 
-around the diagonal \citep{seriation:Caraux:2005} defined as
-\begin{equation}
-    \sum_{i=1}^n \sum_{j=1}^n d_{ij}|i-j|^2.
-\end{equation}
-$|i-j|$ is used as a measure for the distance to the diagonal and
-$d_{ij}$ gives the weight. 
-The criterion clearly increases when higher dissimilarity values are placed
-farther away from the diagonal.
-
-\subsection{Hamiltonian path length}
-The dissimilarity matrix $\mathbf{D}$ can be represented as a finite weighted
-graph $G = (\Omega,E)$ where the set of objects $\Omega$ constitute the
-vertices and each edge $e_{ij} \in E$ between the objects $O_i, O_j \in \Omega$ 
-has a weight $w_{ij}$ associated which represents the dissimilarity $d_{ij}$.
-
-Such a graph can be used for 
-seriation~\citep[see, e.g.,][]{seriation:Hubert:1974,seriation:Caraux:2005}. 
-An order $\pi$ of the objects can be seen as a path through the graph where
-each node is visited exactly once, i.e., a Hamilton path. The length of such a
-path is given by
-\begin{equation}
-    \sum_{i=1}^{n-1} d_{\pi(i)\pi(i+1)}.
-\end{equation}
-Minimizing the path length results in an seriation optimal with respect to 
-dissimilarities between neighboring objects. 
-However, only dissimilarities adjacent to the main diagonal (i.e.,
-between neighboring objects) contribute to the 
-measure. Therefore, this criterion does not enforce a full Robinson form.
-
-Note that the length of the Hamiltonian path is equal to the 
-value of the \emph{minimal span loss function} 
-\citep[as used by][]{seriation:Chen:2002},
-and both notions are related to the 
-\emph{traveling salesperson problem}~\citep{seriation:Gutin:2002}.
-
 
 \subsection{Measure of effectiveness}
 \label{sec:ME}
 
+\marginpar{do ME and Stress}
 \cite{seriation:McCormick:1972} defined the
 \emph{measure of effectiveness (ME)} for 
 a $n \times m$ matrix $\mathbf{X} = (x_{ij})$ as
@@ -336,8 +318,15 @@ and its four neighbors are numerically as similar as possible.
 
 \section{Seriation methods}
 \label{sec:methods}
-In the literature many methods for seriation have been proposed. In this
-section we present the most commonly used methods.
+
+Solving the discrete optimization problem for seriation is
+clearly very hard, since the number of
+possible permutations is $n!$ which makes an exhaustive
+search for sets with a medium to large number of objects infeasible.
+Partial enumeration methods and heuristics can be used. Such methods are
+in this sections.
+
+\marginpar{partial enumeration + heuristic missing}
 
 \subsection{Traveling salesperson problem solver}
 
@@ -365,70 +354,6 @@ available, ranging from simple nearest neighbor approaches to construct a
 tour~\citep{seriation:Rosenkrantz:1977} to complex heuristics like the
 Lin-Kernighan heuristic~\citep{seriation:Lin:1973}.
 A comprehensive overview can be found in \cite{seriation:Gutin:2002}.
-
-\subsection{Rank-two ellipse seriation}
-
-\cite{seriation:Chen:2002} proposes to
-generate a sequence of correlation matrices
-$R^1, R^2, \ldots$. $R^1$ is the correlation matrix
-of the original distance matrix $\mathbf{D}$ and
-\begin{equation}
-R^{n+1} = \phi R^n,
-\end{equation}
-where $\phi(\cdot)$ calculates a correlation matrix.
-
-The rank of the matrix $R^n$ falls with increasing $n$. The sequence
-is continued till the first matrix in the sequence has a rank of 2.
-Projecting all points in this matrix on the first two eigenvectors,
-all points fall on an ellipse. The order of the points on this ellipse
-is the resulting order where the ellipse can be cut at any of the 
-two interception points (top or bottom) with the vertical axis.
-
-\subsection{Hierarchical clustering}
-\label{sec:hierarchical_clustering}
-
-Hierarchical clustering produces a series of nested clusterings which can be
-visualized by a dendrogram, a binary tree where each internal node represents a
-split into two subtrees and has a measure of similarity/dissimilarity attached
-to it.  As a simple heuristic to find a linear order of objects, the order of
-the leaf nodes in a dendrogram structure can be used. This idea is used, e.g.,
-by heatmaps to reorder rows and columns with the aim to place more similar
-objects and variables closer together. 
-
-%For hierarchical clustering several methods are available (e.g.,
-%single linkage, average linkage, complete linkage, ward method) resulting in
-%different dendrograms. 
-%However, 
-The order of leaf nodes in a dendrogram is not unique. A dendrogram for $n$
-objects has $2^{n-1}$ internal nodes and at each internal node the left and
-right subtree (or leaves) can be swapped resulting in $2^{n-1}$ distinct leaf
-orderings.  To find an unique or optimal order, an additional criterion has to
-be defined.  \cite{seriation:Gruvaeus:1972} suggest to obtain an unique order by
-requiring to order the leaf nodes such that at each level the objects at the
-edge of each cluster are adjacent to that object outside the cluster to which
-it is nearest.
-
-\cite{seriation:Bar-Joseph:2001} suggest to rearrange the dendrogram such that
-the Hamiltonian path connecting the leaves is minimized and called this the
-optimal leaf order. The authors also present a fast algorithm with time
-complexity $O(n^4)$ to solve this optimization problem. Note that this problem
-is related to the TSP described above, however, the given dendrogram structure
-significantly reduces the number of permissible permutations making the problem
-easier.
-
-
-\subsection{Scaling}
-Multidimensional scaling is a technique to transform a matrix containing all
-pairwise dissimilarities between a set of objects into a set of coordinates
-such that the distances between the coordinates approximate the original
-pairwise dissimilarities as well as possible.
-
-\marginpar{MDS,UDS} 
-
-
-\subsection{Principle components analysis and correspondence analysis}
-\marginpar{PCA, CA,\dots}
-
 
 
 \subsection{Bond energy algorithm}
@@ -474,6 +399,72 @@ BEA is in fact a simple suboptimal TSP heuristic using this distances
 and instead of BEA any TSP solver can be used to obtain an order.
 With an exact TSP solver, the optimal solution can be found.
 
+\subsection{Hierarchical clustering}
+\label{sec:hierarchical_clustering}
+
+Hierarchical clustering produces a series of nested clusterings which can be
+visualized by a dendrogram, a binary tree where each internal node represents a
+split into two subtrees and has a measure of similarity/dissimilarity attached
+to it.  As a simple heuristic to find a linear order of objects, the order of
+the leaf nodes in a dendrogram structure can be used. This idea is used, e.g.,
+by heatmaps to reorder rows and columns with the aim to place more similar
+objects and variables closer together. 
+
+%For hierarchical clustering several methods are available (e.g.,
+%single linkage, average linkage, complete linkage, ward method) resulting in
+%different dendrograms. 
+%However, 
+The order of leaf nodes in a dendrogram is not unique. A dendrogram for $n$
+objects has $2^{n-1}$ internal nodes and at each internal node the left and
+right subtree (or leaves) can be swapped resulting in $2^{n-1}$ distinct leaf
+orderings.  To find an unique or optimal order, an additional criterion has to
+be defined.  \cite{seriation:Gruvaeus:1972} suggest to obtain an unique order by
+requiring to order the leaf nodes such that at each level the objects at the
+edge of each cluster are adjacent to that object outside the cluster to which
+it is nearest.
+
+\cite{seriation:Bar-Joseph:2001} suggest to rearrange the dendrogram such that
+the Hamiltonian path connecting the leaves is minimized and called this the
+optimal leaf order. The authors also present a fast algorithm with time
+complexity $O(n^4)$ to solve this optimization problem. Note that this problem
+is related to the TSP described above, however, the given dendrogram structure
+significantly reduces the number of permissible permutations making the problem
+easier.
+\subsection{Rank-two ellipse seriation}
+
+\cite{seriation:Chen:2002} proposes to
+generate a sequence of correlation matrices
+$R^1, R^2, \ldots$. $R^1$ is the correlation matrix
+of the original distance matrix $\mathbf{D}$ and
+\begin{equation}
+R^{n+1} = \phi R^n,
+\end{equation}
+where $\phi(\cdot)$ calculates a correlation matrix.
+
+The rank of the matrix $R^n$ falls with increasing $n$. The sequence
+is continued till the first matrix in the sequence has a rank of 2.
+Projecting all points in this matrix on the first two eigenvectors,
+all points fall on an ellipse. The order of the points on this ellipse
+is the resulting order where the ellipse can be cut at any of the 
+two interception points (top or bottom) with the vertical axis.
+
+
+
+\subsection{Scaling}
+Multidimensional scaling is a technique to transform a matrix containing all
+pairwise dissimilarities between a set of objects into a set of coordinates
+such that the distances between the coordinates approximate the original
+pairwise dissimilarities as well as possible.
+
+\marginpar{MDS,UDS} 
+
+
+\subsection{Principle components analysis}
+\marginpar{PCA,\dots}
+
+
+
+
 \section{The package infrastructure}
 \label{sec:infrastructure}
 
@@ -486,6 +477,8 @@ With an exact TSP solver, the optimal solution can be found.
     \label{fig:infrastructure}
 \end{figure}
 
+\marginpar{complete rewrite}
+
 The basic infrastructure of the package is depicted in
 Figure~\ref{fig:infrastructure}.
 It consists of a method called \func{seriate} which takes 
@@ -495,12 +488,12 @@ and has the following two concrete subclasses:
 \begin{itemize}
     \item \code{Order\_matrix} stores two (integer) permutation vectors, one
         for the columns and one for the rows of a matrix.  The class is
-        implimented as a list with the two elements \code{row} and
+        implemented as a list with the two elements \code{row} and
         \code{column}.
     \item \code{Order\_vector} stores a single permutation vector to reorder
         the objects in a dissimilarity matrix or the columns and rows of a
         symmetric matrix. For consistency with \code{Order\_matrix}, the class
-        is not implemeted as just a vector, but as a list with the element
+        is not implemented as just a vector, but as a list with the element
         \code{order} containing the integer permutation vector. This has also
         the advantage, that for the special case of the seriation of the leaf
         nodes of a dendrogram (class \code{hclust}) the resulting object can be
@@ -537,16 +530,18 @@ dendrogram reordering.
         \hline
         Seriation method & Argument \code{method} & Input data \\
         \hline
+        Anti-Robinson seriation (branch-and-bound, unweighted) & \code{"BBURCG"} & \code{dist} \\
+        Anti-Robinson seriation (branch-and-bound, weighted) & \code{"BBWRCG"} & \code{dist} \\
+        Anti-Robinson seriation (simulated annealing) & \code{"ARSA"} & \code{dist} \\
         Traveling salesperson problem solver & \code{"TSP"} & \code{dist} \\
-        Rank-two ellipse seriation & \code{"Chen"} & \code{dist} \\
-        Multidimensional scaling & \code{"MDS"} & \code{dist} \\
+        Bond Energy Algorithm & \code{"BEA"} & \code{matrix} \\
+        TSP to optimize ME & \code{"BEA\_TSP"} & \code{matrix} \\
         Hierarchical clustering & \code{"HC"} & \code{dist} \\
         Gruvaeus and Wainer & \code{"GW"} &  \code{dist}, \code{hclust} \\
         Optimal leaf ordering & \code{"OLO"} &  \code{dist}, \code{hclust} \\
-        Principal component analysis & \code{"PCA"} & \code{matrix} \\
-        Correspondence analysis & \code{"CA"} & \code{matrix} \\
-        Bond Energy Algorithm & \code{"BEA"} & \code{matrix} \\
-        TSP to optimize ME & \code{"BEA\_TSP"} & \code{matrix} \\
+        Rank-two ellipse seriation & \code{"Chen"} & \code{dist} \\
+        Multidimensional scaling (first dimension) & \code{"MDS"} & \code{dist} \\
+        First principal component analysis & \code{"PCA"} & \code{matrix} \\
         \hline
     \end{tabular}
 \caption{Implemented seriation methods.}
@@ -572,7 +567,7 @@ can be used which calculated the values for all applicable criteria.
 \centering
     \begin{tabular}{lccc}
         \hline
-        Seriation criterion & Argument \code{method} & Input data \\
+        Loss/merit function & Argument \code{method} & Input data \\
         \hline
         Hamiltonian path length & \code{"Path\_length"} & \code{dist} \\
         Least squares criterion& \code{"Least\_squares"} & \code{dist} \\
@@ -585,7 +580,7 @@ can be used which calculated the values for all applicable criteria.
         Stress (Moore neighborhood)& \code{"Moore\_stress"} & \code{matrix} \\
         \hline
     \end{tabular}
-\caption{Implemented seriation criteria.}
+    \caption{Implemented loss/merit functions in function \func{criterion}.}
 \label{tab:criteria}
 \end{table}
 
@@ -723,7 +718,7 @@ tmp <- dev.off()
 
 To compare different seriation methods we use again the randomized iris data
 set and the distance matrix \code{d} from the previous example.  We include in
-the comparision several seriation methods for dissimilarity matrices described
+the comparison several seriation methods for dissimilarity matrices described
 in Section~\ref{sec:methods}. 
 
 \marginpar{fixme: the hclust based seriations fail}
@@ -815,7 +810,7 @@ we use standard scaling.
 x <- scale(x, center = FALSE)
 @
 
-To produce a heat map with optimally reordered dendrogramms, the function
+To produce a heat map with optimally reordered dendrograms, the function
 \func{hmap} can be used with its default settings. With this settings, the
 Euclidean distances between rows and between columns are calculated (with
 \func{dist}), hierarchical clustering (\func{hclust}) is performed, the
