@@ -22,12 +22,15 @@ hmap <- function(x, distfun = dist, hclustfun = hclust,
     main    <- options$main
 
     if(is.null(method)) method <- "OLO"
-    
+   
+    control$hclust <- hclustfun(dist_col)
     dend_col <- as.dendrogram(
-            seriate(hclustfun(dist_col), dist_col, 
+            seriate(dist_col, 
             method = method, control = control)[[1]])
+    
+    control$hclust <- hclustfun(dist_row)
     dend_row <- as.dendrogram(
-            seriate(hclustfun(dist_row), dist_row, 
+            seriate(dist_row, 
             method = method, control = control)[[1]])
 
     ## heatmap by default scales rows: we don't want that!

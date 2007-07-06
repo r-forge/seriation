@@ -93,18 +93,20 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
 ## Hierarchical clustering related seriations
 
 .hclust_helper <- function(d, control = NULL){
-    if(is.null(control$method)) hclust(d) 
-    else hclust(d, method = control$method)
+    if(!is.null(control$hclust)) return(control$hclust)
+    
+    if(is.null(control$method)) return(hclust(d)) 
+    else return(hclust(d, method = control$method))
 }
 
-.seriate_hc <- function(x, control = NULL) 
-.hclust_helper(x, control)$order
+.seriate_hc <- function(x, control = NULL) .hclust_helper(x, control)$order
 
+## workhorses are in seriation.hclust
 .seriate_hc_gw <- function(x, control = NULL) 
-seriate(.hclust_helper(x, control), x, method = "GW")$order
+    .seriate_gruvaeus(.hclust_helper(x, control), x)
 
 .seriate_hc_optimal <- function(x, control = NULL)
-seriate(.hclust_helper(x, control), x, method = "OLO")$order
+    .seriate_optimal(.hclust_helper(x, control), x)
 
 ## brusco: simulated annealing for anti-robinson
 .seriate_arsa <- function(x, control = NULL) {

@@ -70,7 +70,7 @@ even larger problems only heuristics can be used.
 In this paper we present the package~\pkg{seriation} which provides the
 infrastructure to represent and solve seriation problems in R.  We start with a
 formal introduction of the seriation problem in Section~\ref{sec:seriation}.
-In Sections~\ref{sec:criteria} and \ref{sec:methods} we give an overview of
+In Section~\ref{sec:methods} we give an overview of
 commonly used loss criteria and seriation methods. 
 In Section~\ref{sec:infrastructure} we present
 the infrastructure provided by the package~\pkg{seriation}.  In
@@ -125,12 +125,31 @@ optimization problem:
 %But first, we review commonly used loss functions in the following section.
 %\marginpar{two-mode data missing}
 
-In the following subsections, we review some commonly used loss functions.
+A symmetric dissimilarity matrix is known as $2$-way $1$-mode data since it has
+columns and rows ($2$-way) but only represents one set of objects ($1$-mode).
+Seriation is also possible for $2$-way $2$-mode data which are represented by a
+general positive matrix. In such data columns and rows represent two sets of
+objects which are both brought into a linear order. For loss functions for
+$2$-way $2$-mode data the optimal order of columns can be dependent of the
+order of rows and vice versa or it can be independent allowing for breaking the
+optimization down into two separate problems, one for the columns and one for
+the rows. Another way to deal with the seriation for $2$-way $2$-mode data is
+to calculate two dissimilarity matrices, one for each mode, and then solve two
+seriation problem.  Furthermore, seriation can be generalized to  $k$-way
+$k$-mode for data in the form of a $k$ dimensional array by defining suitable
+loss functions for such data or by breaking the problem down into several lower
+dimensional independent problems which can be solved.
+
+In
+the following subsections, we review some commonly used loss functions.  Most
+functions are used for $2$-way $1$-mode data but the measure of effectiveness
+and stress can be also used for $2$-way $2$-mode data. 
+
 
 %\section{Loss functions}
-\label{sec:criteria}
-In the literature several loss functions are suggested.
-We review the most commonly used functions.
+%\label{sec:criteria}
+%In the literature several loss functions are suggested.
+%We review the most commonly used functions.
 
 \subsection{Anti-Robinson events}
 
@@ -251,6 +270,7 @@ them on the first principal component of $\mathbf{X}$ minimizes this criterion.
 \emph{measure of effectiveness (ME)} for 
 a $n \times m$ matrix $\mathbf{X} = (x_{ij})$ as
 \begin{equation}
+    Q_{merit}(\mathbf{X}) =
     \frac{1}{2}
     \sum_{i=1}^{n} \sum_{j=1}^{m} x_{ij}[x_{i,j+1}+x_{i,j-1}+
         x_{i+1,j}+x_{i-1,j}]
@@ -260,19 +280,22 @@ with, by convention $x_{0,j}=x_{n+1,j}=x_{i,0}=x_{i,m+1}=0$.
 ME is maximized if each element is as closely related numerically
 to its four neighboring elements as possible.
 
-%From the definition in (\ref{equ:BE}), it is easy to see that the
-%measure can be decomposed into two independent terms, one only 
-%dependent on the order of the columns (left product in the sum) and on of 
-%the order of the rows (right product in the sum).
 
-Although ME was developed for general (positive) matrices, it can be used as a
-measure of seriation quality for symmetric similarity matrices since it gets
-maximal only if all large values are grouped together around the main diagonal. 
+ME was developed for $2$-way $2$-mode data, however, ME can also be used for a
+symmetric  matrix ($1$-mode data) and gets maximal only if all large values are
+grouped together around the main diagonal. 
+
+\marginpar{is it a merit function?}
+
+Note that from the definition in equation~(\ref{equ:ME}) it can be seen that the
+contribution of column and row order to the loss function is additive and thus
+independent. 
 
 \subsection{Stress}
 \label{sec:stress}
 
-Stress measures the conciseness of the presentation of a matrix and can
+Stress measures the conciseness of the presentation of a matrix ($2$-mode data) 
+and can
 be seen as a purity function which compares the values in a matrix with
 their neighbors. The stress measures used here are computed as the sum of
 squared distances of each matrix entry from its adjacent entries.
@@ -300,8 +323,9 @@ squared distances of each matrix entry from its adjacent entries.
 \end{itemize}
 
 Both local stress measures can be used to construct a global measure for the
-whole matrix by summing over all entries:
+whole matrix by summing over all entries which can be used as a loss function:
 \begin{equation}
+    Q(\mathbf{X}) = 
     \sum_{i=1}^n \sum_{j=1}^m \sigma_{ij}
 \end{equation}
 
@@ -309,9 +333,12 @@ The major difference between the Moore and the Neumann neighborhood is that for
 the later the contribution of row and column permutations to stress are
 independent and thus can be optimized independently. 
 
-Obviously, stress can be also used to measure the quality of seriation for
-symmetric proximity matrices, since it can only be optimal, if large values are
-concentrated around the main diagonal. Note also, that stress with Neumann
+Stress can be also used as a loss function for
+symmetric proximity matrices ($1$-mode data).
+%, 
+%since it can only be optimal, if large values are
+%concentrated around the main diagonal. 
+Note also, that stress with Neumann
 neighborhood is related to the measure of effectiveness defined above (in
 Section~\ref{sec:ME}) since both measures are optimal if for each cell the cell
 and its four neighbors are numerically as similar as possible.
@@ -468,60 +495,76 @@ pairwise dissimilarities as well as possible.
 \section{The package infrastructure}
 \label{sec:infrastructure}
 
+The \pkg{seriation} package provides the data structures and some algorithms
+to efficiently handle seriation with R. As the input data for seriation R 
+already provides
+
+\begin{itemize}
+    \item for $2$-way $1$-mode data the class \code{dist},
+    \item for $2$-way $2$-mode data the class \code{matrix}, and
+    \item for $k$-way $k$-mode data the class \code{array}.
+\end{itemize}
+
+
 \begin{figure}[tp]
     \centerline{
     %\includegraphics[width=12cm]{infrastructure}}
-    \includegraphics[width=12cm]{classes}}
+    \includegraphics[width=10cm]{classes}}
 
-    \caption{The class infrastructure provided by \pkg{seriation}}
+    \caption{Data structures for permutations provided by \pkg{seriation}}
     \label{fig:infrastructure}
 \end{figure}
 
+However, to represent the permutation for each mode no data structures are
+available. \pkg{seriation} provides necessary data structure (using the S3
+class system) depicted in Figure~\ref{fig:infrastructure}. The class
+\code{ser\_permutations} represents the a permutation information for $k$-mode
+data (including the cases of $k=1$ and $k=2$). It consists of $k$ permutation
+vectors, where each permutation vector is represented by an concrete
+implementation of the abstract class \code{ser\_permutation}. Currently, the
+permutation vector can be stored as a simple integer vector or as an object of
+class \code{hclust} (an object describing a hierarchical clustering tree
+including an ordering for the trees node leaves defined in \pkg{stats}).
+
+\code{ser\_permutation} has a constructor \func{permutation} which 
+converts data into the correct concrete subclass of \code{ser\_permutation} and
+checks if it contains a proper permutation vector.
+For \code{ser\_permutation} the methods \func{print}, \func{length} for the
+length of the permutation vector, \func{get\_method} to get the method used to
+generate the permutation, and \func{get\_order} to access the raw (integer)
+permutation vector are available.  The access method \func{get\_order} is
+implemented for each concrete subclass of \code{ser\_permutation}. With this
+design, other classes representing permutations can be easily incorporated by
+just adding a appropriate \func{get\_order} methods for the new class.
+
+For \code{ser\_permutations} also a constructor is provided which can bind
+several ($k$) \code{ser\_permutation} objects together into an object for
+$k$-mode data. \code{ser\_permutations} is implemented as a list of length $k$
+and each element contains a \code{ser\_permutation} object.  Methods like
+\func{length}, accessing elements with \code{"[["}, \code{"["} \code{"[[<-"}
+and \code{"[<-"}, and combining  with \func{c} work as expected.  Also a
+\func{print} method is provided. Finally, direct access to the raw permutation
+vectors is available using \func{get\_order}. 
+Here the second argument signifies
+the dimension (mode) which defaults to $1$.
+
 \marginpar{complete rewrite}
 
-The basic infrastructure of the package is depicted in
-Figure~\ref{fig:infrastructure}.
-It consists of a method called \func{seriate} which takes 
-objects of different R classes as input and returns an order
-as an object of class \code{Order}. Class \code{Order} is virtual
-and has the following two concrete subclasses: 
-\begin{itemize}
-    \item \code{Order\_matrix} stores two (integer) permutation vectors, one
-        for the columns and one for the rows of a matrix.  The class is
-        implemented as a list with the two elements \code{row} and
-        \code{column}.
-    \item \code{Order\_vector} stores a single permutation vector to reorder
-        the objects in a dissimilarity matrix or the columns and rows of a
-        symmetric matrix. For consistency with \code{Order\_matrix}, the class
-        is not implemented as just a vector, but as a list with the element
-        \code{order} containing the integer permutation vector. This has also
-        the advantage, that for the special case of the seriation of the leaf
-        nodes of a dendrogram (class \code{hclust}) the resulting object can be
-        at the same time a \code{Order\_vector} and also a valid \code{hclust}
-        object. Therefore, all methods for \code{hclust} (e.g., drawing a
-        dendrogram) can still be used with such a special \code{Order\_vector}
-        object.
-\end{itemize}
+The seriation algorithms are available via the function \func{seriate} defined
+as:
 
-All \code{Order} objects can store the seriation method used to generate the
-order as an attribute with name \code{method}.
+\begin{center}
+\code{seriate(x,  method = NULL, control = NULL, ...)}
+\end{center}
+where \code{x} is the input data, \code{method} is a string defining
+the seriation method to be used and \code{control} can contain a list 
+with additional information for the algorithm.
+\func{seriation} returns an object of class \code{ser\_permutations}
+of length conforming to \code{x}.
 
-A simple construction function \code{Order(order, row, col)} is provided.
-Depending on whether \code{order} or \code{row} and \code{col} are given (each
-is a integer permutation vector), the necessary subclass is created.
-
-From Figure~\ref{fig:infrastructure} we see that the arguments of 
-\func{seriate} are almost identical for different input data and
-only vary slightly. For all input data the basic set of arguments is
-the input data (\code{x}), the seriation method as a character string 
-(\code{method}) and a list with optional control parameters for the 
-seriation method (\code{control}). For \code{matrix} the additional argument
+For \code{matrix} the additional argument
 \code{margin} can be used if only column or row seriation is needed and not 
-both. Is this the case, the result will be an object of class 
-\code{Order\_vector} containing the respective order. For \code{hclust}
-the additional argument \code{dist} is inserted in second place since
-the dissimilarity information is needed by all seriation methods for
-dendrogram reordering.
+both. 
 
 
 \begin{table}[t]
@@ -537,31 +580,36 @@ dendrogram reordering.
         Bond Energy Algorithm & \code{"BEA"} & \code{matrix} \\
         TSP to optimize ME & \code{"BEA\_TSP"} & \code{matrix} \\
         Hierarchical clustering & \code{"HC"} & \code{dist} \\
-        Gruvaeus and Wainer & \code{"GW"} &  \code{dist}, \code{hclust} \\
-        Optimal leaf ordering & \code{"OLO"} &  \code{dist}, \code{hclust} \\
+        Gruvaeus and Wainer & \code{"GW"} &  \code{dist} \\
+        Optimal leaf ordering & \code{"OLO"} &  \code{dist} \\
         Rank-two ellipse seriation & \code{"Chen"} & \code{dist} \\
         Multidimensional scaling (first dimension) & \code{"MDS"} & \code{dist} \\
         First principal component analysis & \code{"PCA"} & \code{matrix} \\
         \hline
     \end{tabular}
-\caption{Implemented seriation methods.}
+\caption{Currently implemented seriation methods.}
 \label{tab:methods}
 \end{table}
 
 Various seriation methods were already introduced in this paper in 
 Section~\ref{sec:methods}. In Table~\ref{tab:methods} we summarize the
-methods available in the package for seriation.
+methods currently available in the package for seriation. Over time more
+methods will be added to the package.
 
-To judge the quality of an order obtained by a seriation method, the method
-\code{criterion(x, order, method)} can be used to calculate the value for
-different seriation criteria. \code{x} is the dissimilarity or data matrix,
-\code{order} contains a suitable object of class \code{Order} and \code{method}
-specifies the criteria to calculate. A vector of several methods can be used
-resulting in a named vector containing the values for the different criteria.
-We already defined different seriation criteria in Section~\ref{sec:criteria}.
-In Table~\ref{tab:criteria} we indicate the criteria currently available in the
-package.  Additionally, the pseudo method \code{"all"} (which is the default)
-can be used which calculated the values for all applicable criteria.
+To calculate the value of the loss function for a certain permutation,
+the method
+
+\begin{center}
+\code{criterion(x, order = NULL, method = "all", ...)} 
+\end{center}
+is provided. \code{x} is the data matrix, \code{order} contains a suitable
+object of class \code{ser\_permutations} (if omitted no permutation is
+performed) and \code{method} specifies the type of loss function. A vector of
+several methods can be used resulting in a named vector.  We already defined
+different seriation criteria in Section~\ref{sec:criteria}.  In
+Table~\ref{tab:criteria} we indicate the loss functions currently available in
+the package.  Additionally, the pseudo method \code{"all"} (which is the
+default) can be used which calculated the values for all applicable criteria.
 
 \begin{table}[t]
 \centering
@@ -584,10 +632,14 @@ can be used which calculated the values for all applicable criteria.
 \label{tab:criteria}
 \end{table}
 
-In addition the package offers the convenience method \code{rearrange(x,
-order)} to rearrange the objects in a dissimilarity matrix (stored in 
-\code{dist} as a vector containing the upper/lower triangle) or
-rows and columns of a matrix using a suitable \code{Order} object.
+In addition the package offers the method 
+
+\begin{center}
+\code{permute(x, order)} 
+\end{center} 
+where \code{x} is the data (a \code{dist} object, a matrix, an
+array, a list or a numeric vector) to be reordered and \code{order} is a
+\code{ser\_permutations} object of suitable length. 
 
 For visualization, the package offers several options:
 \begin{itemize}
@@ -599,7 +651,8 @@ For visualization, the package offers several options:
 \item Different heat maps (e.g., with optimally reordered
     dendrograms) with \func{hmap}.
 
-\item Visualization of data matrices with \func{bertinplot}.
+\item Visualization of data matrices in the spirit 
+of~\cite{seriation:Bertin:1981} with \func{bertinplot}.
 
 \item \emph{Dissimilarity plot}, a new visualization to judge the
     quality of a clustering using matrix shading 
@@ -621,7 +674,8 @@ usage of the package. Then we present and discuss several seriation
 applications.
 
 \subsection{A first session using \pkg{seriation}}
-In the following example, we use the well known iris data set which gives the
+In the following example, we use the well known iris data set
+(from R's \pkg{datasets} package) which gives the
 measurements in centimeters of the variables sepal length and width and petal
 length and width, respectively, for 50 flowers from each of 3 species of the
 iris family (Iris setosa, versicolor and virginica). 
@@ -648,9 +702,10 @@ order <- seriate(d)
 order
 @
 
-The result is an object of class \code{Order\_vector} for the 
-$150$ objects in the iris data set. The default method, a traveling
-salesperson heuristic, was used.
+The result is an object of class \code{ser\_permutations} for 
+$1$-mode data. The permutation vector length is $150$ for the
+$150$ objects in the iris data set and the used seriation method is
+\code{"ARSA"}, a simulated annealing heuristic.
 
 To visually inspect the effect of seriation on the distance matrix, we use
 matrix shading with \func{pimage}.
@@ -675,28 +730,30 @@ tmp <- dev.off()
     \label{fig:pimage1}
 \end{figure}
 
-Finally, we can also compare the values of different seriation 
-criteria using \func{criterion}.
+Finally, we can also compare the improvement for different loss functions
+using \func{criterion}.
 
 <<>>=
 rbind(random = criterion(d), reordered = criterion(d, order))
 @
 
 Naturally, the reordered dissimilarity matrix achieves better values for all
-criteria (note that for measure of effectiveness and inertia 
-larger values are better).
+criteria (note that the measure of effectiveness and inertia 
+are merit functions and larger values are better).
 
 Also the original data matrix can be easily inspected using \code{pimage}.
-To rearrange the data matrix, a \code{Order\_matrix} is needed which
-can be created by telling the constructor function \func{Order} 
-to use the \code{order} obtained for the distance matrix
-(a \code{Order\_vector} object) for row arrangement in a \code{Order\_matrix}
-object.
+To use the result of the seriation for the original $2$-mode data,
+we have to add a permutation vector to the \code{ser\_permutations}
+object. To leave the columns in the original order, we add an 
+identity permutation vector to the permutations object using the combine 
+function \func{c}. 
 
 \marginpar{do the identity vector better}
 <<label=pimage2, eval=FALSE>>=
 pimage(x, main = "Random")
-pimage(x, c(order,permutations(1:ncol(x))), main = "Reordered")
+order_2mode <- c(order, permutations(1:ncol(x)))
+order_2mode
+pimage(x, order_2mode, main = "Reordered")
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 bitmap(file = "seriation-pimage2.png", type = "pnggray", 
@@ -731,7 +788,7 @@ order <- sapply(methods, simplify = FALSE, FUN = function(m) seriate(d, m))
 The resulting orderings are displayed using matrix shading
 (see Figure~\ref{fig:pimage3}).
 <<label=pimage3, eval=FALSE>>=
-lapply(order, FUN = function(o) pimage(d, o, main = attr(o, "method")))
+tmp <- lapply(order, FUN = function(o) pimage(d, o, main = get_method(o[[1]])))
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 bitmap(file = "seriation-pimage3.png", type = "pnggray", height = 4.5, 
@@ -751,8 +808,8 @@ tmp <- dev.off()
     \label{fig:pimage3}
 \end{figure}
 
-Finally, we compare the criterion values for the different seriation
-methods. 
+Finally, we compare the values of the loss/merit functions 
+for the different seriation methods. 
 <<>>=
 crit <- sapply(order, FUN = function(o) criterion(d, o))
 crit
@@ -760,10 +817,10 @@ crit
 
 <<echo=FALSE, fig=TRUE, include=FALSE, label=crit1, width=6, height=10>>=
 def.par <- par(no.readonly = TRUE)
-m <- c("Path_length", "Least_squares", "AR_events", "Moore_stress")
+m <- c("Path_length", "AR_events", "Moore_stress")
 layout(matrix(1:length(m), ncol=1))
 #tmp <- apply(crit[m,], 1, dotchart, sub = m)
-lapply(m, FUN = function(i) dotchart(crit[i,], sub = i))
+tmp <- lapply(m, FUN = function(i) dotchart(crit[i,], sub = i))
 par(def.par)
 @
 
@@ -775,13 +832,16 @@ par(def.par)
 \end{figure}
 
 For easier comparison, Figure~\ref{fig:crit1} contains a plot of the criteria
-Hamiltonian path length, least squares criterion, anti-Robinson events (AR\_i)
+Hamiltonian path length, anti-Robinson events 
+(\code{AR\_events})
 and stress using the Moore neighborhood. Clearly, the methods which directly
 try to minimize the Hamiltonian path length (hierarchical clustering with
 optimal leaf ordering (OLO) and the TSP heuristic) provide the best results
-concerning the path length. For the least squares criterion and the
-anti-Robinson events, using the first dimension of MDS provides the best
-results. Regarding stress, TSP, OLO and MDS provide the best results.
+concerning the path length. For the number of anti-Robinson events, 
+using the simulated annealing heuristic (\code{ARSA}) provides the best
+result since it directly aims at minimizing this loss function.
+Regarding stress, the simulated annealing heuristic also provides the
+best result although, it does not directly minimize this loss function.
 
 
 \subsection{Heat maps}
@@ -1096,10 +1156,10 @@ predefined and the objects within each cluster are unordered.
 the micro structure within clusters. To achieve this, we arrange the clusters
 as well as the objects within each cluster using seriation techniques.  To
 arrange clusters, an inter-cluster dissimilarity matrix is calculated using the
-average between cluster dissimilarities. \func{reorder.dist} is used on this
+average between cluster dissimilarities. \func{seriate} is used on this
 inter-cluster dissimilarity matrix to arrange the clusters relative to each
 other resulting in on average more similar clusters to appear closer together.
-Within each cluster, \func{reorder.dist} is used on the sub-matrix of the
+Within each cluster, \func{seriate} is used again on the sub-matrix of the
 dissimilarity matrix concerning only the objects in the cluster.
 
 For the example, we use again Euclidean distance between the objects in the
@@ -1264,6 +1324,9 @@ mixture of Iris versicolor and virginica.
 
 \section{Conclusion}
 \label{sec:conclusion}
+
+\marginpar{rewrite conclusion}
+
 
 In this paper we presented the infrastructure 
 provided by the package~\pkg{seriation}. The infrastructure contains

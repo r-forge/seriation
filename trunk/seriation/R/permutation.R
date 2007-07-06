@@ -85,8 +85,8 @@ get_order.ser_permutations <- function(x, dim = 1) get_order(x[[dim]])
 print.ser_permutations <- function(x, ...) {
     cat("object of class", sQuote(class(x)), "\n")
 
-    cat("contains permutation vectors for", length(x), 
-        "dimensional data\n\n")
+    cat("contains permutation vectors for ", length(x), 
+        "-mode data\n\n", sep = "")
    
     print(data.frame(
         "vector length" = sapply(x, length),

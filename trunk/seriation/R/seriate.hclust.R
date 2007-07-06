@@ -1,26 +1,3 @@
-## seriate existing hierarchical cluster solutions (hclust)
-
-seriate.hclust <- function(x, dist, method = NULL, control = NULL, ...) {
-    
-    ## check arguments
-    if (!inherits(dist, "dist"))
-    stop(paste(sQuote("dist"),"not of class dist"))
-    if (!is.real(dist)) mode(dist) <- "real"
-
-    ## methods
-    methods <- list(
-        "OLO"   = .seriate_optimal,  
-        "GW"    = .seriate_gruvaeus
-    )
-
-    method <- .choose_method(method, methods, "OLO")
-
-    order <- methods[[method]](x, dist)
-    attr(order, "method") <- methods
-
-    permutations(permutation(order))
-}
-
 
 ## wrapper for reorder.hclust in gclus
 .seriate_gruvaeus <- function(hclust, dist) gclus::reorder.hclust(hclust, dist)

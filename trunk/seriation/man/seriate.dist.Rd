@@ -86,17 +86,43 @@ dissimilarities between neighboring objects.
     The method can be specified as the element \code{method} 
     (\code{"cmdscale"}, \code{"isoMDS"} or \code{"sammon"}) in \code{control}.
     }  
-\item{\code{"HC"}, \code{"GW"}, \code{"OLO"}}{Hierarchical 
+\item{\code{"HC"}}{Hierarchical clustering.
+    
+    Using the order of the leaf nodes in a dendrogram obtained by hierarchical
+    clustering can be used as a very simple seriation technique.
+    This method applies hierarchical clustering (\code{hclust}) to \code{x}. 
+    The clustering method can be given using a \code{"method"} element in 
+    the \code{control} list. If omitted, the default \code{"complete"} is
+    used.
+    }
+
+\item{\code{"GW"}, \code{"OLO"}}{Hierarchical 
     clustering with optional reordering. 
-    
-    Apply hierarchical clustering (\code{hclust}) to \code{x} and use the
-    order of the leaf nodes in the dendrogram. 
-    The default clustering method is \code{"complete"} and can be changed using
-    a \code{"method"} element in \code{control}.
-    
-    For information on the
-    two available reordering algorithms (\code{"GW"} and 
-    \code{"OLO"}) see \code{seriate.hclust}.
+
+    Uses also the order of the leaf nodes in a dendrogram (see method 
+    \code{"HC"}), however, the leaf notes are reordered.
+
+    A dendrogram (binary tree) has \eqn{2^{n-1}} internal nodes (subtrees) and
+    the same number of leaf orderings. That is, at each internal node the left
+    and right subtree (or leaves) can be swapped, or, in terms of a dendrogram,
+    be flipped. 
+
+    Method \code{"GW"} uses an algorithm developed by Gruvaeus and Wainer
+(1972) and implemented in package \pkg{gclus} (Hurley 2004).  The clusters are
+ordered at each level so that the objects at the edge of each cluster are
+adjacent to that object outside the cluster to which it is nearest. The method
+produces an unique order.
+
+    Method \code{"OLO"} (Optimal leaf ordering, Bar-Joseph et al., 2001) 
+produces an optimal leaf ordering with respect to the
+minimizing the sum of the distances along the (Hamiltonian) path connecting the
+leaves in the given order. The time complexity of the algorithm is \eqn{O(n^3)}.
+Note that non-finite distance values are not allowed.
+
+   Both methods start with a dendrogram created by \code{hclust}. As  the
+\code{"method"} element in the \code{control} list a clustering method (default
+\code{"complete"}) can be specified. Alternatively, a \code{hclust} object can
+be supplied using an element named \code{"hclust"}.
     }
     }
 }
@@ -104,6 +130,10 @@ dissimilarities between neighboring objects.
 Returns the order as an object of class \code{ser_permutations}.
 }
 \references{ 
+Z. Bar-Joseph, E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001): Fast
+Optimal Leaf Ordering for Hierarchical Clustering.
+\emph{Bioinformatics,} \bold{17}(1), 22--29.
+
 Brusco, M., Kohn, H.F., and Stahl, S. (2007): Heuristic Implementation of 
 Dynamic Programming for Matrix Permutation Problems in Combinatorial 
 Data Analysis. \emph{Psychometrika,} conditionally accepted.
@@ -112,10 +142,19 @@ Brusco, M., and Stahl, S. (2005):
 \emph{Branch-and-Bound Applications in Combinatorial Data Analysis.} 
 New York: Springer.
 
-
 Chen, C. H. (2002):  Generalized Association Plots: Information
 Visualization via Iteratively Generated Correlation Matrices.  
 \emph{Statistica Sinica,} \bold{12}(1), 7--29.
+
+Gruvaeus, G. and Wainer, H. (1972): Two Additions to Hierarchical Cluster
+Analysis,
+\emph{British Journal of Mathematical and Statistical Psychology,}
+\bold{25}, 200--206.
+
+Hurley, Catherine B. (2004): Clustering Visualizations of Multidimensional
+Data.
+\emph{Journal of Computational and Graphical Statistics,}
+\bold{13}(4), 788--806.
 
 Sharlee Climer, Weixiong Zhang (2006): Rearrangement Clustering: Pitfalls,
 Remedies, and Applications, 
@@ -126,9 +165,7 @@ Remedies, and Applications,
 \code{\link[TSP]{solve_TSP}} in \pkg{TSP},
 \code{\link{hclust}} in \pkg{stats},
 \code{\link{criterion}},
-\code{\link{seriate.matrix}} and
-\code{\link{seriate.hclust}} for special seriation cases.
-}
+\code{\link{seriate.matrix}}.}
 %\author{Michael Hahsler}
 \examples{
 data("iris")

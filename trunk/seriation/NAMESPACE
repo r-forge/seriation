@@ -45,7 +45,6 @@ S3method(permute, numeric)
 S3method(permute, list)
 S3method(permute, dist)
 
-S3method(seriate, hclust)
 S3method(seriate, matrix)
 S3method(seriate, dist)
 
