@@ -127,7 +127,7 @@ be supplied using an element named \code{"hclust"}.
     }
 }
 \value{
-Returns the order as an object of class \code{ser_permutations}.
+Returns the order as an object of class \code{ser_permutation}.
 }
 \references{ 
 Z. Bar-Joseph, E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001): Fast

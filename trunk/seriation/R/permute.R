@@ -9,7 +9,8 @@
 }
 
 .permute_1d <- function(x, order) {
-    if(!inherits(order, "ser_permutations")) order <- permutations(order)
+    if(!inherits(order, "ser_permutation_vector")) 
+        order <- ser_permutation(order)
     
     if(length(order) != 1) stop("dimensions do not match")
     
@@ -41,7 +42,7 @@
 }
 
 permute.dist <- function(x, order) {
-    if(!inherits(order, "ser_permutations")) order <- permutations(order)
+    if(!inherits(order, "ser_permutation")) order <- ser_permutation(order)
     .check_dist_perm(x, order)
 
     order <- get_order(order, 1)

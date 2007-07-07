@@ -11,23 +11,23 @@ export(
     panel.squares, 
     panel.lines,
     permute,
-    permutation,
-    permutations,
+    ser_permutation,
+    ser_permutation_vector,
     pimage, 
     seriate
     )
 
-S3method("c", "ser_permutations")
-S3method("[", "ser_permutations")
+S3method("c", "ser_permutation")
+S3method("[", "ser_permutation")
 
 S3method(criterion, matrix)
 S3method(criterion, dist)
 
 S3method(get_order, integer)
 S3method(get_order, hclust)
-S3method(get_order, ser_permutations)
+S3method(get_order, ser_permutation)
 
-S3method(length, ser_permutation)
+S3method(length, ser_permutation_vector)
 # ser_permutations gets length from list
 
 S3method(pimage, matrix)
@@ -35,8 +35,8 @@ S3method(pimage, dist)
 
 S3method(plot,cluster_dissimilarity_matrix)
 
+S3method(print, ser_permutation_vector)
 S3method(print, ser_permutation)
-S3method(print, ser_permutations)
 S3method(print,cluster_dissimilarity_matrix)
 
 S3method(permute, array)

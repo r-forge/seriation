@@ -16,16 +16,16 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
     
     order <- methods[[method]](x, control)
 
-    row <- permutation(order$row, method)
-    col <- permutation(order$col, method)
+    row <- ser_permutation_vector(order$row, method)
+    col <- ser_permutation_vector(order$col, method)
 
     ## this is inefficient since the workhorse does both
     if(length(margin) == 1) {
-        if(margin == 1) return(permutations(row))
-        if(margin == 2) return(permutations(col))
+        if(margin == 1) return(ser_permutation(row))
+        if(margin == 2) return(ser_permutation(col))
     }
 
-    permutations(row, col)
+    ser_permutation(row, col)
 }
 
 

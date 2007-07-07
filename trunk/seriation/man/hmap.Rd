@@ -73,7 +73,6 @@ For \code{dendrogram = TRUE} the list can contain additional elements
     }
 %\author{Michael Hahsler}
 \seealso{
-\code{\link{seriate.hclust}},
 \code{\link{seriate.dist}} and
 \code{\link[stats]{heatmap}} in \pkg{stats}.}
 \examples{

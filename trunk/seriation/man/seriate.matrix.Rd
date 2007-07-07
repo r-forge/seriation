@@ -84,7 +84,7 @@ values closer together creating a block structure.
     }
 }
 \value{
-Returns an object of class \code{ser_permutations}.
+Returns an object of class \code{ser_permutation}.
 }
 \references{ 
 P. Arabie and L.J. Hubert (1990): The bond energy algorithm revisited, 

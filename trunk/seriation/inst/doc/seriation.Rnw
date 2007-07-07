@@ -518,31 +518,36 @@ already provides
 However, to represent the permutation for each mode no data structures are
 available. \pkg{seriation} provides necessary data structure (using the S3
 class system) depicted in Figure~\ref{fig:infrastructure}. The class
-\code{ser\_permutations} represents the a permutation information for $k$-mode
+\code{ser\_permutation} represents the a permutation information for $k$-mode
 data (including the cases of $k=1$ and $k=2$). It consists of $k$ permutation
 vectors, where each permutation vector is represented by an concrete
-implementation of the abstract class \code{ser\_permutation}. Currently, the
+implementation of the abstract class \code{ser\_permutation\_vector}. 
+Currently, the
 permutation vector can be stored as a simple integer vector or as an object of
 class \code{hclust} (an object describing a hierarchical clustering tree
 including an ordering for the trees node leaves defined in \pkg{stats}).
 
-\code{ser\_permutation} has a constructor \func{permutation} which 
-converts data into the correct concrete subclass of \code{ser\_permutation} and
-checks if it contains a proper permutation vector.
-For \code{ser\_permutation} the methods \func{print}, \func{length} for the
-length of the permutation vector, \func{get\_method} to get the method used to
-generate the permutation, and \func{get\_order} to access the raw (integer)
-permutation vector are available.  The access method \func{get\_order} is
-implemented for each concrete subclass of \code{ser\_permutation}. With this
-design, other classes representing permutations can be easily incorporated by
-just adding a appropriate \func{get\_order} methods for the new class.
+\code{ser\_permutation\_vector} has a constructor
+\func{ser\_permutation\_vector} which converts data into the correct concrete
+subclass of \code{ser\_permutation\_vector} and checks if it contains a proper
+permutation vector.  For \code{ser\_permutation\_vector} the methods
+\func{print}, \func{length} for the length of the permutation vector,
+\func{get\_method} to get the method used to generate the permutation, and
+\func{get\_order} to access the raw (integer) permutation vector are available.
+The access method \func{get\_order} is implemented for each concrete subclass
+of \code{ser\_permutation\_vector}.  With this design, other classes
+representing permutations can be easily incorporated by just adding a
+appropriate \func{get\_order} methods for the new class.
 
-For \code{ser\_permutations} also a constructor is provided which can bind
-several ($k$) \code{ser\_permutation} objects together into an object for
-$k$-mode data. \code{ser\_permutations} is implemented as a list of length $k$
-and each element contains a \code{ser\_permutation} object.  Methods like
-\func{length}, accessing elements with \code{"[["}, \code{"["} \code{"[[<-"}
-and \code{"[<-"}, and combining  with \func{c} work as expected.  Also a
+For \code{ser\_permutation} also a constructor is provided which can bind
+several ($k$) \code{ser\_permutation\_vector} 
+objects together into an object for
+$k$-mode data. \code{ser\_permutation} is implemented as a list of length $k$
+and each element contains a \code{ser\_permutation\_vector} object.  
+Methods like
+\func{length}, accessing elements with \code{"[["}, \code{"[[<-"}, 
+subsetting with \code{"["},
+and combining  with \func{c} work as expected.  Also a
 \func{print} method is provided. Finally, direct access to the raw permutation
 vectors is available using \func{get\_order}. 
 Here the second argument signifies
@@ -559,7 +564,7 @@ as:
 where \code{x} is the input data, \code{method} is a string defining
 the seriation method to be used and \code{control} can contain a list 
 with additional information for the algorithm.
-\func{seriation} returns an object of class \code{ser\_permutations}
+\func{seriation} returns an object of class \code{ser\_permutation}
 of length conforming to \code{x}.
 
 For \code{matrix} the additional argument
@@ -603,7 +608,7 @@ the method
 \code{criterion(x, order = NULL, method = "all", ...)} 
 \end{center}
 is provided. \code{x} is the data matrix, \code{order} contains a suitable
-object of class \code{ser\_permutations} (if omitted no permutation is
+object of class \code{ser\_permutation} (if omitted no permutation is
 performed) and \code{method} specifies the type of loss function. A vector of
 several methods can be used resulting in a named vector.  We already defined
 different seriation criteria in Section~\ref{sec:criteria}.  In
@@ -639,7 +644,7 @@ In addition the package offers the method
 \end{center} 
 where \code{x} is the data (a \code{dist} object, a matrix, an
 array, a list or a numeric vector) to be reordered and \code{order} is a
-\code{ser\_permutations} object of suitable length. 
+\code{ser\_permutation} object of suitable length. 
 
 For visualization, the package offers several options:
 \begin{itemize}
@@ -702,7 +707,7 @@ order <- seriate(d)
 order
 @
 
-The result is an object of class \code{ser\_permutations} for 
+The result is an object of class \code{ser\_permutation} for 
 $1$-mode data. The permutation vector length is $150$ for the
 $150$ objects in the iris data set and the used seriation method is
 \code{"ARSA"}, a simulated annealing heuristic.
@@ -743,7 +748,7 @@ are merit functions and larger values are better).
 
 Also the original data matrix can be easily inspected using \code{pimage}.
 To use the result of the seriation for the original $2$-mode data,
-we have to add a permutation vector to the \code{ser\_permutations}
+we have to add a permutation vector to the \code{ser\_permutation}
 object. To leave the columns in the original order, we add an 
 identity permutation vector to the permutations object using the combine 
 function \func{c}. 
@@ -751,7 +756,7 @@ function \func{c}.
 \marginpar{do the identity vector better}
 <<label=pimage2, eval=FALSE>>=
 pimage(x, main = "Random")
-order_2mode <- c(order, permutations(1:ncol(x)))
+order_2mode <- c(order, ser_permutation(1:ncol(x)))
 order_2mode
 pimage(x, order_2mode, main = "Reordered")
 @

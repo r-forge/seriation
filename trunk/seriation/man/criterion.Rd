@@ -2,22 +2,19 @@
 \alias{criterion}
 \alias{criterion.dist}
 \alias{criterion.matrix}
-\title{Criterion for the quality of a permutation of a dissimilarity 
-or general matrix}
+\title{Criterion for a loss/merit function for data given a permutation}
 \description{
-  Compute different criteria to judge the quality of a permutation
-  of a dissimilarity or general matrix. 
+  Compute the value for different loss/merit function for
+  data and a given a permutation.
 }
 \usage{
 criterion(x, order = NULL, method = "all")
-
-%\method{criterion}{dist}(x, order = NULL, method = "all")
-%\method{criterion}{matrix}(x, order = NULL, method = "all")
 }
 \arguments{
-  \item{x}{an object of class \code{dist} or a matrix.}
+  \item{x}{an object of class \code{dist} or a matrix (currently no
+      functions are implemented for array).}
   \item{order}{
-      an object of class \code{ser_permutations} suitable for \code{x}.
+      an object of class \code{ser_permutation} suitable for \code{x}.
       If \code{NULL}, the identity permutation is used.
     }
   \item{method}{a vector of character strings with names of the criteria
@@ -25,9 +22,9 @@ criterion(x, order = NULL, method = "all")
       can be used to calculate all available criteria.}
 }
 \details{
-Permutations of rows and columns of a data  matrix such that large values are
-closer together may help to uncover structure (blocks).  Currently, the
-following criteria to judge the quality of a certain permutations of a matrix
+Currently, the
+following loss/merit functions 
+to judge the quality of a certain permutation for given data
 are implemented:
 
 \describe{

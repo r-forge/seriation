@@ -18,7 +18,7 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
     method <- .choose_method(method, methods, "ARSA")
 
     order <- methods[[method]](x, control)
-    permutations(permutation(order, method = method))
+    ser_permutation(ser_permutation_vector(order, method = method))
 }
 
 

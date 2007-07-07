@@ -18,7 +18,7 @@ pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)
 }
 \arguments{
   \item{x}{a matrix or an object of class \code{dist}.}
-  \item{order}{an object of class \code{ser_permutations}. If \code{NULL} the order 
+  \item{order}{an object of class \code{ser_permutation}. If \code{NULL} the order 
       in \code{x} is plotted.}
   \item{col}{a list of colors used. If \code{NULL}, a gray scale is used (for
       matrix larger values are displayed darker and for \code{dist} smaller

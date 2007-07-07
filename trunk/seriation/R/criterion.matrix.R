@@ -4,8 +4,8 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
     
     ## check order
     if(!is.null(order)){
-        if(!inherits(order, "ser_permutations")) 
-        stop("order has to be an object of class ", sQuote("ser_permutations"))
+        if(!inherits(order, "ser_permutation")) 
+        stop("order has to be an object of class ", sQuote("ser_permutation"))
         .check_matrix_perm(x, order)
     }
     

@@ -5,7 +5,7 @@ criterion.dist <- function(x, order = NULL, method = "all") {
     
     ## get and check order 
     if (!is.null(order)){
-        if(!inherits(order, "ser_permutations")) order <- permutations(order)
+        if(!inherits(order, "ser_permutation")) order <- ser_permutation(order)
 
         .check_dist_perm(x, order)
     }
@@ -92,7 +92,8 @@ criterion.dist <- function(x, order = NULL, method = "all") {
     ## uses method from the calling function
 
     if(!is.null(order)) 
-    order <- permutations(permutation(order), permutation(order))
+    order <- ser_permutation(ser_permutation_vector(order), 
+        ser_permutation(order))
     criterion.matrix(as.matrix(x), order, method) 
 }
 
