@@ -18,8 +18,8 @@ hmap(x, distfun = dist, hclustfun = hclust,
       matrix based seriation is performed to reorder rows and columns
       for the heat map.}
   \item{method}{a character strings indicating the used seriation algorithm 
-      (see \code{seriate.hclust} for dentrogram seriation and 
-      \code{seriate.dist} for matrix based seriation).}
+      (see \code{seriate.dist} for dendrogram seriation and 
+      for matrix based seriation).}
   \item{control}{a list of control options passed on to the seriation 
       algorithm.} 
   \item{options}{a list with arguments for plotting.
@@ -86,8 +86,8 @@ hmap(x)
 ## heatmap with seriated distance matrices
 hmap(x, hclustfun = NULL)
 
-## without proportional display
-hmap(x, hclustfun = NULL, options = list(prop = FALSE, 
+## with proportional display
+hmap(x, hclustfun = NULL, options = list(prop = TRUE, 
     main = "Zoo Data"))
 }
 \keyword{hplot}
