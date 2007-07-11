@@ -10,4 +10,4 @@ Description: Infrastructure for seriation with an implementation of several
     unidimesional seriation techniques to reorder matrices, dissimilarity
     matrices, and dendrograms. Also contains some visualizations techniques
     based on unidimensional seriation.
-License: GPL 
+License: GPLv2 
