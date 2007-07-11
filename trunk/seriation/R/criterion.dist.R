@@ -18,12 +18,14 @@ criterion.dist <- function(x, order = NULL, method = "all") {
     
     ## methods
     methods <- list(
-        "Path_length"   = .path_length,
-        "Least_squares" = .least_squares,
-        "Inertia"       = .inertia,
         "AR_events"     = .ar_i,
         "AR_deviations" = .ar_s,
-        "AR_weighted"   = .ar_w,
+#        "AR_weighted"   = .ar_w,
+        "Gradient_raw"  = .gradient_raw,
+        "Gradient_weighted" = .gradient_weighted,
+        "Path_length"   = .path_length,
+        "Inertia"       = .inertia,
+        "Least_squares" = .least_squares,
         "ME"            = .crit_matrix,
         "Moore_stress"  = .crit_matrix,
         "Neumann_stress"= .crit_matrix
@@ -86,6 +88,16 @@ criterion.dist <- function(x, order = NULL, method = "all") {
 .ar_i <- function(dist, order, ...) .ar(dist, order, 1)
 .ar_s <- function(dist, order, ...) .ar(dist, order, 2)
 .ar_w <- function(dist, order, ...) .ar(dist, order, 3)
+
+.gradient_raw <- function(dist, order, ...) {
+    if(is.null(order)) order <- 1:attr(dist, "Size")
+    .Call("gradient", dist, order, 1L)
+}
+
+.gradient_weighted <- function(dist, order, ...) {
+    if(is.null(order)) order <- 1:attr(dist, "Size")
+    .Call("gradient", dist, order, 2L)
+}
 
 ## wrapper for criteria in matrix
 .crit_matrix <- function(x, order, method) {

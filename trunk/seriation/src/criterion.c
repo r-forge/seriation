@@ -136,3 +136,73 @@ SEXP ar(SEXP R_dist, SEXP R_order, SEXP R_which) {
 }
 
 
+SEXP gradient(SEXP R_dist, SEXP R_order, SEXP R_which) {
+
+    /* 
+     * which indicates the weighing scheme
+     * 1 ... no weighting
+     * 2 ... weighted
+     */
+    
+    int p = INTEGER(getAttrib(R_dist, install("Size")))[0];
+    int *o = INTEGER(R_order);
+    int which = INTEGER(R_which)[0];
+    
+    double sum = 0.0;
+    double d_ij = 0.0;
+    double d_ik = 0.0;
+    double d_kj = 0.0;
+    double diff;
+
+    SEXP R_out;
+    int i, k, j;
+
+    
+    /* sum_i<k<j(f(d_ik,d_ij)) */ 
+    for (i = 1; i <= p-2; i++){
+        for(k = i+1; k <= p-1; k++) {
+            d_ik = REAL(R_dist)[LT_POS(p, o[i-1], o[k-1])];
+                
+            for(j = k+1; j <= p; j++) {
+                d_ij = REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])];
+            
+                /* diff = d_ik - d_ij; seems to be wrong in the book*/ 
+                diff = d_ij - d_ik;
+
+
+                if(which > 1) {
+                    /* weighted */
+                    sum += diff;
+                }else{
+                    /* unweighted */
+                    if(diff > 0) sum += 1.0; 
+                    else if(diff < 0) sum -= 1.0; 
+                }
+                
+                /* second sum */
+                d_kj = REAL(R_dist)[LT_POS(p, o[k-1], o[j-1])];
+            
+                /* diff = d_kj - d_ij; seems to be wrong in the book*/
+                diff = d_ij - d_kj;
+
+
+                if(which > 1) {
+                    /* weighted */
+                    sum += diff;
+                }else{
+                    /* unweighted */
+                    if(diff > 0) sum += 1.0; 
+                    else if(diff < 0) sum -= 1.0; 
+                }
+            
+            }
+        }
+    }
+
+
+    PROTECT(R_out = allocVector(REALSXP, 1));
+    REAL(R_out)[0] = sum; 
+    UNPROTECT(1);
+
+    return(R_out);
+}
