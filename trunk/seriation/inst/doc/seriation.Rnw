@@ -3,6 +3,7 @@
 \usepackage{a4wide}
 %\setlength{\parindent}{0pt}
 %\setlength{\parskip}{6pt plus 2pt minus 1pt}
+%\usepackage{lscape}
 
 \usepackage[round,longnamesfirst]{natbib}
 \usepackage{hyperref}
@@ -49,9 +50,9 @@ available. In this paper we present the package~\pkg{seriation} which provides
 the infrastructure for seriation with R. The infrastructure comprises data
 structures to represent linear orders as permutation vectors, a wide array of
 seriation methods using a consistent interface, a method to calculate the value
-of loss and merit functions, and several visualization techniques which build
-on seriation. To illustrate how easily the package can be used for a variety of
-applications, a comprehensive collection of examples is presented.}
+of various loss and merit functions, and several visualization techniques which
+build on seriation. To illustrate how easily the package can be applied for a
+variety of applications, a comprehensive collection of examples is presented.}
 
 \section{Introduction}
 A basic problem in data analysis, called seriation or sometimes sequencing, is
@@ -59,42 +60,40 @@ to arrange all objects in a set in a linear order given available data and some
 loss or merit function.  Together with cluster analysis and variable selection,
 seriation is an important problem in the field of \emph{combinatorial data
 analysis}~\citep{seriation:Arabie:1996}. Solving problems in combinatorial data
-analysis require the solution of discrete optimization problems which involve
-evaluating all feasible solutions. Due to the combinatorial nature, the number
-of possible solutions grows with problem size (number of objects) by the order
-$O(n!)$. This makes a brute-force enumerative approach infeasible for all but
-very small problems.  To solve larger problems, partial enumeration methods can
-be used.  For example, \cite{seriation:Hubert:1987} propose dynamic programming
-and \cite{seriation:Brusco:2005} use branch-and-bound. For even larger problems
-only heuristics can be used.
+analysis require the solution of discrete optimization problems which, in the
+most general case, involve evaluating all feasible solutions. Due to the
+combinatorial nature, the number of possible solutions grows with problem size
+(number of objects) by the order $O(n!)$. This makes a brute-force enumerative
+approach infeasible for all but very small problems.  To solve larger problems
+(with up to 40 objects), partial enumeration methods can be used.  For example,
+\cite{seriation:Hubert:1987} propose dynamic programming and
+\cite{seriation:Brusco:2005} use a branch-and-bound strategy.  For even larger
+problems only heuristics can be used.
 
 It has to be noted, that seriation has a rich history in archeology.
-\cite{seriation:Petrie:1899} was the first to use seriation as a formal method
-to find a chronological order for graves discovered in the Nile area given
-objects found there. The idea was that different objects continuously come into
-and go out of fashion and a contingency table of grave sites times objects can
-be rearranged using row and column permutations till all large values are close
-to the diagonal.  Initially, the rearrangement of rows and columns of the
-contingency table was done manually and the adequacy was only judged
-subjectively by the researcher.  Later, \cite{seriation:Robinson:1951},
-\cite{seriation:Kendall:1971} and others proposed measures of agreement between
-rows to quantify optimality of the resulting table. A comprehensive description
-of the development of seriation in archeology is presented by
-\cite{seriation:Ihm:2005}.
+\cite{seriation:Petrie:1899} was the first to use seriation as a formal method.
+He applied it to find a chronological order for graves discovered in the Nile
+area given objects found there. The idea was that different objects
+continuously come into and go out of fashion and a contingency table of grave
+sites times objects can be rearranged using row and column permutations till
+all large values are close to the diagonal.  Initially, the rearrangement of
+rows and columns of the contingency table was done manually and the adequacy
+was only judged subjectively by the researcher.  Later,
+\cite{seriation:Robinson:1951}, \cite{seriation:Kendall:1971} and others
+proposed measures of agreement between rows to quantify optimality of the
+resulting table. A comprehensive description of the development of seriation in
+archeology is presented by \cite{seriation:Ihm:2005}.
 
 %In ecology,  
 %R Software for ecology: \pkg{ade4}, \pkg{vegan}, \pkg{cocorresp}
 %\marginpar{block seriation missing}
 
-\marginpar{fix: In this paper\dots}
-In this paper we concentrate on seriation as a combinatorial optimization 
-task and we present the package~\pkg{seriation} which provides the
-infrastructure to represent and solve seriation problems in R. We start with a
-formal introduction of the seriation problem in Section~\ref{sec:seriation}.
-In Section~\ref{sec:methods} we give an overview of
- seriation methods. 
-In Section~\ref{sec:infrastructure} we present
-the infrastructure provided by the package~\pkg{seriation}.  In
+In this paper we present the package~\pkg{seriation} which provides the
+infrastructure to represent and solve seriation as combinatorial optimization
+problems in R.  We start with a formal introduction of the seriation problem in
+Section~\ref{sec:seriation}.  In Section~\ref{sec:methods} we give an overview
+of seriation methods.  In Section~\ref{sec:infrastructure} we present the
+infrastructure provided by the package~\pkg{seriation}.  In
 Section~\ref{sec:example} we present several examples and applications for
 seriation. We conclude with Section~\ref{sec:conclusion}.
 
@@ -104,18 +103,15 @@ seriation. We conclude with Section~\ref{sec:conclusion}.
 To seriate a set of $n$ objects $\{O_1,\dots,O_n\}$ one typically starts with a
 $n \times n$ symmetric dissimilarity matrix $\mathbf{D} = (d_{ij})$ where
 $d_{ij}$ for $1 \le i,j \le n$ represents the proximity between the objects
-$O_i$ and $O_j$ and all $d_{ii} = 0$.
-We define a permutation function $\Psi$ as a function which
-reorders the objects in $\mathbf{D}$ by
-simultaneously permuting rows and columns.
-The seriation problem is to find a permutation function $\Psi$
+$O_i$ and $O_j$ and all $d_{ii} = 0$.  We define a permutation function $\Psi$
+as a function which reorders the objects in $\mathbf{D}$ by simultaneously
+permuting rows and columns.  The seriation problem is to find a permutation
+function $\Psi$
 %$\{1,\dots,n\} \rightarrow \{1,\dots,n\}$, i.e. a
 %bijection that maps the set of indices of the objects (and equally of rows and
 %columns of $\mathbf{D}$) onto itself, 
-which
-optimizes the value of a given loss function $Q$ or merit function $M$. 
-This results in the
-optimization problem
+which optimizes the value of a given loss function $Q$ or merit function $M$.
+This results in the optimization problems
 \begin{equation}
     Q(\Psi(\mathbf{D})) \rightarrow \mathrm{min}_\Psi \quad \text{or} \quad
     M(\Psi(\mathbf{D})) \rightarrow \mathrm{max}_\Psi\text{,}
@@ -129,27 +125,27 @@ respectively.
 %But first, we review commonly used loss functions in the following section.
 %\marginpar{two-mode data missing}
 
-A symmetric dissimilarity matrix is known as $2$-way $1$-mode data since it has
-columns and rows ($2$-way) but only represents one set of objects ($1$-mode).
-Seriation is also possible for $2$-way $2$-mode data which are represented by a
+A symmetric dissimilarity matrix is known as two-way one-mode data since it has
+columns and rows (two-way) but only represents one set of objects (one-mode).
+Seriation is also possible for two-way two-mode data which are represented by a
 general positive matrix. In such data columns and rows represent two sets of
-objects which are both brought into a linear order. For loss functions for
-$2$-way $2$-mode data the optimal order of columns can be dependent of the
-order of rows and vice versa or it can be independent allowing for breaking the
-optimization down into two separate problems, one for the columns and one for
-the rows. Another way to deal with the seriation for $2$-way $2$-mode data is
-to calculate two dissimilarity matrices, one for each mode, and then solve two
-seriation problem on $2$-way $1$-mode data.  
-Furthermore, seriation can be generalized to $k$-way
-$k$-mode for data in the form of a $k$ dimensional array by defining suitable
-loss functions for such data or by breaking the problem down into several lower
-dimensional independent problems which can be solved.
+objects which are both brought into a linear order simultaneously.  For loss
+functions for two-way two-mode data the optimal order of columns can be
+dependent of the order of rows and vice versa or it can be independent allowing
+for breaking the optimization down into two separate problems, one for the
+columns and one for the rows. Another way to deal with the seriation for
+two-way two-mode data is to calculate two dissimilarity matrices, one for each
+mode, and then solve two seriation problem on two-way one-mode data.
+Furthermore, seriation can be generalized to $k$-way $k$-mode for data in the
+form of a $k$ dimensional array by defining suitable loss functions for such
+data or by breaking the problem down into several lower dimensional independent
+problems which can be solved.
 
 
 In
 the following subsections, we review some commonly used loss functions.  Most
-functions are used for $2$-way $1$-mode data but the measure of effectiveness
-and stress can be also used for $2$-way $2$-mode data. 
+functions are used for two-way one-mode data but the measure of effectiveness
+and stress can be also used for two-way two-mode data. 
 
 
 %\section{Loss functions}
@@ -167,39 +163,35 @@ statistician \cite{seriation:Robinson:1951}. Formally,
 a $n \times n$ dissimilarity matrix $\mathbf{D}$ is in anti-Robinson form if, 
 and only if the following two gradient conditions 
 hold~\citep{seriation:Hubert:1987}:
-
 \begin{align}
-    \text{rows:} & \quad  d_{ik} \le d_{ij} \quad \text{for} 
+    \text{within rows:} & \quad  d_{ik} \le d_{ij} \quad \text{for} 
         \quad 1 \ge i < k < j \ge n; \\ 
-        \text{columns:} & \quad  d_{kj} \ge d_{ij} \quad \text{for} 
+    \text{within columns:} & \quad  d_{kj} \le d_{ij} \quad \text{for} 
         \quad 1 \ge i < k < j \ge n.
 \end{align}
 
-In a anti-Robinson matrix the smallest dissimilarity values appear close to
-the main diagonal, the closer objects are together in the order of the matrix,
-the higher their similarity. This provides a natural objective for seriation. 
+In a anti-Robinson matrix the smallest dissimilarity values appear close to the
+main diagonal, therefore, the closer objects are together in the order of the
+matrix, the higher their similarity. This provides a natural objective for
+seriation. 
 
-It has to be noted that $\mathbf{D}$ can be brought by row and column
-permutation into a perfect anti-Robinson form whenever $\mathbf{D}$  is an
+It has to be noted that $\mathbf{D}$ can be brought into a perfect
+anti-Robinson form by row and column permutation whenever $\mathbf{D}$  is an
 ultrametric or $\mathbf{D}$ has an exact Euclidean representation in a single
 dimension~\citep{seriation:Hubert:1987}. However, for most data only an
 approximation to the anti-Robinson form is possible.
 
 A suitable merit measure which quantifies the divergence of a matrix from the
 anti-Robinson form was given by \cite{seriation:Hubert:1987} as
-
 \begin{equation}
     M(\mathbf{D}) = 
-    \sum_{i<k<j}f(d_{ij}, d_{ik}) + \sum_{i<k<j}f(d_{ij}, d_{kj}) 
+    \sum_{i<k<j}f(d_{ik}, d_{ij}) + \sum_{i<k<j}f(d_{kj}, d_{ij}) 
     \label{equ:gradient}
 \end{equation}
-where $f(\cdot,\cdot)$ is a function which defines how a violation
-or satisfaction 
-of a gradient condition for an object triple ($O_i$, $O_k$ and $O_j$)
-is counted.
-
-\cite{seriation:Hubert:1987} suggest two functions. The first
-function is given by:
+where $f(\cdot,\cdot)$ is a function which defines how a violation or
+satisfaction of a gradient condition for an object triple ($O_i$, $O_k$ and
+$O_j$) is counted.  \cite{seriation:Hubert:1987} suggest two functions. The
+first function is given by:
 \begin{equation}
     f(z,y) = \mathrm{sign}(z-y) = 
     \begin{cases}
@@ -208,29 +200,27 @@ function is given by:
         -1 \quad \text{if} \quad z < y.
     \end{cases}
 \end{equation}
-It results in raw number of triples satisfying the gradient
+It results in the raw number of triples satisfying the gradient
 constraints minus triples which violate the constraints. 
 
 The second function is defined as:
 \begin{equation}
-    f(z,y) = |z-y|\mathrm{sign}(z-y)
+    f(z,y) = |z-y|\mathrm{sign}(z-y) = z-y
 \end{equation}
-It weights the each satisfaction or violation by the difference by
+It weights each satisfaction or violation by the difference by
 its magnitude given by the absolute difference between the values.
 
 \subsection{Anti-Robinson events}
-An even simpler loss function can be created
-in the same way as the gradient measures above by only concentrating
-on violations. 
+An even simpler loss function can be created in the same way as the gradient
+measures above by concentrating on violations only. 
 \begin{equation}
     Q(\mathbf{D}) = 
     \sum_{i<k<j}f(d_{ik}, d_{ij}) + \sum_{i<k<j}f(d_{kj}, d_{ij}) 
-    \label{equ:gradient}
 \end{equation}
 
 To only count the violations we use
 \begin{equation}
-    f(z, y) = I(z, y) 
+    f(z, y) = I(z, y) = 
     \begin{cases}
         1 \quad \text{if} \quad z < y \quad \text{and} \\
         0 \quad \text{if} \quad z = y \quad \text{otherwise.}
@@ -244,9 +234,7 @@ function resulting in
 \begin{equation}
     f(z, y) = |z-y|I(z, y)
 \end{equation}
-using the absolute deviations as the weight.
-
-
+using the absolute deviations as weights.
 
 \subsection{Hamiltonian path length}
 The dissimilarity matrix $\mathbf{D}$ can be represented as a finite weighted
@@ -255,7 +243,7 @@ vertices and each edge $e_{ij} \in E$ between the objects $O_i, O_j \in \Omega$
 has a weight $w_{ij}$ associated which represents the dissimilarity $d_{ij}$.
 
 Such a graph can be used for seriation~\citep[see,
-e.g.,][]{seriation:Hubert:1974,seriation:Caraux:2005}.  An order $\Phi$ of the
+e.g.,][]{seriation:Hubert:1974,seriation:Caraux:2005}.  An order $\Psi$ of the
 objects can be seen as a path through the graph where each node is visited
 exactly once, i.e., a Hamilton path. Minimizing the Hamiltonian path length
 results in an seriation optimal with respect to dissimilarities between
@@ -264,59 +252,54 @@ neighboring objects. The loss function based on the Hamiltonian path length is:
     Q(\mathbf{D}) = \sum_{i=1}^{n-1} d_{i,i+1}.
 \end{equation}
 
-Note that the length of the Hamiltonian path is equal to the 
-value of the \emph{minimal span loss function} 
-\citep[as used by][]{seriation:Chen:2002},
-and both notions are related to the 
-\emph{traveling salesperson problem}~\citep{seriation:Gutin:2002}.
+Note that the length of the Hamiltonian path is equal to the value of the
+\emph{minimal span loss function} \citep[as used by][]{seriation:Chen:2002},
+and both notions are related to the \emph{traveling salesperson
+problem}~\citep{seriation:Gutin:2002}.
 
 \subsection{Inertia criterion} 
-Another way to look at the seriation problem is not to 
-focus on placing small dissimilarity values close to the diagonal, but to
-push large values away from it. A function to quantify this is
-the moment of inertia of dissimilarity values 
-around the diagonal \citep{seriation:Caraux:2005} defined as
+Another way to look at the seriation problem is not to focus on placing small
+dissimilarity values close to the diagonal, but to push large values away from
+it. A function to quantify this is the moment of inertia of dissimilarity
+values around the diagonal \citep{seriation:Caraux:2005} defined as
 \begin{equation}
     M(\mathbf{D}) = \sum_{i=1}^n \sum_{j=1}^n d_{ij}|i-j|^2.
 \end{equation}
-$|i-j|$ is used as a measure for the distance to the diagonal and $d_{ij}$
+$|i-j|^2$ is used as a measure for the distance to the diagonal and $d_{ij}$
 gives the weight.  This is a merit function since the sum increases when higher
 dissimilarity values are placed farther away from the diagonal.
 
 \subsection{Least squares criterion} 
-Another natural loss function for seriation is to quantify the deviations 
-between the 
-dissimilarities in $\mathbf{D}$ and the rank differences of the objects. 
-Such deviations can be measured, e.g, by the
-sum of squares of deviations \citep{seriation:Caraux:2005} defined by
+Another natural loss function for seriation is to quantify the deviations
+between the dissimilarities in $\mathbf{D}$ and the rank differences of the
+objects.  Such deviations can be measured, e.g, by the sum of squares of
+deviations \citep{seriation:Caraux:2005} defined by
 \begin{equation}
     Q(\mathbf{D}) = \sum_{i=1}^n \sum_{j=1}^n (d_{ij} - |i-j|)^2,
 \end{equation}
 where $|i-j|$ is the rank difference or gap between $O_i$ and $O_j$.
 
-The least squares criterion is related to 
-unidimensional scaling~\citep{seriation:Leeuw:2005}, 
-where the objective is to place all objects on a straight line such that
-the dissimilarities in $\mathbf{D}$ are preserved 
-by the relative positions in the best possible way.
-The optimization problem of unidimensional scaling is to minimize 
-$\sum_{i=1}^n \sum_{j=1}^n (d_{ij} - |x_i-x_j|)^2$ which is close
-to the seriation problem, but in addition to the ranking of the 
-objects also takes the distances between objects on the resulting
-scale into account.
+The least squares criterion defined here is related to unidimensional
+scaling~\citep{seriation:Leeuw:2005}, where the objective is to place all
+objects on a straight line such that the dissimilarities in $\mathbf{D}$ are
+preserved by the relative positions in the best possible way.  The optimization
+problem of unidimensional scaling is to minimize $\sum_{i=1}^n \sum_{j=1}^n
+(d_{ij} - |x_i-x_j|)^2$ which is close to the seriation problem, but in
+addition to the ranking of the objects also takes the distances between objects
+on the resulting scale into account.
 
 Note that if Euclidean distance is used to calculate $\mathbf{D}$ from a data
 matrix $\mathbf{X}$, the order of the elements in $\mathbf{X}$ by projecting
-them on the first principal component of $\mathbf{X}$ minimizes this criterion.
-\marginpar{is that correct?}
-
+them on the first principal component of $\mathbf{X}$ minimizes 
+the loss function of unidimensional scaling (using squared distances) and
+also provides good solutions for this seriation criterion.
 
 \subsection{Measure of effectiveness}
 \label{sec:ME}
 
 \cite{seriation:McCormick:1972} defined the
-\emph{measure of effectiveness (ME)} for 
-a $n \times m$ matrix $\mathbf{X} = (x_{ij})$ as
+\emph{measure of effectiveness (ME)} for a $n \times m$ matrix $\mathbf{X} =
+(x_{ij})$ as
 \begin{equation}
     M(\mathbf{X}) =
     \frac{1}{2}
@@ -324,24 +307,29 @@ a $n \times m$ matrix $\mathbf{X} = (x_{ij})$ as
         x_{i+1,j}+x_{i-1,j}]
     \label{equ:ME}
 \end{equation}
-with, by convention $x_{0,j}=x_{n+1,j}=x_{i,0}=x_{i,m+1}=0$.
-ME is maximized if each element is as closely related numerically
-to its four neighboring elements as possible.
+with, by convention $x_{0,j}=x_{n+1,j}=x_{i,0}=x_{i,m+1}=0$.  ME is maximized
+if each element is as closely related numerically to its four neighboring
+elements as possible.
 
-
-ME was developed for $2$-way $2$-mode data, however, ME can also be used for a
-symmetric  matrix ($1$-mode data) and gets maximal only if all large values are
+ME was developed for two-way two-mode data, however, ME can also be used for a
+symmetric  matrix (one-mode data) and gets maximal only if all large values are
 grouped together around the main diagonal. 
 
-
-Note that from the definition in equation~(\ref{equ:ME}) it can be seen that the
-contribution of column and row order to the loss function is additive and thus
-independent. 
+Note that from the definition in equation~(\ref{equ:ME}) 
+can be rewritten as
+\begin{equation}
+    M(\mathbf{X}) =
+    \frac{1}{2}
+    \sum_{i=1}^{n} \sum_{j=1}^{m} x_{ij}[x_{i,j+1}+x_{i,j-1}] +
+    \sum_{i=1}^{n} \sum_{j=1}^{m} x_{ij}[x_{i+1,j}+x_{i-1,j}]
+\end{equation}
+showing that the contribution of column and row order to the loss function is
+additive and thus the permutation of columns and rows are independent. 
 
 \subsection{Stress}
 \label{sec:stress}
 
-Stress measures the conciseness of the presentation of a matrix ($2$-mode data) 
+Stress measures the conciseness of the presentation of a matrix (two-mode data) 
 and can
 be seen as a purity function which compares the values in a matrix with
 their neighbors. The stress measures used here are computed as the sum of
@@ -381,7 +369,7 @@ the later the contribution of row and column permutations to stress are
 independent and thus can be optimized independently. 
 
 Stress can be also used as a loss function for
-symmetric proximity matrices ($1$-mode data).
+symmetric proximity matrices (one-mode data).
 %, 
 %since it can only be optimal, if large values are
 %concentrated around the main diagonal. 
@@ -393,16 +381,13 @@ and its four neighbors are numerically as similar as possible.
 \section{Seriation methods}
 \label{sec:methods}
 
-Solving the discrete optimization problem for seriation 
-with most loss/merit functions is
-clearly very hard, since the number of
-possible permutations is $n!$ which makes an exhaustive
-search for sets with a medium to large number of objects infeasible.
-In this section, we describe some methods
-(partial enumeration, heuristics and other methods)
-which are typically used for seriation. For each method we state for
-which type of loss functions it is suitable and if it finds the optimum or is
-a heuristic.
+Solving the discrete optimization problem for seriation with most loss/merit
+functions is clearly very hard. The number of possible permutations is $n!$
+which makes an exhaustive search for sets with a medium to large number of
+objects infeasible.  In this section, we describe some methods (partial
+enumeration, heuristics and other methods) which are typically used for
+seriation. For each method we state for which type of loss/merit functions it
+is suitable and if it finds the optimum or is a heuristic.
 
 \subsection{Partial enumeration methods}
 
@@ -414,13 +399,12 @@ are \emph{dynamic programming}~\citep{seriation:Hubert:1987} and
 \emph{branch-and-bound}~\citep{seriation:Brusco:2005}. 
 
 Dynamic programming recursively searches for the optimal solution checking and
-storing $2^n-1$ results. Although $2^n-1$ grows at a
-lower rate than $n!$ and is
-for $n \gg 3$ considerably smaller,
-the storage requirements of $2^n-1$ results still grow fast, limiting the
-maximal problem size severely. For example, for $n=30$ more than one billion
-results have to be calculated and stored, clearly a number to large for the
-main memory capacity of most current computers.
+storing $2^n-1$ results. Although $2^n-1$ grows at a lower rate than $n!$ and
+is for $n \gg 3$ considerably smaller, the storage requirements of $2^n-1$
+results still grow fast, limiting the maximal problem size severely. For
+example, for $n=30$ more than one billion results have to be calculated and
+stored, clearly a number too large for the main memory capacity of most current
+computers.
 
 Branch-and-bound has only very moderate storage requirements. The
 forward-branching procedure~\citep{seriation:Brusco:2005} starts to build
@@ -431,17 +415,16 @@ most important fathoming test is the boundary test, which checks if the partial
 permutation can possibly lead to a complete permutation with a better solution
 than the currently best one.  In this way large parts of the search space can
 be omitted. However, in contrast to the dynamic programming approach, the
-reduction of search space is strongely data dependent and poorly structured
-data can lead to very poor performance.
-With branch-and-bound slightly larger problems can be solved than with
-dynamic programming in reasonable time.
+reduction of search space is strongly data dependent and poorly structured
+data can lead to very poor performance.  With branch-and-bound slightly larger
+problems can be solved than with dynamic programming in reasonable time.
 \cite{seriation:Brusco:2005} state that depending on the data, in some cases
-proximity matrices with 40 or more objects can be handled.
+proximity matrices with 40 or more objects can be handled with current 
+hardware.
 
-Partial enumeration methods can be used 
-to find the exact solution independently of the loss function. However, 
-partial enumeration is limited to only relatively small problems.
-
+Partial enumeration methods can be used to find the exact solution
+independently of the loss/merit function. However, partial enumeration is
+limited to only relatively small problems.
 
 \subsection{Traveling salesperson problem solver}
 
@@ -459,19 +442,17 @@ column of 0's is added (sometimes this is referred to as a \emph{dummy city}).
 The solution of this $(n+1)$-city TSP, gives the shortest path where the city
 representing the added row/column cuts the cycle into a linear path.
 
-As the general seriation problem, solving the TSP is difficult. 
-In the seriation case with $n+1$
-cities, $n!$ tours have to be checked. However, despite this vast searching
-space, small instances can be solved efficiently using dynamic programming
-\citep{seriation:Held:1962} and larger instances of several hundred
-objects can be solved using
-\emph{branch-and-cut} algorithms~\citep{seriation:Padberg:1990}. For even large
-instances or if running time is critical, a wide array of heuristics are
-available, ranging from simple nearest neighbor approaches to construct a
+As the general seriation problem, solving the TSP is difficult.  In the
+seriation case with $n+1$ cities, $n!$ tours have to be checked. However,
+despite this vast searching space, small instances can be solved efficiently
+using dynamic programming \citep{seriation:Held:1962} and larger instances of
+several hundred objects can be solved using \emph{branch-and-cut}
+algorithms~\citep{seriation:Padberg:1990}. For even larger instances or if
+running time is critical, a wide array of heuristics are available, ranging
+from simple nearest neighbor approaches to construct a
 tour~\citep{seriation:Rosenkrantz:1977} to complex heuristics like the
-Lin-Kernighan heuristic~\citep{seriation:Lin:1973}.
-A comprehensive overview of
-heuristics and exact methods can be found in \cite{seriation:Gutin:2002}.
+Lin-Kernighan heuristic~\citep{seriation:Lin:1973}.  A comprehensive overview
+of heuristics and exact methods can be found in \cite{seriation:Gutin:2002}.
 
 
 \subsection{Bond energy algorithm}
@@ -549,7 +530,7 @@ is related to the TSP described above, however, the given dendrogram structure
 significantly reduces the number of permissible permutations making the problem
 easier.
 
-Although hierarchical clustering solves a optimization problem different to
+Although hierarchical clustering solves an optimization problem different to
 the seriation problem discussed in this paper, hierarchical clustering still
 can produce useful orderings, e.g., for visualization.
 
@@ -588,8 +569,8 @@ to efficiently handle seriation with R. As the input data for seriation R
 already provides
 
 \begin{itemize}
-    \item for $2$-way $1$-mode data the class \code{dist},
-    \item for $2$-way $2$-mode data the class \code{matrix}, and
+    \item for two-way one-mode data the class \code{dist},
+    \item for two-way two-mode data the class \code{matrix}, and
     \item for $k$-way $k$-mode data the class \code{array}.
 \end{itemize}
 
@@ -599,22 +580,24 @@ already provides
     %\includegraphics[width=12cm]{infrastructure}}
     \includegraphics[width=10cm]{classes}}
 
-    \caption{Data structures for permutations provided by \pkg{seriation}}
+    \caption{UML class diagram of the data structures for permutations provided by \pkg{seriation}}
     \label{fig:infrastructure}
 \end{figure}
 
-However, to represent the permutation vector 
-for each mode no data structures are
-available. \pkg{seriation} provides the necessary data structure (using the S3
-class system) depicted in Figure~\ref{fig:infrastructure}. The class
-\code{ser\_permutation} represents the a permutation information for $k$-mode
+However, to represent the permutation vector for each mode no data structures
+are available. \pkg{seriation} provides the necessary data structure (using the
+S3 class system) depicted in Figure~\ref{fig:infrastructure}. The class
+\code{ser\_permutation} represents the permutation information for $k$-mode
 data (including the cases of $k=1$ and $k=2$). It consists of $k$ permutation
-vectors, where each permutation vector is represented by an concrete
-implementation of the abstract class \code{ser\_permutation\_vector}. 
-Currently, the
-permutation vector can be stored as a simple integer vector or as an object of
-class \code{hclust} (an object describing a hierarchical clustering tree
-including an ordering for the trees node leaves defined in \pkg{stats}).
+vectors, where each permutation vector is represented by an object of a
+concrete implementation of the abstract class \code{ser\_permutation\_vector}.
+This design is used to allow to use arbitrary representations for the
+permutation vectors without removing additional available information by just
+using an integer vector. Currently, the permutation vector can be stored as a
+simple integer vector or as an object of class \code{hclust} (defined in
+package \pkg{stats}). \code{hclust} describes a hierarchical clustering tree
+(dendrogram) including an ordering for the trees node leaves which provides a
+permutation for all objects (see Section~\ref{sec:hierarchical_clustering}).
 
 \code{ser\_permutation\_vector} has a constructor
 \func{ser\_permutation\_vector} which converts data into the correct concrete
@@ -628,97 +611,89 @@ of \code{ser\_permutation\_vector}.  With this design, other classes
 representing permutations can be easily incorporated by just adding an
 appropriate \func{get\_order} methods for the new class.
 
-For \code{ser\_permutation} also a constructor is provided which can bind
-$k$ \code{ser\_permutation\_vector} 
-objects together into an object for
-$k$-mode data. \code{ser\_permutation} is implemented as a list of length $k$
-and each element contains a \code{ser\_permutation\_vector} object.  
-Methods like
-\func{length}, accessing elements with \code{"[["}, \code{"[[<-"}, 
-subsetting with \code{"["},
-and combining  with \func{c} work as expected.  Also a
+For \code{ser\_permutation} also a constructor is provided which can bind $k$
+\code{ser\_permutation\_vector} objects together into an object for $k$-mode
+data. \code{ser\_permutation} is implemented as a list of length $k$ and each
+element contains a \code{ser\_permutation\_vector} object.  Methods like
+\func{length}, accessing elements with \code{"[["}, \code{"[[<-"}, subsetting
+with \code{"["}, and combining  with \func{c} work as expected.  Also a
 \func{print} method is provided. Finally, direct access to the raw permutation
-vectors is available using \func{get\_order}. 
-Here the second argument (which defaults to $1$) specifies
-the dimension (mode) for which the order vector is requested.
+vectors is available using \func{get\_order}.  Here the second argument (which
+defaults to $1$) specifies the dimension (mode) for which the order vector is
+requested.
 
 All seriation algorithms are available via the function \func{seriate} defined
 as:
-
 \begin{center}
 \code{seriate(x,  method = NULL, control = NULL, ...)}
 \end{center}
-where \code{x} is the input data, \code{method} is a string defining
-the seriation method to be used and \code{control} can contain a list 
-with additional information for the algorithm.
-\func{seriation} returns an object of class \code{ser\_permutation}
-of length conforming to the number of dimensions of \code{x}.
-
-\marginpar{write about the methods.}
-
-For \code{matrix} the additional argument
-\code{margin} can be used if only column (\code{margin = 1}) or row seriation 
+where \code{x} is the input data, \code{method} is a string defining the
+seriation method to be used and \code{control} can contain a list with
+additional information for the algorithm.  \func{seriation} returns an object
+of class \code{ser\_permutation} with a length conforming to the number of
+dimensions of \code{x}.  For \code{matrix} the additional argument
+\code{margin} can be used if only column (\code{margin = 1}) or row seriation
 (\code{margin = 2}) is needed.
 
-
+%\begin{landscape}
 \begin{table}[t]
 \centering
     \begin{tabular}{lllc}
         \hline
-        Algorithm & \code{method} argument & Optimizes & Input data \\
+Algorithm & \code{method} argument & Optimizes & Input data \\
         \hline
-        Branch-and-bound & \code{"BBURCG"} & 
-Gradient measure &\code{dist} \\
-        Branch-and-bound & \code{"BBWRCG"} & 
-Gradient measure (weighted)& \code{dist} \\
-        Simulated annealing & \code{"ARSA"} & 
-Gradient measure &\code{dist} \\
-        TSP solver& \code{"TSP"} &
-Hamiltonian path length& \code{dist} \\
-        Bond Energy Algorithm & \code{"BEA"} & 
-Measure of effectiveness&\code{matrix} \\
-        TSP to optimize ME & \code{"BEA\_TSP"} &
-Measure of effectiveness& \code{matrix} \\
-        Hierarchical clustering & \code{"HC"} &
-Other& \code{dist} \\
-        Gruvaeus and Wainer & \code{"GW"} & 
-Other& \code{dist} \\
-        Optimal leaf ordering & \code{"OLO"} & 
-Restricted Hamiltonian path length& \code{dist} \\
-        Rank-two ellipse seriation & \code{"Chen"} & 
-Other& \code{dist} \\
-        MDS (first dimension) & \code{"MDS"} &
-Other& \code{dist} \\
-        First principal component  & \code{"PCA"} & 
-Other& \code{matrix} \\
+Simulated annealing & \code{"ARSA"} & Gradient measure &\code{dist} \\
+Branch-and-bound & \code{"BBURCG"} & Gradient measure &\code{dist} \\
+Branch-and-bound & \code{"BBWRCG"} & Gradient measure (weighted)& \code{dist} \\
+TSP solver & \code{"TSP"} & Hamiltonian path length& \code{dist} \\
+Rank-two ellipse seriation  & \code{"Chen"} & Other& \code{dist} \\
+MDS -- first dimension & \code{"MDS"} & Other& \code{dist} \\
+Hierarchical clustering & \code{"HC"} & Other& \code{dist} \\
+Gruvaeus and Wainer & \code{"GW"} & Other& \code{dist} \\
+Optimal leaf ordering  & \code{"OLO"} & 
+    Hamiltonian path length (restricted)& \code{dist} \\
+Bond Energy Algorithm & \code{"BEA"} &
+    Measure of effectiveness & \code{matrix} \\
+TSP to optimize ME & \code{"BEA\_TSP"} &
+    Measure of effectiveness& \code{matrix} \\
+First principal component & \code{"PCA"} & 
+    Other& \code{matrix} \\
         \hline
     \end{tabular}
-\caption{Currently implemented seriation methods.}
+    \caption{Currently implemented methods for \func{seriation}.}
 \label{tab:methods}
 \end{table}
+%\end{landscape}
 
-Various seriation methods were already introduced in this paper in 
-Section~\ref{sec:methods}. In Table~\ref{tab:methods} we summarize the
-methods currently available in the package for seriation. Over time more
-methods will be added to the package.
+Various seriation methods were already introduced in this paper in
+Section~\ref{sec:methods}. In Table~\ref{tab:methods} we summarize the methods
+currently available in the package for seriation.  The code for the simulated
+annealing heuristic~\citep{seriation:Brusco:2007} and the two
+branch-and-bound~\citep{seriation:Brusco:2005} was obtained from the authors.
+The TSP solvers (exact solvers and a variety of heuristics) is provided by
+package \pkg{TSP}~\citep{seriation:Hahsler:2007}.  For the rank-two ellipse
+seriation we implemented the algorithm by~\cite{seriation:Chen:2002}.  For the
+Gruvaeus and Wainer algorithm, the implementation in package
+\pkg{gclus}~\citep{seriation:Hurley:2007} is used.  For optimal leaf ordering we
+implemented the algorithm by~\cite{seriation:Bar-Joseph:2001}.  The BEA code
+was kindly provided by Fionn Murtagh.  Over time more methods will be added to
+the package.
 
 To calculate the value of a loss/merit function for data and 
 a certain permutation, the method
-
 \begin{center}
 \code{criterion(x, order = NULL, method = "all", ...)} 
 \end{center}
 is provided. \code{x} is the data matrix, \code{order} contains a suitable
 object of class \code{ser\_permutation} (if omitted no permutation is
-performed) and \code{method} specifies the type of loss function. A vector of
-several methods can be used resulting in a named vector.  We already defined
-different loss/merit functions for seriation 
-in Section~\ref{sec:seriation}.  In
-Table~\ref{tab:criteria} we indicate 
-the loss/merit functions currently available in
-the package.  Additionally, the pseudo method \code{"all"} (which is the
-default) can be used which calculated the values for all applicable 
-loss/merit functions.
+performed) and \code{method} specifies the type of loss/merit function. A
+vector of several methods can be used resulting in a named vector
+with the values of the requested functions.  We already
+defined different loss/merit functions for seriation in
+Section~\ref{sec:seriation}.  In Table~\ref{tab:criteria} we indicate the
+loss/merit functions currently available in the package.  Additionally, the
+pseudo method \code{"all"} (which is the default) can be used which calculated
+the values for all applicable loss/merit functions.
 
 \begin{table}[t]
 \centering
@@ -756,7 +731,8 @@ In addition the package offers the method
 \end{center} 
 where \code{x} is the data (a \code{dist} object, a matrix, an
 array, a list or a numeric vector) to be reordered and \code{order} is a
-\code{ser\_permutation} object of suitable length. 
+\code{ser\_permutation} object of suitable length. The permutation for
+\code{dist} objects uses package \pkg{proxy}~\citep{seriation:Meyer:2007}.
 
 For visualization, the package offers several options:
 \begin{itemize}
@@ -820,7 +796,7 @@ order
 @
 
 The result is an object of class \code{ser\_permutation} for 
-$1$-mode data. The permutation vector length is $150$ for the
+one-mode data. The permutation vector length is $150$ for the
 $150$ objects in the iris data set and the used seriation method is
 \code{"ARSA"}, a simulated annealing heuristic.
 
@@ -859,7 +835,7 @@ criteria (note that the measure of effectiveness and inertia
 are merit functions and larger values are better).
 
 Also the original data matrix can be easily inspected using \code{pimage}.
-To use the result of the seriation for the original $2$-mode data,
+To use the result of the seriation for the original two-mode data,
 we have to add a permutation vector to the \code{ser\_permutation}
 object. To leave the columns in the original order, we add an 
 identity permutation vector to the permutations object using the combine 
@@ -1089,8 +1065,8 @@ the reordered matrix are plotted using \func{bertinplot}.
 
 <<>>=
 order <- c(
-    seriate(dist(orig_matrix, "minkowski", p = 1), method ="TSP"),
-    seriate(dist(t(orig_matrix), "minkowski", p = 1), method = "TSP")
+    seriate(dist(orig_matrix, "Minkowski", p = 1), method ="TSP"),
+    seriate(dist(t(orig_matrix), "Minkowski", p = 1), method = "TSP")
 )
 order
 @

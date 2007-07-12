@@ -21,25 +21,28 @@
     x[perm]
 }
 
-.rearrange_dist <- function (x, order) {
-    ## make C call
-    mode(x) <- "double"
-    mode(order) <- "integer"
+## we use proxy now
+.rearrange_dist <- function (x, order) x[[order]]
 
-    d <- .Call("reorder_dist", x, order)
-
-    labels <- if(is.null(labels(x))) NULL
-    else labels(x)[order]
-
-    structure(d, 
-        class   = "dist", 
-        Size    = length(order), 
-        Labels  = labels,
-        Diag    = FALSE,
-        Upper   = FALSE,
-        method  = attr(x, "method")
-    )
-}
+#.rearrange_dist <- function (x, order) {
+#    ## make C call
+#    mode(x) <- "double"
+#    mode(order) <- "integer"
+#
+#    d <- .Call("reorder_dist", x, order)
+#
+#    labels <- if(is.null(labels(x))) NULL
+#    else labels(x)[order]
+#
+#    structure(d, 
+#        class   = "dist", 
+#        Size    = length(order), 
+#        Labels  = labels,
+#        Diag    = FALSE,
+#        Upper   = FALSE,
+#        method  = attr(x, "method")
+#    )
+#}
 
 permute.dist <- function(x, order) {
     if(!inherits(order, "ser_permutation")) order <- ser_permutation(order)
