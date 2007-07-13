@@ -1,15 +1,23 @@
-\documentclass[10pt,a4paper,fleqn]{article}
+\documentclass[fleqn, a4paper]{article}
 
 \usepackage{a4wide}
 %\setlength{\parindent}{0pt}
 %\setlength{\parskip}{6pt plus 2pt minus 1pt}
 %\usepackage{lscape}
 
+\usepackage[utf8]{inputenc}
+
 \usepackage[round,longnamesfirst]{natbib}
+\usepackage{graphicx,keyval,thumbpdf,url}
 \usepackage{hyperref}
 
 \usepackage{amsmath}
 \usepackage{amsfonts}
+
+
+\usepackage{Sweave}
+\SweaveOpts{strip.white=TRUE}
+\AtBeginDocument{\setkeys{Gin}{width=0.6\textwidth}}
 
 \newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
 \newcommand{\class}[1]{\mbox{\textsf{#1}}}
@@ -19,11 +27,13 @@
 \newcommand{\samp}[1]{`\mbox{\texttt{#1}}'}
 \newcommand{\proglang}[1]{\textsf{#1}}
 \newcommand{\set}[1]{\mathcal{#1}}
+\newcommand{\sQuote}[1]{`{#1}'}
+\newcommand{\dQuote}[1]{``{#1}''}
+\newcommand\R{{\mathbb{R}}}
 
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
 
-\usepackage{Sweave}
 %% \VignetteIndexEntry{Introduction to seriation}
 
 
@@ -1065,8 +1075,8 @@ the reordered matrix are plotted using \func{bertinplot}.
 
 <<>>=
 order <- c(
-    seriate(dist(orig_matrix, "Minkowski", p = 1), method ="TSP"),
-    seriate(dist(t(orig_matrix), "Minkowski", p = 1), method = "TSP")
+    seriate(dist(orig_matrix, "minkowski", p = 1), method ="TSP"),
+    seriate(dist(t(orig_matrix), "minkowski", p = 1), method = "TSP")
 )
 order
 @
@@ -1260,7 +1270,7 @@ iris data set.
 library("seriation")
 data("iris")
 iris <- iris[sample(1:nrow(iris)),]
-d <- dist(iris[-5])
+d <- dist(iris[-5], method = "euclidean")
 @
 
 First, we use \func{dissplot} without a clustering. We set \code{method}
@@ -1439,8 +1449,10 @@ matrix~\citep[see, e.g.,][]{seriation:Marcotorchino:1987}.
 
 
 %
+{\small
 \bibliographystyle{abbrvnat}
 \bibliography{seriation}
+}
 %
 \end{document}
 
