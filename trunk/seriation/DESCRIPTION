@@ -5,7 +5,7 @@ Author: Michael Hahsler, Christian Buchta and Kurt Hornik
 Maintainer: Michael Hahsler <hahsler@ai.wu-wien.ac.at>
 Version: 0.1-1
 Date: 2006-xx-xx
-Depends: stats, cluster, proxy, TSP, gclus, grid
+Depends: stats, cluster, TSP, gclus, grid
 Suggests: MASS
 Description: Infrastructure for seriation with an implementation of several
     unidimesional seriation techniques to reorder matrices, dissimilarity

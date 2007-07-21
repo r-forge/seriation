@@ -98,6 +98,8 @@ between rows to quantify optimality of the resulting table.  A
 comprehensive description of the development of seriation in archeology
 is presented by \cite{seriation:Ihm:2005}.
 
+\marginpar{Absatz ueber Was wir nicht machen fehlt.}
+
 In ecology,  
 R Software for ecology: \pkg{ade4}, \pkg{vegan}, \pkg{cocorresp}
 \marginpar{block seriation missing}
@@ -127,10 +129,10 @@ function $\Psi$
 %$\{1,\dots,n\} \rightarrow \{1,\dots,n\}$, i.e. a
 %bijection that maps the set of indices of the objects (and equally of rows and
 %columns of $\mathbf{D}$) onto itself, 
-which optimizes the value of a given loss function $Q$ or merit function $M$.
+which optimizes the value of a given loss function $L$ or merit function $M$.
 This results in the optimization problems
 \begin{equation}
-    Q(\Psi(\mathbf{D})) \rightarrow \mathrm{min}_\Psi \quad \text{or} \quad
+    L(\Psi(\mathbf{D})) \rightarrow \mathrm{min}_\Psi \quad \text{or} \quad
     M(\Psi(\mathbf{D})) \rightarrow \mathrm{max}_\Psi\text{,}
 \end{equation}
 respectively.
@@ -187,6 +189,8 @@ hold~\citep{seriation:Hubert:1987}:
     \text{within columns:} & \quad  d_{kj} \le d_{ij} \quad \text{for} 
         \quad 1 \ge i < k < j \ge n.
 \end{align}
+\marginpar{In Equations 2 und 3 passen die richtungen der vergleichsoperatoren
+nicht, sollen die $\ge$ alle $\le$ sein?}
 
 In an anti-Robinson matrix the smallest dissimilarity values appear
 close to the main diagonal, therefore, the closer objects are together
@@ -232,7 +236,7 @@ magnitude given by the absolute difference between the values.
 An even simpler loss function can be created in the same way as the gradient
 measures above by concentrating on violations only. 
 \begin{equation}
-    Q(\mathbf{D}) = 
+    L(\mathbf{D}) = 
     \sum_{i<k<j}f(d_{ik}, d_{ij}) + \sum_{i<k<j}f(d_{kj}, d_{ij}) 
 \end{equation}
 
@@ -268,7 +272,7 @@ Hamiltonian path length results in an seriation optimal with respect to
 dissimilarities between neighboring objects.  The loss function based on
 the Hamiltonian path length is:
 \begin{equation}
-    Q(\mathbf{D}) = \sum_{i=1}^{n-1} d_{i,i+1}.
+    L(\mathbf{D}) = \sum_{i=1}^{n-1} d_{i,i+1}.
 \end{equation}
 
 Note that the length of the Hamiltonian path is equal to the value of the
@@ -294,7 +298,7 @@ between the dissimilarities in $\mathbf{D}$ and the rank differences of the
 objects.  Such deviations can be measured, e.g, by the sum of squares of
 deviations \citep{seriation:Caraux:2005} defined by
 \begin{equation}
-    Q(\mathbf{D}) = \sum_{i=1}^n \sum_{j=1}^n (d_{ij} - |i-j|)^2,
+    L(\mathbf{D}) = \sum_{i=1}^n \sum_{j=1}^n (d_{ij} - |i-j|)^2,
 \end{equation}
 where $|i-j|$ is the rank difference or gap between $O_i$ and $O_j$.
 
@@ -378,7 +382,7 @@ its adjacent entries.  \cite{seriation:Niermann:2005} defined for an $n
 Both local stress measures can be used to construct a global measure for the
 whole matrix by summing over all entries which can be used as a loss function:
 \begin{equation}
-    Q(\mathbf{X}) = 
+    L(\mathbf{X}) = 
     \sum_{i=1}^n \sum_{j=1}^m \sigma_{ij}
 \end{equation}
 
@@ -813,7 +817,8 @@ $150$ objects in the iris data set and the used seriation method is
 \code{"ARSA"}, a simulated annealing heuristic.
 
 To visually inspect the effect of seriation on the distance matrix, we use
-matrix shading with \func{pimage}.
+matrix shading with \func{pimage} (the result is shown in 
+Figure~\ref{fig:pimage1}).
 
 <<label=pimage1, eval=FALSE>>=
 pimage(d, main = "Random")
@@ -1072,13 +1077,14 @@ orig_matrix <- scale_by_rank(Irish[,-6])
 For seriation, we calculate distances between rows and between columns using
 the sum of absolute rank differences (this is equal to the Minkowski distance
 with power $1$). Then we apply seriation (using a TSP heuristic) to both
-distance matrices and create an \code{Order} object. The original and
-the reordered matrix are plotted using \func{bertinplot}. 
+distance matrices and combine the two resulting \code{ser\_permutation} objects
+into one object for two-mode data. The original and the reordered matrix are
+plotted using \func{bertinplot}. 
 
 <<>>=
 order <- c(
-    seriate(dist(orig_matrix, "Minkowski", p = 1), method ="TSP"),
-    seriate(dist(t(orig_matrix), "Minkowski", p = 1), method = "TSP")
+    seriate(dist(orig_matrix, "minkowski", p = 1), method ="TSP"),
+    seriate(dist(t(orig_matrix), "minkowski", p = 1), method = "TSP")
 )
 order
 @
@@ -1272,7 +1278,7 @@ iris data set.
 library("seriation")
 data("iris")
 iris <- iris[sample(seq_len(nrow(iris))),]
-d <- dist(as.matrix(iris[-5]), method = "Euclidean")
+d <- dist(as.matrix(iris[-5]), method = "euclidean")
 @
 
 First, we use \func{dissplot} without a clustering. We set \code{method}
@@ -1407,8 +1413,6 @@ cleanly separated from the other block. This suggests that these clusters
 in a solution with less clusters should form together a cluster.
 The other block is less well defined. There is considerable overlap between
 clusters 3 and 6, but also cluster 1 and 3 share similar objects.
-
-
 
 Using the information stored in the result of \func{dissplot} and
 the class information available for the iris data set, we can analyze
