@@ -99,7 +99,6 @@ comprehensive description of the development of seriation in archeology
 is presented by \cite{seriation:Ihm:2005}.
 
 \marginpar{Absatz ueber Was wir nicht machen fehlt.}
-
 In ecology,  
 R Software for ecology: \pkg{ade4}, \pkg{vegan}, \pkg{cocorresp}
 \marginpar{block seriation missing}
@@ -185,12 +184,10 @@ and only if the following two gradient conditions
 hold~\citep{seriation:Hubert:1987}:
 \begin{align}
     \text{within rows:} & \quad  d_{ik} \le d_{ij} \quad \text{for} 
-        \quad 1 \ge i < k < j \ge n; \\ 
+        \quad 1 \le i < k < j \le n; \\ 
     \text{within columns:} & \quad  d_{kj} \le d_{ij} \quad \text{for} 
-        \quad 1 \ge i < k < j \ge n.
+        \quad 1 \le i < k < j \le n.
 \end{align}
-\marginpar{In Equations 2 und 3 passen die richtungen der vergleichsoperatoren
-nicht, sollen die $\ge$ alle $\le$ sein?}
 
 In an anti-Robinson matrix the smallest dissimilarity values appear
 close to the main diagonal, therefore, the closer objects are together
