@@ -698,7 +698,7 @@ a certain permutation, the function
 \begin{quotation}
 \code{criterion(x, order = NULL, method = "all", ...)} 
 \end{quotation}
-is provided. \code{x} is the data matrix, \code{order} contains a suitable
+is provided. \code{x} is the data object, \code{order} contains a suitable
 object of class \code{ser\_permutation} (if omitted no permutation is
 performed) and \code{method} specifies the type of loss/merit function. A
 vector of several methods can be used resulting in a named vector
@@ -744,8 +744,9 @@ In addition the package offers the (generic) function
 \end{quotation}
 where \code{x} is the data (a \code{dist} object, a matrix, an
 array, a list or a numeric vector) to be reordered and \code{order} is a
-\code{ser\_permutation} object of suitable length. The permutation for
-\code{dist} objects uses package \pkg{proxy}~\citep{seriation:Meyer:2007}.
+\code{ser\_permutation} object of suitable length. 
+%The permutation for
+%\code{dist} objects uses package \pkg{proxy}~\citep{seriation:Meyer:2007}.
 
 For visualization, the package offers several options:
 \begin{itemize}
