@@ -98,22 +98,25 @@ between rows to quantify optimality of the resulting table.  A
 comprehensive description of the development of seriation in archeology
 is presented by \cite{seriation:Ihm:2005}.
 
-\marginpar{Absatz ueber Was wir nicht machen fehlt.}
-In ecology,  
-R Software for ecology: \pkg{ade4}, \pkg{vegan}, \pkg{cocorresp}
-\marginpar{block seriation missing}
-Also say something about multidimensional scaling and principal
-components analysis here.
-\marginpar{MDS, PCA missing} 
+Techniques related to seriation are also popular in several other fields.
+Especially in ecology scaling techniques are used under the name
+\emph{ordination}. For these applications several R packages already exist
+(e.g. \pkg{ade4}, \pkg{vegan}, \pkg{cocorresp}). This paper describes the new
+package \pkg{seriation} which differs from existing packages in the following
+way.
+\begin{enumerate}
+    \item \pkg{seriation} provides a flexible infrastructure for seriation. 
+    \item \pkg{seriation} focuses on seriation as a combinatorial 
+        optimization problem.
+\end{enumerate}
 
-In this paper we present the package~\pkg{seriation} which provides the
-infrastructure to represent and solve seriation as combinatorial optimization
-problems in R.  We start with a formal introduction of the seriation problem in
-Section~\ref{sec:seriation}.  In Section~\ref{sec:methods} we give an overview
-of seriation methods.  In Section~\ref{sec:infrastructure} we present the
-infrastructure provided by the package~\pkg{seriation}.  In
-Section~\ref{sec:example} we present several examples and applications for
-seriation. We conclude with Section~\ref{sec:conclusion}.
+The paper starts with a formal introduction of the seriation problem as a
+combinatorial optimization problem in Section~\ref{sec:seriation}.  In
+Section~\ref{sec:methods} we give an overview of seriation methods.  In
+Section~\ref{sec:infrastructure} we present the infrastructure provided by the
+package~\pkg{seriation}.  In Section~\ref{sec:example} we present several
+examples and applications for seriation. We conclude with
+Section~\ref{sec:conclusion}.
 
 \section{Seriation as a combinatorial optimization problem}
 \label{sec:seriation}
@@ -938,16 +941,15 @@ par(def.par)
 \end{figure}
 
 For easier comparison, Figure~\ref{fig:crit1} contains a plot of the criteria
-Hamiltonian path length, anti-Robinson events 
-(\code{AR\_events})
-and stress using the Moore neighborhood. Clearly, the methods which directly
-try to minimize the Hamiltonian path length (hierarchical clustering with
-optimal leaf ordering (OLO) and the TSP heuristic) provide the best results
-concerning the path length. For the number of anti-Robinson events, 
-using the simulated annealing heuristic (\code{ARSA}) provides the best
-result since it directly aims at minimizing this loss function.
-Regarding stress, the simulated annealing heuristic also provides the
-best result although, it does not directly minimize this loss function.
+Hamiltonian path length, anti-Robinson events (\code{AR\_events}) and stress
+using the Moore neighborhood. Clearly, the methods which directly try to
+minimize the Hamiltonian path length (hierarchical clustering with optimal leaf
+ordering (\code{OLO}) and the TSP heuristic) provide the best results
+concerning the path length. For the number of anti-Robinson events, using the
+simulated annealing heuristic (\code{ARSA}) provides the best result since it
+directly aims at minimizing this loss function.  Regarding stress, the
+simulated annealing heuristic also provides the best result although, it does
+not directly minimize this loss function.
 
 
 \subsection{Heat maps}
@@ -1430,27 +1432,28 @@ mixture of Iris versicolor and virginica.
 \section{Conclusion}
 \label{sec:conclusion}
 
-\marginpar{rewrite conclusion}
+In this paper we presented the infrastructure provided by the
+package~\pkg{seriation}. The infrastructure contains the necessary data
+structures to store the linear order for one-, two- and $k$-mode data.  It also
+provides a wide array of seriation methods for different input data, e.g.,
+dissimilarities, binary and general data matrices focusing on combinatorial
+optimization.
+
+Based on seriation, several visualization techniques are provides by
+\pkg{seriation}. Especially the optimally reordered heat map, the bertin plot
+and the dissimilarity plot have to be mentioned since they present clear
+improvements over standard plots.
+
+Future work on \pkg{seriation} will focus on adding different seriation methods.
+For example, by adding methods for block seriation which aim to finding
+simultaneous partitions of rows and columns in a data matrix~\citep[see,
+e.g.,][]{seriation:Marcotorchino:1987}.
 
 
-In this paper we presented the infrastructure 
-provided by the package~\pkg{seriation}. The infrastructure contains
-the necessary data structures to store the linear order of objects or rows and 
-columns of a data matrix. It also provides a wide array of seriation methods
-for different input data, e.g., dissimilarities, binary data matrices, and 
-dendrograms. For visualization, especially the optimally reordered heat map,
-the bertin plot and the dissimilarity plot have to be mentioned
-since they present clear improvements over standard plots.
-
-The package infrastructure is extensible. A possible future extension could be
-to add methods for block seriation with the aim to finding simultaneous
-partitions of rows and columns in a data 
-matrix~\citep[see, e.g.,][]{seriation:Marcotorchino:1987}.
-
-
-%\section*{Acknowledgments}
-
-
+\section*{Acknowledgments}
+The authors would like to thank Michael Brusco, Hans-Friedrich K{\"o}hn and
+Stephanie Stahl for their seriation code, and Fionn Murtagh for his BEA
+implementation.  
 
 %
 {\small

@@ -134,7 +134,7 @@ Z. Bar-Joseph, E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001): Fast
 Optimal Leaf Ordering for Hierarchical Clustering.
 \emph{Bioinformatics,} \bold{17}(1), 22--29.
 
-Brusco, M., Kohn, H.F., and Stahl, S. (2007): Heuristic Implementation of 
+Brusco, M., Koehn, H.F., and Stahl, S. (2007): Heuristic Implementation of 
 Dynamic Programming for Matrix Permutation Problems in Combinatorial 
 Data Analysis. \emph{Psychometrika,} conditionally accepted.
 
