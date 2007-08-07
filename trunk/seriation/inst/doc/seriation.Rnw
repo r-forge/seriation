@@ -101,7 +101,8 @@ is presented by \cite{seriation:Ihm:2005}.
 Techniques related to seriation are also popular in several other fields.
 Especially in ecology scaling techniques are used under the name
 \emph{ordination}. For these applications several R packages already exist
-(e.g. \pkg{ade4}, \pkg{vegan}, \pkg{cocorresp}). This paper describes the new
+(e.g. \pkg{ade4}~\cite{seriation:Chessel:2007} and 
+\pkg{vegan}~\cite{seriation:Oksanen:2007}). This paper describes the new
 package \pkg{seriation} which differs from existing packages in the following
 way.
 \begin{enumerate}
@@ -1404,7 +1405,7 @@ values in the plot.
 
 <<eval=FALSE>>=
 plot(res, options = list(main = "Seriation - threshold",
-    threshold = 2))
+    threshold = 1.5))
 @
 
 In resulting plot in Figure~\ref{fig:dissplot3}(b), we see that the
