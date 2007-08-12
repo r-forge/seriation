@@ -34,6 +34,8 @@
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
 
+\hyphenation{Brusco}
+
 %% \VignetteIndexEntry{Introduction to seriation}
 
 
@@ -52,17 +54,19 @@ set.seed(1234)
 \maketitle
 \sloppy
 
-\abstract{Seriation, i.e., finding a linear order for a set of objects given
-data and a loss or merit function, is a basic problem in data analysis.  Caused
-by the problem's combinatorial nature, it is hard to solve for all but very
-small sets. However, several methods for the exact solution and heuristics are
-available. In this paper we present the package~\pkg{seriation} which provides
-the infrastructure for seriation with R. The infrastructure comprises data
-structures to represent linear orders as permutation vectors, a wide array of
-seriation methods using a consistent interface, a method to calculate the value
-of various loss and merit functions, and several visualization techniques which
-build on seriation. To illustrate how easily the package can be applied for a
-variety of applications, a comprehensive collection of examples is presented.}
+\abstract{Seriation, i.e., finding a linear order for a set of objects
+  given data and a loss or merit function, is a basic problem in data
+  analysis.  Caused by the problem's combinatorial nature, it is hard to
+  solve for all but very small sets.  Nevertheless, both exact solution
+  methods and heuristics are available.  In this paper we present the
+  package~\pkg{seriation} which provides the infrastructure for
+  seriation with R.  The infrastructure comprises data structures to
+  represent linear orders as permutation vectors, a wide array of
+  seriation methods using a consistent interface, a method to calculate
+  the value of various loss and merit functions, and several
+  visualization techniques which build on seriation. To illustrate how
+  easily the package can be applied for a variety of applications, a
+  comprehensive collection of examples is presented.}
 
 \section{Introduction}
 
@@ -81,16 +85,16 @@ infeasible for all but very small problems.  To solve larger problems
 (with up to 40 objects), partial enumeration methods can be used.  For
 example, \cite{seriation:Hubert:1987} propose dynamic programming and
 \cite{seriation:Brusco:2005} use a branch-and-bound strategy.  For even
-larger problems only heuristics can be used.
+larger problems only heuristics can be employed.
 
 It has to be noted that seriation has a rich history in archeology.
 \cite{seriation:Petrie:1899} was the first to use seriation as a formal
 method.  He applied it to find a chronological order for graves
 discovered in the Nile area given objects found there.  The idea was
 that different objects continuously come into and go out of fashion and
-a contingency table of grave sites times objects can be rearranged using
+a cross-tabulation of grave sites and objects can be rearranged using
 row and column permutations till all large values are close to the
-diagonal.  Initially, the rearrangement of rows and columns of the
+diagonal.  Initially, the rearrangement of rows and columns of this
 contingency table was done manually and the adequacy was only judged
 subjectively by the researcher.  Later, \cite{seriation:Robinson:1951},
 \cite{seriation:Kendall:1971} and others proposed measures of agreement
@@ -98,32 +102,32 @@ between rows to quantify optimality of the resulting table.  A
 comprehensive description of the development of seriation in archeology
 is presented by \cite{seriation:Ihm:2005}.
 
-Techniques related to seriation are also popular in several other fields.
-Especially in ecology scaling techniques are used under the name
-\emph{ordination}. For these applications several R packages already exist
-(e.g. \pkg{ade4}~\cite{seriation:Chessel:2007} and 
-\pkg{vegan}~\cite{seriation:Oksanen:2007}). This paper describes the new
-package \pkg{seriation} which differs from existing packages in the following
-way.
+Techniques related to seriation are also popular in several other
+fields.  Especially in ecology scaling techniques are used under the
+name \emph{ordination}.  For these applications several R packages
+already exist (e.g., \pkg{ade4}~\citep{seriation:Chessel:2007} and
+\pkg{vegan}~\citep{seriation:Oksanen:2007}). This paper describes the new
+package \pkg{seriation} which differs from existing packages in the
+following ways:
 \begin{enumerate}
-    \item \pkg{seriation} provides a flexible infrastructure for seriation. 
-    \item \pkg{seriation} focuses on seriation as a combinatorial 
-        optimization problem.
+ \item \pkg{seriation} provides a flexible infrastructure for seriation;
+ \item \pkg{seriation} focuses on seriation as a combinatorial
+  optimization problem.
 \end{enumerate}
 
-The paper starts with a formal introduction of the seriation problem as a
-combinatorial optimization problem in Section~\ref{sec:seriation}.  In
+This paper starts with a formal introduction of the seriation problem as
+a combinatorial optimization problem in Section~\ref{sec:seriation}.  In
 Section~\ref{sec:methods} we give an overview of seriation methods.  In
-Section~\ref{sec:infrastructure} we present the infrastructure provided by the
-package~\pkg{seriation}.  In Section~\ref{sec:example} we present several
-examples and applications for seriation. We conclude with
+Section~\ref{sec:infrastructure} we present the infrastructure provided
+by the package~\pkg{seriation}.  Several examples and applications for
+seriation are given in Section~\ref{sec:example}.  We conclude with
 Section~\ref{sec:conclusion}.
 
 \section{Seriation as a combinatorial optimization problem}
 \label{sec:seriation}
 
-To seriate a set of $n$ objects $\{O_1,\dots,O_n\}$ one typically starts with a
-$n \times n$ symmetric dissimilarity matrix $\mathbf{D} = (d_{ij})$ where
+To seriate a set of $n$ objects $\{O_1,\dots,O_n\}$ one typically starts with an
+$n \times n$ symmetric dissimilarity matrix~$\mathbf{D} = (d_{ij})$ where
 $d_{ij}$ for $1 \le i,j \le n$ represents the dissimilarity between the objects
 $O_i$ and $O_j$ and all $d_{ii} = 0$.  We define a permutation function $\Psi$
 as a function which reorders the objects in $\mathbf{D}$ by simultaneously
@@ -183,7 +187,7 @@ where the values in all rows and columns only increase when
 moving away from the main diagonal is called a perfect 
 \emph{anti-Robinson matrix} after the
 statistician \cite{seriation:Robinson:1951}. Formally, 
-a $n \times n$ dissimilarity matrix $\mathbf{D}$ is in anti-Robinson form if, 
+an $n \times n$ dissimilarity matrix $\mathbf{D}$ is in anti-Robinson form if, 
 and only if the following two gradient conditions 
 hold~\citep{seriation:Hubert:1987}:
 \begin{align}
@@ -269,7 +273,7 @@ Such a graph can be used for seriation~\citep[see,
 e.g.,][]{seriation:Hubert:1974,seriation:Caraux:2005}.  An order $\Psi$
 of the objects can be seen as a path through the graph where each node
 is visited exactly once, i.e., a Hamiltonian path.  Minimizing the
-Hamiltonian path length results in an seriation optimal with respect to
+Hamiltonian path length results in a seriation optimal with respect to
 dissimilarities between neighboring objects.  The loss function based on
 the Hamiltonian path length is:
 \begin{equation}
@@ -322,7 +326,7 @@ also provides good solutions for this seriation criterion.
 \label{sec:ME}
 
 \cite{seriation:McCormick:1972} defined the
-\emph{measure of effectiveness (ME)} for a $n \times m$ matrix $\mathbf{X} =
+\emph{measure of effectiveness (ME)} for an $n \times m$ matrix $\mathbf{X} =
 (x_{ij})$ as
 \begin{equation}
     M(\mathbf{X}) =
@@ -361,7 +365,7 @@ its adjacent entries.  \cite{seriation:Niermann:2005} defined for an $n
 \times m$ matrix $\mathbf{X} = (x_{ij})$ two types of neighborhoods:
 
 \begin{itemize}
-    \item The Moore neighborhood comprises the eight adjacent entries.
+    \item The Moore neighborhood comprises the (at most) eight adjacent entries.
         The local stress measure for element $x_{ij}$ is defined as
         \begin{equation}
             \sigma_{ij} = \sum_{k=\max(1,i-1)}^{\min(n,i+1)} 
@@ -369,7 +373,7 @@ its adjacent entries.  \cite{seriation:Niermann:2005} defined for an $n
                 (x_{ij} - x_{kl})^2
         \end{equation}
 
-    \item The Neumann neighborhood comprises the four adjacent entries
+    \item The Neumann neighborhood comprises the (at most) four adjacent entries
         resulting in the local stress of $x_{ij}$ of
         \begin{equation}
             \sigma_{ij} = 
@@ -451,19 +455,20 @@ limited to only relatively small problems.
 
 \subsection{Traveling salesperson problem solver}
 
-Seriation by minimizing the length of a Hamiltonian path through a graph is
-equal to solving a traveling salesperson problem.  
-The traveling salesperson or salesman
-problem (TSP) is a well known and well researched combinatorial optimization
-problem. The goal is to find the shortest tour that visits each city in a given
-list exactly once and then returns to the starting city. In graph theory a TSP
-tour is called a \emph{Hamiltonian cycle.} But for the seriation problem, we
-are looking for a Hamiltonian path. \cite{seriation:Garfinkel:1985} described a
-simple transformation of the TSP to find the shortest Hamiltonian path. To the
-original $n \times n$ dissimilarity matrix $\mathbf{D}$ an additional row and
-column of 0's is added (sometimes this is referred to as a \emph{dummy city}).
-The solution of this $(n+1)$-city TSP, gives the shortest path where the city
-representing the added row/column cuts the cycle into a linear path.
+Seriation by minimizing the length of a Hamiltonian path through a graph
+is equal to solving a traveling salesperson problem.  The traveling
+salesperson or salesman problem (TSP) is a well known and well
+researched combinatorial optimization problem. The goal is to find the
+shortest tour that visits each city in a given list exactly once and
+then returns to the starting city. In graph theory a TSP tour is called
+a \emph{Hamiltonian cycle.} But for the seriation problem, we are
+looking for a Hamiltonian path. \cite{seriation:Garfinkel:1985}
+described a simple transformation of the TSP to find the shortest
+Hamiltonian path.  An additional row and column of 0's is added
+(sometimes this is referred to as a \emph{dummy city}) to the original
+$n \times n$ dissimilarity matrix $\mathbf{D}$.  The solution of this
+$(n+1)$-city TSP, gives the shortest path where the city representing
+the added row/column cuts the cycle into a linear path.
 
 As the general seriation problem, solving the TSP is difficult.  In the
 seriation case with $n+1$ cities, $n!$ tours have to be checked. However,
@@ -524,26 +529,28 @@ With an exact TSP solver, the optimal solution can be found.
 \subsection{Hierarchical clustering}
 \label{sec:hierarchical_clustering}
 
-Hierarchical clustering produces a series of nested clusterings which can be
-visualized by a dendrogram, a binary tree where each internal node represents a
-split into two subtrees and has a measure of similarity/dissimilarity attached
-to it.  As a simple heuristic to find a linear order of objects, the order of
-the leaf nodes in a dendrogram structure can be used. This idea is used, e.g.,
-by heat maps to reorder rows and columns with the aim to place more similar
-objects and variables closer together. 
+Hierarchical clustering produces a series of nested clusterings which
+can be visualized by a dendrogram, a tree where each internal node
+represents a split into subtrees and has a measure of
+similarity/dissimilarity attached to it.  As a simple heuristic to find
+a linear order of objects, the order of the leaf nodes in a dendrogram
+structure can be used. This idea is used, e.g., by heat maps to reorder
+rows and columns with the aim to place more similar objects and
+variables closer together.
 
 %For hierarchical clustering several methods are available (e.g.,
 %single linkage, average linkage, complete linkage, ward method) resulting in
 %different dendrograms. 
 %However, 
-The order of leaf nodes in a dendrogram is not unique. A dendrogram for $n$
-objects has $2^{n-1}$ internal nodes and at each internal node the left and
-right subtree (or leaves) can be swapped resulting in $2^{n-1}$ distinct leaf
-orderings.  To find an unique or optimal order, an additional criterion has to
-be defined.  \cite{seriation:Gruvaeus:1972} suggest to obtain a unique order by
-requiring to order the leaf nodes such that at each level the objects at the
-edge of each cluster are adjacent to that object outside the cluster to which
-it is nearest.
+The order of leaf nodes in a dendrogram is not unique.  A binary
+(two-way splits only) dendrogram for $n$ objects has $2^{n-1}$ internal
+nodes and at each internal node the left and right subtree (or leaves)
+can be swapped resulting in $2^{n-1}$ distinct leaf orderings.  To find
+an unique or optimal order, an additional criterion has to be defined.
+\cite{seriation:Gruvaeus:1972} suggest to obtain a unique order by
+requiring to order the leaf nodes such that at each level the objects at
+the edge of each cluster are adjacent to that object outside the cluster
+to which it is nearest.
 
 \cite{seriation:Bar-Joseph:2001} suggest to rearrange the dendrogram such that
 the Hamiltonian path connecting the leaves is minimized and called this the
@@ -602,22 +609,24 @@ already provides
     \label{fig:infrastructure}
 \end{figure}
 
-However, to represent the permutation vector for each mode no data structures
-are available. \pkg{seriation} provides the necessary data structure (using the
-S3 class system) depicted in Figure~\ref{fig:infrastructure}. The class
-\code{ser\_permutation} represents the permutation information for $k$-mode
-data (including the cases of $k=1$ and $k=2$). It consists of $k$ permutation
-vectors, where each permutation vector is represented by an object of a
-concrete implementation of the abstract class \code{ser\_permutation\_vector}.
-This design is used to allow to use arbitrary representations for the
-permutation vectors without removing additional available information by just
-using an integer vector. Currently, the permutation vector can be stored as a
-simple integer vector or as an object of class \code{hclust} (defined in
-package \pkg{stats}). \code{hclust} describes a hierarchical clustering tree
-(dendrogram) including an ordering for the trees node leaves which provides a
-permutation for all objects (see Section~\ref{sec:hierarchical_clustering}).
+However, R provides no classes for representing permutation vectors.
+\pkg{seriation} adds the necessary data structure (using the S3 class
+system) as depicted in Figure~\ref{fig:infrastructure}. The class
+\code{ser\_permutation} represents the permutation information for
+$k$-mode data (including the cases of $k=1$ and $k=2$). It consists of
+$k$ permutation vectors, where each permutation vector is represented by
+an object of a concrete implementation of the abstract class
+\code{ser\_permutation\_vector}.  This design is used to allow to use
+arbitrary representations for the permutation vectors without removing
+additional available information by just using an integer
+vector. Currently, the permutation vector can be stored as a simple
+integer vector or as an object of class \code{hclust} (defined in
+package \pkg{stats}). \code{hclust} describes a hierarchical clustering
+tree (dendrogram) including an ordering for the trees node leaves which
+provides a permutation for all objects (see
+Section~\ref{sec:hierarchical_clustering}).
 
-\code{ser\_permutation\_vector} has a constructor
+Class \code{ser\_permutation\_vector} has a constructor
 \func{ser\_permutation\_vector} which converts data into the correct concrete
 subclass of \code{ser\_permutation\_vector} and checks if it contains a proper
 permutation vector.  For \code{ser\_permutation\_vector} the methods
@@ -629,13 +638,13 @@ of \code{ser\_permutation\_vector}.  With this design, other classes
 representing permutations can be easily incorporated by just adding an
 appropriate \func{get\_order} methods for the new class.
 
-For \code{ser\_permutation} also a constructor is provided which can bind $k$
+For \code{ser\_permutation} a constructor is provided which can bind $k$
 \code{ser\_permutation\_vector} objects together into an object for $k$-mode
-data. \code{ser\_permutation} is implemented as a list of length $k$ and each
+data. \code{ser\_permutation} is implemented as a list of length~$k$ and each
 element contains a \code{ser\_permutation\_vector} object.  Methods like
-\func{length}, accessing elements with \code{"[["}, \code{"[[<-"}, subsetting
-with \code{"["}, and combining  with \func{c} work as expected.  Also a
-\func{print} method is provided. Finally, direct access to the raw permutation
+\func{length}, accessing elements with \code{[[}, \code{[[<-}, subsetting
+with \code{[}, and combining  with \func{c} work as expected.  Also a
+\func{print} method are provided. Finally, direct access to the raw permutation
 vectors is available using \func{get\_order}.  Here the second argument (which
 defaults to $1$) specifies the dimension (mode) for which the order vector is
 requested.
@@ -649,7 +658,7 @@ where \code{x} is the input data, \code{method} is a string defining the
 seriation method to be used and \code{control} can contain a list with
 additional information for the algorithm.  \func{seriation} returns an object
 of class \code{ser\_permutation} with a length conforming to the number of
-dimensions of \code{x}.  For \code{matrix} the additional argument
+dimensions of~\code{x}.  For \code{matrix} the additional argument
 \code{margin} can be used if only column (\code{margin = 1}) or row seriation
 (\code{margin = 2}) is needed.
 
@@ -816,7 +825,8 @@ order
 The result is an object of class \code{ser\_permutation} for 
 one-mode data. The permutation vector length is $150$ for the
 $150$ objects in the iris data set and the used seriation method is
-\code{"ARSA"}, a simulated annealing heuristic.
+\code{"ARSA"}, a simulated annealing heuristic
+(see~Table~\ref{tab:methods}).
 
 To visually inspect the effect of seriation on the distance matrix, we use
 matrix shading with \func{pimage} (the result is shown in 
@@ -853,14 +863,13 @@ Naturally, the reordered dissimilarity matrix achieves better values for all
 criteria (note that the measure of effectiveness and inertia 
 are merit functions and larger values are better).
 
-Also the original data matrix can be easily inspected using \code{pimage}.
+Also the original data matrix can be easily inspected using \func{pimage}.
 To use the result of the seriation for the original two-mode data,
 we have to add a permutation vector to the \code{ser\_permutation}
 object. To leave the columns in the original order, we add an 
 identity permutation vector to the permutations object using the combine 
 function \func{c}. 
 
-\marginpar{do the identity vector better}
 <<label=pimage2, eval=FALSE>>=
 pimage(x, main = "Random")
 order_2mode <- c(order, ser_permutation(seq_len(ncol(x))))
@@ -980,16 +989,16 @@ x <- scale(x, center = FALSE)
 @
 
 To produce a heat map with optimally reordered dendrograms, the function
-\func{hmap} can be used with its default settings. With this settings, the
+\func{hmap} can be used with its default settings. With these settings, the
 Euclidean distances between rows and between columns are calculated (with
 \func{dist}), hierarchical clustering (\func{hclust}) is performed, the
 resulting dendrograms are optimally reordered, and \func{heatmap} in package
 \pkg{stats} is used for plotting. 
-
 <<eval=FALSE>>=
 hmap(x)
 hmap(x, hclustfun = NULL)
 @
+(see Figure~\ref{fig:heatmap}).
 
 If \code{hclustfun = NULL} is used, instead of hierarchical clustering,
 seriation on the dissimilarity matrices for rows and columns is
@@ -1068,11 +1077,8 @@ make values comparable across columns (variables), the ranks of the values in
 each row are used instead of the original values.  
 
 <<>>=
-library("seriation")
 data("Irish")
-
-scale_by_rank <- function(x) apply(x, 2, rank)
-orig_matrix <- scale_by_rank(Irish[,-6])
+orig_matrix <- apply(Irish[,-6], 2, rank)
 @
 
 For seriation, we calculate distances between rows and between columns using
@@ -1104,10 +1110,10 @@ bertinplot(orig_matrix, order)
 @
 \begin{figure}
     \centering
-    \includegraphics[width=15cm, trim=0 60 0 0]{seriation-bertin1} \\
+    \includegraphics[width=15cm, trim=60 60 0 0]{seriation-bertin1} \\
     (a)
     
-    \includegraphics[width=15cm, trim=0 60 0 0]{seriation-bertin2} \\
+    \includegraphics[width=15cm, trim=60 60 0 0]{seriation-bertin2} \\
     (b)    
     \caption{Bertin plot for the (a) original arrangement and the (b) 
     reordered Irish data set.}
@@ -1140,7 +1146,7 @@ called \emph{incidence matrices} since a $1$ in a cell indicates the incidence
 of an event. In archeology such an event could be that a special type of
 artifact was found at a certain archaeological site.
 This can be seen as a simplification of a so called \emph{abundance matrix}
-which codes in each cell the (relative) frequency or quantity of a an artifact
+which codes in each cell the (relative) frequency or quantity of an artifact
 type at a site. For a comparison of incidence and abundance matrices
 in archeology we refer the reader to~\cite{seriation:Ihm:2005}. 
 
@@ -1160,7 +1166,6 @@ panel function \func{panel.squares} without spacing
 to plot black squares.
 
 <<fig=TRUE, include=FALSE, label=binary1, width=9>>=
-library("seriation")
 data("Townships")
 
 bertinplot(Townships, options = list(panel=panel.squares, spacing = 0, 
@@ -1183,16 +1188,16 @@ bertinplot(Townships, order, options = list(panel=panel.squares, spacing = 0,
     frame = TRUE))
 @
 
-The reordered matrix is displayed in Figure~\ref{fig:binary}(b).
-A clear structure is visible. The variables (rows in a Bertin plot)
-can be split into the three categories describing different evolution states
-of townships:
+The reordered matrix is displayed in Figure~\ref{fig:binary}(b).  A
+clear structure is visible.  The variables (rows in a Bertin plot) can be
+split into the three categories describing different evolution states of
+townships:
 \begin{enumerate}
-    \item {\bf Rural:} No doctor, one-room school and possibly also
+    \item Rural: No doctor, one-room school and possibly also
         no water supply
-    \item {\bf Intermediate:} Land reallocation, veterinary and agricultural 
+    \item Intermediate: Land reallocation, veterinary and agricultural 
         cooperative
-    \item {\bf Urban:} Railway station, high school and police station
+    \item Urban: Railway station, high school and police station
 \end{enumerate}
 
 The townships also clearly fall into these three groups which tentatively can
@@ -1223,9 +1228,11 @@ the data set). Also the two types of stress are improved
 significantly.
 
 \subsection{Dissimilarity plot}
-Judging the quality of a found cluster solution is a research topic since the
-invention of cluster analysis. This is especially important since all popular
-cluster algorithms produce a clustering even for data without a structure.
+
+Assessing the quality of an obtained cluster solution has been a
+research topic since the invention of cluster analysis. This is
+especially important since all popular cluster algorithms produce a
+clustering even for data without a ``cluster'' structure.
 
 %A method to judge the quality of a cluster solution is by inspecting a
 %visualization. For hierarchical clustering
@@ -1262,21 +1269,22 @@ should be a matrix with low dissimilarity values forming blocks around the main
 diagonal.  However, using coarse seriation, the order of the clusters has to be
 predefined and the objects within each cluster are unordered.
 
-\func{dissplot} aims at reflecting global structure between clusters as well as
-the micro structure within clusters. To achieve this, we arrange the clusters
-as well as the objects within each cluster using seriation techniques.  To
-arrange clusters, an inter-cluster dissimilarity matrix is calculated using the
+Dissimilarity plots as produce by \func{dissplot} aims a reflecting
+global structure between clusters as well as the micro structure within
+clusters. To achieve this, we arrange the clusters as well as the
+objects within each cluster using seriation techniques.  To arrange
+clusters, an inter-cluster dissimilarity matrix is calculated using the
 average between cluster dissimilarities. \func{seriate} is used on this
-inter-cluster dissimilarity matrix to arrange the clusters relative to each
-other resulting in on average more similar clusters to appear closer together.
-Within each cluster, \func{seriate} is used again on the sub-matrix of the
-dissimilarity matrix concerning only the objects in the cluster.
+inter-cluster dissimilarity matrix to arrange the clusters relative to
+each other resulting in on average more similar clusters to appear
+closer together.  Within each cluster, \func{seriate} is used again on
+the sub-matrix of the dissimilarity matrix concerning only the objects
+in the cluster.
 
 For the example, we use again Euclidean distance between the objects in the
 iris data set.
 
 <<>>=
-library("seriation")
 data("iris")
 iris <- iris[sample(seq_len(nrow(iris))),]
 d <- dist(as.matrix(iris[-5]), method = "euclidean")
@@ -1289,7 +1297,7 @@ technique from \func{seriate.dist} which is a TSP heuristic. Since we did
 not provide a clustering, the whole matrix is reordered in one piece.
 The result in shown in Figure~\ref{fig:dissplot1}.
 From Figure~\ref{fig:dissplot1}(b) it seems that there is a clear structure in
-the data which suggesting a two cluster solution.
+the data which suggests a two cluster solution.
 
 <<eval=FALSE, label=dissplot1>>=
 ## plot original matrix
@@ -1440,15 +1448,15 @@ provides a wide array of seriation methods for different input data, e.g.,
 dissimilarities, binary and general data matrices focusing on combinatorial
 optimization.
 
-Based on seriation, several visualization techniques are provides by
-\pkg{seriation}. Especially the optimally reordered heat map, the bertin plot
-and the dissimilarity plot have to be mentioned since they present clear
-improvements over standard plots.
+Based on seriation, several visualization techniques are provided by
+\pkg{seriation}.  In particular, the optimally reordered heat map, the
+Bertin plot and the dissimilarity plot present clear improvements over
+standard plots.
 
-Future work on \pkg{seriation} will focus on adding different seriation methods.
-For example, by adding methods for block seriation which aim to finding
-simultaneous partitions of rows and columns in a data matrix~\citep[see,
-e.g.,][]{seriation:Marcotorchino:1987}.
+Future work on \pkg{seriation} will focus on adding further seriation
+methods, such as for example methods for block seriation which aim to
+finding simultaneous partitions of rows and columns in a data
+matrix~\citep[see, e.g.,][]{seriation:Marcotorchino:1987}.
 
 
 \section*{Acknowledgments}

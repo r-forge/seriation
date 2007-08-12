@@ -65,7 +65,7 @@ ser_permutation <- function(x,...) {
     ddd <- list(...)
     if(inherits(x, "ser_permutation")) {
         if(length(ddd) != 0) warning(sQuote("x"),
-            " is already ser_permutation, ... ignorred")
+            " is already ser_permutation, ... ignored")
         return(x)
     }
 
@@ -86,15 +86,18 @@ get_order.ser_permutation <- function(x, dim = 1) get_order(x[[dim]])
 
 ## print et al
 print.ser_permutation <- function(x, ...) {
-    cat("object of class", sQuote(class(x)), "\n")
+    cat(gettextf("object of class %s\n",
+                 paste(sQuote(class(x)), collapse = ", ")))
 
-    cat("contains permutation vectors for ", length(x), 
-        "-mode data\n\n", sep = "")
+    cat(gettextf("contains permutation vectors for %d-mode data\n\n",
+                 length(x)))
    
-    print(data.frame(
-        "vector length" = sapply(x, length),
-        "seriation method" = sapply(x, get_method, printable = TRUE)
-    ))
+    print(data.frame("vector length" = sapply(x, length),
+                     "seriation method" =
+                     sapply(x, get_method, printable = TRUE),
+                     check.names = FALSE))
+
+    invisible(x)
 }
 
 c.ser_permutation <- function(..., recursive = FALSE) 
