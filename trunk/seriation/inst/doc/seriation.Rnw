@@ -657,7 +657,7 @@ defined as:
 \end{quotation}
 where \code{x} is the input data, \code{method} is a string defining the
 seriation method to be used and \code{control} can contain a list with
-additional information for the algorithm.  \func{seriation} returns an object
+additional information for the algorithm.  \func{seriate} returns an object
 of class \code{ser\_permutation} with a length conforming to the number of
 dimensions of~\code{x}.  For \code{matrix} the additional argument
 \code{margin} can be used if only column (\code{margin = 1}) or row seriation
@@ -720,7 +720,7 @@ with the values of the requested functions.  We already
 defined different loss/merit functions for seriation in
 Section~\ref{sec:seriation}.  In Table~\ref{tab:criteria} we indicate the
 loss/merit functions currently available in the package.  Additionally, the
-pseudo method \code{"all"} (which is the default) can be used which calculated
+pseudo method \code{"all"} (which is the default) can be used to calculate
 the values for all applicable loss/merit functions.
 
 \begin{table}[t]
@@ -923,7 +923,7 @@ tmp <- dev.off()
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{seriation-pimage3}
-    \caption{Image plot the distance matrix for the iris data
+    \caption{Image plot of the distance matrix for the iris data
     using rearrangement by different seriation methods.}
     \label{fig:pimage3}
 \end{figure}
@@ -1052,7 +1052,7 @@ To quantify homogeneity, a purity function
 \begin{displaymath}
   \phi = \Phi(\mathbf{X})  
 \end{displaymath}
-is defined. Let $\Pi$ be the set of all permutation
+is defined. Let $\Pi$ be the set of all permutation functions
 $\pi$ for matrix $\mathbf{X}$.
 Note that function $\pi$ performs row and column permutations on a matrix.
 The optimal permutation with respect to
@@ -1135,7 +1135,7 @@ consecutively) in the original data matrix in Figure~\ref{fig:bertin}(a), it
 takes some effort to find structure in the data.  For example, it seems that
 the variables `Marriage', `Divorce', `Right to Travel' and `Right to
 Information' are correlated since the values are all high in the block made up
-by the columns of the communities in Dublin.  The reordered matrix affirm this
+by the columns of the communities in Dublin.  The reordered matrix affirms this
 but makes the structure much more apparent. Especially the contribution of low
 values (which are not highlighted) to the overall structure becomes only
 visible after rearrangement.
@@ -1254,7 +1254,7 @@ clustering even for data without a ``cluster'' structure.
 %
 %Silhouettes
 
-Matrix shading is an old technique to visualize clustering by displaying the
+Matrix shading is an old technique to visualize clusterings by displaying the
 rearranged matrices~\citep[see,
 e.g.,][]{seriation:Sneath:1973,seriation:Ling:1973,seriation:Gale:1984}.
 Initially matrix shading was used in connection with hierarchical clustering,
@@ -1399,11 +1399,11 @@ res
 
 The resulting plot is shown in Figure~\ref{fig:dissplot3}(a).  The
 inter-cluster dissimilarities are shown as gray blocks and the average object
-dissimilarity within each clusters as gray triangles below the main diagonal of
+dissimilarity within each cluster as gray triangles below the main diagonal of
 the matrix. Since the clusters are arranged such that more similar clusters
 are closer together, it is easy to see in Figure~\ref{fig:dissplot3}(a)
 that clusters 1, 3 and 6 as well as clusters 2, 4, 8, 5, 7, 9 and 10 
-are very similar and build two blocks. 
+are very similar and form two blocks. 
 This suggests again that a two cluster solution would
 be reasonable.
 
@@ -1417,10 +1417,10 @@ plot(res, options = list(main = "Seriation - threshold",
     threshold = 1.5))
 @
 
-In resulting plot in Figure~\ref{fig:dissplot3}(b), we see that the
+In the resulting plot in Figure~\ref{fig:dissplot3}(b), we see that the
 block containing 2, 4, 8, 5, 7, 9 and 10 is very well defined and
 cleanly separated from the other block. This suggests that these clusters
-in a solution with less clusters should form together a cluster.
+should form together a cluster in a solution with less clusters.
 The other block is less well defined. There is considerable overlap between
 clusters 3 and 6, but also cluster 1 and 3 share similar objects.
 
@@ -1455,7 +1455,7 @@ Bertin plot and the dissimilarity plot present clear improvements over
 standard plots.
 
 Future work on \pkg{seriation} will focus on adding further seriation
-methods, such as for example methods for block seriation which aim to
+methods, such as for example methods for block seriation which aim at
 finding simultaneous partitions of rows and columns in a data
 matrix~\citep[see, e.g.,][]{seriation:Marcotorchino:1987}.
 
