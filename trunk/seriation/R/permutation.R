@@ -19,12 +19,12 @@ ser_permutation_vector <- function(x, method = NULL) {
 
 ## accessors
 get_order <- function(x, ...) UseMethod("get_order")
-get_order.ser_permutation_vector <- function(x) NextMethod()
-get_order.default <- function(x) 
+get_order.ser_permutation_vector <- function(x, ...) NextMethod()
+get_order.default <- function(x, ...) 
     stop(paste("\nNo permutation accessor implemented for class: ", class(x)))
 
-get_order.hclust <- function(x) x$order
-get_order.integer <- function(x) as.integer(x)
+get_order.hclust <- function(x, ...) x$order
+get_order.integer <- function(x, ...) as.integer(x)
 
 ## currently method is an attribute of permutation
 get_method <- function(x, printable = FALSE) {
@@ -82,7 +82,7 @@ ser_permutation <- function(x,...) {
 }
 
 ## so we can say get_order to permutations
-get_order.ser_permutation <- function(x, dim = 1) get_order(x[[dim]])
+get_order.ser_permutation <- function(x, dim = 1, ...) get_order(x[[dim]])
 
 ## print et al
 print.ser_permutation <- function(x, ...) {

@@ -8,7 +8,7 @@ Date: 2006-xx-xx
 Depends: stats, cluster, TSP, gclus, grid
 Suggests: MASS
 Description: Infrastructure for seriation with an implementation of several
-    unidimesional seriation techniques to reorder matrices, dissimilarity
+    seriation/sequencing techniques to reorder matrices, dissimilarity
     matrices, and dendrograms. Also contains some visualizations techniques
-    based on unidimensional seriation.
+    based on seriation.
 License: GPL-2 

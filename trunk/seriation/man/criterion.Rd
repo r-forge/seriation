@@ -4,8 +4,9 @@
 \alias{criterion.matrix}
 \title{Criterion for a loss/merit function for data given a permutation}
 \description{
-  Compute the value for different loss/merit function for
-  data and a given a permutation.
+Compute the value for different loss functions \eqn{L} and
+merit function \eqn{M} for
+  data given a permutation.
 }
 \usage{
 criterion(x, order = NULL, method = "all")
@@ -29,26 +30,6 @@ The following criteria to judge the quality of a
 certain permutation of the objects in a dissimilarity matrix 
 are currently implemented:
 \describe{
-\item{\code{"AR\_events", "AR\_deviations"}}{Anti-Robinson events (Chen 2002).
-    
-    A Robinson matrix (Robinson 1951) has its columns arranged such that the
-    values of the cells always decrease when moving away from the diagonal. In
-    practice matrices rarely are Robinson matrices. The three criteria measure
-    the differences of a matrix to a Robinson matrix.  All three criteria
-    use the anti-Robinson events, but weight them differently:
-
-    \deqn{\sum_{i=1}^p (\sum_{j<k<i} I(d(i,j)<d(i,k)) w(i,j,k)%
-    + \sum_{i<j<k} I(d(i,j) > d(i,k)) w(i,j,k)),}
-    
-    where \eqn{I} is an indicator function and \eqn{w(i,j,k)} is a weight.
-
-    For the raw number of events (\code{"AR\_events"}), the weight is 
-    \deqn{w(i,j,k) = 1.}
-
-    For the sum of absolute anti-Robinson deviations (\code{"AR\_deviations"}), the
-    deviations are used as the weight, i.e.,  
-    \deqn{w(i,j,k) = |d(i,j) - d(i,k)|.}
-}
 
 \item{\code{"Gradient\_raw", "Gradient\_weighted"}}{Gradient measures 
     (Hubert et al 1987).
@@ -61,7 +42,7 @@ are currently implemented:
     anti-Robinson form is
 
     \deqn{
-    \sum_{i<k<j}f(d_{ij}, d_{ik}) + \sum_{i<k<j}f(d_{ij}, d_{kj})}
+    M(D) = \sum_{i<k<j}f(d_{ij}, d_{ik}) + \sum_{i<k<j}f(d_{ij}, d_{kj})}
     where \eqn{f(\cdot,\cdot)} 
     is a function which defines how a violation
     or satisfaction
@@ -70,15 +51,42 @@ are currently implemented:
      
     Hubert et al (1987) suggest two functions. The first
     function is given by: 
-    \deqn{f(z,y) = \mathrm{sign}(z-y) = +1 \quad \text{if} \quad z > y; \quad 0 \quad \text{if} \quad z = y; \quad \text{and} \quad -1 \quad \text{if} \quad z < y.}
+    \deqn{f(z,y) = \mathrm{sign}(y-z) = +1 \quad \mathrm{if} \quad z < y; \quad 0 \quad \mathrm{if} \quad z = y; \quad \mathrm{and} \quad -1 \quad \mathrm{if} \quad z > y.}
 
     It results in raw number of triples satisfying the gradient
     constraints minus triples which violate the constraints.
 
     The second function is defined as:
-    \deqn{f(z,y) = |z-y|\mathrm{sign}(z-y)}
+    \deqn{f(z,y) = |y-z|\mathrm{sign}(y-z) = y-z}
     It weights the each satisfaction or violation by the difference by
     its magnitude given by the absolute difference between the values.
+}
+
+\item{\code{"AR\_events", "AR\_deviations"}}{Anti-Robinson events (Chen 2002).
+    An even simpler loss function can be created in the same way as the gradient
+    measures above by concentrating on violations only. 
+    \deqn{
+        L(D) = 
+        \sum_{i<k<j}f(d_{ik}, d_{ij}) + \sum_{i<k<j}f(d_{kj}, d_{ij}) 
+    }
+
+    To only count the violations we use
+    \deqn{
+        f(z, y) = I(z, y) = 
+            1 \quad \mathrm{if} \quad z < y \quad \mathrm{and} \quad 
+            0 \quad \mathrm{otherwise.}
+   }
+
+
+   \eqn{I(\cdot)} is an indicator function returning 1 only for violations.
+   Chen (2002) presented a formulation for an equivalent 
+loss function and called the violations \emph{anti-Robinson events}
+and also introduced a weighted versions of the loss
+function resulting in
+\deqn{
+        f(z, y) = |y-z|I(z, y)
+    }
+    using the absolute deviations as weights.
 }
 
 \item{\code{"Path\_length"}}{Hamiltonian path length (Caraux and Pinloche 2005).
@@ -87,7 +95,9 @@ are currently implemented:
     through a graph where each node represents an object and is visited exactly
     once, i.e., a Hamilton path. The length of the path is defined as the sum
     of the edge weights, i.e., dissimilarities.
-    
+
+    \deqn{L(D) = \sum_{i=1}^{n-1} d_{i,i+1}}
+
     The length of the Hamiltonian path is equal to the 
     value of the minimal span loss function (as used by Chen 2002).
     Both notions are related to the \emph{traveling salesperson problem (TSP).}
@@ -100,7 +110,7 @@ are currently implemented:
     Measures the moment of the inertia of dissimilarity values 
     around the diagonal as
     
-    \deqn{\sum_i \sum_j d(i,j)|i-j|^2.}
+    \deqn{M(D) = \sum_i \sum_j d(i,j)|i-j|^2.}
     
     \eqn{|i-j|} is used as a measure for the distance to the diagonal and
     \eqn{d(i,j)} gives the weight. This criterion gives higher weight
@@ -112,7 +122,7 @@ are currently implemented:
     The sum of squares of deviations between the
     dissimilarities and rank differences (in the matrix) between two
     elements: 
-    \deqn{\sum_i \sum_j (d(i,j) - |i-j|)^2,}
+    \deqn{L(D) = \sum_i \sum_j (d(i,j) - |i-j|)^2,}
     where \eqn{d(i,j)} is an element of the dissimilarity matrix \eqn{D} and
     \eqn{|i-j|} is the rank difference between the objects.
    
@@ -137,7 +147,7 @@ are implemented:
     The measure of effectiveness (ME) for matrix 
     \eqn{X}, is defined as 
     
-    \deqn{1/2 \sum_{i=1}^{n} \sum_{j=1}^{m} x_{i,j}(x_{i,j-1}+x_{i,j+1}+x_{i-1,j}+x_{i+1,j})}
+    \deqn{M(X) = 1/2 \sum_{i=1}^{n} \sum_{j=1}^{m} x_{i,j}(x_{i,j-1}+x_{i,j+1}+x_{i-1,j}+x_{i+1,j})}
 
     with, by convention
 

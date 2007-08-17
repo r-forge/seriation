@@ -12,14 +12,14 @@ Method to get an integer permutation vector from an object of class
 \usage{
 get_order(x, \ldots)
 
-\method{get_order}{ser_permutation_vector}(x)
-\method{get_order}{ser_permutation}(x, dim = 1)
+\method{get_order}{ser_permutation_vector}(x, \ldots)
+\method{get_order}{ser_permutation}(x, dim = 1, \ldots)
 }
 \arguments{
   \item{x}{ an object of class \code{ser_permutation} or 
       \code{ser_permutation_vector}}
   \item{dim}{ which dimension should be returned?}
-  \item{\ldots}{further arguments.}
+  \item{\ldots}{further arguments (unused).}
     }
 %\details{
 %}

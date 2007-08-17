@@ -89,13 +89,15 @@ example, \cite{seriation:Hubert:1987} propose dynamic programming and
 larger problems only heuristics can be employed.
 
 It has to be noted that seriation has a rich history in archeology.
-\cite{seriation:Petrie:1899} was the first to use seriation as a formal
-method.  He applied it to find a chronological order for graves
-discovered in the Nile area given objects found there.  The idea was
-that different objects continuously come into and go out of fashion and
-a cross-tabulation of grave sites and objects can be rearranged using
-row and column permutations till all large values are close to the
-diagonal.  Initially, the rearrangement of rows and columns of this
+\cite{seriation:Petrie:1899} was the first to use seriation as a formal method.
+He applied it to find a chronological order for graves discovered in the Nile
+area given objects found there. He used a cross-tabulation of grave sites and
+objects and rearranged the table using row and column permutations till all
+large values were close to the diagonal. In the rearranged table graves with
+similar objects are closer to each other. Together with the assumption that
+different objects continuously come into and go out of fashion, the order of
+graves in the rearranged table suggests a chronological order.
+Initially, the rearrangement of rows and columns of this
 contingency table was done manually and the adequacy was only judged
 subjectively by the researcher.  Later, \cite{seriation:Robinson:1951},
 \cite{seriation:Kendall:1971} and others proposed measures of agreement
@@ -221,11 +223,11 @@ satisfaction of a gradient condition for an object triple ($O_i$, $O_k$ and
 $O_j$) is counted.  \cite{seriation:Hubert:1987} suggest two functions. The
 first function is given by:
 \begin{equation}
-    f(z,y) = \mathrm{sign}(z-y) = 
+    f(z,y) = \mathrm{sign}(y-z) = 
     \begin{cases}
-        +1 \quad \text{if} \quad z > y; \\
+        +1 \quad \text{if} \quad z < y; \\
         \phantom{+}0 \quad \text{if} \quad z = y; \\
-        -1 \quad \text{if} \quad z < y.
+        -1 \quad \text{if} \quad z > y.
     \end{cases}
 \end{equation}
 It results in the raw number of triples satisfying the gradient
@@ -233,9 +235,9 @@ constraints minus triples which violate the constraints.
 
 The second function is defined as:
 \begin{equation}
-    f(z,y) = |z-y|\mathrm{sign}(z-y) = z-y
+    f(z,y) = |y-z|\mathrm{sign}(y-z) = y-z
 \end{equation}
-It weighs each satisfaction or violation by the difference by its
+It weighs each satisfaction or violation by its
 magnitude given by the absolute difference between the values.
 
 \subsection{Anti-Robinson events}
@@ -251,7 +253,7 @@ To only count the violations we use
     f(z, y) = I(z, y) = 
     \begin{cases}
         1 \quad \text{if} \quad z < y \quad \text{and} \\
-        0 \quad \text{if} \quad z = y \quad \text{otherwise.}
+        0 \quad \text{otherwise.}
     \end{cases}
 \end{equation}
 $I(\cdot)$ is an indicator function returning $1$ only for violations.
@@ -260,7 +262,7 @@ loss function and called the violations \emph{anti-Robinson events}.
 \cite{seriation:Chen:2002} also introduced a weighted versions of the loss 
 function resulting in
 \begin{equation}
-    f(z, y) = |z-y|I(z, y)
+    f(z, y) = |y-z|I(z, y)
 \end{equation}
 using the absolute deviations as weights.
 
@@ -344,7 +346,7 @@ ME was developed for two-way two-mode data, however, ME can also be used for a
 symmetric  matrix (one-mode data) and gets maximal only if all large values are
 grouped together around the main diagonal. 
 
-Note that from the definition in equation~(\ref{equ:ME}) 
+Note that the definition in equation~(\ref{equ:ME}) 
 can be rewritten as
 \begin{equation}
     M(\mathbf{X}) =
@@ -506,12 +508,12 @@ following three steps:
 
 This greedy algorithm works fast and is only dependent on the choice of the
 first column/row. This dependence can be reduced by repeating the
-procedure several times with different choices and return the solution
+procedure several times with different choices and returning the solution
 with the highest ME.
 
 Although \cite{seriation:McCormick:1972} use BEA also for non-binary data,
 \cite{seriation:Arabie:1990} argue that the measure of effectiveness only
-serves its indented purpose of finding a arrangement which is
+serves its indended purpose of finding a arrangement which is
 close to Robinson form for binary data and should therefore only be
 used for binary data.
 
@@ -1074,8 +1076,8 @@ As an example, we use the results of $8$ constitutional referenda for $41$
 Irish communities~\citep{seriation:Falguerolles:1997}\footnote{The Irish data
 set is included in this package. The original data and the text of the
 referenda can be obtained from~\url{http://www.electionsireland.org/}}.  To
-make values comparable across columns (variables), the ranks of the values in
-each row are used instead of the original values.  
+make values comparable across columns (variables), the ranks of the values for
+each variable are used instead of the original values.  
 
 <<>>=
 data("Irish")

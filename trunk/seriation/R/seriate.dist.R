@@ -77,12 +77,16 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
         return(order(sc[,1]))
     
     }else if(control$method == "isoMDS"){
-        sc <- isoMDS(x+1e-6, trace = FALSE, k=1)
-        return(order(sc$points[,1]))
+        if(require("MASS", quietly = TRUE)) {
+            sc <- isoMDS(x+1e-6, trace = FALSE, k=1)
+            return(order(sc$points[,1])) 
+        } else stop("please install package MASS for this method.")
     
     }else if(control$method == "sammon") {
-        sc <- sammon(x+1e-6, trace = FALSE, k=1)
-        return(order(sc$points[,1]))
+        if(require("MASS", quietly = TRUE)) {
+            sc <- sammon(x+1e-6, trace = FALSE, k=1)
+            return(order(sc$points[,1]))
+        } else stop("please install package MASS for this method.")
 
     }else stop("unknown method")
 

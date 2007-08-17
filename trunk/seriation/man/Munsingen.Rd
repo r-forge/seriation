@@ -46,8 +46,9 @@ horse_shoe_plot <- function(mds, sigma, threshold = mean(sigma)) {
 ## shuffle data
 x <- Munsingen[sample(nrow(Munsingen)),]
 
-## calculate matrix and do MDS
+## calculate matrix and do isoMDS (from package MASS)
 sigma <- SoS(x)
+library("MASS")
 mds <- isoMDS(1/(1+sigma))$points
 
 ## plot Kendall's horse shoe
