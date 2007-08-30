@@ -73,7 +73,8 @@ R~package~\pkg{seriation}}
 
 A basic problem in data analysis, called \emph{seriation} or sometimes
 \emph{sequencing}, is to arrange all objects in a set in a linear order
-given available data and some loss or merit function.  Together with
+given available data and some loss or merit function in order to
+reveal structural information.  Together with
 cluster analysis and variable selection, seriation is an important
 problem in the field of \emph{combinatorial data
   analysis}~\citep{seriation:Arabie:1996}.  Solving problems in
