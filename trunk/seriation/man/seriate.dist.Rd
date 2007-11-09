@@ -10,6 +10,8 @@ Given a dissimilarity matrix seriation typically tries to
 move small dissimilarity values as close as possible to the diagonal of the 
 symmetric dissimilarity matrix or tries to minimize the
 dissimilarities between neighboring objects.
+
+For matrix seriation \code{\link{seriate.matrix}}.
 }
 \usage{
 \method{seriate}{dist}(x, method = NULL, control = NULL, \ldots)

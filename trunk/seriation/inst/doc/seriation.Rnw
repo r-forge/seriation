@@ -514,7 +514,7 @@ with the highest ME.
 
 Although \cite{seriation:McCormick:1972} use BEA also for non-binary data,
 \cite{seriation:Arabie:1990} argue that the measure of effectiveness only
-serves its indended purpose of finding a arrangement which is
+serves its intended purpose of finding an arrangement which is
 close to Robinson form for binary data and should therefore only be
 used for binary data.
 

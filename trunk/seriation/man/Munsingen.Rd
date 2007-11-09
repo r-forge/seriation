@@ -36,8 +36,8 @@ S <- function(x, w = 1) {
 SoS <- function(x) S(S(x))
 
 ## Kendall's horse shoe (Hamiltonian arc)
-horse_shoe_plot <- function(mds, sigma, threshold = mean(sigma)) {
-    plot(mds, main = paste("Kendall's horse shoe with th =", threshold))  
+horse_shoe_plot <- function(mds, sigma, threshold = mean(sigma), ...) {
+    plot(mds, main = paste("Kendall's horse shoe with th =", threshold), ...)  
     l <- which(sigma > threshold, arr.ind=TRUE)
     lapply(1:nrow(l), FUN = function(i)
         lines(rbind(mds[l[i,1],], mds[l[i,2],])))

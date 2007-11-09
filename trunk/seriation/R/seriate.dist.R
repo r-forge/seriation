@@ -103,7 +103,7 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
     else return(hclust(d, method = control$method))
 }
 
-.seriate_hc <- function(x, control = NULL) .hclust_helper(x, control)$order
+.seriate_hc <- function(x, control = NULL) .hclust_helper(x, control)
 
 ## workhorses are in seriation.hclust
 .seriate_hc_gw <- function(x, control = NULL) 

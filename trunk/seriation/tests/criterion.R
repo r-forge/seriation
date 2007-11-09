@@ -10,18 +10,16 @@ m <- matrix(c(
 d <- dist(m)
 as.matrix(d)
 
-
-criterion(d, method="AR_events") 
+stopifnot(criterion(d,method="AR_events") == 2)
 ## 2
 
-criterion(d, method="AR_deviations")
-## 2.000000 - 1.732051 +  2.236068 - 2.000000 
-## = 0.504017
+stopifnot(criterion(d, method="AR_deviations") == 0.504017)
+## 2.000000 - 1.732051 +  2.236068 - 2.000000 = 0.504017
 
-criterion(d, method="Gradient_raw")
+stopifnot(criterion(d, method="Gradient_raw") == 4)
 ## 6 - 2 = 4
 
-criterion(d, method="Gradient_weighted")
+stopifnot(round(criterion(d, method="Gradient_weighted"), 6) ==  3.968119)
 ## -1 *(1.000000 - 2.236068 + 1.000000 - 2.000000 + 2.236068 - 2.000000 + 2.000000 - 1.732051 + 1.000000 - 1.732051 + 1.000000 - 2.000000 + 1.732051 - 2.000000 + 2.000000 - 2.236068) 
 ## = 3.968119
 

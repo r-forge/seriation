@@ -46,6 +46,16 @@ print.ser_permutation_vector <- function(x, ...) {
     cat("used seriation method:", sQuote(get_method(x, printable = TRUE)), "\n")
 }
 
+## fake summary (we dont really provide a summary, 
+## but summary produces now a reasonable result --- same as print)
+summary.ser_permutation_vector <- function(object, ...) {
+    object
+}
+summary.ser_permutation <- function(object, ...) {
+    object
+}
+
+
 ## helpers
 .valid_permutation_vector <- function(x) {
     perm <- get_order(x)
