@@ -5,7 +5,7 @@
 
 hclust_greedy <- function(dist) {
     if (!inherits(dist, "dist"))
-    stop(paste(sQuote("dist"),"not of class dist"))
+        stop("Argument 'dist' is not of class 'dist'.")
     if (!is.real(dist))
     mode(dist) <- "real"
     obj <- .Call("order_greedy", dist)

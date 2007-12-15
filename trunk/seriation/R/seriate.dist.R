@@ -1,24 +1,17 @@
 ## seriate dist objects
 
-seriate.dist <- function(x, method = NULL, control = NULL, ...){ 
-    
-    ## build-in methods
-    methods <- list(
-        "ARSA"  = .seriate_arsa,   
-        "BBURCG"= .seriate_bburcg,
-        "BBWRCG"= .seriate_bbwrcg,
-        "TSP"   = .seriate_tsp,
-        "Chen"  = .seriate_chen,
-        "MDS"   = .seriate_mds,
-        "HC"    = .seriate_hc,
-        "GW"    = .seriate_hc_gw,
-        "OLO"   = .seriate_hc_optimal
-    )
-    
-    method <- .choose_method(method, methods, "ARSA")
+seriate.dist <- function(x, method = NULL, control = NULL, ...)
+{
+    if(is.null(method))
+        method <- "ARSA"
+    else if(!is.character(method) || (length(method) != 1L))
+        stop("Argument 'method' must be a character string.")
 
-    order <- methods[[method]](x, control)
-    ser_permutation(ser_permutation_vector(order, method = method))
+    method <- get_seriation_method("dist", method)
+
+    order <- method$definition(x, control)
+    
+    ser_permutation(ser_permutation_vector(order, method = method$name))
 }
 
 
@@ -205,11 +198,12 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...){
     ret[[4]]
 }
 
-
-
-## generic for criterion
-seriate <- function(x, ...) UseMethod("seriate")
-seriate.default <- function(x, ...) 
-stop(paste("\nseriate not implemented for class: ", class(x)))
-
-
+set_seriation_method("dist", "ARSA", .seriate_arsa)
+set_seriation_method("dist", "BBURCG", .seriate_bburcg)
+set_seriation_method("dist", "BBWRCG", .seriate_bbwrcg)
+set_seriation_method("dist", "TSP", .seriate_tsp)
+set_seriation_method("dist", "Chen", .seriate_chen)
+set_seriation_method("dist", "MDS", .seriate_mds)
+set_seriation_method("dist", "HC", .seriate_hc)
+set_seriation_method("dist", "GW", .seriate_hc_gw)
+set_seriation_method("dist", "OLO", .seriate_hc_optimal)

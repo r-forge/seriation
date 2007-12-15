@@ -8,8 +8,8 @@ dissplot <- function(x, labels = NULL, method = NULL,
     ## make x dist
     if(!inherits(x, "dist")) {
         if(is.matrix(x) && isSymmetric(x)) x <- as.dist(x)
-        else stop(paste(sQuote("x"), "cannot be savely coerced to", 
-                sQuote("dist")))
+        else
+            stop("Argument 'x' cannot safely be coerced to class 'dist'")
     }
     
     res <- .arrange_dissimilarity_matrix(x, labels = labels,
@@ -23,13 +23,15 @@ dissplot <- function(x, labels = NULL, method = NULL,
 }
 
 ## print for cluster_dissimilarity_matrix
-print.cluster_dissimilarity_matrix <- function(x, ...) {
+print.cluster_dissimilarity_matrix <-
+function(x, ...)
+{
     d <- attr(x, "Size")
     k <- if(!is.null(x$k)) x$k else NA
 
-    cat("object of class", sQuote(class(x)), "\n")
+    cat(gettextf("object of class '%s'\n", class(x)))
     cat("matrix dimensions:", d, "x", d, "\n")
-    cat("dissimilarity measure:", sQuote(x$diss_measure), "\n")
+    cat(gettextf("dissimilarity measure: '%s'\n", x$diss_measure))
     cat("number of clusters k:", k, "\n")
     if(!is.null(x$k)) {
         cat("\ncluster description\n")
@@ -38,8 +40,10 @@ print.cluster_dissimilarity_matrix <- function(x, ...) {
 
     cat("\n")
     cat("used seriation methods\n")
-    cat("inter-cluster:", sQuote(x$method$inter), "\n")
-    cat("intra-cluster:", sQuote(x$method$intra), "\n")
+    cat(gettextf("inter-cluster: '%s'\n", x$method$inter))
+    cat(gettextf("intra-cluster: '%s'\n", x$method$intra))
+
+    invisible(x)
 }
 
 ## plot for cluster_dissimilarity_matrix
@@ -281,9 +285,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     
     ## check labels
     if(!is.null(labels) && length(labels) != dim) 
-        stop("number of labels in", sQuote("labels"), 
-            "does not match dimensions of", sQuote("x"))
-    
+        stop("Number of labels in 'labels' does not match dimensions of 'x'.")
     
     ## set everything to NULL first
     order               <- NULL

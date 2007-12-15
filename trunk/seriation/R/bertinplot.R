@@ -1,8 +1,10 @@
-bertinplot  <- function(x, order = NULL, highlight = TRUE, options = NULL) {
-
-    if(!is.matrix(x)) stop(paste(sQuote("x"), "has to be a matrix"))
+bertinplot <-
+function(x, order = NULL, highlight = TRUE, options = NULL)
+{
+    if(!is.matrix(x))
+        stop("Argument 'x' must be a matrix.")
     if(!is.logical(highlight)) 
-    stop(paste(sQuote("highlight"), "has to be a logical"))
+        stop("Argument 'highlight' must be a logical.")
 
     ## order
     if(!is.null(order)) x <- permute(x, order)
@@ -45,8 +47,8 @@ bertinplot  <- function(x, order = NULL, highlight = TRUE, options = NULL) {
         highlight <- x > rowMeans(x, na.rm = TRUE)
     else if(length(highlight) == 1 && !highlight)
         highlight <- matrix(FALSE, ncol = ncol(x), nrow = nrow(x))
-    else if(all(dim(x) != dim(highlight))) stop(sQuote("highlight"),
-        "has incorrect dimensions")
+    else if(all(dim(x) != dim(highlight)))
+        stop("Argument 'highlight' has incorrect dimensions")
 
     ## note: Bertin switched cols and rows for his display!
     if(reverse) {

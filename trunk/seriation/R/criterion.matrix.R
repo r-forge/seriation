@@ -1,39 +1,28 @@
 ## Criterion for the quality of a permutation of a matrix
 
-criterion.matrix <- function(x, order = NULL, method = "all", ...) {
-    
+criterion.matrix <-
+function(x, order = NULL, method = NULL)
+{
     ## check order
     if(!is.null(order)){
         if(!inherits(order, "ser_permutation")) 
-        stop("order has to be an object of class ", sQuote("ser_permutation"))
+            stop("Argument 'order' has to be of class 'ser_permutation'")
         .check_matrix_perm(x, order)
     }
-    
-    
-    ## methods
-    methods <- list(
-        "ME"            = .ME,
-        "Moore_stress"  = .stress_moore,
-        "Neumann_stress"= .stress_neumann
-    )
-    
-    ## do more than one criterion
-    if(method == "all") method <- names(methods)
-    if(length(method) > 1) return(sapply(method,
-            function(m) criterion(x, order, m), USE.NAMES = FALSE))
 
-    method <- .choose_method(method, methods)
-   
-    crit <- methods[[method]](x, order)
-    names(crit) <- method
-    crit
-}
-    
+    methods <- get_criterion_methods("matrix", method)
+
+    out <- sapply(methods, function(m) m$definition(x, order))
+    names(out) <- names(methods)
+
+    out
+}    
 
 ## Bond energy (BEA)
-.ME <- function(x, order = NULL){
+.ME <- function(x, order = NULL) {
     
-    if(any(x < 0)) stop("Bond energy (ME) is only defined for nonnegative matrices")
+    if(any(x < 0))
+        stop("Bond energy (ME) is only defined for nonnegative matrices")
     
     n <- nrow(x)
     m <- ncol(x)
@@ -43,10 +32,10 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
     mode(x) <- "single"
 
     energy <- .Fortran("energy",
-        n = n,
-        m = m,
-        b = x,
-        ener = as.single(0.0))
+                       n = n,
+                       m = m,
+                       b = x,
+                       ener = as.single(0.0))
     
     0.5 * as.numeric(energy$ener)
 }
@@ -60,7 +49,8 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
     TYPE <- c(1,2,3)
     names(TYPE) <- c("moore", "neumann")
     if (inherits(x, "dist")) x <- as.matrix(x)
-    if (!is.matrix(x)) stop(paste(sQuote("x"),"not a matrix"))
+    if (!is.matrix(x))
+        stop("Argument 'x' must be a matrix.")
     if (!is.double(x)) mode(x) <- "double"
     
     if(is.null(order)) {
@@ -82,5 +72,6 @@ criterion.matrix <- function(x, order = NULL, method = "all", ...) {
 .stress_moore <- .stress
 .stress_neumann <- function(x, order) .stress(x, order, "neumann")
 
-
-
+set_criterion_method("matrix", "ME", .ME)
+set_criterion_method("matrix", "Moore_stress", .stress_moore)
+set_criterion_method("matrix", "Neumann_stress", .stress_neumann)

@@ -9,18 +9,17 @@ merit function \eqn{M} for
   data given a permutation.
 }
 \usage{
-criterion(x, order = NULL, method = "all")
+criterion(x, order = NULL, method = NULL)
 }
 \arguments{
   \item{x}{an object of class \code{dist} or a matrix (currently no
-      functions are implemented for array).}
-  \item{order}{
-      an object of class \code{ser_permutation} suitable for \code{x}.
-      If \code{NULL}, the identity permutation is used.
-    }
-  \item{method}{a vector of character strings with names of the criteria
-      The dummy method \code{"all"}
-      can be used to calculate all available criteria.}
+    functions are implemented for array).}
+  \item{order}{an object of class \code{ser_permutation} suitable for
+    \code{x}.  If \code{NULL}, the identity permutation is used.
+  }
+  \item{method}{a character vector with the names of the criteria to be
+    employed, or \code{NULL} (default) in which case all available
+    criteria are used.}
 }
 \details{
 For a symmetric dissimilarity matrix 

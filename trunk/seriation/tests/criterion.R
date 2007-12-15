@@ -13,7 +13,7 @@ as.matrix(d)
 stopifnot(criterion(d,method="AR_events") == 2)
 ## 2
 
-stopifnot(criterion(d, method="AR_deviations") == 0.504017)
+stopifnot(round(criterion(d, method="AR_deviations"), 6) == 0.504017)
 ## 2.000000 - 1.732051 +  2.236068 - 2.000000 = 0.504017
 
 stopifnot(criterion(d, method="Gradient_raw") == 4)

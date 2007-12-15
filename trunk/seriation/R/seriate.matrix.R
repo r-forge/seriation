@@ -1,26 +1,24 @@
 ## seriate matrices 
 
-seriate.matrix <- function(x, method = NULL, control = NULL, 
-    margin = c(1,2), ...) {
-    
+seriate.matrix <-
+function(x, method = NULL, control = NULL, 
+         margin = c(1,2), ...)
+{
     ## margin 1...rows, 2...cols
 
-    ## build-in methods
-    methods <- list(
-        "BEA_TSP"   = .seriate_bea_tsp,
-        "BEA"       = .seriate_bea,
-        "PCA"       = .seriate_fpc
-    )
+    if(is.null(method))
+        method <- "BEA_TSP"
+    else if(!is.character(method) || (length(method) != 1L))
+        stop("Argument 'method' must be a character string.")
     
-    method <- .choose_method(method, methods, "BEA_TSP")
-    
-    order <- methods[[method]](x, control)
+    method <- get_seriation_method("matrix", method)
+    order <- method$definition(x, control)
 
-    row <- ser_permutation_vector(order$row, method)
-    col <- ser_permutation_vector(order$col, method)
+    row <- ser_permutation_vector(order$row, method$name)
+    col <- ser_permutation_vector(order$col, method$name)
 
     ## this is inefficient since the workhorse does both
-    if(length(margin) == 1) {
+    if(length(margin) == 1L) {
         if(margin == 1) return(ser_permutation(row))
         if(margin == 2) return(ser_permutation(col))
     }
@@ -107,5 +105,6 @@ seriate.matrix <- function(x, method = NULL, control = NULL,
     list(row = row, col = col)
 }
 
-
-
+set_seriation_method("matrix", "BEA_TSP", .seriate_bea_tsp)
+set_seriation_method("matrix", "BEA", .seriate_bea)
+set_seriation_method("matrix", "PCA", .seriate_fpc)

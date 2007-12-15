@@ -38,12 +38,15 @@ get_method <- function(x, printable = FALSE) {
 ## print et al
 length.ser_permutation_vector <- function(x) length(get_order(x)) 
 
-print.ser_permutation_vector <- function(x, ...) {
-    cat("object of class", sQuote(class(x)), "\n")
-
-    cat("contains a permutation vector of length", length(x), "\n")
-    
-    cat("used seriation method:", sQuote(get_method(x, printable = TRUE)), "\n")
+print.ser_permutation_vector <-
+function(x, ...)
+{
+    writeLines(c(gettextf("object of class '%s'\n", class(x)),
+                 gettextf("contains a permutation vector of length %d",
+                          length(x)),
+                 gettextf("used seriation method: '%s'",
+                          get_method(x, printable = TRUE))))
+    invisible(x)
 }
 
 ## fake summary (we dont really provide a summary, 
@@ -74,8 +77,8 @@ summary.ser_permutation <- function(object, ...) {
 ser_permutation <- function(x,...) {
     ddd <- list(...)
     if(inherits(x, "ser_permutation")) {
-        if(length(ddd) != 0) warning(sQuote("x"),
-            " is already ser_permutation, ... ignored")
+        if(length(ddd) != 0)
+            warning("Argument 'x' already has class 'ser_permutation' ... ignored")
         return(x)
     }
 
