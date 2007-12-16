@@ -17,6 +17,10 @@ criterion_methods_db <- new.env()
 set_criterion_method <-
 function(kind, name, definition, description = NULL, merit = NA, ...)
 {
+    ## check formals
+    stopifnot(all(names(formals(definition)) ==
+            c("x", "order", "...")))
+    
     put_method_into_db(criterion_methods_db, kind, name,
                        structure(c(list(name = name,
                                         definition = definition,
@@ -56,4 +60,6 @@ function(kind, name)
 list_criterion_methods <-
 function(kind)
     list_methods_in_db(criterion_methods_db, kind)
+
+
 

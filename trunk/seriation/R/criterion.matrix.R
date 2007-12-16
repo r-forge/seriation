@@ -21,8 +21,9 @@ function(x, order = NULL, method = NULL)
 
 
 ## Bond energy (BEA)
-criterion_ME <- function(x, order = NULL) {
-    
+criterion_ME <- function(x, order = NULL, ...) {
+    ### ... unused
+
     if(any(x < 0))
         stop("Bond energy (ME) is only defined for nonnegative matrices")
     
@@ -71,8 +72,8 @@ criterion_ME <- function(x, order = NULL) {
     2 * x
 }
 
-criterion_stress_moore <- .stress
-criterion_stress_neumann <- function(x, order) .stress(x, order, "neumann")
+criterion_stress_moore <- function(x, order, ...) .stress(x, order, "moore")
+criterion_stress_neumann <- function(x, order, ...) .stress(x, order, "neumann")
 
 ## register built-ins
 set_criterion_method("matrix", "ME", criterion_ME, 

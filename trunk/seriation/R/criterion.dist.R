@@ -13,7 +13,7 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
     ## check dist (most C code only works with lower-triangle version) 
     if(attr(x, "Diag") == TRUE || attr(x, "Upper") == TRUE)
         x <- as.dist(x, diag = FALSE, upper = FALSE)
-    if(!is.real(x)) mode(x) <- "real"
+    if(!is.double(x)) mode(x) <- "double"
 
     ## get methods
     if(is.null(method)) method <- list_criterion_methods("dist") 
@@ -32,10 +32,10 @@ criterion.default <- criterion.dist
 ## Note that this corresponds to the sum of distances along the first
 ## off diagonal of the ordered distance matrix.
 
-criterion_path_length <- function(dist, order = NULL, ...) {
-    if (is.null(order)) order <- 1:attr(dist, "Size")
+criterion_path_length <- function(x, order = NULL, ...) {
+    if (is.null(order)) order <- 1:attr(x, "Size")
     else order <- get_order(order)
-    .Call("order_length", dist, order)
+    .Call("order_length", x, order)
 }
 
 
@@ -43,42 +43,42 @@ criterion_path_length <- function(dist, order = NULL, ...) {
 ## dissimilarities between two elements and the rank distance
 ## (PermutMatrix).
 
-criterion_least_squares <- function(dist, order = NULL, ...) {
-    if(is.null(order)) order <- 1:attr(dist, "Size") 
+criterion_least_squares <- function(x, order = NULL, ...) {
+    if(is.null(order)) order <- 1:attr(x, "Size") 
     else order <- get_order(order)
-    .Call("least_squares_criterion", dist, order)
+    .Call("least_squares_criterion", x, order)
 }
 
 ## inertia around the diagonal (see PermutMatrix)
-criterion_inertia <- function(dist, order = NULL, ...) {
-    if(is.null(order)) order <- 1:attr(dist, "Size") 
+criterion_inertia <- function(x, order = NULL, ...) {
+    if(is.null(order)) order <- 1:attr(x, "Size") 
     else order <- get_order(order)
-    .Call("inertia_criterion", dist, order)
+    .Call("inertia_criterion", x, order)
 }
 
 ## anti-Robinson loss functions (Streng and Schoenfelder 1978, Chen
 ## 2002)
 ## method: 1...i, 2...s, 3...w
-.ar <- function(dist, order = NULL, method = 1) {
-    if(is.null(order)) order <- 1:attr(dist, "Size") 
+.ar <- function(x, order = NULL, method = 1) {
+    if(is.null(order)) order <- 1:attr(x, "Size") 
     else order <- get_order(order)
-    .Call("ar", dist, order, as.integer(method))
+    .Call("ar", x, order, as.integer(method))
 }
 
-criterion_ar_events <- function(dist, order, ...) .ar(dist, order, 1)
-criterion_ar_deviations <- function(dist, order, ...) .ar(dist, order, 2)
-#criterion_ar_weighted <- function(dist, order, ...) .ar(dist, order, 3)
+criterion_ar_events <- function(x, order, ...) .ar(x, order, 1L)
+criterion_ar_deviations <- function(x, order, ...) .ar(x, order, 2L)
+#criterion_ar_weighted <- function(x, order, ...) .ar(x, order, 3L)
 
-criterion_gradient_raw <- function(dist, order, ...) {
-    if(is.null(order)) order <- 1:attr(dist, "Size")
+criterion_gradient_raw <- function(x, order, ...) {
+    if(is.null(order)) order <- 1:attr(x, "Size")
     else order <- get_order(order)
-    .Call("gradient", dist, order, 1L)
+    .Call("gradient", x, order, 1L)
 }
 
-criterion_gradient_weighted <- function(dist, order, ...) {
-    if(is.null(order)) order <- 1:attr(dist, "Size")
+criterion_gradient_weighted <- function(x, order, ...) {
+    if(is.null(order)) order <- 1:attr(x, "Size")
     else order <- get_order(order)
-    .Call("gradient", dist, order, 2L)
+    .Call("gradient", x, order, 2L)
 }
 
 criterion_ME_dist <- function(x, order, ...)

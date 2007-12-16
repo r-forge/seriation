@@ -17,13 +17,19 @@ function(kind, name)
                                 name))
 
 set_seriation_method <-
-function(kind, name, definition, description = NULL, ...)
+function(kind, name, definition, description = NULL, ...){
+
+    ## check formals
+    stopifnot(all(names(formals(definition)) ==
+            c("x", "control")))
+
     put_method_into_db(seriation_methods_db, kind, name,
-                       structure(c(list(name = name,
-                                        definition = definition,
-                                        description = description),
-                                   list(...)),
-                                 class = "seriation_method"))
+        structure(c(list(name = name,
+                    definition = definition,
+                    description = description),
+                list(...)),
+            class = "seriation_method"))
+}
 
 list_seriation_methods <-
 function(kind)
