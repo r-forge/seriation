@@ -14,7 +14,13 @@ export(
     ser_permutation,
     ser_permutation_vector,
     pimage, 
-    seriate
+    seriate,
+    set_criterion_method,
+    get_criterion_method,
+    list_criterion_methods,
+    set_seriation_method,
+    get_seriation_method,
+    list_seriation_methods
     )
 
 S3method("c", "ser_permutation")

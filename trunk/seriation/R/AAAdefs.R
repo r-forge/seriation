@@ -1,18 +1,4 @@
-.choose_method <-
-function(method, methods, default = NULL)
-{
-    if(is.null(method)) {
-        if(is.null(default)) return(names(methods)[1])
-        else return(default)
-    }
-
-    nr <- pmatch(tolower(method), tolower(names(methods)))
-    if(is.na(nr)) stop(gettextf("Unknown method '%s'.", method))
-
-    names(methods)[nr]
-}
-
-
+## registry helpers
 .make_db_key <-
 function(kind, name)
     paste(kind, name, sep = "_")
@@ -33,3 +19,12 @@ function(db, kind, name, value)
 {
     db[[.make_db_key(kind, name)]] <- value
 }
+
+list_methods_in_db <-
+function(db, kind)
+{
+    pattern <- sprintf("^%s_", kind)
+    sub(pattern, "",
+        grep(pattern, objects(db), value = TRUE))
+}
+    

@@ -46,7 +46,7 @@ function(x, method = NULL, control = NULL,
 #}
 
 
-.seriate_bea_tsp <- function(x, control) {
+seriate_bea_tsp <- function(x, control) {
 
     if(any(x < 0)) stop("Requires a nonnegative matrix")
     
@@ -64,7 +64,7 @@ function(x, method = NULL, control = NULL,
 
 ## Bond Energy Algorithm (McCormick 1972)
 
-.seriate_bea <- function(x, control = NULL){
+seriate_bea <- function(x, control = NULL){
     
     if(any(x < 0)) stop("Requires a nonnegative matrix")
     istart <- if(is.null(control$istart)) 0 else control$istart
@@ -83,7 +83,7 @@ function(x, method = NULL, control = NULL,
 
 ## use the projection on the first pricipal component to determine the
 ## order
-.seriate_fpc <- function(x, control) {
+seriate_fpc <- function(x, control) {
     
     center  <- if(!is.null(control$center)) control$center else TRUE
     scale.  <- if(!is.null(control$scale.)) control$scale. else FALSE
@@ -105,6 +105,10 @@ function(x, method = NULL, control = NULL,
     list(row = row, col = col)
 }
 
-set_seriation_method("matrix", "BEA_TSP", .seriate_bea_tsp)
-set_seriation_method("matrix", "BEA", .seriate_bea)
-set_seriation_method("matrix", "PCA", .seriate_fpc)
+## register methods
+set_seriation_method("matrix", "BEA_TSP", seriate_bea_tsp,
+    "TSP to maximize ME")
+set_seriation_method("matrix", "BEA", seriate_bea,
+    "Bond Energy Algorithm to maximize ME")
+set_seriation_method("matrix", "PCA", seriate_fpc,
+    "First principal component")

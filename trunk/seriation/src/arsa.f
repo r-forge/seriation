@@ -17,7 +17,7 @@ C      DOUBLE PRECISION A(400,400), SOLS(100), RMED(100),
       IF (IVERB == 1) THEN
           PRINT *, 'Anti-Robinson seriation by simulated annealing'
           PRINT *, 'based on arsa.f by Brusco, M., Kohn, H.F.,',
-     1 'anD sTAHl, S. (2007)'
+     1 'and Stahl, S. (2007)'
 
           PRINT *, ''
           PRINT *, 'COOL =', COOL

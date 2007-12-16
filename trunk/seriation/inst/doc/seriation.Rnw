@@ -673,7 +673,7 @@ dimensions of~\code{x}.  For \code{matrix} the additional argument
         \hline
 Algorithm & \code{method} argument & Optimizes & Input data \\
         \hline
-Simulated annealing & \code{"ARSA"} & Gradient measure &\code{dist} \\
+Simulated annealing & \code{"ARSA"} & Anti-Robinsin events &\code{dist} \\
 Branch-and-bound & \code{"BBURCG"} & Gradient measure &\code{dist} \\
 Branch-and-bound & \code{"BBWRCG"} & Gradient measure (weighted)& \code{dist} \\
 TSP solver & \code{"TSP"} & Hamiltonian path length& \code{dist} \\

@@ -6,7 +6,7 @@ function(hclust, dist)
 ## wrapper to the optimal leaf ordering algorithm
 ##
 ## ceeboo 2005
-.seriate_optimal <-
+seriate_optimal <-
 function(hclust, dist)
 {
     ## check hclust

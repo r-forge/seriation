@@ -24,3 +24,7 @@ function(kind, name, definition, description = NULL, ...)
                                         description = description),
                                    list(...)),
                                  class = "seriation_method"))
+
+list_seriation_methods <-
+function(kind)
+    list_methods_in_db(seriation_methods_db, kind)

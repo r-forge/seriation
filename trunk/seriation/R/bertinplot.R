@@ -35,9 +35,6 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
         for (i in 1:length(o)) options[[o[i]]] <- user_options[[i]]
     }
     
-    attach(options)
-    on.exit(detach("options"))
-    
     ## scale each variable in x for plotting (between 0 and 1)
     x <- x/ matrix(apply(x, 2, max, na.rm = TRUE), 
         byrow= TRUE, ncol=ncol(x), nrow= nrow(x))
@@ -51,7 +48,7 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
         stop("Argument 'highlight' has incorrect dimensions")
 
     ## note: Bertin switched cols and rows for his display!
-    if(reverse) {
+    if(options$reverse) {
         x <- t(x)
         highlight <- t(highlight)
     }
@@ -59,17 +56,17 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
     ncol_x  <- ncol(x)
    
     ## clear page
-    if(newpage) grid.newpage()
+    if(options$newpage) grid.newpage()
  
     ## create outer viewport
-    xlim <- c(1 - (1 - spacing), nrow(x) + (1 - spacing))
-    pushViewport(plotViewport(margins = mar,
+    xlim <- c(1 - (1 - options$spacing), nrow(x) + (1 - options$spacing))
+    pushViewport(plotViewport(margins = options$mar,
             layout = grid.layout(ncol_x, 1), 
             xscale = xlim, 
             yscale = c(1, ncol_x), default.unit = "native"))
 
     ## do frame
-    #if(frame) {
+    #if(options$frame) {
         #    grid.rect(width = 1/ncol_x*(ncol_x-.52))
         ## why .52?
         #}
@@ -80,13 +77,13 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
 
         pushViewport(viewport(layout.pos.col = 1, layout.pos.row = variable,
                 xscale = xlim, yscale = c(0, 1), 
-                default.unit = "native", gp = gp_panels))
+                default.unit = "native", gp = options$gp_panels))
 
         ## call panel function
-        panel.function(value, spacing, hl)
+        options$panel.function(value, options$spacing, hl)
 
         ## do frame
-        if(frame) grid.rect(x = 1:length(value), 
+        if(options$frame) grid.rect(x = 1:length(value), 
             width = 1,
             default.unit = "native")
 
@@ -95,21 +92,21 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
 
 
     ## do labels
-    rownames_x <- if(is.null(xlab)) rownames(x) else xlab
-    colnames_x <- if(is.null(ylab)) colnames(x) else ylab
+    rownames_x <- if(is.null(options$xlab)) rownames(x) else options$xlab
+    colnames_x <- if(is.null(options$ylab)) colnames(x) else options$ylab
 
-    spacing_corr <- if(spacing <= 0) spacing_corr <- -spacing+0.2 else 0
+    spacing_corr <- if(options$spacing <= 0) spacing_corr <- -options$spacing+0.2 else 0
 
     grid.text(rownames_x, x = 1:nrow(x), y = ncol_x + spacing_corr, 
         rot = 90, just = "left",
-        default.units= "native", gp = gp_labels)
+        default.units= "native", gp = options$gp_labels)
 
     grid.text(rev(colnames_x), x = 1 + spacing_corr / nrow(x) / 4, 
         y = 0.5:(ncol_x-0.5)/ncol_x,
         just = "left", 
-        default.units= "npc", gp = gp_labels)
+        default.units= "npc", gp = options$gp_labels)
 
-    if (pop == TRUE) popViewport(1)
+    if (options$pop == TRUE) popViewport(1)
     else upViewport(1)
 
 }

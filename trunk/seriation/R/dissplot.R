@@ -17,7 +17,7 @@ dissplot <- function(x, labels = NULL, method = NULL,
    
     ## supress plot?
     plot <- if(is.null(options$plot)) TRUE else is.null(options$plot)
-    if(plot == TRUE) plot(res, options, gp = gp)
+    if(plot == TRUE) plot(res, options, gp = options$gp)
 
     invisible(res)
 }

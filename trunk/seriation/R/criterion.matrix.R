@@ -10,16 +10,18 @@ function(x, order = NULL, method = NULL)
         .check_matrix_perm(x, order)
     }
 
-    methods <- get_criterion_methods("matrix", method)
+    ## get methods
+    if(is.null(method)) method <- list_criterion_methods("matrix")
+    method <- lapply(method, function(m ) get_criterion_method("matrix", m))
 
-    out <- sapply(methods, function(m) m$definition(x, order))
-    names(out) <- names(methods)
+    sapply(method,
+        function(m) structure(m$definition(x, order), names=m$name))
+}
 
-    out
-}    
+
 
 ## Bond energy (BEA)
-.ME <- function(x, order = NULL) {
+criterion_ME <- function(x, order = NULL) {
     
     if(any(x < 0))
         stop("Bond energy (ME) is only defined for nonnegative matrices")
@@ -69,9 +71,13 @@ function(x, order = NULL, method = NULL)
     2 * x
 }
 
-.stress_moore <- .stress
-.stress_neumann <- function(x, order) .stress(x, order, "neumann")
+criterion_stress_moore <- .stress
+criterion_stress_neumann <- function(x, order) .stress(x, order, "neumann")
 
-set_criterion_method("matrix", "ME", .ME)
-set_criterion_method("matrix", "Moore_stress", .stress_moore)
-set_criterion_method("matrix", "Neumann_stress", .stress_neumann)
+## register built-ins
+set_criterion_method("matrix", "ME", criterion_ME, 
+    "Measure of effectiveness", TRUE)
+set_criterion_method("matrix", "Moore_stress", criterion_stress_moore,
+    "Stress (Moore neighborhood)", FALSE)
+set_criterion_method("matrix", "Neumann_stress", criterion_stress_neumann,
+    "Stress (Neumann neighborhood)", FALSE)
