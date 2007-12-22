@@ -11,7 +11,7 @@ criterion.dist <- function(x, order = NULL, method = NULL) {
     }
     
     ## check dist (most C code only works with lower-triangle version) 
-    if(attr(x, "Diag") == TRUE || attr(x, "Upper") == TRUE)
+    if(attr(x, "Diag") || attr(x, "Upper"))
         x <- as.dist(x, diag = FALSE, upper = FALSE)
     if(!is.double(x)) mode(x) <- "double"
 
@@ -100,7 +100,7 @@ set_criterion_method("dist", "Gradient_weighted", criterion_gradient_weighted,
 set_criterion_method("dist", "Path_length", criterion_path_length,
     "Hamiltonian path length", FALSE)
 set_criterion_method("dist", "Inertia", criterion_inertia,
-    "nertia criterion", TRUE)
+    "Inertia criterion", TRUE)
 set_criterion_method("dist", "Least_squares", criterion_least_squares,
     "Least squares criterion", FALSE)
 set_criterion_method("dist", "ME", criterion_ME_dist,

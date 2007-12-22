@@ -23,7 +23,7 @@
     ## create a viewport
     vp <- viewport(
         xscale = c(0,(length(x)+1)), yscale = c((length(y)+1),0),
-        default.unit="native", name = name)
+        default.units = "native", name = name)
     pushViewport(vp)
 
     ## make sure we have a color for the maximal value (see floor +1)
@@ -57,7 +57,7 @@
 
     ## create a viewport
     vp <- viewport(
-        xscale = lim , yscale = c((n+1),0), default.unit="native", name = name)
+        xscale = lim , yscale = c((n+1),0), default.units = "native", name = name)
     pushViewport(vp)
 
     ## make bars
@@ -82,7 +82,7 @@
 
     vp <- viewport(
         xscale = range, yscale = c(0,1), 
-        default.unit="native", name = name)
+        default.units = "native", name = name)
     pushViewport(vp)
 
     n <- length(col) 

@@ -35,7 +35,7 @@ function(x, method = NULL, control = NULL,
 #    
 #.seriate_murtagh <- function(x, control) {
 #
-#    if(any(x < 0)) stop("Requires a nonnegative matrix")
+#    if(any(x < 0)) stop("Requires a nonnegative matrix.")
 #    
 #    criterion <- as.dist(tcrossprod(x))
 #    row <- hclust_greedy(-criterion)$order
@@ -48,7 +48,7 @@ function(x, method = NULL, control = NULL,
 
 seriate_bea_tsp <- function(x, control) {
 
-    if(any(x < 0)) stop("Requires a nonnegative matrix")
+    if(any(x < 0)) stop("Requires a nonnegative matrix.")
     
     criterion <- as.dist(tcrossprod(x))
     row <- seriate(max(criterion)-criterion, 
@@ -66,7 +66,7 @@ seriate_bea_tsp <- function(x, control) {
 
 seriate_bea <- function(x, control = NULL){
     
-    if(any(x < 0)) stop("Requires a nonnegative matrix")
+    if(any(x < 0)) stop("Requires a nonnegative matrix.")
     istart <- if(is.null(control$istart)) 0 else control$istart
     jstart <- if(is.null(control$jstart)) 0 else control$jstart
     rep  <- if(!is.null(control$rep)) control$rep else 1

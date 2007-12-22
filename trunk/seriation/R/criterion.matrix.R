@@ -6,7 +6,7 @@ function(x, order = NULL, method = NULL)
     ## check order
     if(!is.null(order)){
         if(!inherits(order, "ser_permutation")) 
-            stop("Argument 'order' has to be of class 'ser_permutation'")
+            stop("Argument 'order' has to be of class 'ser_permutation'.")
         .check_matrix_perm(x, order)
     }
 
@@ -25,7 +25,7 @@ criterion_ME <- function(x, order = NULL, ...) {
     ### ... unused
 
     if(any(x < 0))
-        stop("Bond energy (ME) is only defined for nonnegative matrices")
+        stop("Bond energy (ME) is only defined for nonnegative matrices.")
     
     n <- nrow(x)
     m <- ncol(x)

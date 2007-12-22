@@ -18,7 +18,7 @@ function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL, ...) {
   
     ## add axes
     if(is.null(axes)) axes <- 32
-    else if(axes == TRUE) axes <- Inf
+    else if(axes) axes <- Inf
     else axes <- 0
     
     if(axes > 0) {
@@ -41,18 +41,18 @@ function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL,
     labels <- labels(x)
     x <- as.matrix(x)
 
-    if(upper.tri == FALSE) x[upper.tri(x)] <- NA
-    if(lower.tri == FALSE) x[lower.tri(x)] <- NA
+    if(!upper.tri) x[upper.tri(x)] <- NA
+    if(!lower.tri) x[lower.tri(x)] <- NA
 
     pimage.matrix(x, xlab=xlab, ylab=ylab, col=col, axes = FALSE, ...)
 
     ## add axes
     if(is.null(axes)) axes <- 32
-    else if(axes == TRUE) axes <- Inf
+    else if(axes) axes <- Inf
     else axes <- 0
 
     ## show labels top and right if lower.tri is FALSE
-    if(lower.tri == FALSE) loc <- c(4,3)
+    if(!lower.tri) loc <- c(4,3)
     else loc <- c(2,1)
     
     if(dim < axes){
@@ -62,8 +62,10 @@ function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL,
 
 }
 
-pimage <- function(x, order = NULL, col = NULL, 
-    xlab="", ylab="", axes = NULL, ...) 
+pimage <-
+function(x, order = NULL, col = NULL, 
+         xlab="", ylab="", axes = NULL, ...) 
     UseMethod("pimage")
+
 pimage.default <- pimage.matrix
 

@@ -21,7 +21,8 @@ ser_permutation_vector <- function(x, method = NULL) {
 get_order <- function(x, ...) UseMethod("get_order")
 get_order.ser_permutation_vector <- function(x, ...) NextMethod()
 get_order.default <- function(x, ...) 
-    stop(paste("\nNo permutation accessor implemented for class: ", class(x)))
+    stop(gettextf("No permutation accessor implemented for class '%s'.",
+                  class(x)))
 
 get_order.hclust <- function(x, ...) x$order
 get_order.integer <- function(x, ...) as.integer(x)

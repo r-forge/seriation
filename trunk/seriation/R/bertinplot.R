@@ -29,10 +29,14 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
     if(!is.null(user_options) && length(user_options) != 0) {
         o <- pmatch(names(user_options), names(options))
 
-        if(any(is.na(o))) stop(paste("Unknown plot option:",
-                names(user_options)[is.na(o)], "\n\t"))
+        if(any(is.na(o)))
+            stop(sprintf(ngettext(length(is.na(o)),
+                                  "Unknown plot option: %s",
+                                  "Unknown plot options: %s"),
+                         paste(names(user_options)[is.na(o)],
+                               collapse = " ")))
 
-        for (i in 1:length(o)) options[[o[i]]] <- user_options[[i]]
+        options[o] <- user_options
     }
     
     ## scale each variable in x for plotting (between 0 and 1)
@@ -45,7 +49,7 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
     else if(length(highlight) == 1 && !highlight)
         highlight <- matrix(FALSE, ncol = ncol(x), nrow = nrow(x))
     else if(all(dim(x) != dim(highlight)))
-        stop("Argument 'highlight' has incorrect dimensions")
+        stop("Argument 'highlight' has incorrect dimensions.")
 
     ## note: Bertin switched cols and rows for his display!
     if(options$reverse) {
@@ -63,7 +67,7 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
     pushViewport(plotViewport(margins = options$mar,
             layout = grid.layout(ncol_x, 1), 
             xscale = xlim, 
-            yscale = c(1, ncol_x), default.unit = "native"))
+            yscale = c(1, ncol_x), default.units = "native"))
 
     ## do frame
     #if(options$frame) {
@@ -77,7 +81,7 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
 
         pushViewport(viewport(layout.pos.col = 1, layout.pos.row = variable,
                 xscale = xlim, yscale = c(0, 1), 
-                default.unit = "native", gp = options$gp_panels))
+                default.units = "native", gp = options$gp_panels))
 
         ## call panel function
         options$panel.function(value, options$spacing, hl)
@@ -85,7 +89,7 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
         ## do frame
         if(options$frame) grid.rect(x = 1:length(value), 
             width = 1,
-            default.unit = "native")
+            default.units = "native")
 
         upViewport(1)
     }
@@ -106,8 +110,10 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
         just = "left", 
         default.units= "npc", gp = options$gp_labels)
 
-    if (options$pop == TRUE) popViewport(1)
-    else upViewport(1)
+    if (options$pop)
+        popViewport(1)
+    else
+        upViewport(1)
 
 }
 

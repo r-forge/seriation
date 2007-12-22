@@ -18,8 +18,9 @@ set_criterion_method <-
 function(kind, name, definition, description = NULL, merit = NA, ...)
 {
     ## check formals
-    stopifnot(all(names(formals(definition)) ==
-            c("x", "order", "...")))
+    if(!identical(names(formals(definition)),
+                  c("x", "order", "...")))
+        stop("Criterion methods must have formals 'x', 'order', and '...'.")
     
     put_method_into_db(criterion_methods_db, kind, name,
                        structure(c(list(name = name,
@@ -30,36 +31,42 @@ function(kind, name, definition, description = NULL, merit = NA, ...)
                                  class = "criterion_method"))
 }
 
-#get_criterion_methods <-
-#function(kind, name)
-#{
-#    keys <- objects(criterion_methods_db)
-#    if(is.null(name)) {
-#        pattern <- sprintf("^%s_", kind)
-#        keys <- grep(pattern, keys, value = TRUE)
-#        name <- sub(pattern, "", keys)
-#    }
-#    else {
-#        ind <- pmatch(.make_db_key(kind, tolower(name)), tolower(keys))
-#        if(any(is.na(ind)))
-#            stop(gettextf("Invalid criterion method: '%s'.",
-#                          name[which(is.na(ind))[1L]]))
-#        keys <- keys[ind]
-#    }
-#    out <- mget(keys, criterion_methods_db)
-#    names(out) <- name
-#    out
-#}
+## get_criterion_methods <-
+## function(kind, name)
+## {
+##     keys <- objects(criterion_methods_db)
+##     if(is.null(name)) {
+##         pattern <- sprintf("^%s_", kind)
+##         keys <- grep(pattern, keys, value = TRUE)
+##         name <- sub(pattern, "", keys)
+##     }
+##     else {
+##         ind <- pmatch(.make_db_key(kind, tolower(name)), tolower(keys))
+##         if(any(is.na(ind)))
+##             stop(gettextf("Invalid criterion method: '%s'.",
+##                           name[which(is.na(ind))[1L]]))
+##         keys <- keys[ind]
+##     }
+##     out <- mget(keys, criterion_methods_db)
+##     names(out) <- name
+##     out
+## }
 
 get_criterion_method <-
 function(kind, name)
     get_method_from_db(criterion_methods_db, kind, name,
-                               gettextf("Invalid criterion method: '%s'.",
-                                                                   name))
+                       gettextf("Invalid criterion method: '%s'.", name))
 
 list_criterion_methods <-
 function(kind)
     list_methods_in_db(criterion_methods_db, kind)
 
-
-
+show_criterion_methods <-
+function(kind)
+{
+    methods <- list_methods_in_db(criterion_methods_db, kind)
+    descriptions <-
+        sapply(methods, 
+               function(m) get_criterion_method(kind, m)$description)
+    writeLines(formatDL(methods, descriptions, style = "list"))
+}

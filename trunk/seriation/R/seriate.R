@@ -20,8 +20,9 @@ set_seriation_method <-
 function(kind, name, definition, description = NULL, ...){
 
     ## check formals
-    stopifnot(all(names(formals(definition)) ==
-            c("x", "control")))
+    if(!identical(names(formals(definition)),
+                  c("x", "control")))
+        stop("Seriation methods must have formals 'x' and 'control'.")
 
     put_method_into_db(seriation_methods_db, kind, name,
         structure(c(list(name = name,
@@ -34,3 +35,13 @@ function(kind, name, definition, description = NULL, ...){
 list_seriation_methods <-
 function(kind)
     list_methods_in_db(seriation_methods_db, kind)
+
+show_seriation_methods <-
+function(kind)
+{
+    methods <- list_methods_in_db(seriation_methods_db, kind)
+    descriptions <-
+        sapply(methods, 
+               function(m) get_seriation_method(kind, m)$description)
+    writeLines(formatDL(methods, descriptions, style = "list"))
+}

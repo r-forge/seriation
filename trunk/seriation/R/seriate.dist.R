@@ -1,6 +1,7 @@
 ## seriate dist objects
 
-seriate.dist <- function(x, method = NULL, control = NULL, ...)
+seriate.dist <-
+function(x, method = NULL, control = NULL, ...)
 {
     if(is.null(method))
         method <- "ARSA"
@@ -14,13 +15,13 @@ seriate.dist <- function(x, method = NULL, control = NULL, ...)
     ser_permutation(ser_permutation_vector(order, method = method$name))
 }
 
-
-
 ## uses a sequence of correlation matrices and finds  the first matrix
 ## with rank 2. The elements are projected into the plane spanned by the 
 ## first two eigenvectors. All points are lying on a ellipse. The order
 ## of the elements on the ellipse is returned (see Chen 2002). 
-seriate_chen <- function(x, control){
+seriate_chen <-
+function(x, control = NULL)
+{
     x <- as.matrix(x)
     
     rank <- qr(x)$rank
@@ -52,7 +53,9 @@ seriate_chen <- function(x, control){
 
 
 ## Bridge to package tsp 
-seriate_tsp <- function(x, control = NULL){
+seriate_tsp <-
+function(x, control = NULL)
+{
     ## add a dummy city for cutting
     tsp <- insert_dummy(TSP(x), n = 1, label = "cut_here")
    
@@ -64,7 +67,9 @@ seriate_tsp <- function(x, control = NULL){
 
 
 ## Multidimensional scaling
-seriate_mds <- function(x, control = NULL){
+seriate_mds <-
+function(x, control = NULL)
+{
     if(is.null(control$method) || control$method == "cmdscale" ) {
         sc <- cmdscale(x, k=1)
         return(order(sc[,1]))
@@ -73,19 +78,17 @@ seriate_mds <- function(x, control = NULL){
         if(require("MASS", quietly = TRUE)) {
             sc <- isoMDS(x+1e-6, trace = FALSE, k=1)
             return(order(sc$points[,1])) 
-        } else stop("please install package MASS for this method.")
+        } else stop("Please install package MASS for this method.")
     
     }else if(control$method == "sammon") {
         if(require("MASS", quietly = TRUE)) {
             sc <- sammon(x+1e-6, trace = FALSE, k=1)
             return(order(sc$points[,1]))
-        } else stop("please install package MASS for this method.")
+        } else stop("Please install package MASS for this method.")
 
     }else stop("unknown method")
 
 }
-
-
 
 ## Hierarchical clustering related seriations
 
@@ -96,17 +99,23 @@ seriate_mds <- function(x, control = NULL){
     else return(hclust(d, method = control$method))
 }
 
-seriate_hc <- function(x, control = NULL) .hclust_helper(x, control)
+seriate_hc <-
+function(x, control = NULL)
+    .hclust_helper(x, control)
 
 ## workhorses are in seriation.hclust
-seriate_hc_gw <- function(x, control = NULL) 
+seriate_hc_gw <-
+function(x, control = NULL) 
     .seriate_gruvaeus(.hclust_helper(x, control), x)
 
-seriate_hc_optimal <- function(x, control = NULL)
+seriate_hc_optimal <-
+function(x, control = NULL)
     seriate_optimal(.hclust_helper(x, control), x)
 
 ## brusco: simulated annealing for anti-robinson
-seriate_arsa <- function(x, control = NULL) {
+seriate_arsa <-
+function(x, control = NULL)
+{
     param <- list(
         cool = 0.5,
         tmin = 0.1,
@@ -115,7 +124,8 @@ seriate_arsa <- function(x, control = NULL) {
     )
     for(n in names(control)) {
         i <- pmatch(n, names(param))
-        if(is.na(i)) stop("unknown control parameter: ", n)
+        if(is.na(i))
+            stop(gettextf("Unknown control parameter '%s'.", n))
         param[i] <- control[[n]] 
     }
 
@@ -140,14 +150,17 @@ seriate_arsa <- function(x, control = NULL) {
 
 
 ## brusco: branch-and-bound - unweighted row gradient 
-seriate_bburcg <- function(x, control = NULL) {
+seriate_bburcg <-
+function(x, control = NULL)
+{
     param <- list(
         eps = 1e-7,
         verbose = FALSE
     )
     for(n in names(control)) {
         i <- pmatch(n, names(param))
-        if(is.na(i)) stop("unknown control parameter: ", n)
+        if(is.na(i))
+            stop(gettextf("Unknown control parameter '%s'.", n))
         param[i] <- control[[n]] 
     }
     
@@ -170,14 +183,17 @@ seriate_bburcg <- function(x, control = NULL) {
 
 
 ## brusco: branch-and-bound - weighted row gradient 
-seriate_bbwrcg <- function(x, control = NULL) {
+seriate_bbwrcg <-
+function(x, control = NULL)
+{
     param <- list(
         eps = 1e-7,
         verbose = FALSE
     )
     for(n in names(control)) {
         i <- pmatch(n, names(param))
-        if(is.na(i)) stop("unknown control parameter: ", n)
+        if(is.na(i))
+            stop(gettextf("Unknown control parameter '%s'.", n))
         param[i] <- control[[n]] 
     }
     

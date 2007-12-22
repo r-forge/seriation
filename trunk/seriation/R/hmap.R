@@ -77,7 +77,7 @@ hmap <- function(x, distfun = dist, hclustfun = hclust,
     
    
     ## plot
-    if(newpage == TRUE) grid.newpage()
+    if(newpage) grid.newpage()
 
     ## surrounding viewport
     pushViewport(viewport(layout=grid.layout(nrow = 5 , ncol = 3, 
@@ -104,7 +104,7 @@ hmap <- function(x, distfun = dist, hclustfun = hclust,
     
     
     ## plots
-    if(prop == TRUE) {
+    if(prop) {
         widths <- unit.c(
             unit(1-ncol(x)/sum(ncol(x), nrow(x)), "npc") - unit(.25, "lines"),
             unit(.5, "lines"),

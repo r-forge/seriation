@@ -9,7 +9,7 @@ dissplot <- function(x, labels = NULL, method = NULL,
     if(!inherits(x, "dist")) {
         if(is.matrix(x) && isSymmetric(x)) x <- as.dist(x)
         else
-            stop("Argument 'x' cannot safely be coerced to class 'dist'")
+            stop("Argument 'x' cannot safely be coerced to class 'dist'.")
     }
     
     res <- .arrange_dissimilarity_matrix(x, labels = labels,
@@ -17,7 +17,7 @@ dissplot <- function(x, labels = NULL, method = NULL,
    
     ## supress plot?
     plot <- if(is.null(options$plot)) TRUE else is.null(options$plot)
-    if(plot == TRUE) plot(res, options, gp = options$gp)
+    if(plot) plot(res, options, gp = options$gp)
 
     invisible(res)
 }
@@ -77,12 +77,14 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     if(!is.null(user_options) && length(user_options) != 0) {
         o <- pmatch(names(user_options), names(options))
 
-        if(any(is.na(o))) stop(paste("Unknown plot option:", 
-                names(user_options)[is.na(o)], "\n\t"))
+        if(any(is.na(o)))
+            stop(sprintf(ngettext(length(is.na(o)),
+                                  "Unknown plot option: %s",
+                                  "Unknown plot options: %s"),
+                         paste(names(user_options)[is.na(o)],
+                               collapse = " ")))
 
-        for (i in 1:length(o)) {
-            options[[o[i]]] <- user_options[[i]] 
-        }
+        options[o] <- user_options    
     } 
 
     ## get grid options
@@ -96,7 +98,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     if(is.null(x$sil)) options$silhouettes <- FALSE
 
     ## color lower triangle panels with avg. dissimilarity
-    if(options$averages == TRUE 
+    if(options$averages
         && !is.null(x$cluster_dissimilarities) 
         && !is.null(labels)) {
 
@@ -129,7 +131,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         }
     }
 
-    if(options$silhouettes == FALSE) {
+    if(!options$silhouettes) {
         pushViewport(viewport(layout = grid.layout(6, 3,
                     widths = unit.c(
                         unit(2, "lines"),                       # space
@@ -195,7 +197,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     .grid_image(m, col = options$col, zlim = range_m, gp = gp)
     upViewport(1)
 
-    if(options$colorkey == TRUE){
+    if(options$colorkey) {
         pushViewport(colorkey_vp)
         .grid_colorkey(range_m, col = options$col, 
             threshold = options$threshold, gp = gp)
@@ -208,22 +210,25 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         cluster_width   <- (tabulate(labels)[labels_unique])
         cluster_cuts    <- cumsum(cluster_width) + 0.5
 
-        if(options$cluster_labels == TRUE) {
+        if(options$cluster_labels) {
             cluster_center <- cluster_cuts - cluster_width / 2
 
             seekViewport("image")
 
             ## above the plot
             grid.text(labels_unique, x = cluster_center, 
-                y = unit(1, "npc") + unit(1, "lines"), default.unit="native",
-                gp = gp)
+                      y = unit(1, "npc") + unit(1, "lines"),
+                      default.units = "native",
+                      gp = gp)
             ## left of the plot
             grid.text(labels_unique, x = unit(-1, "lines"),
-                y = cluster_center, default.unit="native", gp = gp)
+                      y = cluster_center,
+                      default.units = "native",
+                      gp = gp)
             upViewport(2)
         }
 
-        if(options$lines == TRUE){
+        if(options$lines) {
             gp_lines        <- gp
             gp_lines$col    <- options$lines_col
             
@@ -236,11 +241,11 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
 
                 grid.lines(
                     x = c(0.5, dim + 0.5), y = cluster_cuts[i], 
-                    default.unit="native", gp = gp_lines)
+                    default.units = "native", gp = gp_lines)
 
                 grid.lines(
                     x = cluster_cuts[i], y = c(0.5, dim + 0.5), 
-                    default.unit="native", gp=gp_lines)
+                    default.units = "native", gp=gp_lines)
 
             }
 
@@ -258,7 +263,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         }
     }
 
-    if(options$silhouettes == TRUE) {
+    if(options$silhouettes) {
 
         ## get and reorder silhouettes
         s <- x$sil[,"sil_width"]
@@ -269,8 +274,10 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
 
     }
 
-    if (options$pop == TRUE) popViewport(1)
-    else upViewport(1)
+    if (options$pop)
+        popViewport(1)
+    else
+        upViewport(1)
 
 }
 
