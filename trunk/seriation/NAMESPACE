@@ -18,17 +18,21 @@ export(
     set_criterion_method,
     get_criterion_method,
     list_criterion_methods,
+    show_criterion_methods,
     set_seriation_method,
     get_seriation_method,
-    list_seriation_methods
+    list_seriation_methods,
+    show_seriation_methods
     )
 
 S3method("c", "ser_permutation")
 S3method("[", "ser_permutation")
 
-S3method(criterion, matrix)
 S3method(criterion, dist)
+S3method(criterion, matrix)
+S3method(criterion, array)
 
+S3method(get_order, ser_permutation_vector)
 S3method(get_order, integer)
 S3method(get_order, hclust)
 S3method(get_order, ser_permutation)
@@ -39,11 +43,13 @@ S3method(length, ser_permutation_vector)
 S3method(pimage, matrix)
 S3method(pimage, dist)
 
-S3method(plot,cluster_dissimilarity_matrix)
+S3method(plot, cluster_dissimilarity_matrix)
 
 S3method(print, ser_permutation_vector)
 S3method(print, ser_permutation)
-S3method(print,cluster_dissimilarity_matrix)
+S3method(print, cluster_dissimilarity_matrix)
+S3method(print, seriation_method)
+S3method(print, criterion_method)
 
 S3method(permute, array)
 S3method(permute, matrix)
@@ -51,8 +57,9 @@ S3method(permute, numeric)
 S3method(permute, list)
 S3method(permute, dist)
 
-S3method(seriate, matrix)
 S3method(seriate, dist)
+S3method(seriate, matrix)
+S3method(seriate, array)
 
 S3method(summary, ser_permutation)
 S3method(summary, ser_permutation_vector)

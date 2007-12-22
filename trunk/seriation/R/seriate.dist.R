@@ -19,9 +19,7 @@ function(x, method = NULL, control = NULL, ...)
 ## with rank 2. The elements are projected into the plane spanned by the 
 ## first two eigenvectors. All points are lying on a ellipse. The order
 ## of the elements on the ellipse is returned (see Chen 2002). 
-seriate_chen <-
-function(x, control = NULL)
-{
+seriate_dist_chen <- function(x, control = NULL){
     x <- as.matrix(x)
     
     rank <- qr(x)$rank
@@ -53,9 +51,7 @@ function(x, control = NULL)
 
 
 ## Bridge to package tsp 
-seriate_tsp <-
-function(x, control = NULL)
-{
+seriate_dist_tsp <- function(x, control = NULL){
     ## add a dummy city for cutting
     tsp <- insert_dummy(TSP(x), n = 1, label = "cut_here")
    
@@ -67,9 +63,7 @@ function(x, control = NULL)
 
 
 ## Multidimensional scaling
-seriate_mds <-
-function(x, control = NULL)
-{
+seriate_dist_mds <- function(x, control = NULL){
     if(is.null(control$method) || control$method == "cmdscale" ) {
         sc <- cmdscale(x, k=1)
         return(order(sc[,1]))
@@ -99,23 +93,17 @@ function(x, control = NULL)
     else return(hclust(d, method = control$method))
 }
 
-seriate_hc <-
-function(x, control = NULL)
-    .hclust_helper(x, control)
+seriate_dist_hc <- function(x, control = NULL) .hclust_helper(x, control)
 
 ## workhorses are in seriation.hclust
-seriate_hc_gw <-
-function(x, control = NULL) 
+seriate_dist_hc_gw <- function(x, control = NULL) 
     .seriate_gruvaeus(.hclust_helper(x, control), x)
 
-seriate_hc_optimal <-
-function(x, control = NULL)
+seriate_dist_hc_optimal <- function(x, control = NULL)
     seriate_optimal(.hclust_helper(x, control), x)
 
 ## brusco: simulated annealing for anti-robinson
-seriate_arsa <-
-function(x, control = NULL)
-{
+seriate_dist_arsa <- function(x, control = NULL) {
     param <- list(
         cool = 0.5,
         tmin = 0.1,
@@ -150,9 +138,7 @@ function(x, control = NULL)
 
 
 ## brusco: branch-and-bound - unweighted row gradient 
-seriate_bburcg <-
-function(x, control = NULL)
-{
+seriate_dist_bburcg <- function(x, control = NULL) {
     param <- list(
         eps = 1e-7,
         verbose = FALSE
@@ -183,9 +169,7 @@ function(x, control = NULL)
 
 
 ## brusco: branch-and-bound - weighted row gradient 
-seriate_bbwrcg <-
-function(x, control = NULL)
-{
+seriate_dist_bbwrcg <- function(x, control = NULL) {
     param <- list(
         eps = 1e-7,
         verbose = FALSE
@@ -214,21 +198,21 @@ function(x, control = NULL)
     ret[[4]]
 }
 
-set_seriation_method("dist", "ARSA", seriate_arsa, 
+set_seriation_method("dist", "ARSA", seriate_dist_arsa, 
     "Minimize Anti-Robinson events using simulated annealing")
-set_seriation_method("dist", "BBURCG", seriate_bburcg, 
+set_seriation_method("dist", "BBURCG", seriate_dist_bburcg, 
     "Minimize the unweighted row/column gradient by branch-and-bound")
-set_seriation_method("dist", "BBWRCG", seriate_bbwrcg,
+set_seriation_method("dist", "BBWRCG", seriate_dist_bbwrcg,
     "Minimize the weighted row/column gradient by branch-and-bound")
-set_seriation_method("dist", "TSP", seriate_tsp,
+set_seriation_method("dist", "TSP", seriate_dist_tsp,
     "Minimize Hamiltonian path length with a TSP solver")
-set_seriation_method("dist", "Chen", seriate_chen,
+set_seriation_method("dist", "Chen", seriate_dist_chen,
     "Rank-two ellipse seriation")
-set_seriation_method("dist", "MDS", seriate_mds,
+set_seriation_method("dist", "MDS", seriate_dist_mds,
     "MDS - first dimension")
-set_seriation_method("dist", "HC", seriate_hc,
+set_seriation_method("dist", "HC", seriate_dist_hc,
     "Hierarchical clustering")
-set_seriation_method("dist", "GW", seriate_hc_gw,
+set_seriation_method("dist", "GW", seriate_dist_hc_gw,
     "Hierarchical clustering reordered by Gruvaeus and Wainer heuristic")
-set_seriation_method("dist", "OLO", seriate_hc_optimal,
+set_seriation_method("dist", "OLO", seriate_dist_hc_optimal,
     "Hierarchical clustering with optimal leaf ordering")

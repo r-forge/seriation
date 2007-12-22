@@ -20,12 +20,13 @@ ser_permutation_vector <- function(x, method = NULL) {
 ## accessors
 get_order <- function(x, ...) UseMethod("get_order")
 get_order.ser_permutation_vector <- function(x, ...) NextMethod()
+get_order.hclust <- function(x, ...) x$order
+get_order.integer <- function(x, ...) as.integer(x)
+
 get_order.default <- function(x, ...) 
     stop(gettextf("No permutation accessor implemented for class '%s'.",
                   class(x)))
 
-get_order.hclust <- function(x, ...) x$order
-get_order.integer <- function(x, ...) as.integer(x)
 
 ## currently method is an attribute of permutation
 get_method <- function(x, printable = FALSE) {
@@ -83,7 +84,8 @@ ser_permutation <- function(x,...) {
         return(x)
     }
 
-    x <- c(list(x), ddd)
+    if(!is.list(x)) x <- list(x)
+    x <- c(x, ddd)
 
     ## check if all elements are ser_permutation_vector
     #if(any(!sapply(x, inherits, "ser_permutation_vector")))

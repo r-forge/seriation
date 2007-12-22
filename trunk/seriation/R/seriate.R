@@ -45,3 +45,13 @@ function(kind)
                function(m) get_seriation_method(kind, m)$description)
     writeLines(formatDL(methods, descriptions, style = "list"))
 }
+
+print.seriation_method <-
+function(x, ...)
+{
+    writeLines(c(gettextf("object of class '%s'", class(x)),
+            gettextf("name:        %s", x$name),
+            gettextf("description: %s", x$description)))
+    invisible(x)
+}
+

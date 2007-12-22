@@ -2,6 +2,7 @@
 \alias{criterion}
 \alias{criterion.dist}
 \alias{criterion.matrix}
+\alias{criterion.array}
 \title{Criterion for a loss/merit function for data given a permutation}
 \description{
 Compute the value for different loss functions \eqn{L} and

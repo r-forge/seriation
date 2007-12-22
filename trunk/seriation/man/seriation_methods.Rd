@@ -1,0 +1,73 @@
+\name{seriation_methods}
+\alias{set_seriation_method}
+\alias{get_seriation_method}
+\alias{list_seriation_methods}
+\alias{show_seriation_methods}
+\title{Registry for seriation methods}
+\description{
+A registry to manage methods for seriation.
+}
+\usage{
+list_seriation_methods(kind)
+show_seriation_methods(kind)
+get_seriation_method(kind, name)
+set_seriation_method(kind, name, definition, description = NULL, ...)
+}
+\arguments{
+  \item{kind}{the data type the method works on. For example, \code{"dist"},
+  \code{"matrix"} or \code{"array"}.}
+  \item{name}{a short name of the method used to refer to the method in
+  seriate or criterion.}
+  \item{definition}{a function containing the method's code.} 
+  \item{description}{a description of the method. E.g., a long name.} 
+  \item{...}{further information that is stored for the method in the 
+  registry.} 
+}
+\details{
+\code{list_seriation_method()} lists all available methods for a given
+data type (\code{kind}). The result is a vector of character strings
+with the short names of the methods. 
+
+\code{show_seriation_method()} shows all available methods including
+a description.
+
+\code{get_seriation_method()} returns information (including the
+implementing function) about a given method in form of an object of
+class \code{"seriation_method"}.
+
+With \code{set_seriation_method()} new seriation methods can be added by the
+user. The implementing function (\code{definition}) needs to have the formal
+arguments \code{x, control}, where \code{x} is the data object and
+\code{control} contains a list with additional information for the method
+passed on from \code{seriate()}.  The implementation has to return 
+a list of objects which can be transformed into a \code{ser_permutation_vector}
+objects (e.g., integer arrays). The elements in the list
+have to be in corresponding order to the dimenstions of \code{x}.
+}
+\examples{
+show_seriation_methods("dist")
+
+list_seriation_methods("dist")
+
+get_seriation_method("dist", "ARSA")
+
+## define a new method
+
+## create a identity function which returns the identity order
+seriation_method_identity <- function(x, control) {
+   lapply(dim(x), seq)
+}
+
+## set new method
+set_seriation_method("matrix", "identity", seriation_method_identity, 
+    "Identity order")
+
+set_seriation_method("array", "identity", seriation_method_identity, 
+    "Identity order")
+
+list_seriation_methods("matrix")
+
+##use all criterion methods (including the new one)
+seriate(matrix(1:12, ncol=3), "identity")
+}
+%\keyword{}

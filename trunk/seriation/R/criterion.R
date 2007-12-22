@@ -70,3 +70,13 @@ function(kind)
                function(m) get_criterion_method(kind, m)$description)
     writeLines(formatDL(methods, descriptions, style = "list"))
 }
+
+print.criterion_method <-
+function(x, ...)
+{
+    writeLines(c(gettextf("object of class '%s'", class(x)),
+            gettextf("name:        %s", x$name),
+            gettextf("description: %s", x$description),
+            gettextf("merit:       %s", x$merit)))
+    invisible(x)
+}
