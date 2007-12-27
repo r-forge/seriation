@@ -24,8 +24,8 @@ data array (k-way k-mode data).
       algorithm.}
   \item{margin}{ a vector giving the margins to be seriated. For matrix,
         \code{1} indicates rows, \code{2} indicates columns, \code{c(1,2)} 
-        indicates rows and columns. For array, margin gets a array of
-        dimensions to seriate.}
+        indicates rows and columns. For array, margin gets a vector with 
+        the dimensions to seriate.}
   \item{\ldots}{ further arguments (unused).}
 }
 \details{
@@ -294,7 +294,7 @@ layout(matrix(1:4, ncol = 2, byrow = TRUE), respect=TRUE)
 pimage(x, main = "original data")
 criterion(x)
 
-order <- seriate(x)
+order <- seriate(x, method = "BEA_TSP")
 pimage(x, order, main = "TSP to optimize ME")
 criterion(x, order)
 

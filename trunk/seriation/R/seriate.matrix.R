@@ -3,24 +3,8 @@
 seriate.matrix <-
 function(x, method = NULL, control = NULL, 
          margin = c(1,2), ...)
-{
-    ## margin 1...rows, 2...cols
-
-    if(is.null(method))
-        method <- "BEA_TSP"
-    else if(!is.character(method) || (length(method) != 1L))
-        stop("Argument 'method' must be a character string.")
-    
-    method <- get_seriation_method("matrix", method)
-    order <- method$definition(x, control)
-
-    perm <- ser_permutation(
-        lapply(order, function (o) ser_permutation_vector(o, method$name))
-    )
-
-    perm[margin]
-}
-
+    .seriate_array_helper(x, method, control, margin, 
+        datatype = "matrix", defmethod = "BEA_TSP", ...)
 
 ## Algorithm B
 ##  F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures
@@ -39,7 +23,6 @@ function(x, method = NULL, control = NULL,
 #    
 #    list(row = row, col = col)
 #}
-
 
 seriate_matrix_bea_tsp <- function(x, control) {
 

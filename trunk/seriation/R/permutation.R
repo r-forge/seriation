@@ -77,21 +77,17 @@ summary.ser_permutation <- function(object, ...) {
 
 ## constructor
 ser_permutation <- function(x,...) {
-    ddd <- list(...)
     if(inherits(x, "ser_permutation")) {
-        if(length(ddd) != 0)
+        if(length(list(...)) != 0)
             warning("Argument 'x' already has class 'ser_permutation' ... ignored")
         return(x)
     }
-
-    if(!is.list(x)) x <- list(x)
-    x <- c(x, ddd)
 
     ## check if all elements are ser_permutation_vector
     #if(any(!sapply(x, inherits, "ser_permutation_vector")))
     #stop("some elements are not of class ", sQuote("ser_permutation_vector"))
     ## we make them ser_permutation_vector
-    x <- lapply(x, "ser_permutation_vector")
+    x <- lapply(list(x, ...), "ser_permutation_vector")
 
     class(x) <- c("ser_permutation", "list")
     x

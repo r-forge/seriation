@@ -39,7 +39,7 @@ function(kind)
 show_seriation_methods <-
 function(kind)
 {
-    methods <- list_methods_in_db(seriation_methods_db, kind)
+    methods <- list_seriation_methods(kind)
     descriptions <-
         sapply(methods, 
                function(m) get_seriation_method(kind, m)$description)

@@ -17,10 +17,10 @@ set_criterion_method(kind, name, definition, description = NULL, merit = NA, ...
 \arguments{
   \item{kind}{the data type the method works on. For example, \code{"dist"},
   \code{"matrix"} or \code{"array"}.}
-  \item{name}{a short name of the method used to refer to the method in
-  seriate or criterion.}
+  \item{name}{a short name for the method used to refer to the method in
+  the function \code{criterion()}.}
   \item{definition}{a function containing the method's code.} 
-  \item{description}{a description of the method. E.g., a long name.} 
+  \item{description}{a description of the method. For example, a long name.} 
   \item{merit}{a boolean indicating if the criterion measure is a merit
   (\code{TRUE}) or a loss (\code{FALSE}) measure.} 
   \item{...}{further information that is stored for the method in the 
@@ -56,7 +56,7 @@ get_criterion_method("dist", "AR_d")
 
 ## a function that return sum of the diagonal elements
 criterion_method_matrix_foo <- function(x, order, ...) {
-if(!is.null(order)) x <- permute(x)
+if(!is.null(order)) x <- permute(x,order)
     sum(diag(x))
 }
 
@@ -69,4 +69,4 @@ list_criterion_methods("matrix")
 ##use all criterion methods (including the new one)
 criterion(matrix(1:9, ncol=3))
 }
-%\keyword{}
+\keyword{misc}

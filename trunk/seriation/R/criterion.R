@@ -64,10 +64,15 @@ function(kind)
 show_criterion_methods <-
 function(kind)
 {
-    methods <- list_methods_in_db(criterion_methods_db, kind)
+    methods <- list_criterion_methods(kind)
     descriptions <-
-        sapply(methods, 
-               function(m) get_criterion_method(kind, m)$description)
+            sapply(methods, 
+                function(m) {
+                    cm <- get_criterion_method(kind, m)
+                    paste(cm$description,
+                        if(cm$merit) "(merit function)"
+                        else "(loss function)")
+                })
     writeLines(formatDL(methods, descriptions, style = "list"))
 }
 

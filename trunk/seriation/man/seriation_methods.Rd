@@ -16,10 +16,10 @@ set_seriation_method(kind, name, definition, description = NULL, ...)
 \arguments{
   \item{kind}{the data type the method works on. For example, \code{"dist"},
   \code{"matrix"} or \code{"array"}.}
-  \item{name}{a short name of the method used to refer to the method in
-  seriate or criterion.}
+  \item{name}{a short name for the method used to refer to the method in
+  \code{seriate()}.}
   \item{definition}{a function containing the method's code.} 
-  \item{description}{a description of the method. E.g., a long name.} 
+  \item{description}{a description of the method. For example, a long name.} 
   \item{...}{further information that is stored for the method in the 
   registry.} 
 }
@@ -40,16 +40,16 @@ user. The implementing function (\code{definition}) needs to have the formal
 arguments \code{x, control}, where \code{x} is the data object and
 \code{control} contains a list with additional information for the method
 passed on from \code{seriate()}.  The implementation has to return 
-a list of objects which can be transformed into a \code{ser_permutation_vector}
-objects (e.g., integer arrays). The elements in the list
+a list of objects which can be coerced into \code{ser_permutation_vector}
+objects (e.g., integer vectors). The elements in the list
 have to be in corresponding order to the dimenstions of \code{x}.
 }
 \examples{
-show_seriation_methods("dist")
+show_seriation_methods("matrix")
 
-list_seriation_methods("dist")
+list_seriation_methods("matrix")
 
-get_seriation_method("dist", "ARSA")
+get_seriation_method("matrix", "BEA")
 
 ## define a new method
 
@@ -65,9 +65,9 @@ set_seriation_method("matrix", "identity", seriation_method_identity,
 set_seriation_method("array", "identity", seriation_method_identity, 
     "Identity order")
 
-list_seriation_methods("matrix")
+show_seriation_methods("matrix")
 
 ##use all criterion methods (including the new one)
 seriate(matrix(1:12, ncol=3), "identity")
 }
-%\keyword{}
+\keyword{misc}
