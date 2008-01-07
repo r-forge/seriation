@@ -33,7 +33,7 @@ criterion_ME <- function(x, order = NULL, ...) {
 ## (C) ceeboo 2005, 2006
 
 .stress <- function(x, order, type="moore") {
-    TYPE <- c(1,2,3)
+    TYPE <- c(1,2)
     names(TYPE) <- c("moore", "neumann")
     if (inherits(x, "dist")) x <- as.matrix(x)
     if (!is.matrix(x))

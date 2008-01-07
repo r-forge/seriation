@@ -63,7 +63,7 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
     if(options$newpage) grid.newpage()
  
     ## create outer viewport
-    xlim <- c(1 - (1 - options$spacing), nrow(x) + (1 - options$spacing))
+    xlim <- c(options$spacing, nrow(x) + (1 - options$spacing))
     pushViewport(plotViewport(margins = options$mar,
             layout = grid.layout(ncol_x, 1), 
             xscale = xlim, 
