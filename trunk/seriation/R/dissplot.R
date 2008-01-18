@@ -26,7 +26,7 @@ dissplot <- function(x, labels = NULL, method = NULL,
 print.cluster_dissimilarity_matrix <-
 function(x, ...)
 {
-    d <- attr(x, "Size")
+    d <- attr(x$x_reordered, "Size")
     k <- if(!is.null(x$k)) x$k else NA
 
     cat(gettextf("object of class '%s'\n", class(x)))
