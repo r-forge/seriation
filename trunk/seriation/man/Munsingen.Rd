@@ -1,10 +1,11 @@
 \name{Munsingen}
 \alias{Munsingen}
 \docType{data}
+\encoding{UTF-8}
 \title{Hodson's Munsingen Data Set}
 \description{
   This data set contains a grave times artifact incidence matrix for the
-  Celtic M{\"u}nsingen-Rain cemetery in Switzerland as provided by 
+  Celtic Münsingen-Rain cemetery in Switzerland as provided by 
   Hodson (1968) and published by Kendall 1971.
 }
 \usage{data("Munsingen")}
@@ -13,8 +14,8 @@
   are in the order determined by Hodson (1968).
 }
 \references{
-Hodson, F.R. (1968): \emph{The La Tene Cemetery at M{\"u}nsingen-Rain}.
-St{\"a}mpfli, Bern.
+Hodson, F.R. (1968): \emph{The La Tene Cemetery at Münsingen-Rain}.
+Stämpfli, Bern.
     
 Kendall, D.G. (1971): Seriation from abundance matrices. In: Hodson, F.R.,
 Kendall, D.G. and Tautu, P., (Editors). \emph{Mathematics in the Archaeological
