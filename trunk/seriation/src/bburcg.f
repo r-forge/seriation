@@ -170,10 +170,10 @@ C
         IF(Z.GT.ZBEST) ZBEST = Z
  3500 CONTINUE
 C      WRITE(2,3505) ZBEST
-C      IF (IVERB == 1) THEN
-C          WRITE(*,3505) ZBEST
-C      ENDIF
-C 3505 FORMAT(' HEURISTIC OBJ VALUE ',I12)
+      IF (IVERB == 1) THEN
+          WRITE(*,3505) ZBEST
+      ENDIF
+ 3505 FORMAT(' HEURISTIC OBJ VALUE ',I12)
       Z = ZBEST-1
       DO I = 1,N
         Q(I) = 0
@@ -216,9 +216,9 @@ C
         CALL EVALBBURCG(ZBD,Q,N,D)
         IF(ZBD.GT.Z) THEN
           Z=ZBD
-C          IF (IVERB == 1) THEN
-C              WRITE(*,*) 'Eval =',z
-C          ENDIF
+          IF (IVERB == 1) THEN
+              WRITE(*,*) 'Eval =',z
+          ENDIF
           DO I = 1,N
             X(I)=Q(I)
           END DO
