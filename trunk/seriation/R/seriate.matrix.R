@@ -54,8 +54,14 @@ seriate_matrix_bea <- function(x, control = NULL){
     
     best <- which.max(sapply(res, "[[", "e"))
     res <- res[[best]]
+    
+    row <- res$ib
+    col <- res$jb
+    
+    names(row) <- rownames(x)
+    names(col) <- colnames(x)
 
-    list(row = res$ib, col = res$jb)
+    list(row = row, col = col)
     
 }
 
@@ -79,6 +85,9 @@ seriate_matrix_fpc <- function(x, control) {
     col <- order(scores)
     cat("col: first principal component explains", 
         pr$sdev[1] / sum(pr$sdev)* 100,"%\n")
+    
+    names(row) <- rownames(x)
+    names(col) <- colnames(x)
 
     list(row = row, col = col)
 }

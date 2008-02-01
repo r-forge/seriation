@@ -46,7 +46,9 @@ seriate_dist_chen <- function(x, control = NULL){
     left <- which(e[,1] < 0)
     left <- left[order(e[left,2])]
     
-    c(right,left)
+    o <- c(right,left)
+    names(o) <- labels(d)[o]
+    o
 }
 
 
@@ -58,7 +60,9 @@ seriate_dist_tsp <- function(x, control = NULL){
     tour <- solve_TSP(tsp, method = control$method, 
         control = control$control)
     
-    cut_tour(tour, cut = "cut_here", exclude_cut = TRUE)
+    o <- cut_tour(tour, cut = "cut_here", exclude_cut = TRUE)
+    names(o) <- labels(d)[o]
+    o
 }
 
 
@@ -133,7 +137,9 @@ seriate_dist_arsa <- function(x, control = NULL) {
     ret <- .Fortran("arsa", N, A, param$cool, param$tmin, param$nreps, IPERM,
         R1, R2, D, U, S, T, SB, param$verbose)
 
-    ret[[6]]
+    o <- ret[[6]]
+    names(o) <- labels(d)[o]
+    o
 }
 
 
@@ -164,7 +170,9 @@ seriate_dist_bburcg <- function(x, control = NULL) {
     ret <- .Fortran("bburcg", N, A, param$eps, X, Q, D, DD, S, UNSEL,
         param$verbose)
     
-    ret[[4]]
+    o <- ret[[4]]
+    names(o) <- labels(d)[o]
+    o
 }
 
 
@@ -195,7 +203,9 @@ seriate_dist_bbwrcg <- function(x, control = NULL) {
     ret <- .Fortran("bbwrcg", N, A, param$eps, X, Q, D, DD, S, UNSEL,
         param$verbose)
     
-    ret[[4]]
+    o <- ret[[4]]
+    names(o) <- labels(d)[o]
+    o
 }
 
 set_seriation_method("dist", "ARSA", seriate_dist_arsa, 
