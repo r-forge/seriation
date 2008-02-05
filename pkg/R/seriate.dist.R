@@ -47,7 +47,7 @@ seriate_dist_chen <- function(x, control = NULL){
     left <- left[order(e[left,2])]
     
     o <- c(right,left)
-    names(o) <- labels(d)[o]
+    names(o) <- labels(x)[o]
     o
 }
 
@@ -61,7 +61,7 @@ seriate_dist_tsp <- function(x, control = NULL){
         control = control$control)
     
     o <- cut_tour(tour, cut = "cut_here", exclude_cut = TRUE)
-    names(o) <- labels(d)[o]
+    names(o) <- labels(x)[o]
     o
 }
 
@@ -138,7 +138,7 @@ seriate_dist_arsa <- function(x, control = NULL) {
         R1, R2, D, U, S, T, SB, param$verbose)
 
     o <- ret[[6]]
-    names(o) <- labels(d)[o]
+    names(o) <- labels(x)[o]
     o
 }
 
@@ -171,7 +171,7 @@ seriate_dist_bburcg <- function(x, control = NULL) {
         param$verbose)
     
     o <- ret[[4]]
-    names(o) <- labels(d)[o]
+    names(o) <- labels(x)[o]
     o
 }
 
@@ -204,7 +204,7 @@ seriate_dist_bbwrcg <- function(x, control = NULL) {
         param$verbose)
     
     o <- ret[[4]]
-    names(o) <- labels(d)[o]
+    names(o) <- labels(x)[o]
     o
 }
 
