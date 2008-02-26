@@ -32,6 +32,7 @@
 \DeclareMathOperator*{\argmax}{argmax}
 
 \hyphenation{Brusco}
+\sloppy
 
 %% \VignetteIndexEntry{An Introduction to the R package seriation}
 
@@ -61,7 +62,7 @@ R~package~\pkg{seriation}}
 
 
 <<echo=FALSE>>=
-options(width = 75)
+options(scipen=3, digits=4)
 ### for sampling
 set.seed(1234)
 @
@@ -106,7 +107,8 @@ is presented by \cite{seriation:Ihm:2005}.
 Techniques related to seriation are also popular in several other
 fields.  Especially in ecology scaling techniques are used under the
 name \emph{ordination}.  For these applications several \proglang{R} packages
-already exist (e.g., \pkg{ade4}~\citep{seriation:Chessel:2007} and
+already exist (e.g., 
+\pkg{ade4}~\citep{seriation:Chessel:2007,seriation:Dray:2007} and
 \pkg{vegan}~\citep{seriation:Oksanen:2007}). This paper describes the new
 package \pkg{seriation} which differs from existing packages in the
 following ways:
@@ -712,9 +714,9 @@ i.e., the columns of a matrix, are seriated).
 %\begin{landscape}
 \begin{table}[t]
 \centering
-    \begin{tabular}{lllc}
+    \begin{tabular}{llp{4cm}l}
         \hline
-Algorithm & \code{method} argument & Optimizes & Input data \\
+Algorithm & \code{method} & Optimizes & Input data \\
         \hline
 Simulated annealing & \code{"ARSA"} & Gradient measure &\code{dist} \\
 Branch-and-bound & \code{"BBURCG"} & Gradient measure &\code{dist} \\
@@ -776,9 +778,9 @@ indicate the loss/merit functions currently available in the package.
 
 \begin{table}[t]
 \centering
-\begin{tabular}{llcc}
+\begin{tabular}{llll}
         \hline
-        Name & \code{method} argument & merit/loss & Input data \\
+        Name & \code{method} & merit/loss & Input data \\
         \hline
         Anti-Robinson events& \code{"AR\_events"} & 
 loss & \code{dist} \\
@@ -848,9 +850,6 @@ in the examples in the next section.
 \section{Examples and applications}
 \label{sec:example}
 
-<<echo=FALSE>>=
-options(scipen=3, digits=4)
-@
 
 We start this section with a simple first session to demonstrate the basic
 usage of the package. Then we present and discuss several seriation 
@@ -1130,7 +1129,7 @@ par(def.par)
 
 \begin{figure}
     \centering
-    \includegraphics{seriation-crit1}
+    \includegraphics[width=14cm]{seriation-crit1}
     \caption{Comparison of different methods and seriation criteria}
     \label{fig:crit1}
 \end{figure}
@@ -1800,6 +1799,7 @@ implementation and the anonymous reviewers for their valuable comments
 and suggestions.
 
 %
+\bibliographystyle{abbrvnat}
 \bibliography{seriation}
 %
 \end{document}
