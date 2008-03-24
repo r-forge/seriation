@@ -32,7 +32,7 @@ are currently implemented:
 \describe{
 
 \item{\code{"Gradient\_raw", "Gradient\_weighted"}}{Gradient measures 
-    (Hubert et al 1987).
+    (Hubert et al 2001).
     
     A symmetric dissimilarity matrix
     where the values in all rows and columns only increase when
@@ -49,7 +49,7 @@ are currently implemented:
     of a gradient condition for an object triple (\eqn{O_i, O_k, O_j}) 
     is counted.
      
-    Hubert et al (1987) suggest two functions. The first
+    Hubert et al (2001) suggest two functions. The first
     function is given by: 
     \deqn{f(z,y) = \mathrm{sign}(y-z) = +1 \quad \mathrm{if} \quad z < y; \quad 0 \quad \mathrm{if} \quad z = y; \quad \mathrm{and} \quad -1 \quad \mathrm{if} \quad z > y.}
 
@@ -193,7 +193,7 @@ C.-H. Chen (2002): Generalized association plots:
 Information visualization via iteratively generated correlation matrices,
 \emph{Statistica Sinica,} \bold{12}(1), 7--29.
 
-L. Hubert, P. Arabie, and J. Meulman (1987): \emph{Combinatorial Data Analysis: 
+L. Hubert, P. Arabie, and J. Meulman (2001): \emph{Combinatorial Data Analysis: 
 Optimization by Dynamic Programming.} Society for Industrial Mathematics.
 
 
