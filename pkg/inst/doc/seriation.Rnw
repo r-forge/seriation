@@ -83,7 +83,7 @@ number of possible solutions grows with problem size (number of objects, $n$)
 by the order~$O(n!)$.  This makes a brute-force enumerative approach
 infeasible for all but very small problems.  To solve larger problems
 (currently with up to 40 objects), partial enumeration methods can be used.  For
-example, \cite{seriation:Hubert:1987} propose dynamic programming and
+example, \cite{seriation:Hubert:2001} propose dynamic programming and
 \cite{seriation:Brusco:2005} use a branch-and-bound strategy.  For even
 larger problems only heuristics can be employed.
 
@@ -208,7 +208,7 @@ columns only increase when moving away from the main diagonal is called
 a perfect \emph{anti-Robinson matrix} after the statistician
 \cite{seriation:Robinson:1951}. Formally, an $n \times n$ dissimilarity
 matrix $\mathbf{D}$ is in anti-Robinson form if and only if the
-following two gradient conditions hold~\citep{seriation:Hubert:1987}:
+following two gradient conditions hold~\citep{seriation:Hubert:2001}:
 \begin{align}
     \text{within rows:} & \quad  d_{ik} \le d_{ij} \quad \text{for} 
         \quad 1 \le i < k < j \le n; \\ 
@@ -224,11 +224,11 @@ a natural objective for seriation.
 It has to be noted that $\mathbf{D}$ can be brought into a perfect
 anti-Robinson form by row and column permutation whenever $\mathbf{D}$  is an
 ultrametric or $\mathbf{D}$ has an exact Euclidean representation in a single
-dimension~\citep{seriation:Hubert:1987}. However, for most data only an
+dimension~\citep{seriation:Hubert:2001}. However, for most data only an
 approximation to the anti-Robinson form is possible.
 
 A suitable merit measure which quantifies the divergence of a matrix from the
-anti-Robinson form was given by \cite{seriation:Hubert:1987} as
+anti-Robinson form was given by \cite{seriation:Hubert:2001} as
 \begin{equation}
     M(\mathbf{D}) = 
     \sum_{i<k<j}f(d_{ik}, d_{ij}) + \sum_{i<k<j}f(d_{kj}, d_{ij}) 
@@ -236,7 +236,7 @@ anti-Robinson form was given by \cite{seriation:Hubert:1987} as
 \end{equation}
 where $f(\cdot,\cdot)$ is a function which defines how a violation or
 satisfaction of a gradient condition for an object triple ($O_i$, $O_k$ and
-$O_j$) is counted.  \cite{seriation:Hubert:1987} suggest two functions. The
+$O_j$) is counted.  \cite{seriation:Hubert:2001} suggest two functions. The
 first function is given by:
 \begin{equation}
     f(z,y) = \mathrm{sign}(y-z) = 
@@ -449,7 +449,7 @@ Partial enumeration methods search for the exact solution of a
 combinatorial optimization problem.  Exploiting properties of the search
 space, only a subset of the enormous number of possible combinations has
 to be evaluated.  Popular partial enumeration methods which are used for
-seriation are \emph{dynamic programming}~\citep{seriation:Hubert:1987}
+seriation are \emph{dynamic programming}~\citep{seriation:Hubert:2001}
 and \emph{branch-and-bound}~\citep{seriation:Brusco:2005}.
 
 Dynamic programming recursively searches for the optimal solution checking and
