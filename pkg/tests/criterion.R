@@ -13,13 +13,13 @@ as.matrix(d)
 stopifnot(criterion(d,method="AR_events") == 2)
 ## 2
 
-stopifnot(round(criterion(d, method="AR_deviations"), 6) == 0.504017)
+stopifnot(round(criterion(d, method="AR_deviations"), 6) - 0.504017 < 1e-10)
 ## 2.000000 - 1.732051 +  2.236068 - 2.000000 = 0.504017
 
 stopifnot(criterion(d, method="Gradient_raw") == 4)
 ## 6 - 2 = 4
 
-stopifnot(round(criterion(d, method="Gradient_weighted"), 6) ==  3.968119)
+stopifnot(round(criterion(d, method="Gradient_weighted"), 6) - 3.968119 < 1e-10)
 ## -1 *(1.000000 - 2.236068 + 1.000000 - 2.000000 + 2.236068 - 2.000000 + 2.000000 - 1.732051 + 1.000000 - 1.732051 + 1.000000 - 2.000000 + 1.732051 - 2.000000 + 2.000000 - 2.236068) 
 ## = 3.968119
 
