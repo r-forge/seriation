@@ -351,7 +351,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         }
 
         ## calculate silhouette values for later use
-        sil <- silhouette(labels, x)
+        sil <- cluster::silhouette(labels, x)
 
         ## determine order for matrix from cluster order
         order <- c()

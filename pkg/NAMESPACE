@@ -1,3 +1,9 @@
+useDynLib(seriation)
+
+import("TSP")
+import("grid")
+#imports("gclus") ## we use :: for gclus in seriate.hclust
+#imports("cluster") ## we use :: for silhouette in dissplot
 
 export(
     bertinplot,
@@ -64,4 +70,3 @@ S3method(seriate, array)
 S3method(summary, ser_permutation)
 S3method(summary, ser_permutation_vector)
 
-useDynLib(seriation)
