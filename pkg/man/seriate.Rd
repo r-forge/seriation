@@ -30,7 +30,9 @@ data array (k-way k-mode data).
 }
 \details{
 
-Currently the following methods are implemented for dist:
+Two-way two-mode data has to be provided as a dist object (not as a symmetric
+matrix). Similarities have to be transformed in a suitable way into
+dissimilarities. Currently the following methods are implemented for dist:
    
 \describe{    
 \item{\code{"ARSA"}}{Anti-Robinson seriation by simulated annealing.
@@ -133,6 +135,7 @@ be supplied using an element named \code{"hclust"}.
     }
     }
 
+Two-way two mode data are general positive matrices.
 Currently the following methods are implemented for matrix:
 \describe{
 \item{\code{"BEA"}}{Bond Energy Algorithm (BEA; McCormick 1972).
@@ -160,7 +163,7 @@ Currently the following methods are implemented for matrix:
      specified. The results of the best run will be returned.
      }
 
-\item{\code{"BEA_TSP"}}{Use a TSP to optimize the measure od effectiveness 
+\item{\code{"BEA_TSP"}}{Use a TSP to optimize the measure of effectiveness 
     (Lenstra 1974). 
       
     Use a TSP solver to optimize ME. 
@@ -168,21 +171,6 @@ Currently the following methods are implemented for matrix:
     In \code{control} as element \code{"method"} a TSP solver method can be
     specified (see package \pkg{TSP}).
     }
-
-
-
-%\item{\code{"Murtagh"}}{Algorithm B (Murtagh 1985). 
-%      
-%    A simple heuristic which also tries to maximize the summed bond energy (see
-%    BEA) of a nonnegative matrix. It uses the cross-product of the matrix (an
-%    unnormalized form of the Pearson correlation) and a greedy hierarchical
-%    clustering scheme. In each step a single cluster is constructed by merging
-%    the leaf closest to one of the two endpoints of the cluster. The algorithm
-%    starts with a random leaf and uses tie-breaking.
-%      
-%    Note that the ordering can change from run to run since ties are broken
-%    randomly.
-%    }
 
 \item{\code{"PCA"}}{ Principal component analysis.
       
@@ -244,9 +232,6 @@ and data reorganization by a clustering technique,
 \emph{Operations Research,} 
 \bold{20}(5), 993--1009.
 
-%F. Murtagh (1985): Multidimensional Cluster Algorithms. 
-%\emph{Lectures in Computational Statistics}, Chapter 1, 
-%Physica Verlag, 9--31.
 }
 \seealso{
 \code{\link{criterion}},

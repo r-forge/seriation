@@ -87,6 +87,10 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         options[o] <- user_options    
     } 
 
+    ## length(col) == 1 means number of colors
+    if(length(options$col) == 1) options$col <- hcl(h = 0, c = 0, 
+        l = seq(20, 95, len = options$col)) 
+    
     ## get grid options
     gp <- options$gp
     
@@ -313,12 +317,19 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         control <- list(inter = control, intra = control)
     }
         
-    if(!is.null(method$inter) && 
-        is.na(method$inter)) { 
-        ## keep the matrix as is -- do not reorder
-        labels          <- NULL
-        ##order           <- NULL
-        ##used_method$inter  <- NA
+    if(!is.null(method$inter) 
+        && is.na(method$inter)) {
+        ## no setiation
+        if(!is.null(labels)) {
+            ## do coarse seriation
+            order <- order(labels)
+            k <- length(unique(labels))
+            cluster_dissimilarities <- .cluster_dissimilarity(x, labels)
+            ## calculate silhouette values for later use
+            sil <- cluster::silhouette(labels, x)
+        
+        }
+        ## else keep the matrix as is -- do not reorder
         
     }else if(is.null(labels)) {
         ## reorder whole matrix if no labels are given
@@ -330,7 +341,7 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
 
         order <- get_order(order)
 
-    }else if (!is.null(labels)){
+    }else{
         ## reorder clusters for given labels
         ## get number of clusters k
         k <- length(unique(labels))
@@ -409,23 +420,21 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         cluster_dissimilarities  <- 
         cluster_dissimilarities[cluster_order, cluster_order]
 
-        ## prepare order for labels 
-        labels          <- labels[order]
-
-        ## we might need unique labels at some point
-        labels_unique   <-  unique(labels)
-
-
     }
 
     ## reorder matrix
-    if(!is.null(order)) x_reordered <- permute(x, order)
+    if(!is.null(order)) {
+        x_reordered <- permute(x, order)
+        labels <- labels[order]
+    }
     else x_reordered <- x
     
     ## prepare for return value
     cluster_description <- NULL
 
     if(!is.null(labels)) {
+        
+        labels_unique   <-  unique(labels)
         
         ## reorder silhouettes
         sil <- sil[order,]

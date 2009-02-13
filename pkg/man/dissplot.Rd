@@ -71,7 +71,8 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
   \item{\code{main}}{ title for the plot.}
   \item{\code{col}}{ colors used for the image plot (default: 100 shades of gray
       using the hcl colorspace with 
-      \code{hcl(h = 0, c = 0, l = seq(20, 95, len = 100))}). }
+      \code{hcl(h = 0, c = 0, l = seq(20, 95, len = 100))}). If \code{col} is
+      a single number, it specifies the number of gray values used in the plot.}
   \item{\code{colorkey}}{ a logical indicating  whether to place a color key
       below the plot. }
   \item{\code{lines_col}}{ color used for the lines to separate clusters. }
