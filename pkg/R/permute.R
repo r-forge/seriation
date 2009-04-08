@@ -73,6 +73,23 @@ permute.list      <- .permute_1d
 ##stop(paste("\npermute not implemented for class: ", class(x)))
 permute.default   <- .permute_kd
 
+## data.frame is weird
+permute.data.frame <- 
+function(x, order)
+{
+    if(!inherits(order, "ser_permutation_vector")) 
+        order <- ser_permutation(order)
+    
+    if(length(order) != 1L)
+        stop("dimensions do not match")
+    
+    perm <- get_order(order[[1L]])
+    if(nrow(x) != length(perm))     
+        stop("some permutation vectors do not fit dimension of data")
+
+    x[perm,]
+}
+
 permute <-
 function(x, order)
     UseMethod("permute")

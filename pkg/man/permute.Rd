@@ -5,6 +5,7 @@
 \alias{permute.list}
 \alias{permute.matrix}
 \alias{permute.array}
+\alias{permute.data.frame}
 \title{Permute a dist object, a matrix, an array, a list, or a numeric vector}
 \description{
 A method for permuting 
