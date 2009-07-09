@@ -59,13 +59,17 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     ## default plot options
     options <- list(
         cluster_labels = TRUE, 
-        averages    = TRUE, 
-        lines       = TRUE, 
+        averages	= c(FALSE, TRUE), ## (upper.tri, lower.tri); NA means white
+		flip		= FALSE,
+		lines       = TRUE, 
         silhouettes = FALSE,
+        col         = 100, 
+        power		= 1,
+		hue			= NULL,
         threshold   = NULL,
-        main        = paste("Dissimilarity plot:", 
+		gamma		= 2.4,
+		main        = paste("Dissimilarity plot:", 
             dim,"x",dim),
-        col         = hcl(h = 0, c = 0, l = seq(20, 95, len = 100)), 
         colorkey    = TRUE, 
         lines_col   = "black",
         newpage     = TRUE, 
@@ -87,10 +91,17 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         options[o] <- user_options    
     } 
 
-    ## length(col) == 1 means number of colors
-    if(length(options$col) == 1) options$col <- hcl(h = 0, c = 0, 
-        l = seq(20, 95, len = options$col)) 
-    
+    ## length(col) == 1 means number of colors otherwise we expect col palette
+	if(length(options$col) == 1) {
+		if(is.null(options$hue)) options$col <- 
+		sequential_hcl(options$col, c.=0, l=c(10,90), 
+			power=options$power, gamma=options$gamma)
+		else options$col <-
+		sequential_hcl(options$col, h=options$hue, c.=c(80,0), l=c(30,90), 
+			power=options$power, gamma=options$gamma)
+	}
+
+
     ## get grid options
     gp <- options$gp
     
@@ -101,39 +112,66 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     ## do we have silhouettes?
     if(is.null(x$sil)) options$silhouettes <- FALSE
 
-    ## color lower triangle panels with avg. dissimilarity
-    if(options$averages
-        && !is.null(x$cluster_dissimilarities) 
-        && !is.null(labels)) {
+    ## create panels with avg. dissimilarity
 
-        for(i in 1 : k) {
-            for( j in 1 : k) {
+	## blank out if NA
+	if(is.na(options$averages[1])) m[upper.tri(m)] <- NA
+    if(is.na(options$averages[2])) m[lower.tri(m)] <- NA
+	options$averages[is.na(options$averages)] <- FALSE
 
-                ## check empty clusters
-                if(is.na(labels_unique[i])) next
-                if(is.na(labels_unique[j])) next
+	if(!is.null(x$cluster_dissimilarities) 
+		&& !is.null(labels)
+		&& any(options$averages)){
 
-                ## upper panels stay unchanged
+		for(i in 1 : k) {
+			for( j in 1 : k) {
 
-                ## do lower panels
-                if(i > j) { 
-                    m[labels == labels_unique[i], labels == labels_unique[j]] <- x$cluster_dissimilarities[i, j] 
-                }
+				## check empty clusters
+				if(is.na(labels_unique[i])) next
+				if(is.na(labels_unique[j])) next
 
-                ## do diagonal
-                if(i == j) {
-                    block <- m[labels == labels_unique[i], 
-                        labels == labels_unique[j]]
+				## upper panels stay unchanged
+				if(i < j && options$averages[1]) { 
+					m[labels == labels_unique[i], labels == labels_unique[j]] <-
+					x$cluster_dissimilarities[i, j] 
+				}
 
-                    block[lower.tri(block, diag = FALSE)] <- x$cluster_dissimilarities[i, j]
+				## do lower panels
+				if(i > j && options$averages[2]) { 
+					m[labels == labels_unique[i], labels == labels_unique[j]] <-
+					x$cluster_dissimilarities[i, j] 
+				}
 
-                    m[labels == labels_unique[i],
-                        labels == labels_unique[j]] <- block
+				## do diagonal
+				if(i == j) {
+					block <- m[labels == labels_unique[i], 
+						labels == labels_unique[j]]
 
-                }
-            }
-        }
-    }
+					
+					if(options$averages[1]) { 
+						block[upper.tri(block, diag = TRUE)] <- 
+						x$cluster_dissimilarities[i, j]
+
+						m[labels == labels_unique[i],
+							labels == labels_unique[j]] <- block
+					}
+
+					if(options$averages[2]) { 
+						block[lower.tri(block, diag = TRUE)] <- 
+						x$cluster_dissimilarities[i, j]
+
+						m[labels == labels_unique[i],
+							labels == labels_unique[j]] <- block
+					}
+
+				}
+			}
+		}
+	}
+
+	if(options$flip){
+		m <- m[,ncol(m):1]
+	}
 
     if(!options$silhouettes) {
         pushViewport(viewport(layout = grid.layout(6, 3,
@@ -152,9 +190,14 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
                         )
                 )))
 
-        main_vp     <- viewport(layout.pos.col = 2, layout.pos.row = 1)
-        image_vp    <- viewport(layout.pos.col = 2, layout.pos.row = 3)
-        colorkey_vp <- viewport(layout.pos.col = 2, layout.pos.row = 5)
+        main_vp     <- viewport(layout.pos.col = 2, layout.pos.row = 1, 
+			name="main")
+        
+		## gets name "image" from image (see grid.R)
+		image_vp    <- viewport(layout.pos.col = 2, layout.pos.row = 3)
+
+		colorkey_vp <- viewport(layout.pos.col = 2, layout.pos.row = 5,
+			name = "colorkey")
 
     }else{
         pushViewport(viewport(layout = grid.layout(6, 5,
@@ -175,10 +218,16 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
                         )
                 )))
 
-        main_vp     <- viewport(layout.pos.col = 2:4, layout.pos.row = 1)
+        main_vp     <- viewport(layout.pos.col = 2:4, layout.pos.row = 1,
+			name="main")
+
+		## gets name "image" from image (see grid.R)
         image_vp    <- viewport(layout.pos.col = 2,   layout.pos.row = 3)
-        barplot_vp  <- viewport(layout.pos.col = 4,   layout.pos.row = 3)
-        colorkey_vp <- viewport(layout.pos.col = 2,   layout.pos.row = 5)
+        
+		barplot_vp  <- viewport(layout.pos.col = 4,   layout.pos.row = 3,
+			name="barplot")
+        colorkey_vp <- viewport(layout.pos.col = 2,   layout.pos.row = 5,
+			name="colorkey")
 
     }
 
@@ -211,25 +260,40 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     ## plot cluster borders if we have labels and order
     if(!is.null(labels)) {
 
-        cluster_width   <- (tabulate(labels)[labels_unique])
-        cluster_cuts    <- cumsum(cluster_width) + 0.5
+		labels_unique_y		<- labels_unique
+        cluster_width_y		<- (tabulate(labels)[labels_unique])
+        cluster_cuts_y		<- cumsum(cluster_width_y) + 0.5
+        cluster_center_y	<- cluster_cuts_y - cluster_width_y / 2
+        
+		if(options$flip) {
+			labels_unique_x	<- rev(labels_unique)
+			cluster_width_x <- (tabulate(labels)[labels_unique_x])
+			cluster_cuts_x  <- cumsum(cluster_width_x) + 0.5
+			cluster_center_x<- cluster_cuts_x - cluster_width_x / 2
+		}else{
+			labels_unique_x <- labels_unique_y
+			cluster_width_x <- cluster_width_y
+			cluster_cuts_x <- cluster_cuts_y
+			cluster_center_x <- cluster_center_y
+		}
 
         if(options$cluster_labels) {
-            cluster_center <- cluster_cuts - cluster_width / 2
 
             seekViewport("image")
 
             ## above the plot
-            grid.text(labels_unique, x = cluster_center, 
-                      y = unit(1, "npc") + unit(1, "lines"),
-                      default.units = "native",
-                      gp = gp)
+			grid.text(labels_unique_x,
+				x = cluster_center_x, 
+				y = unit(1, "npc") + unit(1, "lines"),
+				default.units = "native",
+				gp = gp)
             ## left of the plot
-            grid.text(labels_unique, x = unit(-1, "lines"),
-                      y = cluster_center,
-                      default.units = "native",
-                      gp = gp)
-            upViewport(2)
+			grid.text(labels_unique_y, 
+				x = unit(-1, "lines"),
+				y = cluster_center_y,
+				default.units = "native",
+				gp = gp)
+			upViewport(2)
         }
 
         if(options$lines) {
@@ -237,18 +301,20 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
             gp_lines$col    <- options$lines_col
             
             ## draw lines separating the clusters
-            cluster_cuts <- cluster_cuts[-length(cluster_cuts)]
+			#cluster_cuts <- cluster_cuts[-length(cluster_cuts)]
             ## remove last line
 
             seekViewport("image")
             for(i in 1:k) {
 
                 grid.lines(
-                    x = c(0.5, dim + 0.5), y = cluster_cuts[i], 
+                    x = c(0.5, dim + 0.5), 
+					y = cluster_cuts_y[i], 
                     default.units = "native", gp = gp_lines)
 
                 grid.lines(
-                    x = cluster_cuts[i], y = c(0.5, dim + 0.5), 
+                    x = cluster_cuts_x[i], 
+					y = c(0.5, dim + 0.5), 
                     default.units = "native", gp=gp_lines)
 
             }
