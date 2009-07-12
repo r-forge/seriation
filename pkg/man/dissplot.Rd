@@ -1,7 +1,7 @@
 \name{dissplot}
 \alias{dissplot}
-\alias{plot.cluster_dissimilarity_matrix}
-\alias{print.cluster_dissimilarity_matrix}
+\alias{plot.reordered_cluster_dissimilarity_matrix}
+\alias{print.reordered_cluster_dissimilarity_matrix}
 \title{Dissimilarity Plot}
 \description{
 Visualizes a dissimilarity matrix using seriation and matrix shading.
@@ -26,10 +26,10 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
       rows/columns in \code{x} indicating the cluster membership for each
       object in \code{x} as consecutive integers starting with one. The labels
       are used to reorder the matrix.}
-  \item{method}{ a single character strings indicating the used
-      seriation algorithm (\code{NA} to plot the matrix as is). The same
-      algorithm is used to reorder the clusters (inter cluster seriation) as
-      well as the objects within each cluster (intra cluster seriation). 
+  \item{method}{ a list with up to three elements or a single character string.
+	  Use a single character string to apply the same algorithm to reorder
+	  the clusters (inter cluster seriation) as well as the objects within each
+	  cluster (intra cluster seriation).
 
       If separate algorithms for inter and intra cluster seriation are
       required, \code{method} can be a \code{list} of two named elements
@@ -37,15 +37,26 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
       of the respective seriation method. See \code{seriate.dist} for available
       algorithms. 
 
-      For intra cluster reordering the special
+      Set method to \code{NA} to plot the matrix as is (no or only coarse 
+	  seriation). For intra cluster reordering the special
       method \code{silhouette width} is available. Objects in clusters are
-      then ordered by silhouette width (the standard for silhouette plots).
-
+      then ordered by silhouette width (from silhouette plots).
       If no \code{method} is given, the default method of \code{seriate.dist}
       is used.
-      }
-  \item{control}{ a list of control options passed on to the seriation algorithm.
-      In case of two different seriation algorithms, \code{control} can
+      
+	  The third list element (named \code{aggregation}) 
+	  controls how inter cluster dissimilarities are computed from from
+	  the given dissimilarity matrix. The choices are
+	   \code{"avg"} (average pairwise dissimilarities; average-link), 
+	   \code{"min"} (minimal pairwise dissimilarities; single-link), 
+	   \code{"max"} (maximal pairwise dissimilarities; complete-link), and
+	   \code{"Hausdorff"} (pairs up each point from one cluster with the most
+	   similar point from the other cluster and then uses the largest
+	   dissimilarity of paired up points). 
+	  }
+  \item{control}{ a list of control options passed on to the seriation
+      algorithm.  
+	  In case of two different seriation algorithms, \code{control} can
       contain a list of two named elements (\code{inter_cluster} 
       and \code{intra_cluster}) containing each a list with the control options
       for the respective algorithm.}
@@ -197,7 +208,7 @@ plot(res, options = list(main = "PAM + Seriation (Chen) - logistic scale",
 
 popViewport(2)
 
-## the cluster_dissimilarity_matrix object
+## the reordered_cluster_dissimilarity_matrix object
 res 
 names(res)
 }

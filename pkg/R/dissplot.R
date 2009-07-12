@@ -22,32 +22,210 @@ dissplot <- function(x, labels = NULL, method = NULL,
     invisible(res)
 }
 
-## print for cluster_dissimilarity_matrix
-print.cluster_dissimilarity_matrix <-
-function(x, ...)
-{
-    d <- attr(x$x_reordered, "Size")
-    k <- if(!is.null(x$k)) x$k else NA
 
-    cat(gettextf("object of class '%s'\n", class(x)))
-    cat("matrix dimensions:", d, "x", d, "\n")
-    cat(gettextf("dissimilarity measure: '%s'\n", x$diss_measure))
-    cat("number of clusters k:", k, "\n")
-    if(!is.null(x$k)) {
-        cat("\ncluster description\n")
-        print(x$description)
+## work horse
+.arrange_dissimilarity_matrix <- function(x, labels = NULL, method = NULL, 
+    control = NULL) {
+
+    ## x is already of class dist
+    dim <- attr(x, "Size")
+    diss_measure <- attr(x, "method")
+    
+    ## check labels
+    if(!is.null(labels) && length(labels) != dim) 
+        stop("Number of labels in 'labels' does not match dimensions of 'x'.")
+    
+	m <- method
+
+
+    ## set everything to NULL first
+    order               <- NULL
+    k                   <- NULL             # number of clusters
+    sil                 <- NULL
+    avgSil              <- NULL
+    labels_ordered      <- NULL
+    labels_unique       <- NULL
+    cluster_dissimilarities <- NULL
+	## method$a means method$ aggregation (default is avg)
+	aggregation	<- "avg"
+	if(class(method) == "list" && !is.null(method$a)) aggregation <- method$a
+
+    
+    ## default is NULL which means use the default of reorder
+    ## maybe we want to check if names inter and intra are ok
+    if(class(method) != "list") method <- 
+		list(inter_cluster = m, intra_cluster = m)
+	
+	if(class(control[[1]]) != "list"){
+        control <- list(inter_cluster = control, intra_cluster = control)
+    }
+        
+    if(!is.null(method$inter_cluster) 
+        && is.na(method$inter_cluster)) {
+        ## no setiation
+        if(!is.null(labels)) {
+            ## do coarse seriation
+            order <- order(labels)
+            k <- length(unique(labels))
+			## calculate cluster_dissimilarities for later
+			cluster_dissimilarities <- .cluster_dissimilarity(x, labels, 
+				aggregation)
+            aggregation <- attr(cluster_dissimilarities, "method")
+			## calculate silhouette values for later use
+            sil <- cluster::silhouette(labels, x)
+        
+        }
+        ## else keep the matrix as is -- do not reorder
+        
+    }else if(is.null(labels)) {
+        ## reorder whole matrix if no labels are given
+        order <- seriate(x, method = method$inter_cluster, 
+            control = control$inter)[[1]] 
+        
+        method$inter_cluster <- if(!is.null(attr(order, "method"))) 
+            attr(order, "method") else method$inter_cluster
+
+        order <- get_order(order)
+
+    }else{
+        ## reorder clusters for given labels
+        ## get number of clusters k
+        k <- length(unique(labels))
+
+        ## reorder with average pairwise dissimilarites between clusters
+        cluster_dissimilarities <- .cluster_dissimilarity(x, labels, 
+			aggregation)
+		aggregation <- attr(cluster_dissimilarities, "method")
+
+        if(k>2) {
+            cluster_order <- seriate(as.dist(cluster_dissimilarities), 
+                method = method$inter_cluster, control = control$inter)[[1]]
+           
+            method$inter_cluster <- if(!is.null(attr(cluster_order, "method"))) 
+                attr(cluster_order, "method") else method$inter_cluster
+       
+            cluster_order <- get_order(cluster_order)
+        }else{
+            cluster_order <- 1:k
+        }
+
+        ## calculate silhouette values for later use
+        sil <- cluster::silhouette(labels, x)
+
+        ## determine order for matrix from cluster order
+        order <- c()
+        
+        if(!is.null(method$intra_cluster) && 
+            is.na(method$intra_cluster)) {
+            ## no intra cluster ordering
+            for(i in 1 : k) {
+                order <- c(order, which(labels == cluster_order[i]))
+            }
+            ##method$intra_cluster <- NA
+
+        }else{
+            ## intra cluster order
+
+            for(i in 1 : k) {
+                take <- which(labels == cluster_order[i])
+
+                ## only reorder for >1 elements
+                if(length(take) > 1) {
+
+                    if(is.character(method$intra_cluster) &&
+                        pmatch(tolower(method$intra_cluster), "silhouette width", 
+                            nomatch = FALSE)) {
+                        intra_order <-  order(sil[take, "sil_width"], 
+                            decreasing = TRUE)$both
+                        
+                        method$intra_cluster <- "silhouette width"
+                    }else{
+                        ## we use .rearrange_dist instead of permute
+                        ## since we take only a subset!
+                        block <- .rearrange_dist(x, take)
+                        
+                        intra_order <- seriate(block, method = method$intra_cluster, 
+                            control = control$intra)[[1]]
+
+                        method$intra_cluster <- 
+                        if(!is.null(attr(intra_order, "method")))
+                        attr(intra_order, "method") else method$intra_cluster
+                    
+                        intra_order <- get_order(intra_order)
+                    }
+
+                    order <- c(order, take[intra_order])
+
+                }else{
+                    order <- c(order, take)
+                }
+
+            }
+        }
+
+
+        ## reorder cluster_dissimilarities for later
+        cluster_dissimilarities  <- 
+        cluster_dissimilarities[cluster_order, cluster_order]
+
     }
 
-    cat("\n")
-    cat("used seriation methods\n")
-    cat(gettextf("inter-cluster: '%s'\n", x$method$inter))
-    cat(gettextf("intra-cluster: '%s'\n", x$method$intra))
+    ## reorder matrix
+    if(!is.null(order)) {
+        x_reordered <- permute(x, order)
+        labels <- labels[order]
+    }
+    else x_reordered <- x
+    
+    ## prepare for return value
+    cluster_description <- NULL
 
-    invisible(x)
+    if(!is.null(labels)) {
+        
+        labels_unique   <-  unique(labels)
+        
+        ## reorder silhouettes
+        sil <- sil[order,]
+
+        ## calculate avg silhouettes
+        avgSil <- sapply(labels_unique, function(x) 
+            mean(sil[sil[,"cluster"]==x, "sil_width"])) 
+
+        ## generate description
+        cluster_description = data.frame(
+            position        = c(1 : k),
+            label           = labels_unique, 
+            size            = tabulate(labels)[labels_unique],
+			## FIXME: this is not the average anymore!
+			aggregated_dissimilarity = 
+				diag(cluster_dissimilarities)[labels_unique],
+            avg_silhouette_width = avgSil)
+    }
+
+    ## clean order from names, etc.
+    attributes(order) <- NULL
+    
+    result <- list(
+        x_reordered     = x_reordered, 
+        labels          = labels, 
+        seriation_methods          = method, 
+        aggregation_method          = aggregation, 
+        k               = k, 
+        cluster_dissimilarities =  cluster_dissimilarities,
+        sil             = sil,
+        order           = order, 
+        cluster_order   = labels_unique,
+        diss_measure    = diss_measure,
+        description     =  cluster_description)
+    
+    class(result) <- "reordered_cluster_dissimilarity_matrix" 
+    invisible(result)
 }
 
-## plot for cluster_dissimilarity_matrix
-plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
+
+
+## plot for reordered_cluster_dissimilarity_matrix
+plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
     
     m       <- as.matrix(x$x_reordered)
     k       <- x$k
@@ -352,196 +530,50 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
 }
 
 
-## work horse
-.arrange_dissimilarity_matrix <- function(x, labels = NULL, method = NULL, 
-    control = NULL) {
+## print for reordered_cluster_dissimilarity_matrix
+print.reordered_cluster_dissimilarity_matrix <-
+function(x, ...)
+{
+    d <- attr(x$x_reordered, "Size")
+    k <- if(!is.null(x$k)) x$k else NA
 
-    ## x is already of class dist
-    dim <- attr(x, "Size")
-    diss_measure <- attr(x, "method")
-    
-    ## check labels
-    if(!is.null(labels) && length(labels) != dim) 
-        stop("Number of labels in 'labels' does not match dimensions of 'x'.")
-    
-    ## set everything to NULL first
-    order               <- NULL
-    k                   <- NULL             # number of clusters
-    sil                 <- NULL
-    avgSil              <- NULL
-    labels_ordered      <- NULL
-    labels_unique       <- NULL
-    cluster_dissimilarities <- NULL
-    used_method         <- list(inter_cluster = NA, intra_cluster = NA) 
-    
-    ## default is NULL which means use the default of reorder
-    ## maybe we want to check if names inter and intra are ok
-    if(class(method) != "list"){
-        method <- list(inter = method, intra = method)
-    }
-    if(class(control[[1]]) != "list"){
-        control <- list(inter = control, intra = control)
-    }
-        
-    if(!is.null(method$inter) 
-        && is.na(method$inter)) {
-        ## no setiation
-        if(!is.null(labels)) {
-            ## do coarse seriation
-            order <- order(labels)
-            k <- length(unique(labels))
-            cluster_dissimilarities <- .cluster_dissimilarity(x, labels)
-            ## calculate silhouette values for later use
-            sil <- cluster::silhouette(labels, x)
-        
-        }
-        ## else keep the matrix as is -- do not reorder
-        
-    }else if(is.null(labels)) {
-        ## reorder whole matrix if no labels are given
-        order <- seriate(x, method = method$inter, 
-            control = control$inter)[[1]] 
-        
-        used_method$inter <- if(!is.null(attr(order, "method"))) 
-            attr(order, "method") else method$inter
-
-        order <- get_order(order)
-
-    }else{
-        ## reorder clusters for given labels
-        ## get number of clusters k
-        k <- length(unique(labels))
-
-        ## reorder with average pairwise dissimilarites between clusters
-        cluster_dissimilarities <- .cluster_dissimilarity(x, labels)
-
-        if(k>2) {
-            cluster_order <- seriate(as.dist(cluster_dissimilarities), 
-                method = method$inter, control = control$inter)[[1]]
-           
-            used_method$inter <- if(!is.null(attr(cluster_order, "method"))) 
-                attr(cluster_order, "method") else method$inter
-       
-            cluster_order <- get_order(cluster_order)
-        }else{
-            cluster_order <- 1:k
-        }
-
-        ## calculate silhouette values for later use
-        sil <- cluster::silhouette(labels, x)
-
-        ## determine order for matrix from cluster order
-        order <- c()
-        
-        if(!is.null(method$intra) && 
-            is.na(method$intra)) {
-            ## no intra cluster ordering
-            for(i in 1 : k) {
-                order <- c(order, which(labels == cluster_order[i]))
-            }
-            ##used_method$intra <- NA
-
-        }else{
-            ## intra cluster order
-
-            for(i in 1 : k) {
-                take <- which(labels == cluster_order[i])
-
-                ## only reorder for >1 elements
-                if(length(take) > 1) {
-
-                    if(is.character(method$intra) &&
-                        pmatch(tolower(method$intra), "silhouette width", 
-                            nomatch = FALSE)) {
-                        intra_order <-  order(sil[take, "sil_width"], 
-                            decreasing = TRUE)$both
-                        
-                        used_method$intra <- "silhouette width"
-                    }else{
-                        ## we use .rearrange_dist instead of permute
-                        ## since we take only a subset!
-                        block <- .rearrange_dist(x, take)
-                        
-                        intra_order <- seriate(block, method = method$intra, 
-                            control = control$intra)[[1]]
-
-                        used_method$intra <- 
-                        if(!is.null(attr(intra_order, "method")))
-                        attr(intra_order, "method") else method$intra
-                    
-                        intra_order <- get_order(intra_order)
-                    }
-
-                    order <- c(order, take[intra_order])
-
-                }else{
-                    order <- c(order, take)
-                }
-
-            }
-        }
-
-
-        ## reorder cluster_dissimilarities for later
-        cluster_dissimilarities  <- 
-        cluster_dissimilarities[cluster_order, cluster_order]
-
+    cat(gettextf("object of class '%s'\n", class(x)))
+    cat("matrix dimensions:", d, "x", d, "\n")
+    cat(gettextf("dissimilarity measure: '%s'\n", x$diss_measure))
+    cat("number of clusters k:", k, "\n")
+    if(!is.null(x$k)) {
+        cat("\ncluster description\n")
+        print(x$description)
     }
 
-    ## reorder matrix
-    if(!is.null(order)) {
-        x_reordered <- permute(x, order)
-        labels <- labels[order]
-    }
-    else x_reordered <- x
+    cat("\n")
+    cat("used seriation methods\n")
+    cat(gettextf("inter-cluster: '%s'\n", x$seriation_methods$inter))
+    cat(gettextf("intra-cluster: '%s'\n", x$seriation_methods$intra))
     
-    ## prepare for return value
-    cluster_description <- NULL
+    cat("\n")
+	cat(gettextf("dissimilarity aggregation method: '%s'\n", 
+			x$aggregation_method))
 
-    if(!is.null(labels)) {
-        
-        labels_unique   <-  unique(labels)
-        
-        ## reorder silhouettes
-        sil <- sil[order,]
-
-        ## calculate avg silhouettes
-        avgSil <- sapply(labels_unique, function(x) 
-            mean(sil[sil[,"cluster"]==x, "sil_width"])) 
-
-        ## generate description
-        cluster_description = data.frame(
-            position        = c(1 : k),
-            label           = labels_unique, 
-            size            = tabulate(labels)[labels_unique],
-            avg_dissimilarity = diag(cluster_dissimilarities)[labels_unique],
-            avg_silhouette_width = avgSil)
-    }
-
-    ## clean order from names, etc.
-    attributes(order) <- NULL
-    
-    result <- list(
-        x_reordered     = x_reordered, 
-        labels          = labels, 
-        method          = used_method, 
-        k               = k, 
-        cluster_dissimilarities =  cluster_dissimilarities,
-        sil             = sil,
-        order           = order, 
-        cluster_order   = labels_unique,
-        diss_measure    = diss_measure,
-        description     =  cluster_description)
-    
-    class(result) <- "cluster_dissimilarity_matrix" 
-    invisible(result)
+    invisible(x)
 }
-
 
 ## inter and intra cluster dissimilarity matrix from 
 ## a dissimilarity matrix plus labels
-.cluster_dissimilarity <- function(x, labels) {
-    if(class(x) != "matrix") x <- as.matrix(x)
+.cluster_dissimilarity <- function(x, labels, method=c("avg", "min", "max",
+	"Hausdorff")) {
+    
+	method <- match.arg(method)
+	## FIXME: Implement Hausdorff
+
+	linkage <- if(method=="avg") mean
+	else if(method=="min") min
+	else if(method=="max") max
+	else if(method=="Hausdorff") .hausdorff
+	else stop("Unknown method.")
+	
+	if(class(x) != "matrix") x <- as.matrix(x)
+
 
     ## kill self-dissimilarities (which are always 0)
     diag(x) <- NA
@@ -554,7 +586,8 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         slice <- x[labels == i, , drop = FALSE]
         for(j in 1:i) {
             block <- slice[,labels == j, drop = FALSE]
-            val <- mean(as.vector(block), na.rm = TRUE)
+            
+			val <- linkage(block, na.rm = TRUE)
 
             ## fix for clusters of size 1
             if(is.nan(val)) val <- 0
@@ -564,7 +597,13 @@ plot.cluster_dissimilarity_matrix <- function(x, options = NULL, ...) {
         }
     }
 
+	attr(diss_matrix, "method") <- method
     diss_matrix
 }
 
+## implement Hausdorff distance between two sets from a dissimilarity matrix
+##d_H = max{sup_x\inX inf_y\inY d(x,y), sup_y\inY inf_x\inX d(x,y)} 
+.hausdorff <- function(block, na.rm=TRUE) max(
+	apply(block, MARGIN = 1, min, na.rm = na.rm),
+	apply(block, MARGIN = 2, min, na.rm = na.rm))
 
