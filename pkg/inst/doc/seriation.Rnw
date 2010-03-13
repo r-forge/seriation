@@ -268,7 +268,7 @@ To only count the violations we use
 \begin{equation}
     f(z, y) = I(z, y) = 
     \begin{cases}
-        1 \quad \text{if} \quad z < y \quad \text{and} \\
+        1 \quad \text{if} \quad z > y \quad \text{and} \\
         0 \quad \text{otherwise.}
     \end{cases}
 \end{equation}
