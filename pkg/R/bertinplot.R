@@ -6,6 +6,10 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
     if(!is.logical(highlight)) 
         stop("Argument 'highlight' must be a logical.")
 
+    ## do labels
+    if(!is.null(options$xlab)) rownames(x) <- options$xlab
+    if(!is.null(options$ylab)) colnames(x) <- options$ylab
+
     ## order
     if(!is.null(order)) x <- permute(x, order)
 
@@ -94,18 +98,13 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
         upViewport(1)
     }
 
+    spacing_corr <- if(options$spacing <= 0) -options$spacing+0.2 else 0
 
-    ## do labels
-    rownames_x <- if(is.null(options$xlab)) rownames(x) else options$xlab
-    colnames_x <- if(is.null(options$ylab)) colnames(x) else options$ylab
-
-    spacing_corr <- if(options$spacing <= 0) spacing_corr <- -options$spacing+0.2 else 0
-
-    grid.text(rownames_x, x = 1:nrow(x), y = ncol_x + spacing_corr, 
+    grid.text(rownames(x), x = 1:nrow(x), y = ncol_x + spacing_corr, 
         rot = 90, just = "left",
         default.units= "native", gp = options$gp_labels)
 
-    grid.text(rev(colnames_x), x = 1 + spacing_corr / nrow(x) / 4, 
+    grid.text(rev(colnames(x)), x = 1 + spacing_corr / nrow(x) / 4, 
         y = 0.5:(ncol_x-0.5)/ncol_x,
         just = "left", 
         default.units= "npc", gp = options$gp_labels)
