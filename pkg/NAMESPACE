@@ -62,6 +62,7 @@ S3method(permute, matrix)
 S3method(permute, numeric)
 S3method(permute, list)
 S3method(permute, dist)
+S3method(permute, character)
 S3method(permute, data.frame)
 
 S3method(seriate, dist)
