@@ -1219,7 +1219,7 @@ Criterion methods can be added in the same way. We refer the interested reader
 to the documentation accompanying the package for detailed information and 
 an example.
 
-If you have implemened a new criterion or seriation method, please consider
+If you have implemented a new criterion or seriation method, please consider
 submitting the code to one of the maintainers of \pkg{seriation} for
 inclusion in a future release of the package.
 

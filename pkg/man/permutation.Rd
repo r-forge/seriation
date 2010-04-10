@@ -9,7 +9,7 @@ permutation vectors for seriation}
 \description{
 The class \code{ser_permutation} is a collection of permutation vectors
 (see class \code{ser_permutation_vector}), one for each dimension (mode) 
-of the data to be permutated.
+of the data to be permuted.
 }
 \usage{
 ## constructor

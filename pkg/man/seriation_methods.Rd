@@ -42,7 +42,7 @@ arguments \code{x, control}, where \code{x} is the data object and
 passed on from \code{seriate()}.  The implementation has to return 
 a list of objects which can be coerced into \code{ser_permutation_vector}
 objects (e.g., integer vectors). The elements in the list
-have to be in corresponding order to the dimenstions of \code{x}.
+have to be in corresponding order to the dimensions of \code{x}.
 }
 \examples{
 show_seriation_methods("matrix")

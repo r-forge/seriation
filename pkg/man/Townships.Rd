@@ -4,7 +4,7 @@
 \title{Bertin's Characteristics and Townships Data Set}
 \description{
   This data set was used to illustrate that the conciseness of presentation
-    can be improved by seriateing the rows and columns.
+    can be improved by seriating the rows and columns.
 }
 \usage{data("Townships")}
 \format{

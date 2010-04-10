@@ -50,7 +50,7 @@ hmap(x, distfun = dist, hclustfun = hclust,
 \details{
 For \code{dendrogram = TRUE}, \code{seriate.hclust} 
 with the default method \code{"optimal"} is used for arranging the
-dendrogramms and \code{x}. \code{heatmap} is used for plotting.
+dendrograms and \code{x}. \code{heatmap} is used for plotting.
 
 For \code{dendrogram = FALSE}, \code{seriate.dist} 
 with the default method \code{"tsp"}

@@ -5,7 +5,7 @@
 \alias{show_criterion_methods}
 \title{Registry for criterion methods}
 \description{
-A registry to manage methods to calculate a critrion value given
+A registry to manage methods to calculate a criterion value given
 data and a permutation.
 }
 \usage{

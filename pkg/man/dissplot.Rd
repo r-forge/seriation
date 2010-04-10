@@ -15,7 +15,7 @@ algorithm which tries to place large similarities/small dissimilarities close to
 the diagonal. Compact clusters are visible as dark squares (low dissimilarity)
 on the diagonal of the plot. Additionally, a Silhouette plot (Rousseeuw 1987)
 is added. This visualization is similar to CLUSION (see Strehl and Ghosh 2002),
-however, allows for using arbitrary sereating algorithms.
+however, allows for using arbitrary seriating algorithms.
 }
 \usage{
 dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)   
@@ -90,8 +90,8 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
   \item{\code{col}}{ colors used for the image plot. If \code{col} is a single
   number, it specifies the number of different shades used in the plot
   (default: 100 shades of gray using the HCL colorspace). If \code{col} 
-  not a single number, it is expected to be a full color palatte and
-  the potions \code{hue}, \code{power} and \code{gamma} are ignorred.}
+  not a single number, it is expected to be a full color palette and
+  the potions \code{hue}, \code{power} and \code{gamma} are ignored.}
   \item{\code{hue}}{ color in [0,360] taken from the HCL color wheel. \code{NA}
   indicates gray scale (default: gray scale).}
   \item{\code{power}}{ determines how luminance (and chroma for color) 
@@ -112,7 +112,7 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
 %\details{
 %}
 \value{
-An invisible object of class \code{cluster_proximity_matrix} with the folowing
+An invisible object of class \code{cluster_proximity_matrix} with the following
 elements:
 \item{order}{ \code{NULL} or integer vector giving the order used to plot
     \code{x}.}
