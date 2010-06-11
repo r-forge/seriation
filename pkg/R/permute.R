@@ -7,7 +7,7 @@ function(x, order)
     .check_matrix_perm(x, order)
 
     perm <- lapply(order, get_order)    
-    do.call("[", c(list(x), perm))          #]
+    do.call("[", c(list(x), perm, drop=FALSE))          #]
 }
 
 .permute_1d <-
