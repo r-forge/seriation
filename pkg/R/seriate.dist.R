@@ -3,6 +3,9 @@
 seriate.dist <-
 function(x, method = NULL, control = NULL, ...)
 {
+    
+    if(!all(x>=0)) stop("Non-negative distances not supported!")
+    
     if(is.null(method))
         method <- "ARSA"
     else if(!is.character(method) || (length(method) != 1L))

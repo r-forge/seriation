@@ -73,10 +73,15 @@ summary.ser_permutation <- function(object, ...) {
 .valid_permutation_vector <- function(x) {
     perm <- get_order(x)
     valid <- TRUE
-    if(max(perm) > length(perm)) valid <- FALSE 
-    if(any(table(perm) != 1)) valid <- FALSE
     
-    if(!valid) stop("Invalid permutation vector")
+    tab <- table(perm)
+    if(any(tab != 1)) valid <- FALSE
+    if(any(names(tab) != sequence(length(perm)))) valid <- FALSE
+
+   
+
+    if(!valid) stop("Invalid permutation vector!\nVector: ", 
+	    paste(perm, collapse=", "))
 }
 
 
