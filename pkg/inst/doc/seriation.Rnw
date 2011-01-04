@@ -1,13 +1,13 @@
-\documentclass[fleqn, a4paper]{article}
-\usepackage{a4wide}
-\usepackage[round,longnamesfirst]{natbib}
-\usepackage{graphicx,keyval,thumbpdf,url}
-\usepackage{hyperref}
-\usepackage{Sweave}
+\documentclass[nojss]{jss}
+
+%\documentclass[fleqn, a4paper]{article}
+%\usepackage{a4wide}
+%\usepackage[round,longnamesfirst]{natbib}
+%\usepackage{graphicx,keyval,thumbpdf,url}
+%\usepackage{hyperref}
+%\usepackage{Sweave}
 \SweaveOpts{strip.white=TRUE}
 \AtBeginDocument{\setkeys{Gin}{width=0.6\textwidth}}
-
-%\documentclass[article]{jss}
 
 \usepackage[utf8]{inputenc}
 
@@ -16,13 +16,13 @@
 \usepackage{amsfonts}
 
 
-\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+%\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
 \newcommand{\class}[1]{\mbox{\textsf{#1}}}
 \newcommand{\func}[1]{\mbox{\texttt{#1()}}}
-\newcommand{\code}[1]{\mbox{\texttt{#1}}}
-\newcommand{\pkg}[1]{\strong{#1}}
+%\newcommand{\code}[1]{\mbox{\texttt{#1}}}
+%\newcommand{\pkg}[1]{\strong{#1}}
 \newcommand{\samp}[1]{`\mbox{\texttt{#1}}'}
-\newcommand{\proglang}[1]{\textsf{#1}}
+%\newcommand{\proglang}[1]{\textsf{#1}}
 \newcommand{\set}[1]{\mathcal{#1}}
 \newcommand{\sQuote}[1]{`{#1}'}
 \newcommand{\dQuote}[1]{``{#1}''}
@@ -31,6 +31,61 @@
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
 
+%% almost as usual
+\author{Michael Hahsler\\Southern Methodist University \And
+Kurt Hornik\\Wirtschaftsuniversit\"at Wien \AND
+Christian Buchta\\Wirtschaftsuniversit\"at Wien}
+\title{Getting Things in Order:\\
+An Introduction to the \proglang{R}~Package~\pkg{seriation}}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Michael Hahsler, Kurt Hornik, Christian Buchta} %% comma-separated
+\Plaintitle{Getting Things in Order: An Introduction to the R Package seriation} %% without formatting
+\Shorttitle{Getting Things in Order} %% a short title (if necessary)
+
+%% an abstract and keywords
+\Abstract{Seriation, i.e., finding a suitable linear order for a set of
+objects given data and a loss or merit function, is a basic problem in
+data analysis.  Caused by the problem's combinatorial nature, it is
+hard to solve for all but very small sets.  Nevertheless, both exact
+solution methods and heuristics are available.  In this paper we
+present the package~\pkg{seriation} which provides an infrastructure
+for seriation with \proglang{R}.  The infrastructure comprises data
+structures to represent linear orders as permutation vectors, a wide
+array of seriation methods using a consistent interface, a method to
+calculate the value of various loss and merit functions, and several
+visualization techniques which build on seriation. To illustrate how
+easily the package can be applied for a variety of applications, a
+comprehensive collection of examples is presented.}
+
+\Keywords{combinatorial data analysis, seriation, permutation, \proglang{R}}
+\Plainkeywords{combinatorial data analysis, seriation, permutation, R} %% without formatting
+
+\Address{
+Michael Hahsler\\
+    Computer Science and Engineering\\
+    Lyle School of Engineering\\
+    Southern Methodist University\\
+    P.O. Box 750122 \\
+    Dallas, TX 75275-0122\\
+    E-mail: \email{mhahsler@lyle.smu.edu}\\
+    URL: \url{http://lyle.smu.edu/~mhahsler}
+
+Kurt Hornik\\
+Department f\"ur Statistik \& Mathematik\\
+Wirtschaftsuniversit\"at Wien\\
+1090 Wien, Austria\\
+E-mail: \email{kurt.hornik@wu.ac.at}\\
+URL: \url{http://statmath.wu.ac.at/~hornik/}
+
+Christian Buchta\\
+Department f\"ur Welthandel\\
+Wirtschaftsuniversit\"at Wien\\
+1090 Wien, Austria\\
+E-mail: \email{christian.buchta@wu.ac.at}\\
+URL: \url{http://www.wu.ac.at/itf/institute/staff/buchta}
+			    }
+
 \hyphenation{Brusco}
 \sloppy
 
@@ -38,27 +93,26 @@
 
 \begin{document}
 
-\title{Getting Things in Order: An introduction to the
-R~package~\pkg{seriation}}
-\author{Michael Hahsler, Kurt Hornik and Christian Buchta}
+%\title{Getting Things in Order: An introduction to the
+%R~package~\pkg{seriation}}
+%\author{Michael Hahsler, Kurt Hornik and Christian Buchta}
 \maketitle
-\sloppy
 
 
-\abstract{Seriation, i.e., finding a suitable linear order for a set of
-  objects given data and a loss or merit function, is a basic problem in
-  data analysis.  Caused by the problem's combinatorial nature, it is
-  hard to solve for all but very small sets.  Nevertheless, both exact
-  solution methods and heuristics are available.  In this paper we
-  present the package~\pkg{seriation} which provides an infrastructure
-  for seriation with \proglang{R}.  The infrastructure comprises data
-  structures to represent linear orders as permutation vectors, a wide
-  array of seriation methods using a consistent interface, a method to
-  calculate the value of various loss and merit functions, and several
-  visualization techniques which build on seriation. To illustrate how
-  easily the package can be applied for a variety of applications, a
-  comprehensive collection of examples is presented.}
-
+%\abstract{Seriation, i.e., finding a suitable linear order for a set of
+%  objects given data and a loss or merit function, is a basic problem in
+%  data analysis.  Caused by the problem's combinatorial nature, it is
+%  hard to solve for all but very small sets.  Nevertheless, both exact
+%  solution methods and heuristics are available.  In this paper we
+%  present the package~\pkg{seriation} which provides an infrastructure
+%  for seriation with \proglang{R}.  The infrastructure comprises data
+%  structures to represent linear orders as permutation vectors, a wide
+%  array of seriation methods using a consistent interface, a method to
+%  calculate the value of various loss and merit functions, and several
+%  visualization techniques which build on seriation. To illustrate how
+%  easily the package can be applied for a variety of applications, a
+%  comprehensive collection of examples is presented.}
+%
 
 
 <<echo=FALSE>>=
@@ -1799,7 +1853,7 @@ implementation and the anonymous reviewers for their valuable comments
 and suggestions.
 
 %
-\bibliographystyle{abbrvnat}
+%\bibliographystyle{abbrvnat}
 \bibliography{seriation}
 %
 \end{document}
