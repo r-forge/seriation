@@ -180,6 +180,10 @@ by the package~\pkg{seriation}.  Several examples and applications for
 seriation are given in Section~\ref{sec:example}.
 Section~\ref{sec:conclusion} concludes.
 
+A previous version of this manuscript was published in the \emph{Journal
+  of Statistical Software} \citep{seriation:Hahsler+Hornik:2008}.
+
+
 \section{Seriation as a combinatorial optimization problem}
 \label{sec:seriation}
 
@@ -1810,6 +1814,9 @@ by the two clearly visible darker triangles next to the main diagonal.
 The dissimilarity plot using seriation is a useful tool to inspect the result 
 of clustering. It is especially useful to spot 
 misspecifications of the number of clusters employed.
+A more detailed treatment of dissimilarity plots as a tool for exploring
+partitional clustering can be found in
+\cite{seriation:Hahsler+Kornik:2011}.
 
 \section{Conclusion}
 \label{sec:conclusion}
