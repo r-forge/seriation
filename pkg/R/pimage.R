@@ -35,7 +35,9 @@ function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL, ...) {
 
     image.default(1:dim(x)[2], 1:dim(x)[1], t(x)[,dim(x)[1]:1], axes=FALSE,
         xlab=xlab, ylab=ylab, col=col, ...)
-  
+     
+
+
     ## add axes
     if(is.null(axes)) axes <- 32
     else if(axes) axes <- Inf

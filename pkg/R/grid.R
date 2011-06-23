@@ -20,7 +20,7 @@
 
 ## grid helpers
 
-.grid_image <- function(x, y, z, zlim, col = gray.colors(12, 1, 0), 
+.grid_image_old <- function(x, y, z, zlim, col = gray.colors(12, 1, 0), 
     name = "image", gp = gpar()) {
 
     if(is.matrix(x)){ 
@@ -65,6 +65,42 @@
     upViewport(1)
 }
 
+.grid_image <- function(x, zlim, col = gray.colors(12, 1, 0), 
+    name = "image", gp = gpar()) {
+
+    if(missing(zlim)) zlim <- range(x, na.rm = TRUE)
+    else {# fix data for limits
+        x[x < zlim[1]] <- NA
+        x[x > zlim[2]] <- NA
+    }
+        
+    offset <- if(zlim[1] < 0) -zlim[1] else 0
+    range <- diff(zlim) 
+    
+    div <- 1/length(col)
+
+    ## create a viewport
+    vp <- viewport(
+        xscale = c(0,ncol(x)), yscale = c(nrow(x),0),
+        default.units = "native", name = name)
+    pushViewport(vp)
+
+    ## make sure we have a color for the maximal value (see floor +1)
+    col[length(col)+1] <- col[length(col)]
+
+    ## the highest value is lightest color!
+    x[] <- col[floor((x + offset)/range/div)+1]
+    grid.raster(x, interpolate=FALSE, default.units = "npc", width=1, height=1)
+
+    ## make border
+    gp_border       <- gp
+    gp_border$fill  <- "transparent"
+    grid.rect(gp = gp_border)
+
+    upViewport(1)
+}
+
+
 
 
 .grid_barplot_horiz <- function(height, name = "barplot", xlab="", 
@@ -97,7 +133,7 @@
     upViewport(1)
 }
 
-.grid_colorkey <- function(range, col, threshold = NULL, 
+.grid_colorkey_old <- function(range, col, threshold = NULL, 
     name = "colorkey", gp = gpar()) {
 
     vp <- viewport(
@@ -127,6 +163,43 @@
     grid.rect(x = 0, y = 0, width = 1, height = 1,
         just = c("left", "bottom"), default.units = "npc",
         gp = gp_border)
+
+    grid.xaxis(gp = gp)
+
+    upViewport(1)
+}
+
+.grid_colorkey <- function(range, col, threshold = NULL, 
+    name = "colorkey", gp = gpar()) {
+
+    vp <- viewport(
+        xscale = range, yscale = c(0,1), 
+        default.units = "native", name = name)
+    pushViewport(vp)
+
+    n <- length(col) 
+    #width <- diff(range)/n
+    #xs <- seq(range[1] + width/2, range[2] - width/2, length.out = n)
+    xs <- seq(range[1], range[2], length.out = n)
+
+    ## do not display the part above the threshold 
+    col[xs > threshold] <- NA
+
+    ## col
+    grid.raster(t(col), width=1, height=1, interpolate=FALSE)
+    
+    #gp_col      <- gp
+    #gp_col$col  <- 0
+    #gp_col$fill <- col
+    #grid.rect(x = xs, y = 0, width = width, height = 1,
+    #    just = c("centre", "bottom"), default.units = "native",
+    #    gp = gp_col)
+
+
+    ## box
+    gp_border       <- gp
+    gp_border$fill  <- "transparent"
+    grid.rect(gp = gp_border)
 
     grid.xaxis(gp = gp)
 

@@ -1339,8 +1339,7 @@ hmap(x, cexCol=1, labRow = "", margin =c(7,7))
 tmp <- dev.off()
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
-bitmap(file = "seriation-heatmap2.png", type = "pnggray", 
-    height = 6, width = 6, res = 300,pointsize=14)
+pdf(file = "seriation-heatmap2.pdf")
 hmap(x, hclustfun = NULL)
 tmp <- dev.off()
 @
@@ -1646,12 +1645,10 @@ dissplot(d, options = list(main = "Dissimilarity plot with seriation"))
 @
 
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
-bitmap(file = "seriation-dissplot1.png", type = "pnggray", 
-    height = 6, width = 6, res = 300, pointsize=11)
+pdf(file = "seriation-dissplot1.png")
 <<dissplot1>>
 tmp <- dev.off()
-bitmap(file = "seriation-dissplot2.png", type = "pnggray", 
-    height = 6, width = 6, res = 300, pointsize=11)
+pdf(file = "seriation-dissplot2.png")
 <<dissplot2>>
 tmp <- dev.off()
 @
@@ -1699,16 +1696,14 @@ res <- dissplot(d, labels = l,
     options = list(main = "Dissimilarity plot - standard"))
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
-bitmap(file = "seriation-dissplot3.png", type = "pnggray", 
-    height = 8, width = 8, res = 300, pointsize=12)
+pdf(file = "seriation-dissplot3.pdf")
 
 ## visualize the clustering
 <<dissplot3>>
 tmp <- dev.off()
 
 
-bitmap(file = "seriation-dissplot4.png", type = "pnggray", 
-    height = 8, width = 8, res = 300, pointsize=12)
+pdf(file = "seriation-dissplot4.png")
 ## threshold
 plot(res, options = list(main = "Dissimilarity plot - threshold", 
     threshold = 1.5))
