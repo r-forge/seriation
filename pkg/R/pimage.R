@@ -16,45 +16,49 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-
-
 ## image method that makes a proper image plot of a matrix.
 ## the rows and columns are swapped and the order of the
 ## columns (original rows) is reversed.
 
 
-## large values are dark
-pimage.matrix <- 
-function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL, ...) {
+pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
+	axes=TRUE, ..., newpage=TRUE, pop=TRUE) {
+    
     if(is.null(col)) {
         if(is.logical(x)) col <- c("white","black")
         else col <- rev(gray.colors(64))    
     }
     
     if(!is.null(order)) x <- permute(x, order)
-
-    image.default(1:dim(x)[2], 1:dim(x)[1], t(x)[,dim(x)[1]:1], axes=FALSE,
-        xlab=xlab, ylab=ylab, col=col, ...)
      
-
-
-    ## add axes
-    if(is.null(axes)) axes <- 32
-    else if(axes) axes <- Inf
-    else axes <- 0
+    if(newpage) grid.newpage()
     
-    if(axes > 0) {
-        if(dim(x)[1] < axes)
-            axis(2, at = 1:dim(x)[1], labels = rev(labels(x)[[1]]))
-        if(dim(x)[2] < axes)
-            axis(1, at = 1:dim(x)[2], labels = labels(x)[[2]])
-    }
+    .grid_basic_layout(main=main)
+    
+    downViewport("plot")
+    .grid_image(x, col=col)
+    
+    ## axes and labs
+    downViewport("image")
+    if(axes && ncol(x)<10 && !is.null(colnames(x))) grid.text(colnames(x), y = unit(-1, "lines"), x=unit(1:ncol(x), "native"))
+    #grid.xaxis(at=1:ncol(x), 
+    #	    label=colnames(x))
+    if(axes && nrow(x)<10 && !is.null(rownames(x))) grid.text(rownames(x), x = unit(-1, "lines"), y=unit(1:nrow(x), "native"), rot=90)
+	#grid.yaxis(at=1:nrow(x), 
+	#    label=rownames(x))
+
+    if(xlab!="") grid.text(xlab, y = unit(-3, "lines"))
+    if(ylab!="") grid.text(ylab, x = unit(-3, "lines"), rot=90)
+
+
+    if(pop) popViewport(3) else upViewport(3)
 }
 
 ## small values are dark
 pimage.dist <- 
-function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL, 
-    upper.tri = TRUE, lower.tri = TRUE, ...) { 
+function(x, order = NULL, col = NULL, main="", xlab="", ylab="", 
+	axes = TRUE, upper.tri = TRUE, lower.tri = TRUE, ..., 
+	newpage=TRUE, pop=TRUE) { 
     if(is.null(col)) col <- gray.colors(64)    
     
     if(!is.null(order)) x <- permute(x, order)
@@ -66,27 +70,15 @@ function(x, order = NULL, col = NULL, xlab="", ylab="", axes = NULL,
     if(!upper.tri) x[upper.tri(x)] <- NA
     if(!lower.tri) x[lower.tri(x)] <- NA
 
-    pimage.matrix(x, xlab=xlab, ylab=ylab, col=col, axes = FALSE, ...)
-
-    ## add axes
-    if(is.null(axes)) axes <- 32
-    else if(axes) axes <- Inf
-    else axes <- 0
-
-    ## show labels top and right if lower.tri is FALSE
-    if(!lower.tri) loc <- c(4,3)
-    else loc <- c(2,1)
-    
-    if(dim < axes){
-        axis(loc[1], at = 1:dim, labels = rev(labels))
-        axis(loc[2], at = 1:dim, labels = labels)
-    }
+    pimage.matrix(x, main=main, xlab=xlab, ylab=ylab, col=col, axes = axes, ...,
+	    newpage=TRUE, pop=TRUE)
 
 }
 
+
 pimage <-
-function(x, order = NULL, col = NULL, 
-         xlab="", ylab="", axes = NULL, ...) 
+function(x, order = NULL, col = NULL, main="", xlab="", ylab="",
+	        axes=TRUE, ..., newpage=TRUE, pop=TRUE)
     UseMethod("pimage")
 
 pimage.default <- pimage.matrix

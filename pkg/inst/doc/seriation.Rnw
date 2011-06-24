@@ -959,22 +959,16 @@ To visually inspect the effect of seriation on the distance matrix, we use
 matrix shading with \func{pimage} (the result is shown in 
 Figure~\ref{fig:pimage1}).
 
-<<label=pimage1, eval=FALSE>>=
+<<label=pimage1, fig=TRUE, include=FALSE>>=
 pimage(d, main = "Random")
-pimage(d, o, main = "Reordered")
 @
-<<echo=FALSE, fig=FALSE, include=FALSE>>=
-bitmap(file = "seriation-pimage1.png", type = "pnggray", 
-    height = 2.8, width = 5, res = 300,pointsize=7)
-def.par <- par(no.readonly = TRUE)
-layout(t(1:2))
-<<pimage1>>
-par(def.par)
-tmp <- dev.off()
+<<label=pimage1-2, fig=TRUE, include=FALSE>>=
+pimage(d, o, main = "Reordered")
 @
 \begin{figure}
     \centering
-    \includegraphics[width=12cm]{seriation-pimage1}
+    \includegraphics[width=6cm]{seriation-pimage1}
+    \includegraphics[width=6cm]{seriation-pimage1-2}
     \caption{Matrix shading of the  distance matrix for the iris data.}
     \label{fig:pimage1}
 \end{figure}
@@ -1004,35 +998,20 @@ function \func{c}. This new permutation object for $2$-mode data is used
 for displaying the reordered data. The two plots are shown in 
 Figure~\ref{fig:pimage2}.
 
-<<label=pimage2, eval=FALSE>>=
+<<label=pimage2, fig=TRUE, include=FALSE>>=
 pimage(x, main = "Random")
+@
+
+<<label=pimage2-2, fig=TRUE, include=FALSE>>=
 o_2mode <- c(o, ser_permutation(seq_len(ncol(x))))
 #o_2mode
 pimage(x, o_2mode, main = "Reordered")
 @
-<<echo=FALSE, fig=FALSE, include=FALSE>>=
-bitmap(file = "seriation-pimage2.png", type = "pnggray", 
-    height = 2.8, width = 5, res = 300,pointsize=7)
-def.par <- par(no.readonly = TRUE)
-layout(t(1:2))
-#<<pimage2>>
-## make all labels show
-pimage(x, main = "Random", axes = 0)
-text(1:dim(x)[2], par("usr")[3] - (par("usr")[4] - par("usr")[3]) / 20,
-    srt = 45, adj = 1, labels =labels(x)[[2]], xpd = TRUE)
-o_2mode <- c(o, ser_permutation(seq_len(ncol(x))))
-pimage(x, o_2mode, main = "Reordered", axes = 0)
-text(1:dim(x)[2], par("usr")[3] - (par("usr")[4] - par("usr")[3]) / 20,
-    srt = 45, adj = 1, labels =labels(permute(x, o_2mode))[[2]], xpd = TRUE)
 
-
-
-par(def.par)
-tmp <- dev.off()
-@
 \begin{figure}
     \centering
-    \includegraphics[width=12cm]{seriation-pimage2}
+    \includegraphics[width=6cm]{seriation-pimage2}
+    \includegraphics[width=6cm]{seriation-pimage2-2}
     \caption{Matrix shading of the iris data matrix.}
     \label{fig:pimage2}
 \end{figure}
@@ -1089,22 +1068,26 @@ The resulting orderings are displayed using matrix shading
 (see Figure~\ref{fig:pimage3}). 
 
 
-<<label=pimage3, eval=FALSE>>=
+<<label=pimage3-pre, eval=FALSE>>=
 tmp <- lapply(o, FUN = function(x) pimage(d, x, main = get_method(x[[1]])))
 @
-<<echo=FALSE, fig=FALSE, include=FALSE>>=
-bitmap(file = "seriation-pimage3.png", type = "pnggray", height = 4.5, 
-    width = 6, res = 300, pointsize = 10)
-def.par <- par(no.readonly = TRUE)
-layout(matrix(seq_len(6), ncol = 3, byrow = TRUE))
-<<pimage3>>
-par(def.par)
-tmp <- dev.off()
+<<label=pimage3, echo=FALSE, fig=TRUE, include=FALSE>>=
+for(i in 1:length(o)) {
+    pdf(file=paste("seriation-pimage_comp_", i , ".pdf", sep=""))
+    pimage(d, o[[i]], main = get_method(o[[i]][[1]]))
+    dev.off()
+}
+
 @
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth, trim=0 30 0 0]{seriation-pimage3}
+    \includegraphics[width=.3\linewidth]{seriation-pimage_comp_1.pdf}
+    \includegraphics[width=.3\linewidth]{seriation-pimage_comp_2.pdf}
+    \includegraphics[width=.3\linewidth]{seriation-pimage_comp_3.pdf}\\ 
+    \includegraphics[width=.3\linewidth]{seriation-pimage_comp_4.pdf}
+    \includegraphics[width=.3\linewidth]{seriation-pimage_comp_5.pdf}
+    \includegraphics[width=.3\linewidth]{seriation-pimage_comp_6.pdf}
     \caption{Image plot of the distance matrix for the iris data
     using rearrangement by different seriation methods.}
     \label{fig:pimage3}
@@ -1778,20 +1761,11 @@ calculate distances, perform $k$-means clustering with $k=3$ (although the
 real number of groups is 4) and produce
 a dissimilarity plot.
 
-<<label=ruspini, eval=FALSE>>=
+<<label=ruspini, fig=TRUE, include=FALSE>>=
 data("ruspini")
 d <- dist(ruspini)
 l <- kmeans(d, 3)$cluster
 dissplot(d, labels = l)
-@
-<<echo=FALSE, fig=FALSE, include=FALSE>>=
-#$
-bitmap(file = "seriation-ruspini.png", type = "pnggray", 
-    height = 8, width = 8, res = 300, pointsize=12)
-
-## visualize the clustering
-<<ruspini>>
-tmp <- dev.off()
 @
 
 \begin{figure}

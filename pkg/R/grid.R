@@ -20,6 +20,33 @@
 
 ## grid helpers
 
+.grid_basic_layout <- function(main=""){
+    pushViewport(viewport(layout = grid.layout(4, 3,
+			    widths = unit.c(
+				    unit(4, "lines"),                  # space
+				    unit(1, "snpc") - unit(8, "lines"),# plot
+				    unit(4, "lines")                   # space
+				    ),
+			    heights = unit.c(
+				    unit(3, "lines"),                  # title
+				    unit(1, "lines"),                  # space
+				    unit(1, "snpc") - unit(8, "lines"),# plot
+				    unit(4, "lines")                   # space
+				    )
+			    )))
+
+    pushViewport(viewport(layout.pos.col = 2, layout.pos.row = 1, 
+		    name="main"))
+    grid.text(main, gp = gpar(cex=1.3, fontface="bold"))
+    upViewport(1)
+
+    pushViewport(viewport(layout.pos.col = 2, layout.pos.row = 3, 
+		    name="plot"))
+    upViewport(2)
+}
+
+
+
 .grid_image_old <- function(x, y, z, zlim, col = gray.colors(12, 1, 0), 
     name = "image", gp = gpar()) {
 
@@ -75,13 +102,15 @@
     }
         
     offset <- if(zlim[1] < 0) -zlim[1] else 0
-    range <- diff(zlim) 
+    #range <- diff(zlim) ### not al plots have 0 as the minimum! 
+    range <- zlim[2]+offset 
     
     div <- 1/length(col)
 
     ## create a viewport
     vp <- viewport(
-        xscale = c(0,ncol(x)), yscale = c(nrow(x),0),
+	#xscale = c(0,ncol(x)), yscale = c(nrow(x),0),
+        xscale = c(0.5,ncol(x)+.5), yscale = c(nrow(x)+.5,0.5),
         default.units = "native", name = name)
     pushViewport(vp)
 

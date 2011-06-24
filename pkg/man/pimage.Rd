@@ -8,13 +8,13 @@
   matrix and \code{dist} objects given a permutation.
 }
 \usage{
-pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)
+pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "", axes = TRUE, ..., newpage=TRUE, pop=TRUE)
 
-\method{pimage}{matrix}(x, order = NULL, col = NULL, 
-        xlab = "", ylab = "", axes = NULL, ...)
-\method{pimage}{dist}(x, order = NULL, col = NULL, 
-        xlab = "", ylab = "", axes = NULL,
-       upper.tri = TRUE, lower.tri = TRUE, ...)
+\method{pimage}{matrix}(x, order=NULL, col=NULL, main="", xlab="", ylab="",
+        axes=TRUE, ..., newpage=TRUE, pop=TRUE)
+\method{pimage}{dist}(x, order = NULL, col = NULL, main="", xlab="", ylab="",
+        axes = TRUE, upper.tri = TRUE, lower.tri = TRUE, ...,
+	        newpage=TRUE, pop=TRUE)
 }
 \arguments{
   \item{x}{a matrix or an object of class \code{dist}.}
@@ -24,13 +24,15 @@ pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)
       matrix larger values are displayed darker and for \code{dist} smaller
       distances are darker). For matrices containing logical data, black and
       white is used. }
+  \item{main}{Plot title.}
   \item{xlab, ylab}{labels for the x and y axes.}
   \item{axes}{ a logical indicating whether to add axes using the
-      labels of \code{x}. The default value (\code{NULL}) shows only axes
-      if the dimension is below 32 (so it is reasonable to show labels).}
+      labels of \code{x}. The default value (\code{TRUE}) shows only axes
+      if the dimension is below 10 (so it is reasonable to show labels).}
   \item{upper.tri, lower.tri}{ a logical indicating whether to show the
       upper or lower triangle of the distance matrix. }
   \item{\dots}{further arguments passed on to \code{image} in \pkg{graphics}.}
+  \item{newpage, pop}{two logical. Start plot on a new page and pop the viewports after plotting (see Grid).}
 }
 \details{
   Plots a matrix in its original row and column orientation. This means, in a
@@ -41,19 +43,15 @@ pimage(x, order = NULL, col = NULL, xlab = "", ylab = "", axes = NULL, ...)
   representation before plotting.
 }
 \author{Christian Buchta and Michael Hahsler}
-\seealso{
-  \code{\link{image}} for details.}
+%\seealso{}
 \examples{
 x <- matrix(sample(c(FALSE, TRUE), 150, rep=TRUE), ncol=10)
 
 ## matrix
 pimage(x, main = "random data")
 
-## plot seriated matrix and axis separately
-pimage(x, seriate(x), col = c("white", "green"), axes = FALSE,
-    main = "reordered data")
-axis(1, at = 1:ncol(x))                         # columns
-axis(2, at = 1:nrow(x), labels= rev(1:nrow(x))) # reversed rows
+## plot seriated matrix
+pimage(x, seriate(x), col = c("white", "green"), main = "reordered data")
 
 ## distances
 d <- dist(x, method = "binary")

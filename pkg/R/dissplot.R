@@ -508,15 +508,15 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
             for(i in 1:k) {
 
 		grid.lines(
-			x = c(0, dim), 
-			#x = c(0.5, dim + 0.5), 
-			y = cluster_cuts_y[i], 
+			#x = c(0, dim), 
+			x = c(0.5, dim + 0.5), 
+			y = cluster_cuts_y[i]+.5, 
 			default.units = "native", gp = gp_lines)
 
 		grid.lines(
-			x = cluster_cuts_x[i], 
-			y = c(0, dim), 
-			#   	y = c(0.5, dim + 0.5), 
+			x = cluster_cuts_x[i]+.5, 
+			#y = c(0, dim), 
+			   	y = c(0.5, dim + 0.5), 
 			default.units = "native", gp=gp_lines)
 
             }
