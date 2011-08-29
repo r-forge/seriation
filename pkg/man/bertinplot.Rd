@@ -31,7 +31,8 @@ bertinplot(x, order = NULL, highlight = TRUE,  options = NULL)
       available functions are \code{panel.bars} (default),
       \code{panel.circles},
       \code{panel.squares} and
-      \code{panel.lines}.}
+      \code{panel.lines}. For circles and squares neg. values are
+      represented by a dashed border.}
   \item{\code{reverse}}{ logical indicating whether to swap cases and variables 
       in the plot. The default (\code{FALSE}) 
       is to plot cases as columns and variables as rows.}
