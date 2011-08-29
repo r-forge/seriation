@@ -64,15 +64,18 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
     }
     
     ## scale each variable in x for plotting (between 0 and 1)
-    x <- x/ matrix(apply(x, 2, max, na.rm = TRUE), 
+    x <- x/ matrix(apply(abs(x), 2, max, na.rm = TRUE), 
         byrow= TRUE, ncol=ncol(x), nrow= nrow(x))
-    
+   
+    ## fix division by zero (if all entries in a row are 0)
+    x[is.nan(x)] <- 0
+
     ## highlight
     if(length(highlight) == 1 && highlight) 
         highlight <- x > rowMeans(x, na.rm = TRUE)
     else if(length(highlight) == 1 && !highlight)
         highlight <- matrix(FALSE, ncol = ncol(x), nrow = nrow(x))
-    else if(all(dim(x) != dim(highlight)))
+    else if(any(dim(x) != dim(highlight)))
         stop("Argument 'highlight' has incorrect dimensions.")
 
     ## note: Bertin switched cols and rows for his display!
@@ -93,18 +96,22 @@ function(x, order = NULL, highlight = TRUE, options = NULL)
             xscale = xlim, 
             yscale = c(1, ncol_x), default.units = "native"))
 
-    ## do frame
-    #if(options$frame) {
-        #    grid.rect(width = 1/ncol_x*(ncol_x-.52))
-        ## why .52?
-        #}
-
     for (variable in 1:ncol_x) { 
         value <- x[, variable]
         hl <- highlight[, variable]
 
+	if(identical(options$panel.function, panel.bars) ||
+		identical(options$panel.function, panel.lines)) {
+	    ylim <- c(min(value,0, na.rm=TRUE),
+		    max(value,0.1, na.rm=TRUE)) ## we use 0.1 so 0s show!
+	}else{
+	    ylim <- c(0,
+		    max(abs(value),0.1, na.rm=TRUE))
+	}
+
         pushViewport(viewport(layout.pos.col = 1, layout.pos.row = variable,
-                xscale = xlim, yscale = c(0, 1), 
+                xscale = xlim, 
+		yscale = ylim, 
                 default.units = "native", gp = options$gp_panels))
 
         ## call panel function
@@ -146,16 +153,21 @@ panel.bars <- function(value, spacing, hl) {
 }
 
 panel.circles <- function(value, spacing, hl) {
+    ## neg. values are dashed
+    lty <- as.integer(value<0)+1L
     ## do not plot zero circles
     value[value == 0] <- NA
-    
+
+
     grid.circle(x = c(1:length(value)), 
         r = value/2*(1 - spacing),
         default.units = "native", 
-        gp = gpar(fill = hl))
+	gp = gpar(fill = hl, lty=lty))
 }
 
 panel.squares <- function(value, spacing, hl) {
+    ## neg. values are dashed
+    lty <- as.integer(value<0)+1L
     ## do not plot zero squares
     value[value == 0] <- NA
     
@@ -163,7 +175,7 @@ panel.squares <- function(value, spacing, hl) {
         width = value*(1 - spacing), 
         height = value*(1 - spacing),
         default.units = "native",
-        gp = gpar(fill = hl))
+	gp = gpar(fill = hl, lty=lty))
 }
 
 panel.lines <- function(value, spacing, hl) {
