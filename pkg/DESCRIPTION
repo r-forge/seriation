@@ -3,8 +3,8 @@ Type: Package
 Title: Infrastructure for seriation
 Author: Michael Hahsler, Christian Buchta and Kurt Hornik 
 Maintainer: Michael Hahsler <michael@hahsler.net>
-Version: 1.0-3
-Date: 2011-xx-xx
+Version: 1.0-4
+Date: 2011-07-27
 Description: Infrastructure for seriation with an implementation of several
     seriation/sequencing techniques to reorder matrices, dissimilarity
     matrices, and dendrograms. Also contains some visualizations techniques

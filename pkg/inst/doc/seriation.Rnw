@@ -6,7 +6,7 @@
 %\usepackage{graphicx,keyval,thumbpdf,url}
 %\usepackage{hyperref}
 %\usepackage{Sweave}
-\SweaveOpts{strip.white=TRUE}
+\SweaveOpts{strip.white=true}
 \AtBeginDocument{\setkeys{Gin}{width=0.6\textwidth}}
 
 \usepackage[utf8]{inputenc}
