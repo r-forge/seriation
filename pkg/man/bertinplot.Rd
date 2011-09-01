@@ -1,14 +1,17 @@
 \name{bertinplot}
 \alias{bertinplot}
+\alias{bertin_cut_line}
 \alias{panel.bars}
 \alias{panel.circles}
 \alias{panel.squares}
 \alias{panel.lines}
+\alias{panel.blocks}
 \title{Plot a Bertin matrix}
 \description{
 Plot a data matrix of cases and variables. Each value is represented by a
 symbol. Large values are highlighted. The matrix can be rearranged to make
 structure in the data visible (see Falguerolles et al 1997).
+\code{bertin_cut_line()} can be used to add cut lines (see Details).
 }
 \usage{
 bertinplot(x, order = NULL, highlight = TRUE,  options = NULL)   
@@ -30,14 +33,18 @@ bertinplot(x, order = NULL, highlight = TRUE,  options = NULL)
   \item{\code{panel.function}}{ a function to produce the symbols. Currently
       available functions are \code{panel.bars} (default),
       \code{panel.circles},
-      \code{panel.squares} and
+      \code{panel.squares},
+      \code{panel.blocks}
+      and
       \code{panel.lines}. For circles and squares neg. values are
-      represented by a dashed border.}
+      represented by a dashed border. For blocks all blocks are the same size
+      (can be used with \code{shading=TRUE}).}
   \item{\code{reverse}}{ logical indicating whether to swap cases and variables 
       in the plot. The default (\code{FALSE}) 
       is to plot cases as columns and variables as rows.}
   \item{\code{xlab, ylab}}{ labels (default: use labels from \code{x}).}
   \item{\code{spacing}}{ relative space between symbols (default: 0.2).}
+  \item{\code{shading}}{ use gray shades to encode value instead of highlighting (default: FALSE).}
   \item{\code{frame}}{ plot a grid to separate symbols (default: code{FALSE}).}
   \item{\code{mar}}{ margins (see \code{par}).}
   \item{\code{gp_labels}}{ gpar object for labels (see \code{gpar}).}
@@ -56,6 +63,17 @@ panel function is \code{panel.myfunction(value, spacing, hl)}.
 \code{value} is the vector of values for a row scaled between 0 and 1, 
 \code{spacing} contains the relative space between symbols and
 \code{hl} is a logical vector indicating which symbol should be highlighted.
+
+Cut lines can be added to an existing bertin plot 
+using \code{bertin_cut_line(x=NULL, y=NULL)}. 
+\code{x}/\code{y} is can be a number indicating where to
+draw the cut line between two columns/rows. If both \code{x}
+and \code{y} is specified then one can select a row/column and the
+other can select a range to draw a line which does only span a part
+of the row/column. It is important to
+call \code{bertinplot()} with the option \code{pop=FALSE}. 
+
+
 }
 %\value{
 %}
@@ -88,6 +106,18 @@ bertinplot(x, order)
 ## alternative display
 bertinplot(x, order, 
     options = list(panel = panel.circles, spacing = -0.4))
+
+## plot with cut lines (we manually set the order here)
+order <- ser_permutation(c(21, 16, 19, 18, 14, 12, 20, 15, 
+    17, 26, 13, 41,  7, 11, 5, 23, 28, 34, 31, 1, 38, 40,  
+    3, 39,  4, 27, 24,  8, 37, 36, 25, 30, 33, 35,  2, 
+    22, 32, 29, 10,  6,  9),
+    c(4, 2, 1, 6, 8, 7, 5, 3))
+
+bertinplot(x, order, options=list(pop=FALSE))
+bertin_cut_line(,4) ## horizontal line between rows 4 and 5
+bertin_cut_line(,7) ## separate "Right to Life" from the rest
+bertin_cut_line(14,c(0,4)) ## separate a block of large values (vertically)
 }
 \keyword{hplot}
 \keyword{cluster}
