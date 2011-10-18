@@ -91,12 +91,11 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
   number, it specifies the number of different shades used in the plot
   (default: 100 shades of gray using the HCL colorspace). If \code{col} 
   not a single number, it is expected to be a full color palette and
-  the potions \code{hue}, \code{power} and \code{gamma} are ignored.}
+  the potions \code{hue} and \code{power} are ignored.}
   \item{\code{hue}}{ color in [0,360] taken from the HCL color wheel. \code{NA}
   indicates gray scale (default: gray scale).}
   \item{\code{power}}{ determines how luminance (and chroma for color) 
 	should be increased (1 = linear, 2 = quadratic, etc.) with dissimilarity. }
-  \item{\code{gamma}}{gamma correction for the display (default: 2.4).}
   \item{\code{colorkey}}{ a logical indicating  whether to place a color key
       below the plot. }
   \item{\code{main}}{ title for the plot.}

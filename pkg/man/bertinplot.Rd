@@ -103,9 +103,12 @@ order <- c(
 ## plot
 bertinplot(x, order)
 
-## alternative display
+## some alternative displays
+bertinplot(x, order, options = list(shading = TRUE, panel = panel.blocks))
+bertinplot(x, order, options = list(panel = panel.lines))
+bertinplot(x, order, options = list(panel = panel.squares))
 bertinplot(x, order, 
-    options = list(panel = panel.circles, spacing = -0.4))
+    options = list(panel = panel.circles, spacing = -0.5))
 
 ## plot with cut lines (we manually set the order here)
 order <- ser_permutation(c(21, 16, 19, 18, 14, 12, 20, 15, 

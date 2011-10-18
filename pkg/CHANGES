@@ -1,3 +1,7 @@
+
+Release 1.0-6
+* removed deprecated parameter gamma for dissplot()
+
 Release 1.0-5
 * bertinplot(): fixed representation for 0, neg. values and highlight. 
 	(Bug report by G. Sawitzki).
@@ -10,7 +14,7 @@ Release 1.0-4
 
 Release 1.0-3
 * improved validity check for permutations and added check for dist with 
-    neg. entires to seriate.dist.
+    neg. entries to seriate.dist.
 
 Release 1.0-2
 * service release

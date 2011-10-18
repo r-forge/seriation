@@ -265,7 +265,6 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
         power		= 1,
 		hue			= NULL,
         threshold   = NULL,
-		gamma		= 2.4,
 		main        = paste("Dissimilarity plot:", 
             dim,"x",dim),
         colorkey    = TRUE, 
@@ -293,10 +292,10 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
 	if(length(options$col) == 1) {
 		if(is.null(options$hue)) options$col <- 
 		sequential_hcl(options$col, c.=0, l=c(10,90), 
-			power=options$power, gamma=options$gamma)
+			power=options$power)
 		else options$col <-
 		sequential_hcl(options$col, h=options$hue, c.=c(80,0), l=c(30,90), 
-			power=options$power, gamma=options$gamma)
+			power=options$power)
 	}
 
 

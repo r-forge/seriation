@@ -228,8 +228,11 @@ bertin_cut_line <- function(x = NULL, y = NULL) {
     if(length(x) <2) x <- rep(x,2)
     if(length(y) <2) y <- rep(y,2)
     
-    seekViewport("bertin")
-   
+    ## find the bertin Viewport
+    if(inherits(try(seekViewport("bertin"), silent=TRUE), "try-error")) {
+	stop("bertinplot() needs to be called with options=list(pop=FALSE) first!")
+    }
+
     if(is.null(x)) x <- unit(c(0,1), units="npc") 
     else x <- x+.5
     

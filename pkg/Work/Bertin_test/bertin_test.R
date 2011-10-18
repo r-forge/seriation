@@ -1,5 +1,6 @@
 ## tests for Bertinplot provided by G. Sawitzki
 
+library(seriation)
 
 #random matrices
 nrow <- 5
@@ -10,6 +11,8 @@ colnames(BMunif) <- colnames(BMunif, do.NULL=FALSE)
 rownames(BMunif) <- rownames(BMunif, do.NULL=FALSE)
 
 bertinplot(BMunif)
+bertinplot(BMunif, options=list(shading=TRUE))
+bertinplot(BMunif, options=list(shading=TRUE, panel=panel.blocks))
 
 
 BMnorm <- matrix(rnorm(nrow*ncol), nrow, ncol)
@@ -24,7 +27,6 @@ bertinplot(BMnorm, options=list(shading=TRUE, panel=panel.blocks))
 bertinplot(BMnorm, highlight=BMnorm>1)
 
 Nrcases <- 7
-
 # Test vectors, used to build a matrix
 Bzero <- rep(0, Nrcases)
 Bone <- rep(1, Nrcases)
