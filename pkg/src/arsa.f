@@ -79,7 +79,9 @@ C      NREPS = 20
           ISET = S1 * FLOAT(UNSEL) + 1.
           IF(ISET.GT.UNSEL) ISET = UNSEL
           T(III,I) = U(ISET)
-          DO J = ISET,UNSEL
+C          DO J = ISET,UNSEL   
+C	    out of bounds error reported by Rohan Shah (9/13/12)
+          DO J = ISET,UNSEL-1
             U(J) = U(J+1)
           END DO
           UNSEL = UNSEL - 1

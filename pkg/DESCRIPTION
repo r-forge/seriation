@@ -2,7 +2,7 @@ Package: seriation
 Type: Package
 Title: Infrastructure for seriation
 Author: Michael Hahsler, Christian Buchta and Kurt Hornik 
-Maintainer: Michael Hahsler <michael@hahsler.net>
+Maintainer: Michael Hahsler <mhahsler@lyle.smu.edu>
 Version: 1.0-7
 Date: 2011-xx-xx
 Description: Infrastructure for seriation with an implementation of several

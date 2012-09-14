@@ -1,0 +1,1 @@
+PKG_FFLAGS = -g -O0 -Wall -fbounds-check -fbacktrace
