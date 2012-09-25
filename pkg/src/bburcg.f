@@ -12,11 +12,21 @@ C      DOUBLE PRECISION TIMEA,TIMEB,TIMTOT,A(50,50),EPS
       DOUBLE PRECISION A(N,N), EPS
       REAL S1
       INTEGER X(N),Q(N),D(N,N,N),S(N),DD(N,N,N),UNSEL(N)
+      
+C Helper variables for R-style output
+      CHARACTER(50) WRITESTRING
+      INTEGER DUMMY
+
 
       IF (IVERB == 1) THEN
-          PRINT *,'Anti-Robinson Seriation by branch-and-bound'
-          PRINT *,'based on bburcg.f by Brusco, and Stahl, S. (2005)'
-          PRINT *,''
+C          PRINT *,'Anti-Robinson Seriation by branch-and-bound'
+C          PRINT *,'based on bburcg.f by Brusco, and Stahl, S. (2005)'
+C          PRINT *,''
+          CALL INTPR('Anti-Robinson seriation by branch-and-bound',
+     1 -1, DUMMY, 0)
+	  CALL INTPR('based on bburcg.f by Brusco, and Stahl, S. (2005)',
+     1 -1, DUMMY, 0)
+	  CALL INTPR(' ', -1, DUMMY, 0)
       ENDIF
 
       OLDM=0
@@ -122,9 +132,11 @@ C 72     FORMAT(20I3)
  3502   ITRIG = 0
         DO II = 1,N-1
           DO JJ = II+1,N
+
 C   R interrupt
             CALL rchkusr()
 C
+
             R3 = Q(JJ)
             R2 = Q(II)
             DELTA=0
@@ -171,7 +183,9 @@ C
  3500 CONTINUE
 C      WRITE(2,3505) ZBEST
       IF (IVERB == 1) THEN
-          WRITE(*,3505) ZBEST
+C          WRITE(*,3505) ZBEST
+	  WRITE(WRITESTRING, 3505) ZBEST
+	  CALL INTPR(WRITESTRING, -1, DUMMY, 0)
       ENDIF
  3505 FORMAT(' HEURISTIC OBJ VALUE ',I12)
       Z = ZBEST-1
@@ -192,8 +206,11 @@ C
 C
       CHECKS=CHECKS+1
       IF (IVERB == 1 .AND. M .GT. OLDM) THEN
-          WRITE (*,6000) M+1, CHECKS
- 6000 FORMAT('reached position ', I5, ' with ', I9, ' checks')       
+C          WRITE (*,6000) M+1, CHECKS
+	  WRITE(WRITESTRING, 6000)  M+1, CHECKS
+	  CALL INTPR(WRITESTRING, -1, DUMMY, 0)
+ 6000 FORMAT(' reached position ', I5, ' with ', I9, ' checks')
+
           OLDM=M 
       ENDIF
 C
@@ -204,8 +221,10 @@ C   main loop
 C
   2   Q(M)=Q(M)+1
 C
+C MFH: Make sure to not get out of bounds with S(Q(M)) - 9/24/12
+      IF(Q(M).GT.N) GO TO 222
       IF(S(Q(M)).EQ.1) GO TO 2               ! REDUNDANCY
-      IF(M.EQ.1.AND.Q(M).GT.N) GO TO 9       ! TERMINATE
+ 222  IF(M.EQ.1.AND.Q(M).GT.N) GO TO 9       ! TERMINATE
       IF(M.GT.1.AND.Q(M).GT.N) GO TO 7       ! GO TO RETRACTION
 C only for bburcg
       IF(TRIG.EQ.0.AND.Q(M).EQ.2) GO TO 2    ! SYMMETRY FATHOM
@@ -217,7 +236,9 @@ C
         IF(ZBD.GT.Z) THEN
           Z=ZBD
           IF (IVERB == 1) THEN
-              WRITE(*,*) 'Eval =',z
+C              WRITE(*,*) 'Eval =',z
+	      WRITE(WRITESTRING, *) 'Eval =',z
+	      CALL INTPR(WRITESTRING, -1, DUMMY, 0)
           ENDIF
           DO I = 1,N
             X(I)=Q(I)
@@ -367,8 +388,10 @@ C     1        F8.2)
 C 70   FORMAT(30I3)
 C
   9    IF (IVERB == 1) THEN
-          PRINT *, 'total number of checks: ', CHECKS
-      ENDIF
+C          PRINT *, 'total number of checks: ', CHECKS
+	  WRITE(WRITESTRING, *)  'total number of checks: ', CHECKS
+	  CALL INTPR(WRITESTRING, -1, DUMMY, 0)
+       ENDIF
       
       RETURN
       END

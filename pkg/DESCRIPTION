@@ -4,7 +4,7 @@ Title: Infrastructure for seriation
 Author: Michael Hahsler, Christian Buchta and Kurt Hornik 
 Maintainer: Michael Hahsler <mhahsler@lyle.smu.edu>
 Version: 1.0-7
-Date: 2011-xx-xx
+Date: 2012-09-24
 Description: Infrastructure for seriation with an implementation of several
     seriation/sequencing techniques to reorder matrices, dissimilarity
     matrices, and dendrograms. Also contains some visualizations techniques

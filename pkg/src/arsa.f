@@ -14,16 +14,38 @@ C      DOUBLE PRECISION A(400,400), SOLS(100), RMED(100),
       REAL S1, RCRIT
       INTEGER U(N), S(N), UNSEL, T(100,N), SB(N), Q
 
-      IF (IVERB == 1) THEN
-          PRINT *, 'Anti-Robinson seriation by simulated annealing'
-          PRINT *, 'based on arsa.f by Brusco, M., Kohn, H.F.,',
-     1 'and Stahl, S. (2007)'
+C Helper variables for R-style output
+      CHARACTER(50) WRITESTRING
+      INTEGER DUMMY
 
-          PRINT *, ''
-          PRINT *, 'COOL =', COOL
-          PRINT *, 'TMIN =', TMIN
-          PRINT *, 'NREPS =', NREPS
-          PRINT *, ''
+
+      IF (IVERB == 1) THEN
+C         PRINT *, 'Anti-Robinson seriation by simulated annealing'
+C         PRINT *, 'based on arsa.f by Brusco, M., Kohn, H.F.,',
+C     1 'and Stahl, S. (2007)'
+
+      CALL INTPR('Anti-Robinson seriation by simulated annealing', 
+     1 -1, DUMMY, 0)
+      CALL INTPR('based on arsa.f by Brusco, M., Kohn, H.F.,', 
+     1 -1, DUMMY, 0)
+      CALL INTPR('and Stahl, S. (2007)', 
+     1 -1, DUMMY, 0)
+      CALL INTPR(' ', -1, DUMMY, 0)
+
+C          PRINT *, ''
+C          PRINT *, 'COOL =', COOL
+C          PRINT *, 'TMIN =', TMIN
+C          PRINT *, 'NREPS =', NREPS
+C          PRINT *, ''
+
+          WRITE (WRITESTRING, '(A, F5.3)') 'COOL = ', COOL
+          CALL INTPR(WRITESTRING, -1, DUMMY, 0) 
+	  WRITE (WRITESTRING, '(A, F5.3)') 'TMIN = ', TMIN
+          CALL INTPR(WRITESTRING, -1, DUMMY, 0) 
+          WRITE (WRITESTRING, '(A, I5)') 'NREPS = ', NREPS
+          CALL INTPR(WRITESTRING, -1, DUMMY, 0) 
+      
+          CALL INTPR(' ', -1, DUMMY, 0)
       ENDIF
 
 C      INTEGER U(400), S(400), UNSEL, T(100,400), SB(400), Q, GB(400)
@@ -138,9 +160,11 @@ C        TMAX = Z
 C        WRITE(*,21) TMIN,TMAX,NLOOP
 C  21    FORMAT(2F14.5,I6)
         IF (IVERB == 1) THEN
-            WRITE(*,21) NLOOP
+C            WRITE(*,21) NLOOP
+	     WRITE(WRITESTRING, 21) NLOOP
+	     CALL INTPR(WRITESTRING, -1, DUMMY, 0)
         ENDIF
-  21    FORMAT('   Steps needed: ',I10)
+  21    FORMAT('Steps needed: ',I10)
 C        GO TO 889
         TEMP = TMAX
         DO I = 1,N
@@ -149,14 +173,16 @@ C        GO TO 889
 C
         DO 2000 IJK = 1,NLOOP
         IF (IVERB == 1) THEN
-            WRITE(*,22) TEMP
+C            WRITE(*,22) TEMP
+             WRITE(WRITESTRING, 22) TEMP
+             CALL INTPR(WRITESTRING, -1, DUMMY, 0)    
         ENDIF
+  22    FORMAT('Temp = ', F14.5)
 
 C   R interrupt
         CALL rchkusr()
 C
 
-  22    FORMAT('   Temp = ', F14.5)
           DO 2001 KKK = 1,ILOOP
             S1 = rand(0)
             IF(S1.LE.RULE) THEN     ! INTERCHANGE / INSERTION / OR BOTH

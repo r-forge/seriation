@@ -1,5 +1,7 @@
 Changes in version 1.0-7
     * Fixed out-of-bounds bug in arsa.f reported by Rohan Shah
+    * Fixed out-of-bounds bug in bburcg.f
+    * Replaced Fortran I/O with R I/O for verb=TRUE
 
 Changes in version 1.0-6
     * removed deprecated parameter gamma for dissplot()
