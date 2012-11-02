@@ -47,7 +47,7 @@ get_order.hclust <- function(x, ...) {
 }
 get_order.integer <- function(x, ...) {
     o <- as.integer(x)
-    names(o) <- names(x)
+    names(o) <- names(x)[o]
     o
 }
 
