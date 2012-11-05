@@ -1,3 +1,6 @@
+Changes in version 1.0-8
+    * get_order: labels are now in the correct order (Bug report by Crt Ahlin)
+
 Changes in version 1.0-7
     * Fixed out-of-bounds bug in arsa.f reported by Rohan Shah
     * Fixed out-of-bounds bug in bburcg.f
