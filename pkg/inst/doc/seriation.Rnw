@@ -1316,8 +1316,9 @@ displayed (see Figure~\ref{fig:heatmap}(b)). A \code{method} argument can be use
 seriation methods.
 
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
-bitmap(file = "seriation-heatmap1.png", type = "pnggray", 
-    height = 6, width = 6, res = 300, pointsize=14)
+#bitmap(file = "seriation-heatmap1.png", type = "pnggray", 
+#    height = 6, width = 6, res = 300, pointsize=14)
+pdf(file = "seriation-heatmap1.pdf")
 hmap(x, cexCol=1, labRow = "", margin =c(7,7))
 tmp <- dev.off()
 @
@@ -1628,10 +1629,10 @@ dissplot(d, options = list(main = "Dissimilarity plot with seriation"))
 @
 
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
-pdf(file = "seriation-dissplot1.png")
+pdf(file = "seriation-dissplot1.pdf")
 <<dissplot1>>
 tmp <- dev.off()
-pdf(file = "seriation-dissplot2.png")
+pdf(file = "seriation-dissplot2.pdf")
 <<dissplot2>>
 tmp <- dev.off()
 @
@@ -1686,7 +1687,7 @@ pdf(file = "seriation-dissplot3.pdf")
 tmp <- dev.off()
 
 
-pdf(file = "seriation-dissplot4.png")
+pdf(file = "seriation-dissplot4.pdf")
 ## threshold
 plot(res, options = list(main = "Dissimilarity plot - threshold", 
     threshold = 1.5))
