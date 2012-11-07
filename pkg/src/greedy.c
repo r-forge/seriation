@@ -82,8 +82,9 @@ SEXP order_greedy(SEXP R_dist) {
 
     double *x, *height;
 
-    MDS l, ll, r, rr;
+    MDS l, ll, r, rr = {0.0, 0};
     
+
     SEXP R_obj;
 
     n =  1 + (int) sqrt(2 * LENGTH(R_dist));
