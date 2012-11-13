@@ -23,4 +23,7 @@ stopifnot(round(criterion(d, method="Gradient_weighted"), 6) - 3.968119 < 1e-10)
 ## -1 *(1.000000 - 2.236068 + 1.000000 - 2.000000 + 2.236068 - 2.000000 + 2.000000 - 1.732051 + 1.000000 - 1.732051 + 1.000000 - 2.000000 + 1.732051 - 2.000000 + 2.000000 - 2.236068) 
 ## = 3.968119
 
+## test stress
+stopifnot(round(criterion(d, method="Neumann"), 3) == 57.275)
+stopifnot(round(criterion(d, method="Moore"), 3) == 98.291)
 

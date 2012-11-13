@@ -1,5 +1,7 @@
 \documentclass[nojss]{jss}
 
+\usepackage[english]{babel}
+
 %\documentclass[fleqn, a4paper]{article}
 %\usepackage{a4wide}
 %\usepackage[round,longnamesfirst]{natbib}

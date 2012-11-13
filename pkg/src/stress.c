@@ -137,11 +137,14 @@ SEXP stress(SEXP R_x, SEXP R_r, SEXP R_c, SEXP R_type) {
 	
     SEXP R_obj;
 
+    /* Translation form character to int index not needed 
+     * R part makes sure it is int!
     PROTECT(R_r = arraySubscript(0, R_r, GET_DIM(R_x), getAttrib, 
 				                       (STRING_ELT), R_x));
     PROTECT(R_c = arraySubscript(1, R_c, GET_DIM(R_x), getAttrib, 
 						       (STRING_ELT), R_x));
-    
+    */
+
     nrx = INTEGER(GET_DIM(R_x))[0];		/* number of rows */
     
     nr = LENGTH(R_r);
@@ -178,7 +181,8 @@ SEXP stress(SEXP R_x, SEXP R_r, SEXP R_c, SEXP R_type) {
     Free(r);
     Free(c);
 
-    UNPROTECT(3);
+    /* UNPROTECT(3); */
+    UNPROTECT(1);
        
     return R_obj;
 }
@@ -324,11 +328,15 @@ SEXP stress_dist(SEXP R_x, SEXP R_r, SEXP R_c, SEXP R_bycol, SEXP R_type) {
     
     SEXP R_obj = R_NilValue;	/* compiler hack */
 
+
+    /* Translation form character to int index not needed 
+     * R part makes sure it is int!
     PROTECT(R_r = arraySubscript(0, R_r, GET_DIM(R_x), getAttrib, 
                                                        (STRING_ELT), R_x));
     PROTECT(R_c = arraySubscript(1, R_c, GET_DIM(R_x), getAttrib, 
                                                        (STRING_ELT), R_x));
-    
+    */
+
     nrx = INTEGER(GET_DIM(R_x))[0];		/* number of rows */
     
     nr = LENGTH(R_r);
@@ -399,7 +407,8 @@ SEXP stress_dist(SEXP R_x, SEXP R_r, SEXP R_c, SEXP R_bycol, SEXP R_type) {
     Free(r);
     Free(c);
 
-    UNPROTECT(3);
+    /* UNPROTECT(3); */
+    UNPROTECT(1);
 
     return R_obj;
 }
