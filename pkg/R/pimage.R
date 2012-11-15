@@ -71,7 +71,7 @@ function(x, order = NULL, col = NULL, main="", xlab="", ylab="",
     if(!lower.tri) x[lower.tri(x)] <- NA
 
     pimage.matrix(x, main=main, xlab=xlab, ylab=ylab, col=col, axes = axes, ...,
-	    newpage=TRUE, pop=TRUE)
+	    newpage=newpage, pop=pop)
 
 }
 
