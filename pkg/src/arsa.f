@@ -14,23 +14,18 @@ C      DOUBLE PRECISION A(400,400), SOLS(100), RMED(100),
       REAL S1, RCRIT
       INTEGER U(N), S(N), UNSEL, T(100,N), SB(N), Q
 
-C Helper variables for R-style output
-      CHARACTER(50) WRITESTRING
-      INTEGER DUMMY
-
 
       IF (IVERB == 1) THEN
 C         PRINT *, 'Anti-Robinson seriation by simulated annealing'
 C         PRINT *, 'based on arsa.f by Brusco, M., Kohn, H.F.,',
 C     1 'and Stahl, S. (2007)'
 
-      CALL INTPR('Anti-Robinson seriation by simulated annealing', 
-     1 -1, DUMMY, 0)
-      CALL INTPR('based on arsa.f by Brusco, M., Kohn, H.F.,', 
-     1 -1, DUMMY, 0)
-      CALL INTPR('and Stahl, S. (2007)', 
-     1 -1, DUMMY, 0)
-      CALL INTPR(' ', -1, DUMMY, 0)
+          CALL FPRINTF('Anti-Robinson seriation by simulated '
+     1 //'annealing', 46, 0.0, 0.0) 
+          CALL FPRINTF('based on arsa.f by Brusco, M., '
+     1 //'Kohn, H.F.,', 41, 0.0, 0.0) 
+          CALL FPRINTF('and Stahl, S. (2007)', 21, 0.0, 0.0) 
+          CALL FPRINTF('', 0, 0.0, 0.0) 
 
 C          PRINT *, ''
 C          PRINT *, 'COOL =', COOL
@@ -38,14 +33,11 @@ C          PRINT *, 'TMIN =', TMIN
 C          PRINT *, 'NREPS =', NREPS
 C          PRINT *, ''
 
-          WRITE (WRITESTRING, '(A, F5.3)') 'COOL = ', COOL
-          CALL INTPR(WRITESTRING, -1, DUMMY, 0) 
-	  WRITE (WRITESTRING, '(A, F5.3)') 'TMIN = ', TMIN
-          CALL INTPR(WRITESTRING, -1, DUMMY, 0) 
-          WRITE (WRITESTRING, '(A, I5)') 'NREPS = ', NREPS
-          CALL INTPR(WRITESTRING, -1, DUMMY, 0) 
-      
-          CALL INTPR(' ', -1, DUMMY, 0)
+          CALL FPRINTF('COOL = %5.3f', 12, DBLE(COOL), 0.0) 
+          CALL FPRINTF('TMIN = %5.3f', 12, DBLE(TMIN), 0.0) 
+          CALL FPRINTF('NREPS= %5.0f', 12, DBLE(NREPS), 0.0) 
+          CALL FPRINTF('', 0, 0.0, 0.0) 
+
       ENDIF
 
 C      INTEGER U(400), S(400), UNSEL, T(100,400), SB(400), Q, GB(400)
@@ -161,10 +153,9 @@ C        WRITE(*,21) TMIN,TMAX,NLOOP
 C  21    FORMAT(2F14.5,I6)
         IF (IVERB == 1) THEN
 C            WRITE(*,21) NLOOP
-	     WRITE(WRITESTRING, 21) NLOOP
-	     CALL INTPR(WRITESTRING, -1, DUMMY, 0)
+            CALL FPRINTF('Steps needed:  %10.0f', 21, DBLE(NLOOP), 0.0) 
         ENDIF
-  21    FORMAT('Steps needed: ',I10)
+C  21    FORMAT('Steps needed: ',I10)
 C        GO TO 889
         TEMP = TMAX
         DO I = 1,N
@@ -174,10 +165,9 @@ C
         DO 2000 IJK = 1,NLOOP
         IF (IVERB == 1) THEN
 C            WRITE(*,22) TEMP
-             WRITE(WRITESTRING, 22) TEMP
-             CALL INTPR(WRITESTRING, -1, DUMMY, 0)    
+            CALL FPRINTF('Temp = %14.5f', 13, DBLE(TEMP), 0.0) 
         ENDIF
-  22    FORMAT('Temp = ', F14.5)
+C  22    FORMAT('Temp = ', F14.5)
 
 C   R interrupt
         CALL rchkusr()

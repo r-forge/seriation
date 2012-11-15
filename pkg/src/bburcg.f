@@ -13,20 +13,17 @@ C      DOUBLE PRECISION TIMEA,TIMEB,TIMTOT,A(50,50),EPS
       REAL S1
       INTEGER X(N),Q(N),D(N,N,N),S(N),DD(N,N,N),UNSEL(N)
       
-C Helper variables for R-style output
-      CHARACTER(50) WRITESTRING
-      INTEGER DUMMY
-
 
       IF (IVERB == 1) THEN
 C          PRINT *,'Anti-Robinson Seriation by branch-and-bound'
 C          PRINT *,'based on bburcg.f by Brusco, and Stahl, S. (2005)'
 C          PRINT *,''
-          CALL INTPR('Anti-Robinson seriation by branch-and-bound',
-     1 -1, DUMMY, 0)
-	  CALL INTPR('based on bburcg.f by Brusco, and Stahl, S. (2005)',
-     1 -1, DUMMY, 0)
-	  CALL INTPR(' ', -1, DUMMY, 0)
+
+          CALL FPRINTF('Anti-Robinson seriation by branch-and-bound',
+     1 43, 0.0, 0.0)
+          CALL FPRINTF('based on bburcg.f by Brusco, '
+     1 //'and Stahl, S. (2005)', 53, 0.0, 0.0) 
+          CALL FPRINTF('', 0, 0.0, 0.0)
       ENDIF
 
       OLDM=0
@@ -184,10 +181,10 @@ C
 C      WRITE(2,3505) ZBEST
       IF (IVERB == 1) THEN
 C          WRITE(*,3505) ZBEST
-	  WRITE(WRITESTRING, 3505) ZBEST
-	  CALL INTPR(WRITESTRING, -1, DUMMY, 0)
+          CALL FPRINTF('HEURISTIC OBJ VALUE: %12.3f', 28, 
+     1 DBLE(ZBEST), 0.0)
       ENDIF
- 3505 FORMAT(' HEURISTIC OBJ VALUE ',I12)
+C 3505 FORMAT(' HEURISTIC OBJ VALUE ',I12)
       Z = ZBEST-1
       DO I = 1,N
         Q(I) = 0
@@ -207,9 +204,9 @@ C
       CHECKS=CHECKS+1
       IF (IVERB == 1 .AND. M .GT. OLDM) THEN
 C          WRITE (*,6000) M+1, CHECKS
-	  WRITE(WRITESTRING, 6000)  M+1, CHECKS
-	  CALL INTPR(WRITESTRING, -1, DUMMY, 0)
- 6000 FORMAT(' reached position ', I5, ' with ', I9, ' checks')
+          CALL FPRINTF('reached position %5.0f with %9.0f checks',
+     1 41, DBLE(M+1), DBLE(CHECKS))
+C 6000 FORMAT(' reached position ', I5, ' with ', I9, ' checks')
 
           OLDM=M 
       ENDIF
@@ -237,8 +234,7 @@ C
           Z=ZBD
           IF (IVERB == 1) THEN
 C              WRITE(*,*) 'Eval =',z
-	      WRITE(WRITESTRING, *) 'Eval =',z
-	      CALL INTPR(WRITESTRING, -1, DUMMY, 0)
+              CALL FPRINTF('Eval =  %10.3f', 14, DBLE(z), 0.0)
           ENDIF
           DO I = 1,N
             X(I)=Q(I)
@@ -389,8 +385,8 @@ C 70   FORMAT(30I3)
 C
   9    IF (IVERB == 1) THEN
 C          PRINT *, 'total number of checks: ', CHECKS
-	  WRITE(WRITESTRING, *)  'total number of checks: ', CHECKS
-	  CALL INTPR(WRITESTRING, -1, DUMMY, 0)
+          CALL FPRINTF('total number of checks: %10.0f', 
+     1 32, DBLE(CHECKS), 0.0) 
        ENDIF
       
       RETURN
