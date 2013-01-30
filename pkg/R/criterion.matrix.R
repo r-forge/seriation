@@ -42,7 +42,8 @@ criterion_ME <- function(x, order = NULL, ...) {
                        n = n,
                        m = m,
                        b = x,
-                       ener = as.single(0.0))
+                       ener = as.single(0.0),
+		       PACKAGE="seriation")
     
     0.5 * as.numeric(energy$ener)
 }

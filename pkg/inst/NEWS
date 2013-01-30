@@ -1,3 +1,7 @@
+Changes in version 1.0-10
+    * fixed bug in ARSA when the distance matrix contains all 0s
+    * added PACKAGE argument to .Fortran calls
+
 Changes in version 1.0-8 and 1.0-9
     * get_order: labels are now in the correct order (Bug report by Crt Ahlin)
     * Replaced Fortran I/O with R I/O for verb=TRUE

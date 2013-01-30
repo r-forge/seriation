@@ -158,10 +158,17 @@ seriate_dist_arsa <- function(x, control = NULL) {
     SB <- integer(N)
 
     ret <- .Fortran("arsa", N, A, param$cool, param$tmin, param$nreps, IPERM,
-        R1, R2, D, U, S, T, SB, param$verbose)
+        R1, R2, D, U, S, T, SB, param$verbose, PACKAGE="seriation")
 
     o <- ret[[6]]
     names(o) <- labels(x)[o]
+    
+    ### ARSA returns all 0's in some cases
+    if(all(o == 0)) {
+    o <- 1:N
+    warning("ARSA has returned an invalid permutation vector! Check the supplied dissimilarity matrix.")
+    }
+    
     o
 }
 
