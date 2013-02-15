@@ -1,4 +1,5 @@
 Changes in version 1.0-10
+    * pimage has now a colorkey and a range argument
     * fixed bug in ARSA when the distance matrix contains all 0s
     * added PACKAGE argument to .Fortran calls
 

@@ -22,7 +22,7 @@
 
 
 pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
-	axes=TRUE, ..., newpage=TRUE, pop=TRUE) {
+	axes=TRUE, range=NULL, colorkey=FALSE, ..., newpage=TRUE, pop=TRUE) {
     
     if(is.null(col)) {
         if(is.logical(x)) col <- c("white","black")
@@ -31,12 +31,21 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
     
     if(!is.null(order)) x <- permute(x, order)
      
+    if(is.null(range)) range <- range(x, na.rm=TRUE)
+
     if(newpage) grid.newpage()
     
-    .grid_basic_layout(main=main)
+    
+    if(colorkey) {
+	.grid_basic_layout_with_colorkey(main=main)
+	downViewport("colorkey")
+	.grid_colorkey(range, col=col, horizontal=FALSE) 
+	upViewport(1)
+
+    } else .grid_basic_layout(main=main)
     
     downViewport("plot")
-    .grid_image(x, col=col)
+    .grid_image(x, col=col, zlim=range)
     
     ## axes and labs
     downViewport("image")
@@ -56,9 +65,11 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
 
 ## small values are dark
 pimage.dist <- 
-function(x, order = NULL, col = NULL, main="", xlab="", ylab="", 
-	axes = TRUE, upper.tri = TRUE, lower.tri = TRUE, ..., 
+function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
+	axes=TRUE, range=NULL, colorkey=FALSE, 
+	upper.tri=TRUE, lower.tri=TRUE, ..., 
 	newpage=TRUE, pop=TRUE) { 
+    
     if(is.null(col)) col <- gray.colors(64)    
     
     if(!is.null(order)) x <- permute(x, order)
@@ -70,15 +81,17 @@ function(x, order = NULL, col = NULL, main="", xlab="", ylab="",
     if(!upper.tri) x[upper.tri(x)] <- NA
     if(!lower.tri) x[lower.tri(x)] <- NA
 
-    pimage.matrix(x, main=main, xlab=xlab, ylab=ylab, col=col, axes = axes, ...,
+    pimage.matrix(x, main=main, xlab=xlab, ylab=ylab, col=col, axes = axes,
+	    range=range, colorkey=colorkey, ...,
 	    newpage=newpage, pop=pop)
 
 }
 
 
 pimage <-
-function(x, order = NULL, col = NULL, main="", xlab="", ylab="",
-	        axes=TRUE, ..., newpage=TRUE, pop=TRUE)
+function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
+	        axes=TRUE, range=NULL, colorkey=FALSE,... , 
+		newpage=TRUE, pop=TRUE)
     UseMethod("pimage")
 
 pimage.default <- pimage.matrix

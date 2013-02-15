@@ -24,13 +24,13 @@
     pushViewport(viewport(layout = grid.layout(4, 3,
 			    widths = unit.c(
 				    unit(4, "lines"),                  # space
-				    unit(1, "snpc") - unit(8, "lines"),# plot
+				    unit(1, "npc") - unit(8, "lines"),# plot
 				    unit(4, "lines")                   # space
 				    ),
 			    heights = unit.c(
 				    unit(3, "lines"),                  # title
 				    unit(1, "lines"),                  # space
-				    unit(1, "snpc") - unit(8, "lines"),# plot
+				    unit(1, "npc") - unit(8, "lines"),# plot
 				    unit(4, "lines")                   # space
 				    )
 			    )))
@@ -45,8 +45,54 @@
     upViewport(2)
 }
 
+.grid_basic_layout_with_colorkey <- function(main=""){
+    pushViewport(viewport(layout = grid.layout(4, 3,
+			    widths = unit.c(
+				    unit(4, "lines"),                  # space
+				    unit(1, "npc") - unit(8, "lines"),# plot
+				    unit(4, "lines")                   # space
+				    ),
+			    heights = unit.c(
+				    unit(3, "lines"),                  # title
+				    unit(1, "lines"),                  # space
+				    unit(1, "npc") - unit(8, "lines"),# plot
+				    unit(4, "lines")                   # space
+				    )
+			    )))
+
+    pushViewport(viewport(layout.pos.col = 2, layout.pos.row = 1, 
+		    name="main"))
+    grid.text(main, gp = gpar(cex=1.3, fontface="bold"))
+    upViewport(1)
+
+    pushViewport(viewport(layout.pos.col = 2, layout.pos.row = 3))
+
+    pushViewport(viewport(layout = grid.layout(1, 3,
+			    widths = unit.c(
+				    unit(1, "npc") - unit(8, "lines"),# plot
+				    unit(1, "lines"),                  # space
+				    unit(1, "lines")                  # colorkey
+				    ),
+			    heights = unit.c(
+				    unit(1, "npc") # plot
+				    )
+			    )))
+
+    pushViewport(viewport(layout.pos.col = 1, layout.pos.row = 1, 
+		    name="plot"))
+
+    upViewport(1)
+    
+    pushViewport(viewport(layout.pos.col = 3, layout.pos.row = 1, 
+		    name="colorkey"))
+
+    upViewport(1)
+    upViewport(2)
+}
 
 
+
+### new version below uses grid.raster
 .grid_image_old <- function(x, y, z, zlim, col = gray.colors(12, 1, 0), 
     name = "image", gp = gpar()) {
 
@@ -162,6 +208,7 @@
     upViewport(1)
 }
 
+# new colorkey uses grid.raster
 .grid_colorkey_old <- function(range, col, threshold = NULL, 
     name = "colorkey", gp = gpar()) {
 
@@ -199,11 +246,17 @@
 }
 
 .grid_colorkey <- function(range, col, threshold = NULL, 
-    name = "colorkey", gp = gpar()) {
+	name = "colorkey", horizontal=TRUE, gp = gpar()) {
 
-    vp <- viewport(
-        xscale = range, yscale = c(0,1), 
-        default.units = "native", name = name)
+    if(horizontal)
+	vp <- viewport(
+	    xscale = range, yscale = c(0,1), 
+	    default.units = "native", name = name)
+    else	
+	vp <- viewport(
+	    xscale = c(0,1), yscale = range, 
+	    default.units = "native", name = name)
+
     pushViewport(vp)
 
     n <- length(col) 
@@ -215,8 +268,9 @@
     col[xs > threshold] <- NA
 
     ## col
-    grid.raster(t(col), width=1, height=1, interpolate=FALSE)
-    
+    if(horizontal) grid.raster(t(col), width=1, height=1, interpolate=FALSE)
+    else grid.raster(rev(col), width=1, height=1, interpolate=FALSE)
+
     #gp_col      <- gp
     #gp_col$col  <- 0
     #gp_col$fill <- col
@@ -230,7 +284,8 @@
     gp_border$fill  <- "transparent"
     grid.rect(gp = gp_border)
 
-    grid.xaxis(gp = gp)
+    if(horizontal) grid.xaxis(gp = gp)
+    else grid.yaxis(main = FALSE, gp = gp)
 
     upViewport(1)
 }

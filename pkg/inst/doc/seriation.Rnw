@@ -961,16 +961,16 @@ To visually inspect the effect of seriation on the distance matrix, we use
 matrix shading with \func{pimage} (the result is shown in 
 Figure~\ref{fig:pimage1}).
 
-<<label=pimage1, fig=TRUE, include=FALSE>>=
-pimage(d, main = "Random")
+<<label=pimage1, fig=TRUE, include=FALSE, width=7.5>>=
+pimage(d, main = "Random", colorkey=TRUE)
 @
-<<label=pimage1-2, fig=TRUE, include=FALSE>>=
-pimage(d, o, main = "Reordered")
+<<label=pimage1-2, fig=TRUE, include=FALSE, width=7.5>>=
+pimage(d, o, main = "Reordered", colorkey=TRUE)
 @
 \begin{figure}
     \centering
-    \includegraphics[width=6cm]{seriation-pimage1}
-    \includegraphics[width=6cm]{seriation-pimage1-2}
+    \includegraphics[width=7.5cm]{seriation-pimage1}
+    \includegraphics[width=7.5cm]{seriation-pimage1-2}
     \caption{Matrix shading of the  distance matrix for the iris data.}
     \label{fig:pimage1}
 \end{figure}
@@ -990,30 +990,35 @@ are loss and merit functions).
 
 To visually compare the original data matrix and the 
 result of seriation, we can also use \func{pimage}.
-After using \func{pimage} for the original (random) data matrix, 
+We standardize the data using scale such that the visualized value
+is the number of standard diviations an object differs from the
+variable mean.
+After using \func{pimage} for the original random data matrix, 
 we create a suitable \code{ser\_permutation} object for the original 
 two-mode data. Since the seriation above only produced an order for the rows
 of the data, we add an identity permutation vector 
 for the columns (which leaves them in original order) 
 to the permutations object using the combine
 function \func{c}. This new permutation object for $2$-mode data is used
-for displaying the reordered data. The two plots are shown in 
+for displaying the reordered scaled data. The two plots are shown in 
 Figure~\ref{fig:pimage2}.
 
-<<label=pimage2, fig=TRUE, include=FALSE>>=
-pimage(x, main = "Random")
+<<label=pimage2, fig=TRUE, include=FALSE, width=7.5>>=
+pimage(scale(x), main = "Random", colorkey=TRUE, 
+    col=diverge_hcl(100), range=c(-3.5,3.5))
 @
 
-<<label=pimage2-2, fig=TRUE, include=FALSE>>=
+<<label=pimage2-2, fig=TRUE, include=FALSE, width=7.5>>=
 o_2mode <- c(o, ser_permutation(seq_len(ncol(x))))
 #o_2mode
-pimage(x, o_2mode, main = "Reordered")
+pimage(scale(x), o_2mode, main = "Reordered", 
+    colorkey=TRUE, col=diverge_hcl(100), range=c(-3.5,3.5))
 @
 
 \begin{figure}
     \centering
-    \includegraphics[width=6cm]{seriation-pimage2}
-    \includegraphics[width=6cm]{seriation-pimage2-2}
+    \includegraphics[width=7.5cm]{seriation-pimage2}
+    \includegraphics[width=7.5cm]{seriation-pimage2-2}
     \caption{Matrix shading of the iris data matrix.}
     \label{fig:pimage2}
 \end{figure}

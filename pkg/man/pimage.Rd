@@ -8,13 +8,14 @@
   matrix and \code{dist} objects given a permutation.
 }
 \usage{
-pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "", axes = TRUE, ..., newpage=TRUE, pop=TRUE)
+pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "", 
+    axes = TRUE, range=NULL, colorkey=FALSE, ..., newpage=TRUE, pop=TRUE)
 
 \method{pimage}{matrix}(x, order=NULL, col=NULL, main="", xlab="", ylab="",
-        axes=TRUE, ..., newpage=TRUE, pop=TRUE)
+    axes=TRUE, range=NULL, colorkey=FALSE, ..., newpage=TRUE, pop=TRUE)
 \method{pimage}{dist}(x, order = NULL, col = NULL, main="", xlab="", ylab="",
-        axes = TRUE, upper.tri = TRUE, lower.tri = TRUE, ...,
-	        newpage=TRUE, pop=TRUE)
+    axes = TRUE, range=NULL, colorkey=FALSE, 
+    upper.tri = TRUE, lower.tri = TRUE, ..., newpage=TRUE, pop=TRUE)
 }
 \arguments{
   \item{x}{a matrix or an object of class \code{dist}.}
@@ -29,6 +30,9 @@ pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "", axes = TRUE,
   \item{axes}{ a logical indicating whether to add axes using the
       labels of \code{x}. The default value (\code{TRUE}) shows only axes
       if the dimension is below 10 (so it is reasonable to show labels).}
+  \item{range}{ vector with two elements giving the range (min, max) for 
+      representing the values in the matrix. }
+  \item{colorkey}{ logical; add a colorkey?}
   \item{upper.tri, lower.tri}{ a logical indicating whether to show the
       upper or lower triangle of the distance matrix. }
   \item{\dots}{further arguments passed on to \code{image} in \pkg{graphics}.}
@@ -55,8 +59,8 @@ pimage(x, seriate(x), col = c("white", "green"), main = "reordered data")
 
 ## distances
 d <- dist(x, method = "binary")
-pimage(d, lower.tri = FALSE)
+pimage(d, upper.tri = FALSE, main = "Distances", colorkey = TRUE)
 
-pimage(d, seriate(d), lower.tri = FALSE)
+pimage(d, seriate(d), upper.tri = FALSE, main = "Distances", colorkey = TRUE)
 }
 \keyword{hplot}
