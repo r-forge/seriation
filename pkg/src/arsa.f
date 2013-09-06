@@ -1,6 +1,6 @@
 C   ANTI-ROBINSON SERIATION
 C   simulated annealing algorithm - provides an initial permutation
-C   by Brusco, M., Kohn, H.F., and Stahl, S.
+C   by Brusco, M., Koehn, H.F., and Stahl, S.
 C   R Interface by Michael Hahsler
 
 C      PROGRAM SANNEAL
@@ -17,13 +17,13 @@ C      DOUBLE PRECISION A(400,400), SOLS(100), RMED(100),
 
       IF (IVERB == 1) THEN
 C         PRINT *, 'Anti-Robinson seriation by simulated annealing'
-C         PRINT *, 'based on arsa.f by Brusco, M., Kohn, H.F.,',
+C         PRINT *, 'based on arsa.f by Brusco, M., Koehn, H.F.,',
 C     1 'and Stahl, S. (2007)'
 
           CALL FPRINTF('Anti-Robinson seriation by simulated '
      1 //'annealing', 46, 0.0, 0.0) 
           CALL FPRINTF('based on arsa.f by Brusco, M., '
-     1 //'Kohn, H.F.,', 41, 0.0, 0.0) 
+     1 //'Koehn, H.F.,', 41, 0.0, 0.0) 
           CALL FPRINTF('and Stahl, S. (2007)', 21, 0.0, 0.0) 
           CALL FPRINTF('', 0, 0.0, 0.0) 
 

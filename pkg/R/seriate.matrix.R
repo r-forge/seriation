@@ -112,6 +112,13 @@ seriate_matrix_fpc <- function(x, control) {
     list(row = row, col = col)
 }
 
+## use angle of the first two singular vectors
+## Friendly and Kwan (2003) 
+#seriate_matrix_svd <- function(x, control) {
+#    s <- svd(x)
+#     list(row = order(s$u[,2], s$u[,1]), col = order(s$v[,1], s$v[,2]))
+#}
+
 ## register methods
 set_seriation_method("matrix", "BEA_TSP", seriate_matrix_bea_tsp,
     "TSP to maximize ME")
@@ -119,3 +126,5 @@ set_seriation_method("matrix", "BEA", seriate_matrix_bea,
     "Bond Energy Algorithm to maximize ME")
 set_seriation_method("matrix", "PCA", seriate_matrix_fpc,
     "First principal component")
+#set_seriation_method("matrix", "SVD", seriate_matrix_svd,
+#    "Angles formed by first two eigenvectors")

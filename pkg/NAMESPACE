@@ -2,8 +2,9 @@ useDynLib(seriation)
 
 import("TSP")
 import("grid")
-#imports("gclus") ## we use :: for gclus in seriate.hclust
-#imports("cluster") ## we use :: for silhouette in dissplot
+import("colorspace")
+importFrom("gclus", "reorder.hclust") ## we use :: for gclus in seriate.hclust
+importFrom("cluster", "silhouette") ## we use :: for silhouette in dissplot
 
 export(
     bertinplot,
