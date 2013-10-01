@@ -18,91 +18,6 @@
 
 
 
-## S3 permutation and permutations classes
-## permutations consists of instances of permutation
-
-## permutation
-
-## constructor
-ser_permutation_vector <- function(x, method = NULL) {
-    if(!is.null(method)) attr(x, "method") <- method
-    
-    if(inherits(x, "ser_permutation_vector")) return(x)
-   
-    ## make sure it's an integer vector
-    if(is.vector(x) && !is.integer(x)) x <- as.integer(x)
-
-    class(x) <- c("ser_permutation_vector", class(x))
-    .valid_permutation_vector(x)
-    x
-}
-
-## accessors
-get_order <- function(x, ...) UseMethod("get_order")
-get_order.ser_permutation_vector <- function(x, ...) NextMethod()
-get_order.hclust <- function(x, ...) {
-    o <- x$order
-    names(o) <- x$labels[o]
-    o
-}
-get_order.integer <- function(x, ...) {
-    o <- as.integer(x)
-    names(o) <- names(x)[o]
-    o
-}
-
-get_order.default <- function(x, ...) 
-    stop(gettextf("No permutation accessor implemented for class '%s'.",
-                  class(x)))
-
-
-## currently method is an attribute of permutation
-get_method <- function(x, printable = FALSE) {
-    method <- attr(x, "method")
-
-    if(printable && is.null(method)) method <- "unknown"
-    method
-}
-
-
-## print et al
-length.ser_permutation_vector <- function(x) length(get_order(x)) 
-
-print.ser_permutation_vector <-
-function(x, ...)
-{
-    writeLines(c(gettextf("object of class '%s'\n", class(x)),
-                 gettextf("contains a permutation vector of length %d",
-                          length(x)),
-                 gettextf("used seriation method: '%s'",
-                          get_method(x, printable = TRUE))))
-    invisible(x)
-}
-
-## fake summary (we dont really provide a summary, 
-## but summary produces now a reasonable result --- same as print)
-summary.ser_permutation_vector <- function(object, ...) {
-    object
-}
-summary.ser_permutation <- function(object, ...) {
-    object
-}
-
-
-## helpers
-.valid_permutation_vector <- function(x) {
-    perm <- get_order(x)
-    valid <- TRUE
-    
-    tab <- table(perm)
-    if(any(tab != 1)) valid <- FALSE
-    if(any(names(tab) != sequence(length(perm)))) valid <- FALSE
-
-   
-
-    if(!valid) stop("Invalid permutation vector!\nVector: ", 
-	    paste(perm, collapse=", "))
-}
 
 
 ######################################################
@@ -130,13 +45,14 @@ ser_permutation <- function(x,...) {
 get_order.ser_permutation <- function(x, dim = 1, ...) get_order(x[[dim]])
 
 ## print et al
-print.ser_permutation <- function(x, ...) {
-    cat(gettextf("object of class %s\n",
-                 paste(sQuote(class(x)), collapse = ", ")))
+    print.ser_permutation <- function(x, ...) {
+	writeLines(c(
+		gettextf("object of class %s",
+			paste(sQuote(class(x)), collapse = ", ")),
+		gettextf("contains permutation vectors for %d-mode data\n",
+			length(x))
+		))
 
-    cat(gettextf("contains permutation vectors for %d-mode data\n\n",
-                 length(x)))
-   
     print(data.frame("vector length" = sapply(x, length),
                      "seriation method" =
                      sapply(x, get_method, printable = TRUE),
@@ -144,6 +60,12 @@ print.ser_permutation <- function(x, ...) {
 
     invisible(x)
 }
+
+## fake summary (we dont really provide a summary, 
+## but summary produces now a reasonable result --- same as print)
+summary.ser_permutation <- function(object, ...) 
+    object
+
 
 c.ser_permutation <- function(..., recursive = FALSE) 
     do.call("ser_permutation", 

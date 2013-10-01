@@ -45,6 +45,7 @@ S3method(get_order, ser_permutation_vector)
 S3method(get_order, integer)
 S3method(get_order, hclust)
 S3method(get_order, ser_permutation)
+S3method(rev, ser_permutation_vector)
 
 S3method(length, ser_permutation_vector)
 # ser_permutations gets length from list
@@ -74,4 +75,3 @@ S3method(seriate, array)
 
 S3method(summary, ser_permutation)
 S3method(summary, ser_permutation_vector)
-

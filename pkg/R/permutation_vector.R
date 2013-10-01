@@ -1,0 +1,108 @@
+#######################################################################
+# seriation - Infrastructure for seriation
+# Copyrigth (C) 2011 Michael Hahsler, Christian Buchta and Kurt Hornik
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+
+## S3 permutation and permutations classes
+## permutations consists of instances of permutation
+
+## permutation_vector
+
+## constructor
+ser_permutation_vector <- function(x, method = NULL) {
+    if(!is.null(method)) attr(x, "method") <- method
+    
+    if(inherits(x, "ser_permutation_vector")) return(x)
+   
+    ## make sure it's an integer vector
+    if(is.vector(x) && !is.integer(x)) x <- as.integer(x)
+
+    class(x) <- c("ser_permutation_vector", class(x))
+    .valid_permutation_vector(x)
+    x
+}
+
+## accessors
+get_order <- function(x, ...) UseMethod("get_order")
+get_order.ser_permutation_vector <- function(x, ...) NextMethod()
+get_order.hclust <- function(x, ...) {
+    o <- x$order
+    names(o) <- x$labels[o]
+    o
+}
+get_order.integer <- function(x, ...) {
+    o <- as.integer(x)
+    names(o) <- names(x)[o]
+    o
+}
+
+get_order.default <- function(x, ...) 
+    stop(gettextf("No permutation accessor implemented for class '%s'.",
+                  class(x)))
+
+rev.ser_permutation_vector <- function(x) 
+    ser_permutation_vector(rev(get_order(x)), method=get_method(x))
+
+
+## currently method is an attribute of permutation
+get_method <- function(x, printable = FALSE) {
+    method <- attr(x, "method")
+
+    if(printable && is.null(method)) method <- "unknown"
+    method
+}
+
+
+## print et al
+length.ser_permutation_vector <- function(x) length(get_order(x)) 
+
+print.ser_permutation_vector <-
+function(x, ...)
+{
+    writeLines(
+	    c(gettextf("object of class %s",
+			    paste(sQuote(class(x)), collapse = ", ")),
+		    gettextf("contains a permutation vector of length %d",
+			    length(x)),
+		    gettextf("used seriation method: '%s'",
+			    get_method(x, printable = TRUE))))
+    invisible(x)
+}
+
+## fake summary (we dont really provide a summary, 
+## but summary produces now a reasonable result --- same as print)
+summary.ser_permutation_vector <- function(object, ...) {
+    object
+}
+
+
+## helpers
+.valid_permutation_vector <- function(x) {
+    perm <- get_order(x)
+    valid <- TRUE
+    
+    tab <- table(perm)
+    if(any(tab != 1)) valid <- FALSE
+    if(any(names(tab) != sequence(length(perm)))) valid <- FALSE
+
+   
+
+    if(!valid) stop("Invalid permutation vector!\nVector: ", 
+	    paste(perm, collapse=", "))
+}
+

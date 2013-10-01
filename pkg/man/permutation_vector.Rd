@@ -2,6 +2,7 @@
 \alias{ser_permutation_vector}
 \alias{permutation_vector}
 \alias{print.ser_permutation_vector}
+\alias{rev.ser_permutation_vector}
 \alias{get_method}
 \alias{length.ser_permutation_vector}
 \title{Class ser\_permutation\_vector -- 
@@ -44,5 +45,9 @@ p
 length(p)
 get_order(p)
 get_method(p)
+
+r <- rev(p)
+r
+get_order(r)
 }
 \keyword{classes}% at least one, from doc/KEYWORDS

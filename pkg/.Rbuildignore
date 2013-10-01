@@ -1,1 +1,3 @@
 Work
+^.*\.Rproj$
+^\.Rproj\.user$

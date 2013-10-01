@@ -50,5 +50,9 @@ o
 
 ## get an individual permutation
 o[[2]]
+
+## reverse the order of a permutation
+o[[2]] <- rev(o[[2]])
+get_order(o,2)
 }
 \keyword{classes}% at least one, from doc/KEYWORDS
