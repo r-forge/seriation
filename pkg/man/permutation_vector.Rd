@@ -22,6 +22,12 @@ ser_permutation_vector(x, method = NULL)
       permutation vector}
     }
 \details{
+A permutation vector is a permutation of the integer vector 
+\eqn{<1, 2, ..., n>}, were \eqn{n} is the number of objects. For example,
+the permutation vector \eqn{<3, 1, 2>} indicates that in first position is the
+object with index 3 then the object with index 1 and finally the object
+with index 2.
+
 \code{ser_permutation_vector} objects are usually packed into 
 a \code{ser_permutation} object
 which is a collection of \eqn{k} permutation vectors for \eqn{k}-mode data.
