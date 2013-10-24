@@ -19,7 +19,7 @@ Description: Infrastructure for seriation with an implementation of several
 Classification/ACM: G.1.6, G.2.1, G.4
 URL: http://R-Forge.R-project.org/projects/seriation/, http://lyle.smu.edu/IDA/seriation/
 Depends: R (>= 2.14.0), stats, cluster, TSP, gclus, grid, colorspace
-Suggests: MASS, biclust
+Suggests: MASS, biclust, testthat
 License: GPL-2
 Copyright: The code in src/bea.f is Copyright (C) 1991 F. Murtagh; 
     src/bbwrcg.f, src/arsa.f and src/bburcg.f are Copyright (C) 2005 

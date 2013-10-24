@@ -1,6 +1,7 @@
 Changes in version 1.0-12
     * ser_permutation_vectors can now be reversed with rev
     * get_order: removed the weird labels. 
+    * we use now testthat
 
 Changes in version 1.0-11
     * service release.
