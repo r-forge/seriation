@@ -98,7 +98,8 @@ summary.ser_permutation_vector <- function(object, ...) {
     
     tab <- table(perm)
     if(any(tab != 1)) valid <- FALSE
-    if(any(names(tab) != sequence(length(perm)))) valid <- FALSE
+    if(length(tab) != length(perm) 
+	|| any(names(tab) != sequence(length(perm)))) valid <- FALSE
 
    
 
