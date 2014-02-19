@@ -2,6 +2,7 @@ Changes in version 1.0-12
     * ser_permutation_vectors can now be reversed with rev
     * get_order: removed the weird labels. 
     * we use now testthat
+    * fixed bug with intra-cluster ordering using silhouette with (reported by Bettina Gruen)
 
 Changes in version 1.0-11
     * service release.

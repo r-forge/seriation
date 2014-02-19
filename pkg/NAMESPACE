@@ -2,7 +2,7 @@ useDynLib(seriation)
 
 import("TSP")
 import("grid")
-import("colorspace")
+importFrom("colorspace", "sequential_hcl")
 importFrom("gclus", "reorder.hclust") ## we use :: for gclus in seriate.hclust
 importFrom("cluster", "silhouette") ## we use :: for silhouette in dissplot
 

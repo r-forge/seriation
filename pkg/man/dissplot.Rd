@@ -4,7 +4,8 @@
 \alias{print.reordered_cluster_dissimilarity_matrix}
 \title{Dissimilarity Plot}
 \description{
-Visualizes a dissimilarity matrix using seriation and matrix shading.
+Visualizes a dissimilarity matrix using seriation and matrix shading
+using the merthod developed by Hahsler and Hornik (2011).
 Entries with lower dissimilarities (higher similarity) are plotted darker.
 Such a plot can be used to uncover hidden structure in the data.
 
@@ -130,6 +131,9 @@ This object can be used for plotting via
 object and \code{options} contains a list with plotting options (see above).
 }
 \references{
+Hahsler, M. and Hornik, K. (2011):
+ Dissimilarity plots: A visual exploration tool for partitional clustering. \emph{Journal of Computational and Graphical Statistics,} \bold{10}(2):335--354.
+
 Ling, R.F. (1973):
 A computer generated aid for cluster analysis. 
 \emph{Communications of the ACM,} 
@@ -171,6 +175,7 @@ library("cluster")
 l <- pam(d, 3, cluster.only = TRUE)
 
 ## we use a grid layout to place several plots on a page
+library("grid")
 grid.newpage()
 pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2), 
     gp = gpar(fontsize = 8)))

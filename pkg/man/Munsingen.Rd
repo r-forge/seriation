@@ -55,6 +55,7 @@ mds <- isoMDS(1/(1+sigma))$points
 horse_shoe_plot(mds, sigma)
 
 ## find order using a TSP 
+library("TSP")
 tour <- solve_TSP(insert_dummy(TSP(dist(mds)), label = "cut"),
     method = "2-opt", control = list(rep = 15))
 tour <- cut_tour(tour, "cut")

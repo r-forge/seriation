@@ -992,7 +992,7 @@ To visually compare the original data matrix and the
 result of seriation, we can also use \func{pimage}.
 We standardize the data using scale such that the visualized value
 is the number of standard diviations an object differs from the
-variable mean.
+variable mean visualized using a divergent color scale from \pkg{colorspace}.
 After using \func{pimage} for the original random data matrix, 
 we create a suitable \code{ser\_permutation} object for the original 
 two-mode data. Since the seriation above only produced an order for the rows
@@ -1004,6 +1004,7 @@ for displaying the reordered scaled data. The two plots are shown in
 Figure~\ref{fig:pimage2}.
 
 <<label=pimage2, fig=TRUE, include=FALSE, width=7.5>>=
+library("colorspace")
 pimage(scale(x), main = "Random", colorkey=TRUE, 
     col=diverge_hcl(100), range=c(-3.5,3.5))
 @
@@ -1770,7 +1771,7 @@ real number of groups is 4) and produce
 a dissimilarity plot.
 
 <<label=ruspini, fig=TRUE, include=FALSE>>=
-data("ruspini")
+data("ruspini", package="cluster")
 d <- dist(ruspini)
 l <- kmeans(d, 3)$cluster
 dissplot(d, labels = l)

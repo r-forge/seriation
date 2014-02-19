@@ -153,10 +153,11 @@ dissplot <- function(x, labels = NULL, method = NULL,
                 if(length(take) > 1) {
 
                     if(is.character(method$intra_cluster) &&
-                        pmatch(tolower(method$intra_cluster), "silhouette width", 
-                            nomatch = FALSE)) {
+                        match(tolower(method$intra_cluster), 
+                          c("sil", "silhouette", "silhouette width"), 
+                            nomatch = 0) > 0) {
                         intra_order <-  order(sil[take, "sil_width"], 
-                            decreasing = TRUE)$both
+                            decreasing = TRUE)
                         
                         method$intra_cluster <- "silhouette width"
                     }else{
