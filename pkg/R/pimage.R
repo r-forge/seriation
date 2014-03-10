@@ -74,7 +74,7 @@ function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
     
     if(!is.null(order)) x <- permute(x, order)
     
-    dim <- attr(x, "Size")
+    #dim <- attr(x, "Size")
     labels <- labels(x)
     x <- as.matrix(x)
 

@@ -47,4 +47,9 @@ function(db, kind)
     sub(pattern, "",
         grep(pattern, objects(db), value = TRUE))
 }
+
+
+## package?
+.installed <- function(pkg) !is(try(installed.packages()[pkg,],
+        silent=TRUE), "try-error")
     

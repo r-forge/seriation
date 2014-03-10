@@ -63,7 +63,6 @@ dissplot <- function(x, labels = NULL, method = NULL,
     k                   <- NULL             # number of clusters
     sil                 <- NULL
     avgSil              <- NULL
-    labels_ordered      <- NULL
     labels_unique       <- NULL
     cluster_dissimilarities <- NULL
 	## method$a means method$ aggregation (default is avg)
