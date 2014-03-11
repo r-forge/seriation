@@ -96,12 +96,10 @@ seriate_dist_mds <- function(x, control = NULL){
         return(order(sc[,1]))
     
     }else if(control$method == "isoMDS"){
-        if(!.installed("MASS")) stop("Please install package MASS for this method!")
         sc <- MASS::isoMDS(x+1e-6, trace = FALSE, k=1)
         return(order(sc$points[,1])) 
     
     }else if(control$method == "sammon") {
-        if(!.installed("MASS")) stop("Please install package MASS for this method!")
         sc <- MASS::sammon(x+1e-6, trace = FALSE, k=1)
         return(order(sc$points[,1]))
 

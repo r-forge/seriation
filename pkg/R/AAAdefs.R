@@ -17,7 +17,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-
 ## registry helpers
 .make_db_key <-
 function(kind, name)
@@ -49,7 +48,3 @@ function(db, kind)
 }
 
 
-## package?
-.installed <- function(pkg) !is(try(installed.packages()[pkg,],
-        silent=TRUE), "try-error")
-    
