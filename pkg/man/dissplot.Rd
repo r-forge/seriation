@@ -5,7 +5,7 @@
 \title{Dissimilarity Plot}
 \description{
 Visualizes a dissimilarity matrix using seriation and matrix shading
-using the merthod developed by Hahsler and Hornik (2011).
+using the method developed by Hahsler and Hornik (2011).
 Entries with lower dissimilarities (higher similarity) are plotted darker.
 Such a plot can be used to uncover hidden structure in the data.
 

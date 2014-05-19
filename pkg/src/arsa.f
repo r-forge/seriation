@@ -89,7 +89,7 @@ C      NREPS = 20
         END DO
         UNSEL = N
         DO 1 I = 1,N
-          S1 = rand(0)
+          S1 = rand()
           ISET = S1 * FLOAT(UNSEL) + 1.
           IF(ISET.GT.UNSEL) ISET = UNSEL
           T(III,I) = U(ISET)
@@ -120,10 +120,10 @@ C
         ZBEST = Z
         TMAX = 0.0D0
         DO LLL = 1,5000
-          S1 = rand(0)
+          S1 = rand()
           I1 = S1 * FLOAT(N) + 1.
           IF(I1.GT.N) I1 = N
- 199      S1 = rand(0)
+ 199      S1 = rand()
           J1 = S1 * FLOAT(N) + 1.
           IF(J1.GT.N) J1 = N
           IF(I1.EQ.J1) GO TO 199
@@ -174,12 +174,12 @@ C   R interrupt
 C
 
           DO 2001 KKK = 1,ILOOP
-            S1 = rand(0)
+            S1 = rand()
             IF(S1.LE.RULE) THEN     ! INTERCHANGE / INSERTION / OR BOTH
-            S1 = rand(0)
+            S1 = rand()
             I1 = S1 * FLOAT(N) + 1.
             IF(I1.GT.N) I1 = N
- 99         S1 = rand(0)
+ 99         S1 = rand()
             J1 = S1 * FLOAT(N) + 1.
             IF(J1.GT.N) J1 = N
             IF(I1.EQ.J1) GO TO 99
@@ -207,7 +207,7 @@ C
                 END DO
               END IF
             ELSE
-              S1 = rand(0)
+              S1 = rand()
               RCRIT = EXP(DELTA/TEMP)
               IF(S1.LE.RCRIT) THEN
                 Z = Z + DELTA
@@ -218,10 +218,10 @@ C
 
             ELSE                ! INSERTION
 
-            S1 = rand(0)
+            S1 = rand()
             I1 = S1 * FLOAT(N) + 1.      ! OBJECT POSITION IS I1
             IF(I1.GT.N) I1 = N
- 599        S1 = rand(0)
+ 599        S1 = rand()
             J1 = S1 * FLOAT(N) + 1.
             IF(J1.GT.N) J1 = N
             IF(I1.EQ.J1) GO TO 599
@@ -303,7 +303,7 @@ C
                 END DO
               END IF
             ELSE
-              S1 = rand(0)
+              S1 = rand()
               RCRIT = EXP(DELTA/TEMP)
               IF(S1.LE.RCRIT) THEN
                 Z = Z + DELTA
