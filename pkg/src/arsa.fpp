@@ -6,6 +6,11 @@ C   R Interface by Michael Hahsler
 C      PROGRAM SANNEAL
       SUBROUTINE arsa(N, A, COOL, TMIN, NREPS, IPERM, R1, R2, D, U, 
      1 S, T, SB, IVERB)
+      
+#if defined(__ICC) || defined(__INTEL_COMPILER)
+      USE IFPORT
+#endif
+      
       IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       DIMENSION A(N,N)
       DIMENSION IPERM(N)

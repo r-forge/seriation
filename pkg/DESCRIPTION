@@ -21,7 +21,7 @@ URL: http://R-Forge.R-project.org/projects/seriation/, http://lyle.smu.edu/IDA/s
 Depends: R (>= 2.14.0)
 Imports: TSP, grid, cluster, gclus, colorspace, MASS
 Suggests: biclust, testthat
-License: GPL-2
+License: GPL-3
 Copyright: The code in src/bea.f is Copyright (C) 1991 F. Murtagh; 
     src/bbwrcg.f, src/arsa.f and src/bburcg.f are Copyright (C) 2005 
     M. Brusco, H.F. Koehn, and S. Stahl. 

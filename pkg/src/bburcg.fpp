@@ -7,6 +7,11 @@ C   R Interface by Michael Hahsler
 C      PROGRAM DYNAMIC
 C      SUBROUTINE dynamic(N, A, EPS, X)
       SUBROUTINE bburcg(N, A, EPS, X, Q, D, DD, S, UNSEL, IVERB)
+
+#if defined(__ICC) || defined(__INTEL_COMPILER)
+      USE IFPORT
+#endif
+
       IMPLICIT INTEGER(A-Z)
 C      DOUBLE PRECISION TIMEA,TIMEB,TIMTOT,A(50,50),EPS
       DOUBLE PRECISION A(N,N), EPS
