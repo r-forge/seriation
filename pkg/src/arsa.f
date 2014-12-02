@@ -7,10 +7,6 @@ C      PROGRAM SANNEAL
       SUBROUTINE arsa(N, A, COOL, TMIN, NREPS, IPERM, R1, R2, D, U, 
      1 S, T, SB, IVERB)
       
-#if defined(__ICC) || defined(__INTEL_COMPILER)
-      USE IFPORT
-#endif
-      
       IMPLICIT DOUBLE PRECISION(A-H,O-Z)
       DIMENSION A(N,N)
       DIMENSION IPERM(N)
@@ -19,6 +15,8 @@ C      DOUBLE PRECISION A(400,400), SOLS(100), RMED(100),
       REAL S1, RCRIT
       INTEGER U(N), S(N), UNSEL, T(100,N), SB(N), Q
 
+C	Initialize R RNG
+      CALL getrngstate()
 
       IF (IVERB == 1) THEN
 C         PRINT *, 'Anti-Robinson seriation by simulated annealing'
@@ -94,7 +92,8 @@ C      NREPS = 20
         END DO
         UNSEL = N
         DO 1 I = 1,N
-          S1 = rand()
+C          S1 = rand()
+          CALL unifrand(S1)
           ISET = S1 * FLOAT(UNSEL) + 1.
           IF(ISET.GT.UNSEL) ISET = UNSEL
           T(III,I) = U(ISET)
@@ -125,10 +124,12 @@ C
         ZBEST = Z
         TMAX = 0.0D0
         DO LLL = 1,5000
-          S1 = rand()
+C          S1 = rand()
+          CALL unifrand(S1)
           I1 = S1 * FLOAT(N) + 1.
           IF(I1.GT.N) I1 = N
- 199      S1 = rand()
+C 199      S1 = rand()
+ 199      CALL unifrand(S1)
           J1 = S1 * FLOAT(N) + 1.
           IF(J1.GT.N) J1 = N
           IF(I1.EQ.J1) GO TO 199
@@ -179,12 +180,15 @@ C   R interrupt
 C
 
           DO 2001 KKK = 1,ILOOP
-            S1 = rand()
+C            S1 = rand()
+            CALL unifrand(S1)
             IF(S1.LE.RULE) THEN     ! INTERCHANGE / INSERTION / OR BOTH
-            S1 = rand()
+C            S1 = rand()
+            CALL unifrand(S1)
             I1 = S1 * FLOAT(N) + 1.
             IF(I1.GT.N) I1 = N
- 99         S1 = rand()
+C 99         S1 = rand()
+ 99         CALL unifrand(S1)
             J1 = S1 * FLOAT(N) + 1.
             IF(J1.GT.N) J1 = N
             IF(I1.EQ.J1) GO TO 99
@@ -212,7 +216,8 @@ C
                 END DO
               END IF
             ELSE
-              S1 = rand()
+C              S1 = rand()
+              CALL unifrand(S1)
               RCRIT = EXP(DELTA/TEMP)
               IF(S1.LE.RCRIT) THEN
                 Z = Z + DELTA
@@ -223,10 +228,12 @@ C
 
             ELSE                ! INSERTION
 
-            S1 = rand()
+C            S1 = rand()
+            CALL unifrand(S1)
             I1 = S1 * FLOAT(N) + 1.      ! OBJECT POSITION IS I1
             IF(I1.GT.N) I1 = N
- 599        S1 = rand()
+C 599        S1 = rand()
+ 599        CALL unifrand(S1)
             J1 = S1 * FLOAT(N) + 1.
             IF(J1.GT.N) J1 = N
             IF(I1.EQ.J1) GO TO 599
@@ -308,7 +315,8 @@ C
                 END DO
               END IF
             ELSE
-              S1 = rand()
+C              S1 = rand()
+              CALL unifrand(S1)
               RCRIT = EXP(DELTA/TEMP)
               IF(S1.LE.RCRIT) THEN
                 Z = Z + DELTA
@@ -378,6 +386,10 @@ C      WRITE(2,202) ZMIN, ZSUM, RMN, ZMAX,ATTR,TIMTOT
 C      WRITE(*,202) ZMIN, ZSUM, RMN, ZMAX,ATTR,TIMTOT
 C      WRITE(2,203) ZMAX,ZMAX/ASUM,ATTR,TIMTOT/20.
 C      WRITE(*,203) ZMAX,ZMAX/ASUM,ATTR,TIMTOT/20.
+
+C    Return R RNG
+      CALL Putrngstate()
+
       RETURN
    
 C   77 format(I5,f15.4)

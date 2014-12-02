@@ -1,8 +1,8 @@
 Changes in version 1.0-14 (x/xx/2014) 
     * arsa.f: removed 0 flag in rand() so it compiles under AIX 
 	(reported by Lei Zhang)
-    * arsa.f: renamed to arsa.fpp and added rule in Makevars to 
-	allow preprocessing (IFPORT is needed for Intel FORTRAN)
+    * arsa.f/bburg.f: calles now R RNG to be compartible with certain 
+	compilers (e.g., Intel FORTRAN) (reported by Rohan Shah)
 
 Changes in version 1.0-13 (3/11/2014) 
     * Fixed dependence on MASS

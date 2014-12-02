@@ -1,9 +1,0 @@
-OBJECTS=arsa.o bburcg.o bbwrcg.o bea.o criterion.o dist.o fprintf.o greedy.o optimal.o stress.o
-
-#%.o: %.f
-#	$(F77) $(ALL_FFLAGS) -c $< -o $@
-
-%.o: %.fpp
-	$(F77) $(ALL_FFLAGS) -c $< -o $@
-
-

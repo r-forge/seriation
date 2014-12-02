@@ -8,16 +8,15 @@ C      PROGRAM DYNAMIC
 C      SUBROUTINE dynamic(N, A, EPS, X)
       SUBROUTINE bburcg(N, A, EPS, X, Q, D, DD, S, UNSEL, IVERB)
 
-#if defined(__ICC) || defined(__INTEL_COMPILER)
-      USE IFPORT
-#endif
-
       IMPLICIT INTEGER(A-Z)
 C      DOUBLE PRECISION TIMEA,TIMEB,TIMTOT,A(50,50),EPS
       DOUBLE PRECISION A(N,N), EPS
       REAL S1
       INTEGER X(N),Q(N),D(N,N,N),S(N),DD(N,N,N),UNSEL(N)
-      
+
+C       Initialize R RNG
+      CALL getrngstate()
+
 
       IF (IVERB == 1) THEN
 C          PRINT *,'Anti-Robinson Seriation by branch-and-bound'
@@ -109,7 +108,8 @@ C
         END DO
         NNSEL = N
 C 3501   CALL RANDOM(S1)
- 3501   S1 = rand()
+C 3501   S1 = rand()
+ 3501   CALL unifrand(S1)
         ISEL = 1. + S1*FLOAT(NNSEL)
         IF(ISEL.GT.NNSEL) ISEL = NNSEL
         Q(NNSEL) = UNSEL(ISEL)
@@ -393,7 +393,10 @@ C          PRINT *, 'total number of checks: ', CHECKS
           CALL FPRINTF('total number of checks: %10.0f', 
      1 32, DBLE(CHECKS), 0.0) 
        ENDIF
-      
+     
+C    Return R RNG
+      CALL Putrngstate()
+
       RETURN
       END
 C
