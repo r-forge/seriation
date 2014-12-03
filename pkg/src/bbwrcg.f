@@ -18,6 +18,8 @@ C Helper variables for R-style output
       CHARACTER(50) WRITESTRING
       INTEGER DUMMY
 
+C       Initialize R RNG
+      CALL getrngstate()
 
       IF (IVERB == 1) THEN
 C          PRINT *,'Anti-Robinson Seriation by branch-and-bound'
@@ -107,7 +109,8 @@ C      DO 3500 JJJ = 1,100
         END DO
         NNSEL = N
 C 3501   CALL RANDOM(S1)
- 3501   S1 = rand()
+C 3501   S1 = rand()
+ 3501   CALL unifrand(S1)
         ISEL = 1. + S1*FLOAT(NNSEL)
         IF(ISEL.GT.NNSEL) ISEL = NNSEL
         Q(NNSEL) = UNSEL(ISEL)
@@ -387,7 +390,11 @@ C          PRINT *, 'total number of checks: ', CHECKS
           CALL FPRINTF('total number of checks: %10.0f',
      1 32, DBLE(CHECKS), 0.0)
       ENDIF
-  
+ 
+C    Return R RNG
+      CALL Putrngstate()
+
+
       RETURN
       END
 C
