@@ -80,6 +80,8 @@ seriate_dist_tsp <- function(x, control = NULL){
     ## add a dummy city for cutting
     tsp <- insert_dummy(TSP(x), n = 1, label = "cut_here")
    
+    if(is.null(control)) control <- list(method="nearest_insertion")
+  
     tour <- solve_TSP(tsp, method = control$method, 
         control = control$control)
     
@@ -107,8 +109,12 @@ seriate_dist_mds <- function(x, control = NULL){
 
 }
 
-## Hierarchical clustering related seriations
+seriate_dist_mds_metric <- function(x, control = NULL)
+  seriate_dist_mds(x, control=list(method="cmdscale"))
+seriate_dist_mds_nonmetric <- function(x, control = NULL)
+  seriate_dist_mds(x, control=list(method="isoMDS"))
 
+## Hierarchical clustering related seriations
 .hclust_helper <- function(d, control = NULL){
     if(!is.null(control$hclust)) return(control$hclust)
     
@@ -117,6 +123,12 @@ seriate_dist_mds <- function(x, control = NULL){
 }
 
 seriate_dist_hc <- function(x, control = NULL) .hclust_helper(x, control)
+seriate_dist_hc_single <- function(x, control = NULL) 
+  .hclust_helper(x, control=list(method="single"))
+seriate_dist_hc_average <- function(x, control = NULL) 
+  .hclust_helper(x, control=list(method="average"))
+seriate_dist_hc_complete <- function(x, control = NULL) 
+  .hclust_helper(x, control=list(method="complete"))
 
 ## workhorses are in seriation.hclust
 seriate_dist_hc_gw <- function(x, control = NULL) 
@@ -234,21 +246,118 @@ seriate_dist_bbwrcg <- function(x, control = NULL) {
     o
 }
 
+seriate_dist_identity <- function(x, control = NULL) {
+  o <- 1:attr(x, "Size")
+  names(o) <- labels(x)
+  o
+}
+
+## VAT: a tool for visual assessment of (cluster) tendency
+## Bezdek, J.C., Hathaway, R.J.
+## Proceedings of the 2002 International Joint Conference on 
+## Neural Networks, 2002. IJCNN '02. (Volume:3) 
+seriate_dist_VAT <- function(x, control = NULL) {
+  D <- as.matrix(x)
+  N <- nrow(D)
+  P <- rep(NA_integer_, N)
+  I <- rep(FALSE, N)
+  ### J is !I
+
+  i <- which(D == max(D, na.rm = TRUE), arr.ind = TRUE)[1,1]
+  P[1] <- i
+  I[i] <- TRUE
+  
+  for(r in 2:N) {
+    D2 <- D[I,!I, drop=FALSE]
+    j <- which(D2 == min(D2, na.rm = TRUE), arr.ind = TRUE)[1,2]
+    j <- which(!I)[j]
+    P[r] <- j
+    I[j] <- TRUE
+  }
+
+  names(P) <- labels(x)[P]
+  P
+}
+
+## spectral seriation
+## Ding, C. and Xiaofeng He (2004): Linearized cluster assignment via 
+## spectral orderingProceedings of the Twenty-first. 
+## International Conference on Machine learning (ICML ’04)
+
+seriate_dist_spectral <- function(x, control = NULL) {
+  ### calculate Laplacian
+  A <- 1/(1+as.matrix(x))
+  D <- diag(rowSums(A))
+  L <- D - A
+
+  e <- eigen(L)
+  fielder <- e$vectors[,ncol(A)-1L]
+  o <- order(fielder)
+  names(o) <- names(x)[o]
+  o
+}
+
+### FIXME!
+seriate_dist_spectral_norm <- function(x, control = NULL) {
+  ### calculate normalized Laplacian
+  A <- 1/(1+as.matrix(x))
+  D_sqrt<- diag(rowSums(A))^.5
+  #I <- diag(nrow(A))
+  #L <- I - D_sqrt %*% A %*% D_sqrt
+  L <- D_sqrt %*% A %*% D_sqrt
+  
+  z <- eigen(L)$vectors
+  q <- D_sqrt %*% z
+  #o <- order(q[,ncol(q)-1L])
+  o <- order(q[,2L])
+  #pimage(x, o)
+  names(o) <- names(x)[o]
+  o
+}
+
+set_seriation_method("dist", "Identity", seriate_dist_identity, 
+  "Identity permutation")
+
 set_seriation_method("dist", "ARSA", seriate_dist_arsa, 
     "Minimize Anti-Robinson events using simulated annealing")
 set_seriation_method("dist", "BBURCG", seriate_dist_bburcg, 
     "Minimize the unweighted row/column gradient by branch-and-bound")
 set_seriation_method("dist", "BBWRCG", seriate_dist_bbwrcg,
     "Minimize the weighted row/column gradient by branch-and-bound")
+
 set_seriation_method("dist", "TSP", seriate_dist_tsp,
     "Minimize Hamiltonian path length with a TSP solver")
+
 set_seriation_method("dist", "Chen", seriate_dist_chen,
     "Rank-two ellipse seriation")
+set_seriation_method("dist", "R2E", seriate_dist_chen,
+  "Rank-two ellipse seriation")
+
 set_seriation_method("dist", "MDS", seriate_dist_mds,
-    "MDS - first dimension")
+    "MDS")
+set_seriation_method("dist", "MDS_metric", seriate_dist_mds_metric,
+  "MDS (metric)")
+set_seriation_method("dist", "MDS_nonmetric", seriate_dist_mds_nonmetric,
+  "MDS (non-metric)")
+
 set_seriation_method("dist", "HC", seriate_dist_hc,
     "Hierarchical clustering")
+set_seriation_method("dist", "HC_single", seriate_dist_hc_single,
+  "Hierarchical clustering (single link)")
+set_seriation_method("dist", "HC_complete", seriate_dist_hc_complete,
+  "Hierarchical clustering (complete link)")
+set_seriation_method("dist", "HC_average", seriate_dist_hc_average,
+  "Hierarchical clustering (avg. link)")
+
 set_seriation_method("dist", "GW", seriate_dist_hc_gw,
     "Hierarchical clustering reordered by Gruvaeus and Wainer heuristic")
 set_seriation_method("dist", "OLO", seriate_dist_hc_optimal,
     "Hierarchical clustering with optimal leaf ordering")
+
+set_seriation_method("dist", "VAT", seriate_dist_VAT,
+  "Visual assesment of clustering tendency (VAT)")
+
+set_seriation_method("dist", "Spectral", seriate_dist_spectral,
+  "Spectral seriation")
+set_seriation_method("dist", "Spectral_norm", seriate_dist_spectral_norm,
+  "Spectral seriation (normalized)")

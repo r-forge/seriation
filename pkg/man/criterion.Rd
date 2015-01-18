@@ -10,7 +10,7 @@ merit function \eqn{M} for
   data given a permutation.
 }
 \usage{
-criterion(x, order = NULL, method = NULL)
+criterion(x, order = NULL, method = NULL, ...)
 }
 \arguments{
   \item{x}{an object of class \code{dist} or a matrix (currently no
@@ -21,6 +21,7 @@ criterion(x, order = NULL, method = NULL)
   \item{method}{a character vector with the names of the criteria to be
     employed, or \code{NULL} (default) in which case all available
     criteria are used.}
+  \item{...}{additional parameters passed on to the criterion method.}
 }
 \details{
 For a symmetric dissimilarity matrix 
@@ -31,9 +32,8 @@ certain permutation of the objects in a dissimilarity matrix
 are currently implemented:
 \describe{
 
-\item{\code{"Gradient\_raw", "Gradient\_weighted"}}{Gradient measures 
+\item{\code{"Gradient_raw", "Gradient_weighted"}}{Gradient measures 
     (Hubert et al 2001).
-    
     A symmetric dissimilarity matrix
     where the values in all rows and columns only increase when
     moving away from the main diagonal is called a perfect
@@ -42,7 +42,7 @@ are currently implemented:
     anti-Robinson form is
 
     \deqn{
-    M(D) = \sum_{i<k<j}f(d_{ij}, d_{ik}) + \sum_{i<k<j}f(d_{ij}, d_{kj})}
+    M(D) = \sum_{i=1}^p \sum_{i<k<j} f(d_{ij}, d_{ik}) + \sum_{i<k<j} f(d_{ij}, d_{kj})}
     where \eqn{f(\cdot,\cdot)} 
     is a function which defines how a violation
     or satisfaction
@@ -62,12 +62,12 @@ are currently implemented:
     its magnitude given by the absolute difference between the values.
 }
 
-\item{\code{"AR\_events", "AR\_deviations"}}{Anti-Robinson events (Chen 2002).
+\item{\code{"AR_events", "AR_deviations"}}{Anti-Robinson events (Chen 2002).
     An even simpler loss function can be created in the same way as the gradient
     measures above by concentrating on violations only. 
     \deqn{
         L(D) = 
-        \sum_{i<k<j}f(d_{ik}, d_{ij}) + \sum_{i<k<j}f(d_{kj}, d_{ij}) 
+        \sum_{i=1}^p \sum_{i<k<j} f(d_{ik}, d_{ij}) + \sum_{i<k<j} f(d_{kj}, d_{ij}) 
     }
 
     To only count the violations we use
@@ -89,14 +89,30 @@ function resulting in
     using the absolute deviations as weights.
 }
 
-\item{\code{"Path\_length"}}{Hamiltonian path length (Caraux and Pinloche 2005).
+\item{\code{"RGAR"}}{Relative generalized Anti-Robinson events (Tien et al 2008).
+    Counts Anti-Robinson events in a variable band 
+    (window specified by \code{w} defaults to the maximum of \eqn{n-1}) around the main diagonal and normalizes by
+    the maximum of possible events.
+    
+    \deqn{
+        L(D) = 1/m
+        \sum_{i=1}^p \sum_{max((i-w),1) \le i<k<j} I(d_{ik} < d_{ij}) + \sum_{i<k<j\le min((i+w, n))} I(d_{kj} > d_{ij}) 
+    } where \eqn{m = \sum_{i=1}^p \sum_{max((i-w),1)\le i<k<j} 1 + \sum_{i<k<j\le min((i+w, n))} 1}   
+  
+  \eqn{m} represents the maximal number of possible anti-Robinson events.
+  The window size \eqn{w} represents the number of neighboring objects (number of entries from the diagonal of the distance matrix) are considered. The window size is \eqn{1 \le w < n}, where smaller values result in
+  focusing on the local structure while larger values look at the global structure.
+}
+
+
+\item{\code{"Path_length"}}{Hamiltonian path length (Caraux and Pinloche 2005).
     
     The order of the objects in a dissimilarity matrix corresponds to a path
     through a graph where each node represents an object and is visited exactly
     once, i.e., a Hamilton path. The length of the path is defined as the sum
     of the edge weights, i.e., dissimilarities.
 
-    \deqn{L(D) = \sum_{i=1}^{n-1} d_{i,i+1}}
+    \deqn{L(D) = \sum_{i=1}^{p-1} d_{i,i+1}}
 
     The length of the Hamiltonian path is equal to the 
     value of the minimal span loss function (as used by Chen 2002).
@@ -110,19 +126,19 @@ function resulting in
     Measures the moment of the inertia of dissimilarity values 
     around the diagonal as
     
-    \deqn{M(D) = \sum_i \sum_j d(i,j)|i-j|^2.}
+    \deqn{M(D) = \sum_{i=1}^p \sum_{j=1}^p d(i,j)|i-j|^2}
     
     \eqn{|i-j|} is used as a measure for the distance to the diagonal and
     \eqn{d(i,j)} gives the weight. This criterion gives higher weight
     to values farther away from the diagonal. It increases with quality.}
   
 
-\item{\code{"Least\_squares"}}{Least squares criterion (Caraux and Pinloche 2005). 
+\item{\code{"Least_squares"}}{Least squares criterion (Caraux and Pinloche 2005). 
     
     The sum of squares of deviations between the
     dissimilarities and rank differences (in the matrix) between two
     elements: 
-    \deqn{L(D) = \sum_i \sum_j (d(i,j) - |i-j|)^2,}
+    \deqn{L(D) = \sum_{i=1}^p \sum_{j=1}^p (d(i,j) - |i-j|)^2,}
     where \eqn{d(i,j)} is an element of the dissimilarity matrix \eqn{D} and
     \eqn{|i-j|} is the rank difference between the objects.
    
@@ -135,7 +151,7 @@ function resulting in
     }
 
 For a general matrix
-\eqn{X = x_{ij}}, \eqn{i = 1 \ldots m} and \eqn{j = 1 \ldots n},
+\eqn{X = x_{ij}}, \eqn{i = 1 \ldots n} and \eqn{j = 1 \ldots m},
 currently the
 following loss/merit functions 
 are implemented:
@@ -164,19 +180,36 @@ are implemented:
 Stress measures the conciseness of the presentation of a matrix/table and can
 be seen as a purity function which compares the values in a matrix/table with
 its neighbors. The stress measure used here is computed as the sum of squared
-distances of each matrix entry from its adjacent entries. The following types
+distances of each matrix entry from its adjacent entries. 
+
+\deqn{
+    L(X) = 
+    \sum_{i=1}^n \sum_{j=1}^m \sigma_{ij}
+}
+
+The following types
 of neighborhoods are available:
 
   \describe{
-    \item{Moore:}{comprises the eight adjacent entries.}
-    \item{Neumann:}{comprises the four adjacent entries.}
+    \item{Moore:}{comprises the eight adjacent entries.
+    \deqn{   \sigma_{ij} = \sum_{k=\max(1,i-1)}^{\min(n,i+1)} 
+                \sum_{l=\max(1,j-1)}^{\min(m,j+1)} 
+                (x_{ij} - x_{kl})^2
+}
+    }
+    \item{Neumann:}{comprises the four adjacent entries.
+    \deqn{
+     \sigma_{ij} = 
+            \sum_{k=\max(1,i-1)}^{\min(n,i+1)} (x_{ij} - x_{kj})^2 + 
+            \sum_{l=\max(1,j-1)}^{\min(m,j+1)} (x_{ij} - x_{il})^2
+    }
+    }
   }
 
   The major difference between the Moore and the Neumann 
   neighborhood is that for
   the later the contribution of row and column permutations to stress are
   independent and thus can be optimized independently.
-
   }
 }
 }
@@ -201,14 +234,20 @@ S. Niermann (2005): Optimizing the Ordering of Tables
 With Evolutionary Computation, \emph{The American Statistician,}
 \bold{59}(1), 41--46.
 
-W.S. Robinson (1951): A method for chronologically ordering archaeological 
-deposits, 
-\emph{American Antiquity,} \bold{16}, 293--301.
-
 W.T. McCormick, P.J. Schweitzer and T.W. White (1972): 
 Problem decomposition and data reorganization by a clustering technique, 
 \emph{Operations Research,}
 \bold{20}(5), 993-1009.
+
+W.S. Robinson (1951): A method for chronologically ordering archaeological 
+deposits, 
+\emph{American Antiquity,} \bold{16}, 293--301.
+
+Yin-Jing Tien, Yun-Shien Lee, Han-Ming Wu and Chun-Houh Chen (2008): 
+Methods for simultaneously identifying coherent local clusters with
+smooth global patterns in gene expression profiles,
+\emph{BMC Bioinformatics,} \bold{9}(155), 1--16. 
+
 
 
 
@@ -216,11 +255,11 @@ Problem decomposition and data reorganization by a clustering technique,
 %\author{Christian Buchta and Michael Hahsler}
 \examples{
 ## create random data and calculate distances
-m <- matrix(runif(10),ncol=2)
+m <- matrix(runif(20),ncol=2)
 d <- dist(m)
 
 ## get an order for rows (optimal for the least squares criterion)
-o <- seriate(m, method = "PCA", margin = 1)
+o <- seriate(d, method = "MDS", margin = 1)
 o
 
 ## compare the values for all available criteria
@@ -228,5 +267,11 @@ rbind(
     unordered = criterion(d),
     ordered = criterion(d, o)
 )
+
+## compare RGAR by window size (from local to global)
+RGAR <- sapply(1:(nrow(m)-1), FUN = function (w)
+  criterion(d, o, method="RGAR", w = w))
+plot(RGAR, type = "b", ylim = c(0,1),
+  xlab = "Windows size (w)", main = "RGAR by window size")
 }
 \keyword{cluster}

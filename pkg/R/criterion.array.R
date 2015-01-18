@@ -39,7 +39,7 @@ function(x, order = NULL, method = NULL, datatype = "array")
 }
 
 criterion.array <-
-function(x, order = NULL, method = NULL)
+function(x, order = NULL, method = NULL, ...)
     .criterion_array_helper(x, order, method, "array")
 
 ## methods

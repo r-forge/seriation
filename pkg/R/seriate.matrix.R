@@ -87,7 +87,7 @@ seriate_matrix_bea <- function(x, control = NULL){
 
 ## use the projection on the first pricipal component to determine the
 ## order
-seriate_matrix_fpc <- function(x, control) {
+seriate_matrix_fpc <- function(x, control = NULL) {
     
     center  <- if(!is.null(control$center)) control$center else TRUE
     scale.  <- if(!is.null(control$scale.)) control$scale. else FALSE
@@ -112,6 +112,14 @@ seriate_matrix_fpc <- function(x, control) {
     list(row = row, col = col)
 }
 
+seriate_matrix_identity <- function(x, control) {
+  l <- lapply(dim(x), seq)
+  for(i in 1:length(dim(x))) names(l[[i]]) <- labels(x)[[i]]
+  
+  l
+}
+
+
 ## use angle of the first two singular vectors
 ## Friendly and Kwan (2003) 
 #seriate_matrix_svd <- function(x, control) {
@@ -126,5 +134,14 @@ set_seriation_method("matrix", "BEA", seriate_matrix_bea,
     "Bond Energy Algorithm to maximize ME")
 set_seriation_method("matrix", "PCA", seriate_matrix_fpc,
     "First principal component")
+
+set_seriation_method("matrix", "Identity", seriate_matrix_identity,
+  "Identity permutation")
+
 #set_seriation_method("matrix", "SVD", seriate_matrix_svd,
 #    "Angles formed by first two eigenvectors")
+
+## Array
+set_seriation_method("array", "Identity", seriate_matrix_identity,
+  "Identity permutation")
+

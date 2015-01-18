@@ -29,30 +29,41 @@ data array (k-way k-mode data).
   \item{\ldots}{ further arguments (unused).}
 }
 \details{
+Seriation methods are available via a registry. 
+See \code{\link{list_seriation_methods}} for help.
 
+Many seriation methods (heuristically) optimize (minimize or maximize) 
+an objective function.
+The value of the function for a given seriation can be calculated using
+\code{\link{criterion}}. In this manual page we only state the measure
+which is optimized (using \bold{bold font}). 
+A definition of the measures can be found in the
+\code{\link{criterion}} manual page.
+  
 Two-way two-mode data has to be provided as a dist object (not as a symmetric
 matrix). Similarities have to be transformed in a suitable way into
 dissimilarities. Currently the following methods are implemented for dist:
    
 \describe{    
-\item{\code{"ARSA"}}{Anti-Robinson seriation by simulated annealing.
-    
-    A heuristic developed by Brusco et al (2007).
+\item{\code{"ARSA"}}{Anti-Robinson seriation by simulated annealing to minimize
+  the \bold{unweighted gradient measure} (Brusco et al 2007).
     } 
-\item{\code{"BBURCG"}}{Anti-Robinson seriation (unweighted)
-    
-    A branch-and-bound implementation by Brusco and Stahl (2005).
+\item{\code{"BBURCG"}}{Anti-Robinson seriation by branch-and-bound to minimize
+  the \bold{unweighted gradient measure} (Brusco and Stahl 2005).
+  This is only feasible for a 
+  relatively small number of objects.
     } 
-\item{\code{"BBWRCG"}}{Anti-Robinson seriation (weighted)
-
-    A branch-and-bound implementation by Brusco and Stahl (2005).
+\item{\code{"BBWRCG"}}{Anti-Robinson seriation by branch-and-bound to minimize
+  the \bold{weighted gradient measure} (Brusco and Stahl 2005). This is only feasible for a 
+  relatively small number of objects.
     }
 
-\item{\code{"TSP"}}{Traveling salesperson problem solver. 
-      
-      A solver in \pkg{TSP} can be used (see \code{solve_TSP} in
-      package \pkg{TSP}). The solver method can be passed on via the
-      \code{control} argument, e.g. \code{control = list(method = "insertion")}.
+\item{\code{"TSP"}}{Traveling salesperson problem solver to minimize
+      the \bold{Hamiltonian path length}.
+      The solvers in \pkg{TSP} are used (see \code{solve_TSP}). 
+      The solver method can be passed on via the
+      \code{control} argument, e.g. \code{control = list(method = "2-opt")}.
+      Default is the nearest insertion heuristic.
 
       Since a tour returned by a TSP solver is a connected circle and we are
       looking for a path representing a linear order, we need to find the best
@@ -61,8 +72,8 @@ dissimilarities. Currently the following methods are implemented for dist:
       of this dummy city in an optimal tour with minimal length is the best
       cutting point (it lies between the most distant cities).} 
 
-\item{\code{"Chen"}}{Rank-two ellipse seriation (Chen 2002).
-      
+\item{\code{"R2E"} or \code{"Chen"}}{Rank-two ellipse seriation (Chen 2002).
+
         This method starts with generating a sequence of correlation matrices
       \eqn{R^1, R^2, \ldots}. \eqn{R^1} is the correlation matrix
       of the original distance matrix \eqn{D} (supplied to the function as 
@@ -83,8 +94,8 @@ dissimilarities. Currently the following methods are implemented for dist:
       In this implementation the top most cutting point is used.
       }  
 
-\item{\code{"MDS"}}{Multidimensional scaling (MDS).
-    
+\item{\code{"MDS"}, \code{"MDS_metric"}, \code{"MDS_nonmetric"}}{Multidimensional scaling (MDS).
+
     Use multidimensional scaling techniques to find an linear order. Note 
     that unidimensional scaling would be more appropriate but is very hard to 
     solve. Generally, MDS provides good results.
@@ -95,8 +106,8 @@ dissimilarities. Currently the following methods are implemented for dist:
     The method can be specified as the element \code{method} 
     (\code{"cmdscale"}, \code{"isoMDS"} or \code{"sammon"}) in \code{control}.
     }  
-\item{\code{"HC"}}{Hierarchical clustering.
-    
+\item{\code{"HC"}, \code{"HC_single"}, \code{"HC_complete"}, \code{HC_average}}{Hierarchical clustering.
+
     Using the order of the leaf nodes in a dendrogram obtained by hierarchical
     clustering can be used as a very simple seriation technique.
     This method applies hierarchical clustering (\code{hclust}) to \code{x}. 
@@ -104,12 +115,11 @@ dissimilarities. Currently the following methods are implemented for dist:
     the \code{control} list. If omitted, the default \code{"complete"} is
     used.
     }
+    
 
 \item{\code{"GW"}, \code{"OLO"}}{Hierarchical 
-    clustering with optional reordering. 
-
-    Uses also the order of the leaf nodes in a dendrogram (see method 
-    \code{"HC"}), however, the leaf notes are reordered.
+    clustering with additional leaf-node reordering to minimize
+    \bold{Hamiltonian path length}.
 
     A dendrogram (binary tree) has \eqn{2^{n-1}} internal nodes (subtrees) and
     the same number of leaf orderings. That is, at each internal node the left
@@ -133,15 +143,28 @@ Note that non-finite distance values are not allowed.
 \code{"complete"}) can be specified. Alternatively, a \code{hclust} object can
 be supplied using an element named \code{"hclust"}.
     }
+
+  \item{\code{"VAT"}}{Visual Assessment of (Clustering) Tendency (Bezdek and Hathaway (2002)).
+
+    Create an order based on Prim's algorithm for finding a minimum spanning
+    tree (MST) in a weighted connected graph representing the distance matrix.
+    The order is given by the order in which the nodes (objects) are added
+    to the MST.
     }
+
+\item{\code{"Spectral"}, \code{"Spectral_norm"}}{ Spectral seriation (Deng and He 2004). Spectral seriation uses a relaxation to maximize the \bold{Inertia criterion} by using the order of the Fielder vector of 
+the similarity matrix's (normalized) Laplacian.  
+  }
+
+\item{\code{"Identity"}}{ Produces an identity permutation. }
+}
 
 Two-way two mode data are general positive matrices.
 Currently the following methods are implemented for matrix:
 \describe{
-\item{\code{"BEA"}}{Bond Energy Algorithm (BEA; McCormick 1972).
-     
-     The algorithm tries to maximize the measure of effectiveness
-     (see \code{criterion}) of a non-negative matrix. Due to the definition
+\item{\code{"BEA"}}{Bond Energy Algorithm (BEA; McCormick 1972). 
+     The algorithm tries to maximize the \bold{Measure of Effectiveness.}
+     of a non-negative matrix. Due to the definition
      of this measure, the tasks of ordering rows and columns is separable
      and can  be solved independently.
 
@@ -163,11 +186,9 @@ Currently the following methods are implemented for matrix:
      specified. The results of the best run will be returned.
      }
 
-\item{\code{"BEA_TSP"}}{Use a TSP to optimize the measure of effectiveness 
+\item{\code{"BEA_TSP"}}{Use a TSP to optimize the \bold{Measure of Effectiveness} 
     (Lenstra 1974). 
       
-    Use a TSP solver to optimize ME. 
-     
     In \code{control} as element \code{"method"} a TSP solver method can be
     specified (see package \pkg{TSP}).
     }
@@ -180,6 +201,8 @@ Currently the following methods are implemented for matrix:
       Note that for a distance matrix calculated from \code{x} with Euclidean
       distance, this methods minimizes the least square criterion.
       }  
+
+\item{\code{"Identity"}}{ Produces an identity permutation. }
 }
 
 For array no built-in methods are currently available.
@@ -189,13 +212,16 @@ For array no built-in methods are currently available.
 Returns an object of class \code{ser_permutation}.
 }
 \references{ 
-P. Arabie and L.J. Hubert (1990): The bond energy algorithm revisited, 
+Arabie, P. and L.J. Hubert (1990): The bond energy algorithm revisited, 
 \emph{IEEE Transactions on Systems, Man, and Cybernetics,}
 \bold{20}(1), 268--274.
 
-Z. Bar-Joseph, E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001): Fast
+Bar-Joseph, Z., E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001): Fast
 Optimal Leaf Ordering for Hierarchical Clustering.
 \emph{Bioinformatics,} \bold{17}(1), 22--29.
+
+Bezdek, J.C. and Hathaway, R.J. (2002): VAT: a tool for visual assessment of (cluster) tendency. \emph{Proceedings of the 2002 International Joint 
+Conference on Neural Networks (IJCNN '02)}, Volume: 3, 2225--2230. 
 
 Brusco, M., Koehn, H.F., and Stahl, S. (2007): Heuristic Implementation of
 Dynamic Programming for Matrix Permutation Problems in Combinatorial
@@ -209,7 +235,9 @@ Chen, C. H. (2002):  Generalized Association Plots: Information
 Visualization via Iteratively Generated Correlation Matrices.
 \emph{Statistica Sinica,} \bold{12}(1), 7--29.
 
-Sharlee Climer, Weixiong Zhang (2006): Rearrangement Clustering: Pitfalls,
+Ding, C. and Xiaofeng He (2004): Linearized cluster assignment via spectral ordering. \emph{Proceedings of the Twenty-first International Conference on Machine learning (ICML '04)}.
+
+Climer, S. and Xiongnu Zhang (2006): Rearrangement Clustering: Pitfalls,
 Remedies, and Applications,
 \emph{Journal of Machine Learning Research,} \bold{7}(Jun),
 919--943.
@@ -224,21 +252,26 @@ Data.
 \emph{Journal of Computational and Graphical Statistics,}
 \bold{13}(4), 788--806.
 
-J.K. Lenstra (1974): Clustering a Data Array and the Traveling-Salesman 
+Lenstra, J.K (1974): Clustering a Data Array and the Traveling-Salesman 
 Problem, \emph{Operations Research,} \bold{22}(2) 413--414. 
 
-W.T. McCormick, P.J. Schweitzer and T.W. White (1972): Problem decomposition
+McCormick, W.T., P.J. Schweitzer and T.W. White (1972): Problem decomposition
 and data reorganization by a clustering technique, 
 \emph{Operations Research,} 
 \bold{20}(5), 993--1009.
 
 }
 \seealso{
+\code{\link{list_seriation_methods}},
 \code{\link{criterion}},
 \code{\link[TSP]{solve_TSP}} in \pkg{TSP},
 \code{\link{hclust}} in \pkg{stats}
 }
 \examples{
+## show available seriation methods (for dist and matrix)
+show_seriation_methods("dist")
+show_seriation_methods("matrix")
+
 ##seriate dist
 data("iris")
 x <- as.matrix(iris[-5])
@@ -264,7 +297,6 @@ rbind(
         reordered = criterion(d, order)
      )
 
-
 ## seriate matrix
 data("iris")
 x <- as.matrix(iris[-5])
@@ -273,9 +305,6 @@ x <- as.matrix(iris[-5])
 x <- scale(x, center = FALSE)
 
 ## try some methods
-def.par <- par(no.readonly = TRUE)
-layout(matrix(1:4, ncol = 2, byrow = TRUE), respect=TRUE)
-
 pimage(x, main = "original data")
 criterion(x)
 
@@ -283,7 +312,7 @@ order <- seriate(x, method = "BEA_TSP")
 pimage(x, order, main = "TSP to optimize ME")
 criterion(x, order)
 
-order <- seriate(x, method="PCA")
+order <- seriate(x, method = "PCA")
 pimage(x, order, main = "first principal component")
 criterion(x, order)
 
@@ -294,8 +323,6 @@ order <- c(
 )
 pimage(x, order, main = "2 TSPs")
 criterion(x, order)
-
-par(def.par)
 }
 \keyword{optimize}
 \keyword{cluster}

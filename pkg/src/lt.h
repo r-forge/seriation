@@ -13,5 +13,11 @@
         : n*((j)-1) - (j)*((j)-1)/2 + (i)-(j) -1
 #endif
 
+/*
+ * MIN/MAX
+ */
+
+#define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
+#define MAX(X,Y) ((X) > (Y) ? (X) : (Y))
 
 

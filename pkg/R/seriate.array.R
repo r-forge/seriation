@@ -49,7 +49,8 @@ function(x, method = NULL, control = NULL,
 
 
 ## methods
-## no methods available right now 
+## Identity is defined in seriate.matrix.R
+## no other methods available right now 
 
 ## register methods
 ## no methods available right now 

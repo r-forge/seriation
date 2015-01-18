@@ -19,8 +19,7 @@
 
 
 ## Criterion generic.
-criterion <-
-function(x, order = NULL, method = NULL)
+criterion <- function(x, order = NULL, method = NULL, ...)
     UseMethod("criterion")
 
 ## Criterion method registry.
@@ -38,9 +37,9 @@ set_criterion_method <-
 function(kind, name, definition, description = NULL, merit = NA, ...)
 {
     ## check formals
-    if(!identical(names(formals(definition)),
-                  c("x", "order", "...")))
-        stop("Criterion methods must have formals 'x', 'order', and '...'.")
+    ##if(!identical(names(formals(definition)),
+    ##              c("x", "order", "...")))
+    ##    stop("Criterion methods must have formals 'x', 'order', and '...'.")
     
     put_method_into_db(criterion_methods_db, kind, name,
                        structure(c(list(name = name,

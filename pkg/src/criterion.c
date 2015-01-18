@@ -23,11 +23,9 @@
 
 #include "lt.h"
 
-
 /*
  * path length can be found in optimal.c
  */
-
 
 /* 
  * least-squares criterion
@@ -61,7 +59,6 @@ SEXP least_squares_criterion(SEXP R_dist, SEXP R_order) {
  * inertia criterion
  */
 
-
 SEXP inertia_criterion(SEXP R_dist, SEXP R_order) {
 
     double sum = 0.0;
@@ -86,6 +83,9 @@ SEXP inertia_criterion(SEXP R_dist, SEXP R_order) {
     return(R_out);
 }
 
+/*
+ * Anti-Robinson Events
+ */
 
 SEXP ar(SEXP R_dist, SEXP R_order, SEXP R_which) {
 
@@ -154,6 +154,65 @@ SEXP ar(SEXP R_dist, SEXP R_order, SEXP R_which) {
     return(R_out);
 }
 
+/*
+ * Relative Generalized Anti-Robinson Events
+ */
+
+SEXP rgar(SEXP R_dist, SEXP R_order, SEXP R_w) {
+
+    int p = INTEGER(getAttrib(R_dist, install("Size")))[0];
+    int *o = INTEGER(R_order);
+    /* w ... window size [p,1] */
+    int w = INTEGER(R_w)[0];
+    
+    double d_ij = 0.0;
+    double d_ik = 0.0;
+    int sum = 0;
+    int count = 0;
+    
+    SEXP R_out;
+
+    /* sum_i=1^p sum_(i-w)<=j<k<i I(d_ij < d_ik) */
+    for (int i = 3; i <= p; i++) {
+        for(int k = MAX(i-w+1, 2); k < i; k++) {
+            d_ik = REAL(R_dist)[LT_POS(p, o[i-1], o[k-1])];
+            
+            for(int j = MAX(i-w, 1); j < k; j++) {
+                d_ij = REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])];
+                
+		count++;
+                if(d_ij < d_ik) {
+		    sum++;
+                }    
+            }
+        }
+    }
+                    
+    /* sum_i=1^p sum_i<j<k<=(i+w) I(d_ij > d_ik) * weight */
+    for (int i = 1; i < (p-1); i++) {
+        for(int j = i+1; j < MIN(i+w-1, p); j++) {
+            d_ij = REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])];
+            for(int k = j+1; k <= MIN(i+w, p); k++) {
+                d_ik = REAL(R_dist)[LT_POS(p, o[i-1], o[k-1])];
+
+		count++;
+                if(d_ij > d_ik) {
+                    sum++;
+                }    
+            }
+        }
+    }
+
+    PROTECT(R_out = allocVector(REALSXP, 1));
+    REAL(R_out)[0] = (double) sum / (double) count; 
+    UNPROTECT(1);
+
+    return(R_out);
+}
+
+/*
+ * Gradient Measure
+ */
 
 SEXP gradient(SEXP R_dist, SEXP R_order, SEXP R_which) {
 

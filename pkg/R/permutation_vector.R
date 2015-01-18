@@ -52,7 +52,7 @@ get_order.integer <- function(x, ...) {
 }
 
 get_order.default <- function(x, ...) 
-    stop(gettextf("No permutation accessor implemented for class '%s'.",
+    stop(gettextf("No permutation accessor implemented for class '%s'. ",
                   class(x)))
 
 rev.ser_permutation_vector <- function(x) 
