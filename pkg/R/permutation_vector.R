@@ -45,6 +45,7 @@ get_order.hclust <- function(x, ...) {
     #names(o) <- x$labels[o]
     o
 }
+
 get_order.integer <- function(x, ...) {
     o <- as.integer(x)
     #names(o) <- names(x)[o]
@@ -54,6 +55,9 @@ get_order.integer <- function(x, ...) {
 get_order.default <- function(x, ...) 
     stop(gettextf("No permutation accessor implemented for class '%s'. ",
                   class(x)))
+
+
+get_rank<- function(x, ...) order(get_order(x, ...))
 
 rev.ser_permutation_vector <- function(x) 
     ser_permutation_vector(rev(get_order(x)), method=get_method(x))

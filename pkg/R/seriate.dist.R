@@ -80,7 +80,8 @@ seriate_dist_tsp <- function(x, control = NULL){
     ## add a dummy city for cutting
     tsp <- insert_dummy(TSP(x), n = 1, label = "cut_here")
    
-    if(is.null(control)) control <- list(method="nearest_insertion")
+#    if(is.null(control)) control <- list(method="nearest_insertion")
+    if(is.null(control)) control <- list(method="farthest_insertion")
   
     tour <- solve_TSP(tsp, method = control$method, 
         control = control$control)

@@ -41,7 +41,9 @@ checks if the permutation vector is valid
 %\references{}
 %\author{}
 \seealso{
-\code{\link{ser_permutation}}
+\code{\link{ser_permutation}},
+\code{\link{get_order}},
+\code{\link{get_rank}}
 }
 \examples{
 p <- ser_permutation_vector(1:10, "identity")

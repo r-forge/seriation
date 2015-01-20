@@ -29,7 +29,9 @@ ser_permutation(x, \ldots)
 %\references{}
 %\author{}
 \seealso{
-\code{\link{ser_permutation_vector}}
+\code{\link{ser_permutation_vector}},
+\code{\link{get_order}},
+\code{\link{get_rank}}
 }
 \examples{
 o <- ser_permutation(1:5, 10:1)
