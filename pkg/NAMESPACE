@@ -34,7 +34,8 @@ export(
     get_seriation_method,
     list_seriation_methods,
     show_seriation_methods,
-    seriation_dist
+    seriation_dist,
+    seriation_align
     )
 
 S3method("c", "ser_permutation")

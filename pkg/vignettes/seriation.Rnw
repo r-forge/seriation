@@ -784,16 +784,17 @@ Branch-and-bound & \code{"BBWRCG"} & Gradient measure (weighted)& \code{dist} \\
 TSP solver & \code{"TSP"} & Hamiltonian path length& \code{dist} \\
 Optimal leaf ordering  & \code{"OLO"} & 
     Hamiltonian path length (restricted)& \code{dist} \\
+Gruvaeus and Wainer & \code{"GW"} & Hamiltonian path length (restricted) & \code{dist} \\
 Bond Energy Algorithm & \code{"BEA"} &
     Measure of effectiveness & \code{matrix} \\
 TSP to optimize ME & \code{"BEA\_TSP"} &
     Measure of effectiveness& \code{matrix} \\
-Hierarchical clustering & \code{"HC"} & Other& \code{dist} \\
-Gruvaeus and Wainer & \code{"GW"} & Other& \code{dist} \\
-Rank-two ellipse seriation  & \code{"Chen"} & Other& \code{dist} \\
-MDS -- first dimension & \code{"MDS"} & Other& \code{dist} \\
+MDS -- first dimension & \code{"MDS"} & Least square crit.& \code{dist} \\
 First principal component & \code{"PCA"} & 
-    Other& \code{matrix} \\
+    Least square crit.& \code{matrix} \\
+Spectral seriation & \code{"Spectral"} & Inertia criterion & \code{dist} \\
+Hierarchical clustering & \code{"HC"} & Other& \code{dist} \\
+Rank-two ellipse seriation  & \code{"R2E"} & Other& \code{dist} \\
         \hline
     \end{tabular}
     \caption{Currently implemented methods for \func{seriation}.}
@@ -814,7 +815,9 @@ by~\cite{seriation:Bar-Joseph:2001}. The BEA code was kindly provided by
 Fionn Murtagh.  For the Gruvaeus and Wainer algorithm, the
 implementation in package \pkg{gclus}~\citep{seriation:Hurley:2007} is
 used. For the rank-two ellipse seriation we implemented the algorithm
-by~\cite{seriation:Chen:2002}.  Note that some methods implemented
+by~\cite{seriation:Chen:2002}. 
+Spectral seriation is described by~\cite{seriation:Ding:2004}.
+Note that some methods implemented
 (e.g., the rank-two ellipse seriation) do not fall within the
 combinatorial optimization framework of this paper and thus are not
 dealt with here in detail.  They are included in the package since they
@@ -1011,7 +1014,6 @@ pimage(scale(x), main = "Random", colorkey=TRUE,
 
 <<label=pimage2-2, fig=TRUE, include=FALSE, width=7.5>>=
 o_2mode <- c(o, ser_permutation(seq_len(ncol(x))))
-#o_2mode
 pimage(scale(x), o_2mode, main = "Reordered", 
     colorkey=TRUE, col=diverge_hcl(100), range=c(-3.5,3.5))
 @
@@ -1032,8 +1034,8 @@ the comparison several seriation methods for dissimilarity matrices described
 in Section~\ref{sec:methods}. 
 
 <<>>=
-methods <- c("TSP","Chen", "ARSA", "HC", "GW", "OLO")
-o <- sapply(methods, FUN = function(m) seriate(d, m), simplify = FALSE)
+methods <- c("TSP","R2E", "ARSA", "HC", "GW", "OLO")
+o <- sapply(methods, FUN = function(m) seriate(d, m))
 @
 
 <<echo=FALSE>>=
@@ -1065,24 +1067,27 @@ timing <- sapply(methods, FUN = function(m) system.time(seriate(d, m)),
      \end{tabular}
 %%% fix me: for the vignette we need something else
 \caption{Execution time of seriation of the iris data set for different
-    methods (1.5~GHz ix86 system running Ubuntu Linux).}
+    methods.}
     \label{tab:timings}
 \end{table}
 
 Table~\ref{tab:timings} contains the execution times for running
 seriation with the different methods. Except for the simulated annealing
 method (ARSA) the seriation only takes a fraction of a second.
-The resulting orderings are displayed using matrix shading
+The direction of the resulting orderings is first normalized (aligned) 
+and then the orderings are displayed using matrix shading 
 (see Figure~\ref{fig:pimage3}). 
 
 
 <<label=pimage3-pre, eval=FALSE>>=
-tmp <- lapply(o, FUN = function(x) pimage(d, x, main = get_method(x[[1]])))
+o <- seriation_align(o)
+for(s in o) pimage(d, s, main = get_method(s))
 @
 <<label=pimage3, echo=FALSE, fig=TRUE, include=FALSE>>=
+o <- seriation_align(o)
 for(i in 1:length(o)) {
     pdf(file=paste("seriation-pimage_comp_", i , ".pdf", sep=""))
-    pimage(d, o[[i]], main = get_method(o[[i]][[1]]))
+    pimage(d, o[[i]], main = get_method(o[[i]]))
     dev.off()
 }
 
@@ -1129,18 +1134,18 @@ to order the objects and compare it to the dendrogram rearranged
 using the Gruvaeus Wainer heuristic.
 
 <<label=pimage3_dend, eval=FALSE>>=
-plot(o[["HC"]][[1]], labels = FALSE, main = "Dendrogram HC")
-plot(o[["GW"]][[1]], labels = FALSE, main = "Dendrogram GW")
+plot(o[["HC"]], labels = FALSE, main = "Dendrogram HC")
+plot(o[["GW"]], labels = FALSE, main = "Dendrogram GW")
 @
 <<echo=FALSE, fig=FALSE, include=FALSE, width=9>>=
 def.par <- par(no.readonly = TRUE)
 pdf(file="seriation-pimage3_dendrogram.pdf", width=9, height=4) 
 layout(t(1:2))
-plot(o[["HC"]][[1]], labels = FALSE, main = "Dendrogram HC")
+plot(o[["HC"]], labels = FALSE, main = "Dendrogram HC")
 symbols(74.7,.5, rect = matrix(c(4, 3), ncol=2), add= TRUE, 
     inches = FALSE, lwd =2)
 
-plot(o[["GW"]][[1]], labels = FALSE, main = "Dendrogram GW")
+plot(o[["GW"]], labels = FALSE, main = "Dendrogram GW")
 symbols(98.7,.5, rect = matrix(c(4, 3), ncol=2), add= TRUE, 
     inches = FALSE, lwd =2)
 par(def.par)

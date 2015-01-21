@@ -52,15 +52,20 @@ get_order.integer <- function(x, ...) {
     o
 }
 
+
+
 get_order.default <- function(x, ...) 
     stop(gettextf("No permutation accessor implemented for class '%s'. ",
                   class(x)))
 
 
-get_rank<- function(x, ...) order(get_order(x, ...))
+get_rank <- function(x, ...) order(get_order(x, ...))
 
-rev.ser_permutation_vector <- function(x) 
-    ser_permutation_vector(rev(get_order(x)), method=get_method(x))
+
+rev.ser_permutation_vector <- function(x) {
+    if(is(x, "hclust")) { x$order <- rev(x$order); x } 
+    else ser_permutation_vector(rev(get_order(x)), method=get_method(x))
+}
 
 
 ## currently method is an attribute of permutation
