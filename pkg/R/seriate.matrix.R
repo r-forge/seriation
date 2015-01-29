@@ -115,10 +115,14 @@ seriate_matrix_fpc <- function(x, control = NULL) {
 seriate_matrix_identity <- function(x, control) {
   l <- lapply(dim(x), seq)
   for(i in 1:length(dim(x))) names(l[[i]]) <- labels(x)[[i]]
-  
   l
 }
 
+seriate_matrix_random <- function(x, control) {
+  l <- lapply(dim(x), sample, seq)
+  for(i in 1:length(dim(x))) names(l[[i]]) <- labels(x)[[i]][l[[i]]]
+  l
+}
 
 ## use angle of the first two singular vectors
 ## Friendly and Kwan (2003) 
@@ -137,6 +141,8 @@ set_seriation_method("matrix", "PCA", seriate_matrix_fpc,
 
 set_seriation_method("matrix", "Identity", seriate_matrix_identity,
   "Identity permutation")
+set_seriation_method("matrix", "Random", seriate_matrix_random,
+  "Random permutation")
 
 #set_seriation_method("matrix", "SVD", seriate_matrix_svd,
 #    "Angles formed by first two eigenvectors")
@@ -144,4 +150,6 @@ set_seriation_method("matrix", "Identity", seriate_matrix_identity,
 ## Array
 set_seriation_method("array", "Identity", seriate_matrix_identity,
   "Identity permutation")
+set_seriation_method("array", "Random", seriate_matrix_random,
+  "Random permutation")
 

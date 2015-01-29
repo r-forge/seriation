@@ -23,9 +23,9 @@
 seriate.dist <-
 function(x, method = NULL, control = NULL, ...)
 {
-    
-    if(!all(x>=0)) stop("Non-negative distances not supported!")
-    
+
+    if(!all(x>=0)) stop("Negative distances not supported!")
+
     if(is.null(method))
         method <- "ARSA"
     else if(!is.character(method) || (length(method) != 1L))
@@ -34,20 +34,20 @@ function(x, method = NULL, control = NULL, ...)
     method <- get_seriation_method("dist", method)
 
     order <- method$definition(x, control)
-    
+
     ser_permutation(ser_permutation_vector(order, method = method$name))
 }
 
 ## uses a sequence of correlation matrices and finds  the first matrix
-## with rank 2. The elements are projected into the plane spanned by the 
+## with rank 2. The elements are projected into the plane spanned by the
 ## first two eigenvectors. All points are lying on a ellipse. The order
-## of the elements on the ellipse is returned (see Chen 2002). 
+## of the elements on the ellipse is returned (see Chen 2002).
 seriate_dist_chen <- function(x, control = NULL){
     x <- as.matrix(x)
-    
+
     rank <- qr(x)$rank
 
-    ## find the first correlation matrix of rank 2  
+    ## find the first correlation matrix of rank 2
     n <- 0
     while(rank > 2){
         x <- cor(x)
@@ -60,7 +60,7 @@ seriate_dist_chen <- function(x, control = NULL){
 
     ## extract the order
     ## chen says that he uses the one of the two possible cuts
-    ## that separate the points at rank 1. Since the points just 
+    ## that separate the points at rank 1. Since the points just
     ## separate further towards right and left, cutting on the vertical
     ## axis of the ellipse yields the same result.
 
@@ -68,24 +68,24 @@ seriate_dist_chen <- function(x, control = NULL){
     right <- right[order(e[right,2], decreasing = TRUE)]
     left <- which(e[,1] < 0)
     left <- left[order(e[left,2])]
-    
+
     o <- c(right,left)
     names(o) <- labels(x)[o]
     o
 }
 
 
-## Bridge to package tsp 
+## Bridge to package tsp
 seriate_dist_tsp <- function(x, control = NULL){
     ## add a dummy city for cutting
     tsp <- insert_dummy(TSP(x), n = 1, label = "cut_here")
-   
+
 #    if(is.null(control)) control <- list(method="nearest_insertion")
     if(is.null(control)) control <- list(method="farthest_insertion")
-  
-    tour <- solve_TSP(tsp, method = control$method, 
+
+    tour <- solve_TSP(tsp, method = control$method,
         control = control$control)
-    
+
     o <- cut_tour(tour, cut = "cut_here", exclude_cut = TRUE)
     names(o) <- labels(x)[o]
     o
@@ -97,11 +97,11 @@ seriate_dist_mds <- function(x, control = NULL){
     if(is.null(control$method) || control$method == "cmdscale" ) {
         sc <- cmdscale(x, k=1)
         return(order(sc[,1]))
-    
+
     }else if(control$method == "isoMDS"){
         sc <- MASS::isoMDS(x+1e-6, trace = FALSE, k=1)
-        return(order(sc$points[,1])) 
-    
+        return(order(sc$points[,1]))
+
     }else if(control$method == "sammon") {
         sc <- MASS::sammon(x+1e-6, trace = FALSE, k=1)
         return(order(sc$points[,1]))
@@ -118,21 +118,21 @@ seriate_dist_mds_nonmetric <- function(x, control = NULL)
 ## Hierarchical clustering related seriations
 .hclust_helper <- function(d, control = NULL){
     if(!is.null(control$hclust)) return(control$hclust)
-    
-    if(is.null(control$method)) return(hclust(d)) 
+
+    if(is.null(control$method)) return(hclust(d))
     else return(hclust(d, method = control$method))
 }
 
 seriate_dist_hc <- function(x, control = NULL) .hclust_helper(x, control)
-seriate_dist_hc_single <- function(x, control = NULL) 
+seriate_dist_hc_single <- function(x, control = NULL)
   .hclust_helper(x, control=list(method="single"))
-seriate_dist_hc_average <- function(x, control = NULL) 
+seriate_dist_hc_average <- function(x, control = NULL)
   .hclust_helper(x, control=list(method="average"))
-seriate_dist_hc_complete <- function(x, control = NULL) 
+seriate_dist_hc_complete <- function(x, control = NULL)
   .hclust_helper(x, control=list(method="complete"))
 
 ## workhorses are in seriation.hclust
-seriate_dist_hc_gw <- function(x, control = NULL) 
+seriate_dist_hc_gw <- function(x, control = NULL)
     .seriate_gruvaeus(.hclust_helper(x, control), x)
 
 seriate_dist_hc_optimal <- function(x, control = NULL)
@@ -150,7 +150,7 @@ seriate_dist_arsa <- function(x, control = NULL) {
         i <- pmatch(n, names(param))
         if(is.na(i))
             stop(gettextf("Unknown control parameter '%s'.", n))
-        param[i] <- control[[n]] 
+        param[i] <- control[[n]]
     }
 
     A <- as.matrix(x)
@@ -171,18 +171,18 @@ seriate_dist_arsa <- function(x, control = NULL) {
 
     o <- ret[[6]]
     names(o) <- labels(x)[o]
-    
+
     ### ARSA returns all 0's in some cases
     if(all(o == 0)) {
     o <- 1:N
     warning("ARSA has returned an invalid permutation vector! Check the supplied dissimilarity matrix.")
     }
-    
+
     o
 }
 
 
-## brusco: branch-and-bound - unweighted row gradient 
+## brusco: branch-and-bound - unweighted row gradient
 seriate_dist_bburcg <- function(x, control = NULL) {
     param <- list(
         eps = 1e-7,
@@ -192,9 +192,9 @@ seriate_dist_bburcg <- function(x, control = NULL) {
         i <- pmatch(n, names(param))
         if(is.na(i))
             stop(gettextf("Unknown control parameter '%s'.", n))
-        param[i] <- control[[n]] 
+        param[i] <- control[[n]]
     }
-    
+
     A <- as.matrix(x)
     N <- ncol(A)
 
@@ -208,14 +208,14 @@ seriate_dist_bburcg <- function(x, control = NULL) {
 
     ret <- .Fortran("bburcg", N, A, param$eps, X, Q, D, DD, S, UNSEL,
         param$verbose)
-    
+
     o <- ret[[4]]
     names(o) <- labels(x)[o]
     o
 }
 
 
-## brusco: branch-and-bound - weighted row gradient 
+## brusco: branch-and-bound - weighted row gradient
 seriate_dist_bbwrcg <- function(x, control = NULL) {
     param <- list(
         eps = 1e-7,
@@ -225,9 +225,9 @@ seriate_dist_bbwrcg <- function(x, control = NULL) {
         i <- pmatch(n, names(param))
         if(is.na(i))
             stop(gettextf("Unknown control parameter '%s'.", n))
-        param[i] <- control[[n]] 
+        param[i] <- control[[n]]
     }
-    
+
     A <- as.matrix(x)
     N <- ncol(A)
 
@@ -241,7 +241,7 @@ seriate_dist_bbwrcg <- function(x, control = NULL) {
 
     ret <- .Fortran("bbwrcg", N, A, param$eps, X, Q, D, DD, S, UNSEL,
         param$verbose)
-    
+
     o <- ret[[4]]
     names(o) <- labels(x)[o]
     o
@@ -253,10 +253,16 @@ seriate_dist_identity <- function(x, control = NULL) {
   o
 }
 
+seriate_dist_random <- function(x, control = NULL) {
+  o <- 1:attr(x, "Size")
+  names(o) <- labels(x)
+  sample(o)
+}
+
 ## VAT: a tool for visual assessment of (cluster) tendency
 ## Bezdek, J.C., Hathaway, R.J.
-## Proceedings of the 2002 International Joint Conference on 
-## Neural Networks, 2002. IJCNN '02. (Volume:3) 
+## Proceedings of the 2002 International Joint Conference on
+## Neural Networks, 2002. IJCNN '02. (Volume:3)
 seriate_dist_VAT <- function(x, control = NULL) {
   D <- as.matrix(x)
   N <- nrow(D)
@@ -267,7 +273,7 @@ seriate_dist_VAT <- function(x, control = NULL) {
   i <- which(D == max(D, na.rm = TRUE), arr.ind = TRUE)[1,1]
   P[1] <- i
   I[i] <- TRUE
-  
+
   for(r in 2:N) {
     D2 <- D[I,!I, drop=FALSE]
     j <- which(D2 == min(D2, na.rm = TRUE), arr.ind = TRUE)[1,2]
@@ -281,8 +287,8 @@ seriate_dist_VAT <- function(x, control = NULL) {
 }
 
 ## spectral seriation
-## Ding, C. and Xiaofeng He (2004): Linearized cluster assignment via 
-## spectral orderingProceedings of the Twenty-first. 
+## Ding, C. and Xiaofeng He (2004): Linearized cluster assignment via
+## spectral orderingProceedings of the Twenty-first.
 ## International Conference on Machine learning (ICML ’04)
 
 seriate_dist_spectral <- function(x, control = NULL) {
@@ -306,7 +312,7 @@ seriate_dist_spectral_norm <- function(x, control = NULL) {
   #I <- diag(nrow(A))
   #L <- I - D_sqrt %*% A %*% D_sqrt
   L <- D_sqrt %*% A %*% D_sqrt
-  
+
   z <- eigen(L)$vectors
   q <- D_sqrt %*% z
   #o <- order(q[,ncol(q)-1L])
@@ -316,12 +322,14 @@ seriate_dist_spectral_norm <- function(x, control = NULL) {
   o
 }
 
-set_seriation_method("dist", "Identity", seriate_dist_identity, 
+set_seriation_method("dist", "Identity", seriate_dist_identity,
   "Identity permutation")
+set_seriation_method("dist", "Random", seriate_dist_random,
+  "Random permutation")
 
-set_seriation_method("dist", "ARSA", seriate_dist_arsa, 
+set_seriation_method("dist", "ARSA", seriate_dist_arsa,
     "Minimize Anti-Robinson events using simulated annealing")
-set_seriation_method("dist", "BBURCG", seriate_dist_bburcg, 
+set_seriation_method("dist", "BBURCG", seriate_dist_bburcg,
     "Minimize the unweighted row/column gradient by branch-and-bound")
 set_seriation_method("dist", "BBWRCG", seriate_dist_bbwrcg,
     "Minimize the weighted row/column gradient by branch-and-bound")

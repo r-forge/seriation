@@ -26,10 +26,10 @@ seriation_dist<- function(x, method="kendall") {
     spearman = as.dist(1-abs(cor(t(.lget_rank(x)), method="spearman"))),
     kendall = as.dist(1-abs(cor(t(.lget_rank(x)), method="kendal"))),
     ### Manhattan == Spearman's footrule  
-    #manhattan = .find_best(dist(.add_rev(x), method="manhattan")),
-    manhattan = dist(.lget_rank(seriation_align(x)), method="manhattan"),
-    #euclidean = .find_best(dist(.add_rev(x), method="euclidean")),
-    euclidean = dist(.lget_rank(seriation_align(x)), method="euclidean")
+    manhattan = .find_best(dist(.add_rev(.lget_rank(x)), method="manhattan")),
+    #manhattan = dist(.lget_rank(seriation_align(x)), method="manhattan"),
+    euclidean = .find_best(dist(.add_rev(.lget_rank(x)), method="euclidean")),
+    #euclidean = dist(.lget_rank(seriation_align(x)), method="euclidean")
     )
 }
 

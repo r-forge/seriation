@@ -313,7 +313,7 @@ pimage(x, order, main = "TSP to optimize ME")
 criterion(x, order)
 
 order <- seriate(x, method = "PCA")
-pimage(x, order, main = "first principal component")
+pimage(x, order, main = "First principal component")
 criterion(x, order)
 
 ## 2 TSPs

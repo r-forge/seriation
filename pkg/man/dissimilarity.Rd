@@ -25,12 +25,16 @@ value is used since a negative correlation just means that reversing the
 order results in a positive correlation of the same magnitude.
 
 For the ranking-based distance measures (Manhattan and Euclidean), 
-the direction of the 
-seriations are first aligned using \code{seriation_align}. Manhattan distance between the ranks is equal to Spearman's footrule
+the direction of the distance between all seriations in forward and
+reverse order and use the minimum. Note that Manhattan distance between the 
+ranks in a linear order is equivalent to Spearman's footrule 
 metric (Diaconis 1988).
 
 \code{seriation_align} normalizes in a list of seriations the direction such 
-that ranking-based methods can be used.
+that ranking-based methods can be used. We use a modified version of Prim's
+algorithm for finding a minimum spanning tree (MST) to choose if the original seriation order or its reverse should be used. We use the orders first added to 
+the MST. Every time an order is added, its reverse is removed from the possible 
+orders.
 }
 \value{
 \code{seriation_dist} returns an object of class \code{dist}.
@@ -44,22 +48,22 @@ P. Diaconis (1988): Group Representations in Probability and Statistics. Institu
 \code{\link{ser_permutation_vector}}
 }
 \examples{
-## seriate dist of 20 flowers from the iris dataset
+## seriate dist of 20 flowers from the iris data set
 data("iris")
 x <- as.matrix(iris[-5])
 x <- x[sample(1:nrow(x), 25),]
 d <- dist(x)
 
-## create a list of differnt seriations
+## create a list of different seriations
 methods <- c("HC_single", "HC_complete", "OLO", "GW", "R2E", "VAT", 
-  "TSP", "Spectral", "MDS", "Identity")
+  "TSP", "Spectral", "MDS", "Identity", "Random")
 
-  os <- sapply(methods, function(m) {
+os <- sapply(methods, function(m) {
   cat("Doing ", m, " ... ")
   tm <- system.time(o <- seriate(d, method = m))
   cat("took ", tm[3],"s.\n")
   o
-  })
+})
 
 ## compare the methods
 ds1 <- seriation_dist(os, method="kendall")
