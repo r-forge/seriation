@@ -3,6 +3,7 @@ Changes in version 1.0-15 (xx/xx/2014)
     * Seriation method 'Random' added.
     * Seriation method 'VAT' added.
     * Seriation method 'Spectral' added.
+    * Seriation methods 'PCA_angle' and 'MDS_angle' added.
     * Several aliases for seriation methods added.
     * Criterion 'RWGAR' added.
     * get_rank for permutation vectors added.

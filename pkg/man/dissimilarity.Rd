@@ -72,7 +72,8 @@ plot(hclust(ds1))
 ds2 <- seriation_dist(os, method="manhattan")
 plot(hclust(ds2))  
 
-## normalize direction so all seriations are visualized in the same order
+## normalize direction so all seriations are visualized in the 
+## same general order
 os2 <- seriation_align(os)
 for(i in os2) pimage(d, i, main = get_method(i))
 }

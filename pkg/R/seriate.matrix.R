@@ -112,6 +112,36 @@ seriate_matrix_fpc <- function(x, control = NULL) {
     list(row = row, col = col)
 }
 
+## Angle between the first 2 PCS. Fiendly (2002)
+.order_angle <- function(x) {
+  alpha <- atan2(x[,1], x[,2])
+  o <- order(alpha)
+  cut <- which.max(abs(diff(c(alpha[o], alpha[o[1]]+2*pi))))
+  if(cut==length(o)) o
+  else o[c((cut+1):length(o), 1:(cut))]
+  
+}
+
+
+seriate_matrix_angle <- function(x, control = NULL) {
+  
+  center  <- if(!is.null(control$center)) control$center else TRUE
+  scale.  <- if(!is.null(control$scale.)) control$scale. else FALSE
+  tol     <- control$tol
+    
+  pr <- prcomp(x, center = center, scale. = scale., tol = tol)
+  row <- .order_angle(pr$x[,1:2])
+  
+  pr <- prcomp(t(x), center = center, scale. = scale., tol = tol)
+  col <- .order_angle(pr$x[,1:2])
+  
+  names(row) <- rownames(x)
+  names(col) <- colnames(x)
+  
+  list(row = row, col = col)
+}
+  
+
 seriate_matrix_identity <- function(x, control) {
   l <- lapply(dim(x), seq)
   for(i in 1:length(dim(x))) names(l[[i]]) <- labels(x)[[i]]
@@ -138,6 +168,8 @@ set_seriation_method("matrix", "BEA", seriate_matrix_bea,
     "Bond Energy Algorithm to maximize ME")
 set_seriation_method("matrix", "PCA", seriate_matrix_fpc,
     "First principal component")
+set_seriation_method("matrix", "PCA_angle", seriate_matrix_angle,
+  "First two principal components (angle)")
 
 set_seriation_method("matrix", "Identity", seriate_matrix_identity,
   "Identity permutation")

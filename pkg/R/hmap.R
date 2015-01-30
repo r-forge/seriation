@@ -16,16 +16,20 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-
-
 hmap <- function(x, distfun = dist, hclustfun = hclust, 
     method = NULL, control = NULL, options = NULL, ...) {
     
-    if(!is.matrix(x)) x <- as.matrix(x)
+    ## dist or matrix 
+    if(is(x, "dist")) {
+      dist_row <- dist_col <- x
+      x <- as.matrix(x)
+    } else {
+      if(!is.matrix(x)) x <- as.matrix(x)
 
-    dist_row <- distfun(x)
-    dist_col <- distfun(t(x))
-
+      dist_row <- distfun(x)
+      dist_col <- distfun(t(x))
+    }
+      
     hmap_workhorse <- if(is.function(hclustfun)) .hmap_opt else .hmap_dist
     
     hmap_workhorse(x, dist_row, dist_col, hclustfun, 

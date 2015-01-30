@@ -12,9 +12,9 @@ pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "",
     axes = TRUE, range=NULL, colorkey=FALSE, ..., newpage=TRUE, pop=TRUE)
 
 \method{pimage}{matrix}(x, order=NULL, col=NULL, main="", xlab="", ylab="",
-    axes=TRUE, range=NULL, colorkey=FALSE, ..., newpage=TRUE, pop=TRUE)
+    axes=NULL, range=NULL, colorkey=FALSE, ..., newpage=TRUE, pop=TRUE)
 \method{pimage}{dist}(x, order = NULL, col = NULL, main="", xlab="", ylab="",
-    axes = TRUE, range=NULL, colorkey=FALSE, 
+    axes = NULL, range=NULL, colorkey=FALSE, 
     upper.tri = TRUE, lower.tri = TRUE, ..., newpage=TRUE, pop=TRUE)
 }
 \arguments{
@@ -28,7 +28,7 @@ pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "",
   \item{main}{Plot title.}
   \item{xlab, ylab}{labels for the x and y axes.}
   \item{axes}{ a logical indicating whether to add axes using the
-      labels of \code{x}. The default value (\code{TRUE}) shows only axes
+      labels of \code{x}. The default value (\code{NULL}) shows only axes
       if the dimension is below 10 (so it is reasonable to show labels).}
   \item{range}{ vector with two elements giving the range (min, max) for 
       representing the values in the matrix. }

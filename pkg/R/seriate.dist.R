@@ -115,11 +115,18 @@ seriate_dist_mds_metric <- function(x, control = NULL)
 seriate_dist_mds_nonmetric <- function(x, control = NULL)
   seriate_dist_mds(x, control=list(method="isoMDS"))
 
+## Angle between the first 2 PCS. Fiendly (2002)
+seriate_dist_angle <- function(x, control = NULL) {
+  sc <- cmdscale(x, k=2)
+  o <- .order_angle(sc)
+}
+
+
 ## Hierarchical clustering related seriations
 .hclust_helper <- function(d, control = NULL){
     if(!is.null(control$hclust)) return(control$hclust)
 
-    if(is.null(control$method)) return(hclust(d))
+    if(is.null(control$method)) return(hclust(d, method = "average"))
     else return(hclust(d, method = control$method))
 }
 
@@ -348,6 +355,9 @@ set_seriation_method("dist", "MDS_metric", seriate_dist_mds_metric,
   "MDS (metric)")
 set_seriation_method("dist", "MDS_nonmetric", seriate_dist_mds_nonmetric,
   "MDS (non-metric)")
+
+set_seriation_method("dist", "MDS_angle", seriate_dist_angle,
+  "MDS (angle)")
 
 set_seriation_method("dist", "HC", seriate_dist_hc,
     "Hierarchical clustering")

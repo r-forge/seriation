@@ -94,19 +94,30 @@ dissimilarities. Currently the following methods are implemented for dist:
       In this implementation the top most cutting point is used.
       }  
 
-\item{\code{"MDS"}, \code{"MDS_metric"}, \code{"MDS_nonmetric"}}{Multidimensional scaling (MDS).
+\item{\code{"MDS"}, \code{"MDS_metric"}, \code{"MDS_nonmetric"},
+  \code{"MDS_angle"}}{Multidimensional scaling (MDS).
 
     Use multidimensional scaling techniques to find an linear order. Note 
     that unidimensional scaling would be more appropriate but is very hard to 
-    solve. Generally, MDS provides good results.
+    solve. Generally, ordering along the first component of 
+    MDS provides good results.
 
     By default, metric MDS (\code{cmdscale} in \pkg{stats}) is used. 
     In case of of general dissimilarities, non-metric MDS can be used.
     The choices are \code{isoMDS} and \code{sammon} from \pkg{MASS}.
     The method can be specified as the element \code{method} 
     (\code{"cmdscale"}, \code{"isoMDS"} or \code{"sammon"}) in \code{control}.
-    }  
-\item{\code{"HC"}, \code{"HC_single"}, \code{"HC_complete"}, \code{HC_average}}{Hierarchical clustering.
+    
+    For convenience, \code{"MDS_metric"} performs \code{cmdscale} and
+    \code{"MDS_nonmetric"} performs \code{isoMDS}.
+    
+    \code{"MDS_angle"} projects the data on the first two componments
+    found by MDS and then orders by the angle in this space. The order
+    is split by the larges gap between adjacent angles. A similar method was 
+    used for ordering correlation matrices by Friendly (2002).
+  
+  }  
+\item{\code{"HC"}, \code{"HC_single"}, \code{"HC_complete"}, \code{"HC_average"}}{Hierarchical clustering.
 
     Using the order of the leaf nodes in a dendrogram obtained by hierarchical
     clustering can be used as a very simple seriation technique.
@@ -114,11 +125,15 @@ dissimilarities. Currently the following methods are implemented for dist:
     The clustering method can be given using a \code{"method"} element in 
     the \code{control} list. If omitted, the default \code{"complete"} is
     used.
+    
+    For convenience \code{"HC_single"}, \code{"HC_complete"} and 
+    \code{"HC_average"} are provided.
     }
     
 
 \item{\code{"GW"}, \code{"OLO"}}{Hierarchical 
-    clustering with additional leaf-node reordering to minimize
+    clustering (by default using average-link)
+      with additional leaf-node reordering to minimize
     \bold{Hamiltonian path length}.
 
     A dendrogram (binary tree) has \eqn{2^{n-1}} internal nodes (subtrees) and
@@ -193,13 +208,19 @@ Currently the following methods are implemented for matrix:
     specified (see package \pkg{TSP}).
     }
 
-\item{\code{"PCA"}}{ Principal component analysis.
+\item{\code{"PCA"}, \code{"PCA_angle"}}{ Principal component analysis.
       
       Uses the projection of the data on its first principal component to
       determine the order. 
       
       Note that for a distance matrix calculated from \code{x} with Euclidean
       distance, this methods minimizes the least square criterion.
+      
+      \code{"PCA_angle"} projects the data on the first two principal componments
+    and then orders by the angle in this space. The order
+    is split by the larges gap between adjacent angles. A similar method was 
+    used for ordering correlation matrices by Friendly (2002).
+      
       }  
 
 \item{\code{"Identity"}}{ Produces an identity permutation. }
@@ -241,6 +262,10 @@ Climer, S. and Xiongnu Zhang (2006): Rearrangement Clustering: Pitfalls,
 Remedies, and Applications,
 \emph{Journal of Machine Learning Research,} \bold{7}(Jun),
 919--943.
+
+Friendly, M. (2002):
+Corrgrams: Exploratory Displays for Correlation Matrices.
+\emph{The American Statistician}, \bold{56}(4), 316--324.
 
 Gruvaeus, G. and Wainer, H. (1972): Two Additions to Hierarchical Cluster
 Analysis,

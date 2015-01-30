@@ -10,7 +10,8 @@ hmap(x, distfun = dist, hclustfun = hclust,
     method = NULL, control = NULL, options = NULL, ...)
 }
 \arguments{
-  \item{x}{a matrix.}
+  \item{x}{a matrix or a dissimilarity matrix of class dist. If a dissimilarity
+    matrix is used, then the distance calculation step is skipped. }
   \item{distfun}{function used to compute the distance (dissimilarity) between
       both rows and columns (default: \code{dist}). }
   \item{hclustfun}{function used for hierarchical clustering.
