@@ -6,6 +6,7 @@ importFrom("colorspace", "sequential_hcl")
 importFrom("gclus", "reorder.hclust") ## we use :: for gclus in seriate.hclust
 importFrom("cluster", "silhouette") ## we use :: for silhouette in dissplot
 importFrom("MASS", "isoMDS", "sammon")
+importFrom("gplots", "heatmap.2")
 
 export(
     bertinplot,

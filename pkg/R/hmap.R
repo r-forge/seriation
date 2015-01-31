@@ -43,13 +43,16 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL, ...) {
     args <- list(...)
     if(is.null(args$col)) args$col <- gray.colors(256)
     if(is.null(args$scale)) args$scale <- "none"
+    if(is.null(args$trace)) args$trace <- "none"
+    if(is.null(args$density.info)) args$density.info <- "none"
+
     args <- c(list( 
       x=x, 
       Colv = as.dendrogram(o_col), 
       Rowv = as.dendrogram(o_row)), 
       args
     )
-    ret <- do.call(heatmap, args)
+    ret <- do.call(gplots::heatmap.2, args)
     
     ret$seriation_method <- method
     return(invisible(ret))

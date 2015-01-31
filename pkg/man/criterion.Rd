@@ -259,7 +259,7 @@ m <- matrix(runif(20),ncol=2)
 d <- dist(m)
 
 ## get an order for rows (optimal for the least squares criterion)
-o <- seriate(d, method = "MDS", margin = 1)
+o <- seriate(d, method = "MDS")
 o
 
 ## compare the values for all available criteria

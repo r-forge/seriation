@@ -20,10 +20,10 @@ hmap(x, distfun = dist, method = "OLO", control = NULL, ...)
   \item{control}{a list of control options passed on to the seriation 
       algorithm specified in \code{method}.} 
   \item{\dots}{further arguments. For dendrogram based heat maps the 
-      arguments are passed on to \code{heatmap} in
-      \pkg{stats}. See for example \code{margins} and \code{col}.
-      The following arguments for \code{heatmap} cannot be used:
-      \code{Rowv, Colv, distfun, hclustfun, reorderfun}.
+      arguments are passed on to \code{heatmap.2} in
+      \pkg{gplots}. See for example \code{margins} and \code{col}.
+      The following arguments for \code{heatmap.2} cannot be used:
+      \code{Rowv, Colv, hclustfun, reorderfun}.
       
       For order-based heat maps further arguments include:
        \describe{
@@ -66,7 +66,7 @@ For \code{dendrogram = TRUE} the list can contain additional elements
 %\author{Michael Hahsler}
 \seealso{
 \code{\link{seriate.dist}} and
-\code{\link[stats]{heatmap}} in \pkg{stats}.}
+\code{\link[gplots]{heatmap.2}} in \pkg{gplots}.}
 \examples{
 data("Wood")
 

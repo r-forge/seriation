@@ -111,7 +111,7 @@ dissimilarities. Currently the following methods are implemented for dist:
     For convenience, \code{"MDS_metric"} performs \code{cmdscale} and
     \code{"MDS_nonmetric"} performs \code{isoMDS}.
     
-    \code{"MDS_angle"} projects the data on the first two componments
+    \code{"MDS_angle"} projects the data on the first two components
     found by MDS and then orders by the angle in this space. The order
     is split by the larges gap between adjacent angles. A similar method was 
     used for ordering correlation matrices by Friendly (2002).
@@ -123,7 +123,7 @@ dissimilarities. Currently the following methods are implemented for dist:
     clustering can be used as a very simple seriation technique.
     This method applies hierarchical clustering (\code{hclust}) to \code{x}. 
     The clustering method can be given using a \code{"method"} element in 
-    the \code{control} list. If omitted, the default \code{"complete"} is
+    the \code{control} list. If omitted, the default \code{"average"} is
     used.
     
     For convenience \code{"HC_single"}, \code{"HC_complete"} and 
@@ -155,23 +155,59 @@ Note that non-finite distance values are not allowed.
 
    Both methods start with a dendrogram created by \code{hclust}. As  the
 \code{"method"} element in the \code{control} list a clustering method (default
-\code{"complete"}) can be specified. Alternatively, a \code{hclust} object can
+\code{"average"}) can be specified. Alternatively, a \code{hclust} object can
 be supplied using an element named \code{"hclust"}.
     }
 
   \item{\code{"VAT"}}{Visual Assessment of (Clustering) Tendency (Bezdek and Hathaway (2002)).
 
-    Create an order based on Prim's algorithm for finding a minimum spanning
+    Creates an order based on Prim's algorithm for finding a minimum spanning
     tree (MST) in a weighted connected graph representing the distance matrix.
     The order is given by the order in which the nodes (objects) are added
     to the MST.
     }
 
-\item{\code{"Spectral"}, \code{"Spectral_norm"}}{ Spectral seriation (Deng and He 2004). Spectral seriation uses a relaxation to maximize the \bold{Inertia criterion} by using the order of the Fielder vector of 
+\item{\code{"Spectral"}, \code{"Spectral_norm"}}{ Spectral seriation (Deng and He 2004). 
+
+Spectral seriation uses a relaxation to maximize the \bold{Inertia criterion} by using the order of the Fielder vector of 
 the similarity matrix's (normalized) Laplacian.  
   }
+  
+\item{\code{"SPIN_NH"}, \code{"SPIN_STS"}}{ Sorting Points Into Neighborhoods (SPIN) (Tsafrir 2005).
+Given a weight matrix \eqn{W}, the algorithms try to minimize the energy for a permutation (matrix \eqn{P}) 
+given by \deqn{F(P) = tr(PDP^TW),} where \eqn{tr} denotes the matrix 
+trace.
+
+\code{"SPIN_STS"} implements the Side-to-Side algorithm which tries
+to push out large distance values. The default weight matrix
+suggested in the paper with \eqn{W=XX^T} and \eqn{X_i=i-(n+1)/2} is used.
+We run the algorithm from \code{step} (25) iteration and restart the
+algorithm \code{nstart} (10) with random initial permutations (default values in parentheses). Via \code{control} the parameters \code{step}, \code{nstart},
+\code{X} and \code{verbose}.
+
+\code{"SPIN_NH"} implements the neighborhood algorithm (concentrate
+low distance values around the diagonal) with a 
+Gaussian weight matrix
+\eqn{W_{ij} = exp(-(i-j)^2/n\sigma)}, where \eqn{n} is the size of the 
+dissimilarity matrix and \eqn{\sigma} is the variance around the diagonal 
+that control the influence
+of global (large \eqn{\sigma}) or local (small \eqn{\sigma}) structure.
+
+We use the heuristic suggested in the paper for the linear assignment problem.
+We do not terminate as indicated in the algorithm, but run all the iterations since the heuristic does not guarantee that the energy is strictly decreasing.
+We also implement the heuristic "annealing" scheme where \eqn{\sigma} is
+successively reduced. The parameters in \code{control}
+are \code{sigma} which can be a single value or a decreasing sequence 
+(default: 20 to 1 in 10 steps) and \code{step} which defines how many update 
+steps are performed before for each value of \code{alpha}.  
+Via \code{W_function} a custom function to create \eqn{W} with the function
+signature \code{function(n, sigma, verbose)} can be specified.
+The parameter \code{verbose} can be used to display progress information. 
+}
 
 \item{\code{"Identity"}}{ Produces an identity permutation. }
+
+\item{\code{"Random"}}{ Produces a random permutation. }
 }
 
 Two-way two mode data are general positive matrices.
@@ -216,7 +252,7 @@ Currently the following methods are implemented for matrix:
       Note that for a distance matrix calculated from \code{x} with Euclidean
       distance, this methods minimizes the least square criterion.
       
-      \code{"PCA_angle"} projects the data on the first two principal componments
+      \code{"PCA_angle"} projects the data on the first two principal components
     and then orders by the angle in this space. The order
     is split by the larges gap between adjacent angles. A similar method was 
     used for ordering correlation matrices by Friendly (2002).
@@ -224,6 +260,8 @@ Currently the following methods are implemented for matrix:
       }  
 
 \item{\code{"Identity"}}{ Produces an identity permutation. }
+
+\item{\code{"Random"}}{ Produces a random permutation. }
 }
 
 For array no built-in methods are currently available.
@@ -285,6 +323,8 @@ and data reorganization by a clustering technique,
 \emph{Operations Research,} 
 \bold{20}(5), 993--1009.
 
+Tsafrir, D., Tsafrir, I., Ein-Dor, L., Zuk, O., Notterman, D.A. and Domany, E.
+(2005): Sorting points into neighborhoods (SPIN): data analysis and visualization by ordering distance matrices, \emph{Bioinformatics,} \bold{21}(10) 2301--8.
 }
 \seealso{
 \code{\link{list_seriation_methods}},

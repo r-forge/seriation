@@ -21,10 +21,10 @@
 ## seriate matrices 
 
 seriate.matrix <-
-function(x, method = NULL, control = NULL, 
-         margin = c(1,2), ...)
+  function(x, method = NULL, control = NULL, 
+    margin = c(1,2), ...)
     .seriate_array_helper(x, method, control, margin, 
-        datatype = "matrix", defmethod = "BEA_TSP", ...)
+      datatype = "matrix", defmethod = "BEA_TSP", ...)
 
 ## Algorithm B
 ##  F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures
@@ -45,76 +45,86 @@ function(x, method = NULL, control = NULL,
 #}
 
 seriate_matrix_bea_tsp <- function(x, control) {
-
-    if(any(x < 0)) stop("Requires a nonnegative matrix.")
-    
-    criterion <- as.dist(tcrossprod(x))
-    row <- seriate(max(criterion)-criterion, 
-        method = "TSP", control = control)[[1]]
-
-    criterion <- as.dist(crossprod(x))
-    col <- seriate(max(criterion)-criterion, 
-        method = "TSP", control = control)[[1]]
-    
-    list(row = row, col = col)
+  
+  if(any(x < 0)) stop("Requires a nonnegative matrix.")
+  
+  criterion <- as.dist(tcrossprod(x))
+  row <- seriate(max(criterion)-criterion, 
+    method = "TSP", control = control)[[1]]
+  
+  criterion <- as.dist(crossprod(x))
+  col <- seriate(max(criterion)-criterion, 
+    method = "TSP", control = control)[[1]]
+  
+  list(row = row, col = col)
 }
 
 
 ## Bond Energy Algorithm (McCormick 1972)
 
 seriate_matrix_bea <- function(x, control = NULL){
-    
-    if(any(x < 0)) stop("Requires a nonnegative matrix.")
-    istart <- if(is.null(control$istart)) 0 else control$istart
-    jstart <- if(is.null(control$jstart)) 0 else control$jstart
-    rep  <- if(!is.null(control$rep)) control$rep else 1
-    
-    res <- replicate(rep, bea(x, istart = istart, jstart = jstart), 
-        simplify = FALSE)
-    
-    best <- which.max(sapply(res, "[[", "e"))
-    res <- res[[best]]
-    
-    row <- res$ib
-    col <- res$jb
-    
-    names(row) <- rownames(x)[row]
-    names(col) <- colnames(x)[col]
-
-    list(row = row, col = col)
-    
+  control <- .get_parameters(control, list(
+    istart = 0,
+    jstart = 0,
+    rep = 1
+  ))
+  
+  if(any(x < 0)) stop("Requires a nonnegative matrix.")
+  istart <- control$istart
+  jstart <- control$jstart
+  rep  <- control$rep
+  
+  res <- replicate(rep, bea(x, istart = istart, jstart = jstart), 
+    simplify = FALSE)
+  
+  best <- which.max(sapply(res, "[[", "e"))
+  res <- res[[best]]
+  
+  row <- res$ib
+  col <- res$jb
+  
+  names(row) <- rownames(x)[row]
+  names(col) <- colnames(x)[col]
+  
+  list(row = row, col = col)
 }
 
 ## use the projection on the first pricipal component to determine the
 ## order
 seriate_matrix_fpc <- function(x, control = NULL) {
-    
-    center  <- if(!is.null(control$center)) control$center else TRUE
-    scale.  <- if(!is.null(control$scale.)) control$scale. else FALSE
-    tol     <- control$tol
-    verbose <- if(!is.null(control$verbose)) control$verbose else FALSE
-    
-    pr <- prcomp(x, center = center, scale. = scale., tol = tol)
-    scores <- pr$x[,1]
-    row <- order(scores)
-    if(verbose) cat("row: first principal component explains", 
-        pr$sdev[1] / sum(pr$sdev)* 100,"%\n")
-
-
-    pr <- prcomp(t(x), center = center, scale. = scale., tol = tol)
-    scores <- pr$x[,1]
-    col <- order(scores)
-    if(verbose) cat("col: first principal component explains", 
-        pr$sdev[1] / sum(pr$sdev)* 100,"%\n")
-    
-    names(row) <- rownames(x)[row]
-    names(col) <- colnames(x)[col]
-
-    list(row = row, col = col)
+  control <- .get_parameters(control, list(
+    center = TRUE,
+    scale. = FALSE,
+    tol = NULL,
+    verbose = FALSE
+  ))
+  
+  center  <- control$center
+  scale.  <- control$scale.
+  tol     <- control$tol
+  verbose <- control$verbose
+  
+  pr <- prcomp(x, center = center, scale. = scale., tol = tol)
+  scores <- pr$x[,1]
+  row <- order(scores)
+  if(verbose) cat("row: first principal component explains", 
+    pr$sdev[1] / sum(pr$sdev)* 100,"%\n")
+  
+  pr <- prcomp(t(x), center = center, scale. = scale., tol = tol)
+  scores <- pr$x[,1]
+  col <- order(scores)
+  if(verbose) cat("col: first principal component explains", 
+    pr$sdev[1] / sum(pr$sdev)* 100,"%\n")
+  
+  names(row) <- rownames(x)[row]
+  names(col) <- colnames(x)[col]
+  
+  list(row = row, col = col)
 }
 
 ## Angle between the first 2 PCS. Fiendly (2002)
 .order_angle <- function(x) {
+  
   alpha <- atan2(x[,1], x[,2])
   o <- order(alpha)
   cut <- which.max(abs(diff(c(alpha[o], alpha[o[1]]+2*pi))))
@@ -125,11 +135,16 @@ seriate_matrix_fpc <- function(x, control = NULL) {
 
 
 seriate_matrix_angle <- function(x, control = NULL) {
+  control <- .get_parameters(control, list(
+    center = TRUE,
+    scale. = FALSE,
+    tol = NULL
+    ))
   
-  center  <- if(!is.null(control$center)) control$center else TRUE
-  scale.  <- if(!is.null(control$scale.)) control$scale. else FALSE
+  center  <- control$center
+  scale.  <- control$scale.
   tol     <- control$tol
-    
+  
   pr <- prcomp(x, center = center, scale. = scale., tol = tol)
   row <- .order_angle(pr$x[,1:2])
   
@@ -141,34 +156,32 @@ seriate_matrix_angle <- function(x, control = NULL) {
   
   list(row = row, col = col)
 }
-  
+
 
 seriate_matrix_identity <- function(x, control) {
+  control <- .get_parameters(control, NULL)
+  
   l <- lapply(dim(x), seq)
   for(i in 1:length(dim(x))) names(l[[i]]) <- labels(x)[[i]]
   l
 }
 
 seriate_matrix_random <- function(x, control) {
+  control <- .get_parameters(control, NULL)
+  
   l <- lapply(dim(x), FUN = function(l) sample(seq(l)))
   for(i in 1:length(dim(x))) names(l[[i]]) <- labels(x)[[i]][l[[i]]]
   l
 }
 
-## use angle of the first two singular vectors
-## Friendly and Kwan (2003) 
-#seriate_matrix_svd <- function(x, control) {
-#    s <- svd(x)
-#     list(row = order(s$u[,2], s$u[,1]), col = order(s$v[,1], s$v[,2]))
-#}
 
 ## register methods
 set_seriation_method("matrix", "BEA_TSP", seriate_matrix_bea_tsp,
-    "TSP to maximize ME")
+  "TSP to maximize ME")
 set_seriation_method("matrix", "BEA", seriate_matrix_bea,
-    "Bond Energy Algorithm to maximize ME")
+  "Bond Energy Algorithm to maximize ME")
 set_seriation_method("matrix", "PCA", seriate_matrix_fpc,
-    "First principal component")
+  "First principal component")
 set_seriation_method("matrix", "PCA_angle", seriate_matrix_angle,
   "First two principal components (angle)")
 
