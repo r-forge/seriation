@@ -35,7 +35,7 @@ seriate.dist <-
     
     method <- get_seriation_method("dist", method)
     
-    order <- method$definition(x, control = control)
+    order <- method$fun(x, control = control)
     
     ser_permutation(ser_permutation_vector(order, method = method$name))
   }

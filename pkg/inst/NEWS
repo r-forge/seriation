@@ -1,4 +1,4 @@
-Changes in version 1.0-15 (xx/xx/2014) 
+Changes in version 1.1-0 (xx/xx/2015) 
     * Seriation method 'Identity' added.
     * Seriation method 'Random' added.
     * Seriation method 'VAT' added.
@@ -10,10 +10,11 @@ Changes in version 1.0-15 (xx/xx/2014)
     * permutation_matrix2vector and permutation_vector2matrix added.
     * get_rank for permutation vectors added.
     * seriation_dist and seriation_alignment to calculate 
-      dissimilarities between seriation orders added.
+        dissimilarities between seriation orders added.
     * Added Wood data set.
     * Simplified hmap interface.
     * control arguments for seriation are now checked consistently.
+    * We use now package registry to manage methods.
 
 Changes in version 1.0-14 (12/02/2014) 
     * arsa.f: removed 0 flag in rand() so it compiles under AIX 

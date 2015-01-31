@@ -1,4 +1,5 @@
 \name{seriation_methods}
+\alias{registry_seriate}
 \alias{set_seriation_method}
 \alias{get_seriation_method}
 \alias{list_seriation_methods}
@@ -24,6 +25,9 @@ set_seriation_method(kind, name, definition, description = NULL, ...)
   registry.} 
 }
 \details{
+The functions below are convenience function for the registry 
+\code{registry_seriate}. 
+
 \code{list_seriation_method()} lists all available methods for a given
 data type (\code{kind}). The result is a vector of character strings
 with the short names of the methods. 
@@ -45,6 +49,10 @@ objects (e.g., integer vectors). The elements in the list
 have to be in corresponding order to the dimensions of \code{x}.
 }
 \examples{
+## registry
+registry_seriate
+
+## convenience functions
 show_seriation_methods("matrix")
 
 list_seriation_methods("matrix")

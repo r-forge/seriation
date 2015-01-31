@@ -1,8 +1,8 @@
 Package: seriation
 Type: Package
 Title: Infrastructure for seriation
-Version: 1.0-15
-Date: 2014-xx-xx
+Version: 1.1-0
+Date: 2015-xx-xx
 Authors@R: c(
 	person("Michael", "Hahsler", role = c("aut", "cre", "cph"),
 	    email = "mhahsler@lyle.smu.edu"),
@@ -19,7 +19,7 @@ Description: Infrastructure for seriation with an implementation of several
 Classification/ACM: G.1.6, G.2.1, G.4
 URL: http://R-Forge.R-project.org/projects/seriation/, http://lyle.smu.edu/IDA/seriation/
 Depends: R (>= 2.14.0)
-Imports: TSP, grid, cluster, gclus, colorspace, MASS, gplots
+Imports: TSP, grid, cluster, gclus, colorspace, MASS, gplots, registry
 Suggests: biclust, testthat
 License: GPL-3
 Copyright: The code in src/bea.f is Copyright (C) 1991 F. Murtagh; 

@@ -36,7 +36,7 @@
       stop("Argument 'method' must be a character string.")
     
     method <- get_seriation_method(datatype, method)
-    order <- method$definition(x, control)
+    order <- method$fun(x, control)
     
     perm <- do.call("ser_permutation",
       unname(lapply(order, "ser_permutation_vector", method$name))

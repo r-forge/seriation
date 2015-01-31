@@ -38,7 +38,7 @@ criterion.dist <- function(x, order = NULL, method = NULL, ...) {
     method <- lapply(method, function(m) get_criterion_method("dist", m))
     
     sapply(method, 
-        function(m) structure(m$definition(x, order, ...), names=m$name))
+        function(m) structure(m$fun(x, order, ...), names=m$name))
 }
 
 criterion.default <- criterion.dist

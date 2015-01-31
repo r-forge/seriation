@@ -2,6 +2,7 @@ useDynLib(seriation)
 
 import("TSP")
 import("grid")
+import("registry")
 importFrom("colorspace", "sequential_hcl")
 importFrom("gclus", "reorder.hclust") ## we use :: for gclus in seriate.hclust
 importFrom("cluster", "silhouette") ## we use :: for silhouette in dissplot
@@ -29,6 +30,8 @@ export(
     permutation_vector2matrix,
     pimage, 
     seriate,
+    
+  ## registries
     set_criterion_method,
     get_criterion_method,
     list_criterion_methods,
@@ -37,6 +40,9 @@ export(
     get_seriation_method,
     list_seriation_methods,
     show_seriation_methods,
+    registry_criterion,
+    registry_seriate,
+    
     seriation_dist,
     seriation_align
     )
