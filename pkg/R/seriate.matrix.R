@@ -78,8 +78,8 @@ seriate_matrix_bea <- function(x, control = NULL){
     row <- res$ib
     col <- res$jb
     
-    names(row) <- rownames(x)
-    names(col) <- colnames(x)
+    names(row) <- rownames(x)[row]
+    names(col) <- colnames(x)[col]
 
     list(row = row, col = col)
     
@@ -92,22 +92,23 @@ seriate_matrix_fpc <- function(x, control = NULL) {
     center  <- if(!is.null(control$center)) control$center else TRUE
     scale.  <- if(!is.null(control$scale.)) control$scale. else FALSE
     tol     <- control$tol
+    verbose <- if(!is.null(control$verbose)) control$verbose else FALSE
     
     pr <- prcomp(x, center = center, scale. = scale., tol = tol)
     scores <- pr$x[,1]
     row <- order(scores)
-    cat("row: first principal component explains", 
+    if(verbose) cat("row: first principal component explains", 
         pr$sdev[1] / sum(pr$sdev)* 100,"%\n")
 
 
     pr <- prcomp(t(x), center = center, scale. = scale., tol = tol)
     scores <- pr$x[,1]
     col <- order(scores)
-    cat("col: first principal component explains", 
+    if(verbose) cat("col: first principal component explains", 
         pr$sdev[1] / sum(pr$sdev)* 100,"%\n")
     
-    names(row) <- rownames(x)
-    names(col) <- colnames(x)
+    names(row) <- rownames(x)[row]
+    names(col) <- colnames(x)[col]
 
     list(row = row, col = col)
 }
@@ -135,8 +136,8 @@ seriate_matrix_angle <- function(x, control = NULL) {
   pr <- prcomp(t(x), center = center, scale. = scale., tol = tol)
   col <- .order_angle(pr$x[,1:2])
   
-  names(row) <- rownames(x)
-  names(col) <- colnames(x)
+  names(row) <- rownames(x)[row]
+  names(col) <- colnames(x)[col]
   
   list(row = row, col = col)
 }
@@ -149,7 +150,7 @@ seriate_matrix_identity <- function(x, control) {
 }
 
 seriate_matrix_random <- function(x, control) {
-  l <- lapply(dim(x), sample, seq)
+  l <- lapply(dim(x), FUN = function(l) sample(seq(l)))
   for(i in 1:length(dim(x))) names(l[[i]]) <- labels(x)[[i]][l[[i]]]
   l
 }

@@ -308,13 +308,8 @@ order <- seriate(d)
 order
 
 ## plot
-def.par <- par(no.readonly = TRUE)
-layout(cbind(1,2), respect = TRUE)
-
 pimage(d, main = "Random")
 pimage(d, order, main = "Reordered")
-
-par(def.par)
 
 ## compare quality
 rbind(

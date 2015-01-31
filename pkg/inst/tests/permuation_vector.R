@@ -38,3 +38,13 @@ expect_identical(permute(d, ser_permutation(1:5)), d)
 expect_equivalent_to(permute(d, ser_permutation(5:1)), as.dist(as.matrix(d)[5:1,5:1]))
 
 expect_error(permute(d, ser_permutation(1:8)))
+
+
+context("permutation_matrix2vector")
+pv <- sample(1:100)
+
+## convert into a permutation matrix
+pm <- permutation_vector2matrix(pv)
+
+## convert back  
+expect_identical(permutation_matrix2vector(pm), pv)

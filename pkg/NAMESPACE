@@ -24,6 +24,8 @@ export(
     permute,
     ser_permutation,
     ser_permutation_vector,
+    permutation_matrix2vector,
+    permutation_vector2matrix,
     pimage, 
     seriate,
     set_criterion_method,

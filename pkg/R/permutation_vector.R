@@ -52,8 +52,6 @@ get_order.integer <- function(x, ...) {
     o
 }
 
-
-
 get_order.default <- function(x, ...) 
     stop(gettextf("No permutation accessor implemented for class '%s'. ",
                   class(x)))
@@ -62,6 +60,24 @@ get_order.default <- function(x, ...)
 get_rank <- function(x, ...) order(get_order(x, ...))
 
 
+## convert to permuation matrix
+permutation_vector2matrix <- function(x) {
+  x <- get_order(x)
+  .valid_permutation_vector(x)
+  
+  n <- length(x)
+  pm <- matrix(0, nrow = n, ncol = n)
+  for(i in 1:n) pm[i, x[i]] <- 1
+  pm
+}
+
+permutation_matrix2vector <- function(x) {
+  .valid_permutation_matrix(x)
+  o <- apply(x, MARGIN = 1, FUN = function(r) which(r==1))
+  o
+}
+
+## reverse
 rev.ser_permutation_vector <- function(x) {
     if(is(x, "hclust")) { x$order <- rev(x$order); x } 
     else ser_permutation_vector(rev(get_order(x)), method=get_method(x))
@@ -116,3 +132,7 @@ summary.ser_permutation_vector <- function(object, ...) {
 	    paste(perm, collapse=", "))
 }
 
+.valid_permutation_matrix <- function(x) {
+  if(any(rowSums(x)!=1) || any(colSums(x)!=1) || any(x!=1 & x!=0)) 
+    stop("Not a valid permutation matrix")
+}
