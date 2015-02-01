@@ -13,6 +13,7 @@ Changes in version 1.1-0 (xx/xx/2015)
         dissimilarities between seriation orders added.
     * Added Wood data set.
     * Simplified hmap interface.
+    * pimage gained axes and prop. Interface was simplified.
     * control arguments for seriation are now checked consistently.
     * We use now package registry to manage methods.
 

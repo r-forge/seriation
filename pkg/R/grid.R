@@ -22,7 +22,13 @@
 
 .grid_basic_layout <- function(main = "", 
   left=unit(4, "lines"), right = unit(4, "lines"), 
-  bottom = unit(4, "lines")){
+  bottom = unit(4, "lines"),
+  gp = NULL){
+
+  if(is.null(gp)) gp <- gpar()
+  gp$cex <- 1.3
+  gp$fontface <- "bold"
+  
   pushViewport(viewport(layout = grid.layout(4, 3,
     widths = unit.c(
       left,                             # space
@@ -39,7 +45,7 @@
   
   pushViewport(viewport(layout.pos.col = 2, layout.pos.row = 1, 
     name="main"))
-  grid.text(main, gp = gpar(cex=1.3, fontface="bold"))
+  grid.text(main, gp = gp)
   upViewport(1)
   
   pushViewport(viewport(layout.pos.col = 2, layout.pos.row = 3, 
@@ -49,7 +55,13 @@
 
 .grid_basic_layout_with_colorkey <- function(main = "",
   left=unit(4, "lines"), right = unit(4, "lines"), 
-  bottom = unit(4, "lines")){
+  bottom = unit(4, "lines"),
+  gp = NULL){
+  
+  if(is.null(gp)) gp <- gpar()
+  gp$cex <- 1.3
+  gp$fontface <- "bold"
+  
   pushViewport(viewport(layout = grid.layout(4, 3,
     widths = unit.c(
       left,                             # space
@@ -66,7 +78,7 @@
   
   pushViewport(viewport(layout.pos.col = 2, layout.pos.row = 1, 
     name="main"))
-  grid.text(main, gp = gpar(cex=1.3, fontface="bold"))
+  grid.text(main, gp = gp)
   upViewport(1)
   
   pushViewport(viewport(layout.pos.col = 2, layout.pos.row = 3))
@@ -143,7 +155,7 @@
 }
 
 .grid_image <- function(x, zlim, col = gray.colors(12, 1, 0), 
-  name = "image", gp = gpar()) {
+  prop = FALSE, name = "image", gp = gpar()) {
   
   if(missing(zlim)) zlim <- range(x, na.rm = TRUE)
   else {# fix data for limits
@@ -158,11 +170,24 @@
   div <- 1/length(col)
   
   ## create a viewport
-  vp <- viewport(
-    #xscale = c(0,ncol(x)), yscale = c(nrow(x),0),
-    xscale = c(0.5,ncol(x)+.5), yscale = c(nrow(x)+.5,0.5),
-    default.units = "native", name = name)
-  pushViewport(vp)
+  if(!prop) {
+    vp <- viewport(
+      #xscale = c(0,ncol(x)), yscale = c(nrow(x),0),
+      xscale = c(0.5,ncol(x)+.5), yscale = c(nrow(x)+.5,0.5),
+      default.units = "native", name = name)
+    pushViewport(vp)
+  }else{
+    ## ratio
+    if (nrow(x) > ncol(x)) { w <- ncol(x)/nrow(x); h <- 1 } 
+    else if (nrow(x) < ncol(x)) { h <- nrow(x)/ncol(x); w <- 1 }
+    else { w <- 1; h <- 1 }
+    vp <- viewport(
+      #xscale = c(0,ncol(x)), yscale = c(nrow(x),0),
+      xscale = c(0.5,ncol(x)+.5), yscale = c(nrow(x)+.5,0.5),
+      width = unit(w, "snpc"), height = unit(h, "snpc"),
+      default.units = "native", name = name)
+    pushViewport(vp)
+  }
   
   ## make sure we have a color for the maximal value (see floor +1)
   col[length(col)+1] <- col[length(col)]

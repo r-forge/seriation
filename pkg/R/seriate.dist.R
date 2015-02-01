@@ -34,6 +34,9 @@ seriate.dist <-
       stop("Argument 'method' must be a character string.")
     
     method <- get_seriation_method("dist", method)
+  
+    if(!is.null(control$verbose) && control$verbose) cat(method$name, ": ", 
+      method$description, "\n", sep="")
     
     order <- method$fun(x, control = control)
     
@@ -367,11 +370,6 @@ seriate_dist_SPIN <- function(x, control = NULL) {
   step <- param$step
   verbose <- param$verbose
   
-  if(verbose) {
-    cat("Using options:\n")
-    print(param)
-  }
-  
   D <- as.matrix(x)
   n <- nrow(D)
   
@@ -441,11 +439,6 @@ seriate_dist_SPIN_STS <- function(x, control = NULL) {
   nstart <- param$nstart
   X <- param$X
   
-  if(verbose) {
-    cat("Using options:\n")
-    print(param)
-  }
-  
   D <- as.matrix(x)
   n <- nrow(D)
   
@@ -455,11 +448,11 @@ seriate_dist_SPIN_STS <- function(x, control = NULL) {
   W <- tcrossprod(X) ## X %*% t(X)
   
   .STS_run <- function() {
-    if(verbose) cat("Starting new run\n")
+    if(verbose) cat("\nStarting new run\n")
     
     ## start with random permutation
-    o <- sample(1:n)
-    P_best <- P <- permutation_vector2matrix(o)
+    o_best <- o <- sample(1:n)
+    #P_best <- P <- permutation_vector2matrix(o)
     #X_current <- crossprod(P, X)
     X_current <- X[o]
     #energy_best <- sum(diag(P %*% D %*% t(P) %*% W)) 
@@ -471,7 +464,7 @@ seriate_dist_SPIN_STS <- function(x, control = NULL) {
       ## permutation matrix that orders S in descending order (break ties)
       S <- D %*% X_current
       o <- order(S, sample(1:n), decreasing = TRUE)
-      P <- permutation_vector2matrix(o)
+      #P <- permutation_vector2matrix(o)
       #X_current <- crossprod(P, X) ## t(P) %*% X
       X_current <- X[o] ## t(P) %*% X
       
@@ -484,7 +477,8 @@ seriate_dist_SPIN_STS <- function(x, control = NULL) {
       ## was energy improved?
       if(energy_new < energy_best) { 
         energy_best <- energy_new
-        P_best <- P
+        #P_best <- P
+        o_best <- o
         if(verbose) cat(" - update") 
       }
       
@@ -494,7 +488,8 @@ seriate_dist_SPIN_STS <- function(x, control = NULL) {
     
     if(verbose) cat("Best Energy:", energy_best, "\n")
     
-    o <- permutation_matrix2vector(P_best)
+    #o <- permutation_matrix2vector(P_best)
+    o <- o_best
     attr(o, "energy") <- energy_best
     o
   }

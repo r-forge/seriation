@@ -65,7 +65,7 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
       list can contain the following elements:
 
       \describe{
-  \item{plot}{a logical indicating  if a plot should be produced.  if
+  \item{\code{plot}}{a logical indicating  if a plot should be produced.  if
       \code{FALSE}, the returned object can be plotted later using the function
       \code{plot} which takes as the second argument a list of plotting options
       (see \code{options} below).}
@@ -99,13 +99,17 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
 	should be increased (1 = linear, 2 = quadratic, etc.) with dissimilarity. }
   \item{\code{colorkey}}{ a logical indicating  whether to place a color key
       below the plot. }
+  \item{\code{labels}}{ display labels to the right of the image (by default 
+      enabled for less than 20 objects).}
   \item{\code{main}}{ title for the plot.}
   \item{\code{lines_col}}{ color used for the lines to separate clusters. }
   \item{\code{newpage}}{ a logical indicating  whether to start plot on a new
       page (see \code{grid.newpage} in package \pkg{grid}). }
   \item{\code{pop}}{a logical indicating  whether to pop the created viewports
       (see package \pkg{grid})?  }
-  \item{\code{gp}}{an object of class \code{gpar} containing graphical
+  \item{\code{gp_image}, \code{gp_labels}, \code{gp_main}}{ 
+      objects of class \code{gpar}       
+      containing graphical
       parameters (see \code{gpar} in package \pkg{grid}). }
       }
 }}
@@ -182,31 +186,31 @@ pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2),
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
 
 ## visualize the clustering
-res <- dissplot(d, l, method = "chen",  
-    options = list(main = "PAM + Seriation (Chen) - standard", 
+res <- dissplot(d, l, method = "MDS",  
+    options = list(main = "PAM + Seriation - standard", 
     newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 
-## more visualization options
+## more visualization options. Note that we reuse the reordered object res!
 ## color: use 10 shades of blue (hue = 270)
-plot(res, options = list(main = "PAM + Seriation (Chen) - blue, only avg.", 
+plot(res, options = list(main = "PAM + Seriation - blue, only avg.", 
     col= 10, hue=260, averages = c(TRUE, TRUE), newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
 
 ## threshold and cubic scale to highlight differences
-plot(res, options = list(main = "PAM + Seriation (Chen) - threshold", 
+plot(res, options = list(main = "PAM + Seriation - threshold", 
     threshold = 1.5, power = 3, newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
 
 ## use custom (logistic) scale
-plot(res, options = list(main = "PAM + Seriation (Chen) - logistic scale", 
-    col= hcl(c = 0, l = (plogis(seq(0,10,length=100), 
+plot(res, options = list(main = "PAM + Seriation - logistic scale", 
+    col= hcl(c = 0, l = (plogis(seq(0, 10, length=100), 
 	location = 2, scale = 1/2, log = FALSE))*100), 
 	newpage = FALSE))
 
