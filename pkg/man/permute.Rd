@@ -6,10 +6,9 @@
 \alias{permute.matrix}
 \alias{permute.array}
 \alias{permute.data.frame}
-\title{Permute a dist object, a matrix, an array, a list, or a numeric vector}
+\title{Permute a dist Object, a Matrix, an Array, a List, or a Vector}
 \description{
 A method for permuting 
-%and/or subsetting 
 various classes including 
 the observations in a
 \code{dist} object, the rows and columns of a matrix,
@@ -20,7 +19,7 @@ object.
 permute(x, order)
 }
 \arguments{
-  \item{x}{an object (a list, a numeric vector, a \code{dist} object, a matrix,
+  \item{x}{an object (a list, a vector, a \code{dist} object, a matrix,
       an array or any other object which provides \code{dim} and standard 
       subsetting with \code{"["}).} 
   \item{order}{an object of class \code{ser_permutation}

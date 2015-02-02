@@ -54,6 +54,8 @@ function (x, order)
 {
     ## make C call
     mode(x) <- "double"
+    ## as.dist seems to make Size numeric and not integer!
+    attr(x, "Size") <- as.integer(attr(x, "Size"))
     mode(order) <- "integer"
 
     d <- .Call("reorder_dist", x, order)

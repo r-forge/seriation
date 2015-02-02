@@ -2,7 +2,7 @@
 \alias{dist}
 \alias{seriation_dist}
 \alias{seriation_align}
-\title{Dissimilarity between seriation orders}
+\title{Dissimilarity Between Seriation Orders}
 \description{
 Calculates the dissimilarity between a set of seriation orders.
 }

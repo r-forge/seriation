@@ -20,8 +20,7 @@
 
 ## seriate matrices 
 
-seriate.matrix <-
-  function(x, method = NULL, control = NULL, 
+seriate.matrix <- function(x, method = "PCA", control = NULL, 
     margin = c(1,2), ...)
     .seriate_array_helper(x, method, control, margin, 
       datatype = "matrix", defmethod = "BEA_TSP", ...)

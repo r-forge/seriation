@@ -4,8 +4,8 @@
 \alias{print.ser_permutation}
 \alias{c.ser_permutation}
 \alias{"[.ser_permutation"}
-\title{Class ser\_permutation -- A collection of 
-permutation vectors for seriation}
+\title{Class ser\_permutation -- A Collection of 
+Permutation Vectors for Seriation}
 \description{
 The class \code{ser_permutation} is a collection of permutation vectors
 (see class \code{ser_permutation_vector}), one for each dimension (mode) 

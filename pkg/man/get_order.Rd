@@ -5,7 +5,7 @@
 \alias{get_order.ser_permutation_vector}
 \alias{get_order.ser_permutation}
 \alias{get_rank}
-\title{Getting an integer permutation vector from a permutation object}
+\title{Getting an Integer Permutation Vector from a Permutation Object}
 \description{
 Method to get an integer permutation vector from an object of class
 \code{ser_permutation} or \code{ser_permutation_vector}.

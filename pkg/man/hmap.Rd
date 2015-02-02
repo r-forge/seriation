@@ -1,6 +1,6 @@
 \name{hmap}
 \alias{hmap}
-\title{Plot heat map reordered by different algorithms}
+\title{Plot Heat Map Reordered by Different Algorithms}
 \description{
 Provides several reordered versions of heat map including dendrogram based
 reordering with optimal leaf order and matrix seriation based heat maps.
@@ -79,7 +79,7 @@ hmap(Wood)
 red_green <- colorRampPalette(c("green", "black", "red"))
 dist_cor <- function(x) as.dist(1-cor(t(x)))
   
-hmap(Wood, method="OLO", distfun = dist_cor, col=red_green(100))
+hmap(Wood, method="OLO", distfun = dist_cor, col=red_green(100), labRow=FALSE)
   
 ## order-based heatmap
 hmap(Wood, method="MDS_angle", distfun = dist_cor, col=red_green(100))  

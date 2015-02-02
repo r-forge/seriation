@@ -1,14 +1,14 @@
 \name{Irish}
 \alias{Irish}
 \docType{data}
-\title{Irish data}
+\title{Irish Referendum Data Set}
 \description{
 A data matrix containing the results of 8 referenda for 41 Irish communities 
-(two values are missing) used in Falguerolles et al (1997).
+ used in Falguerolles et al (1997).
 }
 \usage{data(Irish)}
 \format{
-  The format is a 41 x 9 matrix.
+  The format is a 41 x 9 matrix. Two values are missing.
 }
 \details{
 Column 6 contains the size of the Electorate in 1992.

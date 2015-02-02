@@ -1,7 +1,7 @@
 \name{Psych24}
 \alias{Psych24}
 \docType{data}
-\title{Psych24 -- 24 psychological tests}
+\title{Results of 24 Psychological Test for 8th Grade Students}
 \description{
 A data set collected by Holzinger and Swineford (1939) which consists of the
 results of 24 psychological tests given to 145 seventh and eighth grade

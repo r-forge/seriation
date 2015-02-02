@@ -20,18 +20,16 @@
 
 ## seriate general arrays 
 
-.seriate_array_helper <-
-  function(x, method = NULL, control = NULL, 
-    margin = seq(length(dim(x))), datatype = "array", defmethod, ...)
-  {
+.seriate_array_helper <- function(x, method = "PCA", control = NULL, 
+    margin = seq(length(dim(x))), datatype = "array", defmethod, ...){
     
     ## add ... to control
     control <- c(control, list(...))
     
-    
     ## margin 1...rows, 2...cols, ...
-    if(is.null(method)) method <- "PCA"
-    else if(!is.character(method) || (length(method) != 1L))
+    #if(is.null(method)) method <- "PCA"
+    #else 
+    if(!is.character(method) || (length(method) != 1L))
       stop("Argument 'method' must be a character string.")
     
     method <- get_seriation_method(datatype, method)
@@ -44,8 +42,7 @@
     perm[margin]
   }
 
-seriate.array <-
-  function(x, method = NULL, control = NULL, 
+seriate.array <- function(x, method = "PCA", control = NULL, 
     margin = seq(length(dim(x))), ...)
     .seriate_array_helper(x, method, control, margin, 
       datatype = "array", defmethod = NA,...)

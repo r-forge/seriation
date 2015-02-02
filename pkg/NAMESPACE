@@ -8,6 +8,7 @@ importFrom("gclus", "reorder.hclust") ## we use :: for gclus in seriate.hclust
 importFrom("cluster", "silhouette") ## we use :: for silhouette in dissplot
 importFrom("MASS", "isoMDS", "sammon")
 importFrom("gplots", "heatmap.2")
+importFrom("stats", "reorder")
 
 export(
     bertinplot,
@@ -30,7 +31,7 @@ export(
     permutation_vector2matrix,
     pimage, 
     seriate,
-    
+
   ## registries
     set_criterion_method,
     get_criterion_method,
@@ -85,6 +86,8 @@ S3method(permute, data.frame)
 S3method(seriate, dist)
 S3method(seriate, matrix)
 S3method(seriate, array)
+
+S3method(reorder, hclust)
 
 S3method(summary, ser_permutation)
 S3method(summary, ser_permutation_vector)

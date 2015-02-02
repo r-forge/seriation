@@ -1,7 +1,7 @@
 \name{permutation_matrix}
 \alias{permutation_matrix2vector}
 \alias{permutation_vector2matrix}
-\title{Conversion between Permutation Vector and Matrix}
+\title{Conversion Between Permutation Vector and Permutation Matrix}
 \description{
 Converts between permutation vectors and matrices.
 }

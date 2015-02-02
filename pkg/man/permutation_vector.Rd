@@ -6,7 +6,7 @@
 \alias{get_method}
 \alias{length.ser_permutation_vector}
 \title{Class ser\_permutation\_vector -- 
-A single permutation vector for seriation}
+A Single Permutation Vector for Seriation}
 \description{
 The class \code{ser_permutation_vector} 
 represents a single permutation vector. 

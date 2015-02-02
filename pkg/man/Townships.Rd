@@ -1,10 +1,12 @@
 \name{Townships}
 \alias{Townships}
 \docType{data}
-\title{Bertin's Characteristics and Townships Data Set}
+\title{Bertin's Characteristics of Townships}
 \description{
-  This data set was used to illustrate that the conciseness of presentation
-    can be improved by seriating the rows and columns.
+  This data contains nine characteristics for 16 townships. The data 
+  set was used by Bertin (1981) to illustrate that the conciseness 
+  of presentation
+  can be improved by seriating the rows and columns.
 }
 \usage{data("Townships")}
 \format{

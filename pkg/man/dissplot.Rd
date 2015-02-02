@@ -19,7 +19,8 @@ is added. This visualization is similar to CLUSION (see Strehl and Ghosh 2002),
 however, allows for using arbitrary seriating algorithms.
 }
 \usage{
-dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)   
+dissplot(x, labels = NULL, method = "ARSA", 
+  control = NULL, options = NULL)   
 }
 \arguments{
   \item{x}{ an object of class \code{dist}.}
@@ -40,7 +41,7 @@ dissplot(x, labels = NULL, method = NULL, control = NULL, options = NULL)
 
       Set method to \code{NA} to plot the matrix as is (no or only coarse 
 	  seriation). For intra cluster reordering the special
-      method \code{silhouette width} is available. Objects in clusters are
+      method \code{"silhouette width"} is available. Objects in clusters are
       then ordered by silhouette width (from silhouette plots).
       If no \code{method} is given, the default method of \code{seriate.dist}
       is used.
@@ -171,7 +172,7 @@ d <- dist(iris[-5])
 res <- dissplot(d, method = NA)
 
 ## plot reordered matrix using the nearest insertion algorithm (from tsp)
-res <- dissplot(d, method = "tsp",
+res <- dissplot(d, method = "TSP",
     options = list(main = "Seriation (TSP)"))
 
 ## cluster with pam (we know iris has 3 clusters)
@@ -185,8 +186,8 @@ pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2),
     gp = gpar(fontsize = 8)))
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
 
-## visualize the clustering
-res <- dissplot(d, l, method = "MDS",  
+## visualize the clustering (using ARSA between clusters and MDS within)
+res <- dissplot(d, l, method = list(inter = "ARSA", intra = "MDS"),  
     options = list(main = "PAM + Seriation - standard", 
     newpage = FALSE))
 

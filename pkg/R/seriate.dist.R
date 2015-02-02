@@ -20,17 +20,15 @@
 
 ## seriate dist objects
 
-seriate.dist <-
-  function(x, method = NULL, control = NULL, ...)
-  {
+seriate.dist <- function(x, method = "ARSA", control = NULL, ...) {
     if(!all(x>=0)) stop("Negative distances not supported!")
   
     ## add ... to control
     control <- c(control, list(...))
     
-    if(is.null(method))
-      method <- "ARSA"
-    else if(!is.character(method) || (length(method) != 1L))
+    #if(is.null(method)) method <- "ARSA"
+    #else 
+    if(!is.character(method) || (length(method) != 1L))
       stop("Argument 'method' must be a character string.")
     
     method <- get_seriation_method("dist", method)

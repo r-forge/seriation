@@ -2,10 +2,12 @@
 \alias{pimage}
 \alias{pimage.matrix}
 \alias{pimage.dist}
-\title{Permutation image plot}
+\title{Permutation Image Plot}
 \description{
   Provides methods for plotting image plots for 
-  matrix and \code{dist} objects given a permutation. This plot can also
+  matrix and \code{dist} objects given a permutation. 
+  By default, no permutation is performed.
+  This plot can also
   be used as a more versatile replacement of \code{image} plot 
   in \pkg{graphics} based on \pkg{grid}.
 }
@@ -64,7 +66,7 @@ x <- matrix(sample(c(FALSE, TRUE), 300, rep=TRUE), ncol=10,
 ## matrix
 pimage(x, main = "Random data")
 
-## plot seriated matrix (use red, proportional display and plot all axes)
+# plot seriated matrix (use red, proportional display and plot all axes)
 pimage(x, seriate(x), col = c("white", "red"), 
   prop = TRUE, axes="both", main = "Reordered data")
 

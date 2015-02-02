@@ -1,10 +1,10 @@
 \name{Wood}
 \alias{Wood}
 \docType{data}
-\title{Wood gene expression data}
+\title{Gene Expression Data for Wood Formation in Poplar Trees}
 \description{
 A data matrix containing a sample of the normalized gene expression data for
-6 locations in the stem of Polar trees 
+6 locations in the stem of Popla trees 
 published in the study by Herzberg et al (2001).
 The sample of 136 genes selected by 
 Caraux and Pinloche (2005).

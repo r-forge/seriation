@@ -1,10 +1,12 @@
 \name{Zoo}
 \alias{Zoo}
 \docType{data}
-\title{Zoo database}
+\title{Zoo Data Set}
 \description{
 A database containing characteristics of different animals.
-The database was created and donated by Richard S. Forsyth.
+The database was created and donated by Richard S. Forsyth
+and is available from the UCI Machine Learning Repository 
+(Newman et al, 1998).
 }
 \usage{data("Zoo")}
 \format{

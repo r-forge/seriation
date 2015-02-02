@@ -22,7 +22,7 @@
 
 
 ## interface
-dissplot <- function(x, labels = NULL, method = NULL,
+dissplot <- function(x, labels = NULL, method = "ARSA",
   control = NULL, options = NULL) {
   
   ## make x dist
@@ -69,11 +69,11 @@ dissplot <- function(x, labels = NULL, method = NULL,
   aggregation	<- "avg"
   if(class(method) == "list" && !is.null(method$a)) aggregation <- method$a
   
-  
-  ## default is NULL which means use the default of reorder
-  ## maybe we want to check if names inter and intra are ok
   if(class(method) != "list") method <- 
     list(inter_cluster = m, intra_cluster = m)
+  m <- pmatch(names(method), c("inter_cluster", "intra_cluster", "aggregation"))
+  if(any(is.na(m))) stop("Unknown method component. Use 'inter_cluster', 'intra_cluster' and 'aggregation'.")
+  names(method) <- c("inter_cluster", "intra_cluster", "aggregation")[m]
   
   if(class(control[[1]]) != "list"){
     control <- list(inter_cluster = control, intra_cluster = control)
@@ -256,13 +256,13 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
   ## default plot options
   options <- .get_parameters(options, list(
     cluster_labels = TRUE, 
-    averages	= c(FALSE, TRUE), ## (upper.tri, lower.tri); NA means white
-    flip		= FALSE,
+    averages	  = c(FALSE, TRUE), ## (upper.tri, lower.tri); NA means white
+    flip		    = FALSE,
     lines       = TRUE, 
     silhouettes = FALSE,
     col         = 100, 
-    power		= 1,
-    hue			= NULL,
+    power		    = 1,
+    hue			    = NULL,
     threshold   = NULL,
     main        = NULL,
     colorkey    = TRUE,

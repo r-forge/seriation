@@ -4,7 +4,7 @@
 \alias{get_seriation_method}
 \alias{list_seriation_methods}
 \alias{show_seriation_methods}
-\title{Registry for seriation methods}
+\title{Registry for Seriation Methods}
 \description{
 A registry to manage methods for seriation.
 }

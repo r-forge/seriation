@@ -6,7 +6,7 @@
 \alias{panel.squares}
 \alias{panel.lines}
 \alias{panel.blocks}
-\title{Plot a Bertin matrix}
+\title{Plot a Bertin Matrix}
 \description{
 Plot a data matrix of cases and variables. Each value is represented by a
 symbol. Large values are highlighted. The matrix can be rearranged to make

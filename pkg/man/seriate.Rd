@@ -3,17 +3,17 @@
 \alias{seriate.matrix}
 \alias{seriate.dist}
 \alias{seriate.array}
-\title{Seriate objects in dissimilarity matrices, matrices or arrays}
+\title{Seriate Dissimilarity Matrices, Matrices or Arrays}
 \description{
 Tries to find an linear order for objects using data in form of a dissimilarity 
 matrix (two-way one mode data), a data matrix (two-way two-mode data) or a 
 data array (k-way k-mode data).
 }
 \usage{
-\method{seriate}{dist}(x, method = NULL, control = NULL, \ldots)
-\method{seriate}{matrix}(x, method = NULL, control = NULL, 
+\method{seriate}{dist}(x, method = "ARSA", control = NULL, \ldots)
+\method{seriate}{matrix}(x, method = "PCA", control = NULL, 
     margin = c(1,2), \ldots)
-\method{seriate}{array}(x, method = NULL, control = NULL, 
+\method{seriate}{array}(x, method = "PCA", control = NULL, 
     margin = seq(length(dim(x))), \ldots)
 }
 \arguments{
