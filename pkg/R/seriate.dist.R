@@ -153,11 +153,24 @@ seriate_dist_hc_complete <- function(x, control = NULL)
   .hclust_helper(x, control=list(method="complete"))
 
 ## workhorses are in seriation.hclust
-seriate_dist_hc_gw <- function(x, control = NULL)
-  .seriate_gruvaeus(.hclust_helper(x, control), x)
+seriate_dist_gw <- function(x, control = NULL)
+  reorder(seriate_dist_hc(x, control), x, method="GW")
+seriate_dist_gw_single <- function(x, control = NULL)
+  reorder(seriate_dist_hc_single(x, control), x, method="GW")
+seriate_dist_gw_average <- function(x, control = NULL)
+  reorder(seriate_dist_hc_average(x, control), x, method="GW")
+seriate_dist_gw_complete <- function(x, control = NULL)
+  reorder(seriate_dist_hc_complete(x, control), x, method="GW")
 
-seriate_dist_hc_optimal <- function(x, control = NULL)
-  seriate_optimal(.hclust_helper(x, control), x)
+
+seriate_dist_olo <- function(x, control = NULL)
+  reorder(seriate_dist_hc(x, control), x, method="OLO")
+seriate_dist_olo_single <- function(x, control = NULL)
+  reorder(seriate_dist_hc_single(x, control), x, method="OLO")
+seriate_dist_olo_average <- function(x, control = NULL)
+  reorder(seriate_dist_hc_average(x, control), x, method="OLO")
+seriate_dist_olo_complete <- function(x, control = NULL)
+  reorder(seriate_dist_hc_complete(x, control), x, method="OLO")
 
 ## brusco: simulated annealing for anti-robinson
 seriate_dist_arsa <- function(x, control = NULL) {
@@ -292,6 +305,7 @@ seriate_dist_VAT <- function(x, control = NULL) {
   names(P) <- labels(x)[P]
   P
 }
+
 
 ## spectral seriation
 ## Ding, C. and Xiaofeng He (2004): Linearized cluster assignment via
@@ -541,10 +555,23 @@ set_seriation_method("dist", "HC_complete", seriate_dist_hc_complete,
 set_seriation_method("dist", "HC_average", seriate_dist_hc_average,
   "Hierarchical clustering (avg. link)")
 
-set_seriation_method("dist", "GW", seriate_dist_hc_gw,
+set_seriation_method("dist", "GW", seriate_dist_gw,
   "Hierarchical clustering reordered by Gruvaeus and Wainer heuristic")
-set_seriation_method("dist", "OLO", seriate_dist_hc_optimal,
+set_seriation_method("dist", "GW_single", seriate_dist_gw_single,
+  "Hierarchical clustering (single link) reordered by Gruvaeus and Wainer heuristic")
+set_seriation_method("dist", "GW_average", seriate_dist_gw_average,
+  "Hierarchical clustering (avg. link) reordered by Gruvaeus and Wainer heuristic")
+set_seriation_method("dist", "GW_complete", seriate_dist_gw_complete,
+  "Hierarchical clustering (complete link) reordered by Gruvaeus and Wainer heuristic")
+
+set_seriation_method("dist", "OLO", seriate_dist_olo,
+  "Hierarchical clustering (single link) with optimal leaf ordering")
+set_seriation_method("dist", "OLO_single", seriate_dist_olo_single,
   "Hierarchical clustering with optimal leaf ordering")
+set_seriation_method("dist", "OLO_average", seriate_dist_olo_average,
+  "Hierarchical clustering (avg. link) with optimal leaf ordering")
+set_seriation_method("dist", "OLO_complete", seriate_dist_olo_complete,
+  "Hierarchical clustering (complete link) with optimal leaf ordering")
 
 set_seriation_method("dist", "VAT", seriate_dist_VAT,
   "Visual assesment of clustering tendency (VAT)")

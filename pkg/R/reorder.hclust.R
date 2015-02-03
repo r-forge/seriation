@@ -19,8 +19,8 @@
 reorder.hclust <- function(x, dist, method = "OLO", ...) {
   method <- match.arg(tolower(method), choices = c("olo", "gw"))
   switch(method, 
-      olo = seriate_optimal(x, dist),
-      gw = .seriate_gruvaeus(x, dist)
+      olo = .seriate_optimal(x, dist),
+      gw  = .seriate_gruvaeus(x, dist)
     )
 }
 
@@ -31,7 +31,7 @@ reorder.hclust <- function(x, dist, method = "OLO", ...) {
 ## wrapper to the optimal leaf ordering algorithm
 ##
 ## ceeboo 2005
-seriate_optimal <- function(hclust, dist) {
+.seriate_optimal <- function(hclust, dist) {
     ## check hclust
     merge <- hclust$merge
     if (!is.matrix(merge))

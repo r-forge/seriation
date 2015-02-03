@@ -31,6 +31,9 @@ export(
     permutation_vector2matrix,
     pimage, 
     seriate,
+  
+    path_dist,
+    create_lines_data,
 
   ## registries
     set_criterion_method,
