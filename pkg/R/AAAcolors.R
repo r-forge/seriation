@@ -16,28 +16,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
     
-## mapping helper
 
-map <- function(x, range = c(0,1), from.range=NA) {
-    if(any(is.na(from.range))) from.range <- range(x, na.rm=TRUE)
-    
-    ## check if all values are the same
-    if(!diff(from.range)) return(
-	    matrix(mean(range), ncol=ncol(x), nrow=nrow(x), 
-		    dimnames = dimnames(x)))
-    
-    ## map to [0,1]
-    x <- (x-from.range[1])
-    x <- x/diff(from.range)
-    ## handle single values
-    if(diff(from.range) == 0) x <- 0 
-    
-    ## map from [0,1] to [range]
-    if (range[1]>range[2]) x <- 1-x
-    x <- x*(abs(diff(range))) + min(range)
-    
-    x[x<min(range) | x>max(range)] <- NA
-    
-    x
-}
+## define default colors
 
+.sequential_pal <- function(n= 100, power = 1) 
+  colorspace::sequential_hcl(n, c.=c(0), l=c(90,30), power = power)
+#.sequential_pal <- rev(gray.colors(64)) 
+
+.diverge_pal <- function(n = 100, power = 1) 
+  colorspace::diverge_hcl(n, c = 100, l = c(30, 90), power = 1)
+#.diverge_pal <- colorRampPalette(c("red", "black", "blue"))(100) 

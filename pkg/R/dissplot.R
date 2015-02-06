@@ -23,7 +23,10 @@
 
 ## interface
 dissplot <- function(x, labels = NULL, method = "ARSA",
-  control = NULL, options = NULL) {
+  control = NULL, options = NULL, ...) {
+  
+  ## add ... to options
+  options <- c(options, list(...))
   
   ## make x dist
   if(!inherits(x, "dist")) {
@@ -260,9 +263,9 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
     flip		    = FALSE,
     lines       = TRUE, 
     silhouettes = FALSE,
-    col         = 100, 
+    range       = NULL,
+    col         = NULL, 
     power		    = 1,
-    hue			    = NULL,
     threshold   = NULL,
     main        = NULL,
     colorkey    = TRUE,
@@ -275,16 +278,8 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
     gp_labels   = gpar(cex = .8)
   )) 
   
-  ## length(col) == 1 means number of colors otherwise we expect col palette
-  if(length(options$col) == 1) {
-    if(is.null(options$hue)) options$col <- 
-      sequential_hcl(options$col, c.=0, l=c(10,90), 
-        power=options$power)
-    else options$col <-
-      sequential_hcl(options$col, h=options$hue, c.=c(80,0), l=c(30,90), 
-        power=options$power)
-  }
-  
+  if(is.null(options$col)) 
+    options$col <- rev(.sequential_pal(power=options$power))
   
   ## clear page
   if(options$newpage) grid.newpage()
@@ -430,10 +425,11 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
   ## image
   pushViewport(image_vp)
   
-  range_m <- range(m, na.rm = TRUE)
+  if(is.null(options$range)) options$range <- range(m, na.rm = TRUE)
   if(!is.null(options$threshold)) m[m > options$threshold] <- NA
   
-  .grid_image(m, col = options$col, zlim = range_m, gp = options$gp_image)
+  .grid_image(m, col = options$col, zlim = options$range, 
+    gp = options$gp_image)
   
   if(options$labels) {
     ## add labels
@@ -450,7 +446,7 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
   
   if(options$colorkey) {
     pushViewport(colorkey_vp)
-    .grid_colorkey(range_m, col = options$col, 
+    .grid_colorkey(options$range, col = options$col, 
       threshold = options$threshold, gp = options$gp_image)
     upViewport(1)
   }

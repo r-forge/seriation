@@ -20,7 +20,7 @@ however, allows for using arbitrary seriating algorithms.
 }
 \usage{
 dissplot(x, labels = NULL, method = "ARSA", 
-  control = NULL, options = NULL)   
+  control = NULL, options = NULL, \ldots)   
 }
 \arguments{
   \item{x}{ an object of class \code{dist}.}
@@ -65,55 +65,56 @@ dissplot(x, labels = NULL, method = "ARSA",
   \item{options}{a list with options for plotting the matrix. The
       list can contain the following elements:
 
-      \describe{
-  \item{\code{plot}}{a logical indicating  if a plot should be produced.  if
+  \describe{
+    \item{\code{plot}}{a logical indicating  if a plot should be produced.  if
       \code{FALSE}, the returned object can be plotted later using the function
       \code{plot} which takes as the second argument a list of plotting options
       (see \code{options} below).}
-  \item{\code{cluster_labels}}{ a logical indicating whether to display cluster
+    \item{\code{cluster_labels}}{ a logical indicating whether to display cluster
       labels in the plot.}
-  \item{\code{averages}}{ a logical vector of length two. 
+    \item{\code{averages}}{ a logical vector of length two. 
 	The first element controls the upper triangle and the second element 
 	the lower triangle of the plot. \code{FALSE} displays the original
 	dissimilarity between objects, \code{TRUE} displays cluster-wise 
 	average dissimilarities, and \code{NA} leaves the triangle white
 	(default: \code{c(FALSE, TRUE)}, i.e., the lower triangle displays
 	averages)}
-  \item{\code{lines}}{ a logical indicating  whether to draw lines to separate
+    \item{\code{lines}}{ a logical indicating  whether to draw lines to separate
       clusters.} 
-  \item{\code{flip}}{ a logical indicating if the clusters are displayed 
+    \item{\code{flip}}{ a logical indicating if the clusters are displayed 
   on the diagonal from
   north-west to south-east (\code{FALSE}; default) or from 
   north-east to south-west (\code{TRUE}).} 
-  \item{\code{silhouettes}}{ a logical indicating  whether to include a
+    \item{\code{silhouettes}}{ a logical indicating  whether to include a
       silhouette plot (see Rousseeuw, 1987).} 
-  \item{\code{threshold}}{ a numeric. If used, only plot distances below the
+    \item{\code{threshold}}{ a numeric. If used, only plot distances below the
       threshold are displayed.} 
-  \item{\code{col}}{ colors used for the image plot. If \code{col} is a single
+    \item{\code{col}}{ colors used for the image plot. If \code{col} is a single
   number, it specifies the number of different shades used in the plot
   (default: 100 shades of gray using the HCL colorspace). If \code{col} 
   not a single number, it is expected to be a full color palette and
   the potions \code{hue} and \code{power} are ignored.}
-  \item{\code{hue}}{ color in [0,360] taken from the HCL color wheel. \code{NA}
-  indicates gray scale (default: gray scale).}
-  \item{\code{power}}{ determines how luminance (and chroma for color) 
+    \item{\code{power}}{ determines how luminance (and chroma for color) 
 	should be increased (1 = linear, 2 = quadratic, etc.) with dissimilarity. }
-  \item{\code{colorkey}}{ a logical indicating  whether to place a color key
+    \item{\code{colorkey}}{ a logical indicating  whether to place a color key
       below the plot. }
-  \item{\code{labels}}{ display labels to the right of the image (by default 
+    \item{\code{range}}{ range to display (defaults to range \code{x}).}
+    \item{\code{labels}}{ display labels to the right of the image (by default 
       enabled for less than 20 objects).}
-  \item{\code{main}}{ title for the plot.}
-  \item{\code{lines_col}}{ color used for the lines to separate clusters. }
-  \item{\code{newpage}}{ a logical indicating  whether to start plot on a new
+    \item{\code{main}}{ title for the plot.}
+    \item{\code{lines_col}}{ color used for the lines to separate clusters. }
+    \item{\code{newpage}}{ a logical indicating  whether to start plot on a new
       page (see \code{grid.newpage} in package \pkg{grid}). }
-  \item{\code{pop}}{a logical indicating  whether to pop the created viewports
+    \item{\code{pop}}{a logical indicating  whether to pop the created viewports
       (see package \pkg{grid})?  }
-  \item{\code{gp_image}, \code{gp_labels}, \code{gp_main}}{ 
+    \item{\code{gp_image}, \code{gp_labels}, \code{gp_main}}{ 
       objects of class \code{gpar}       
       containing graphical
       parameters (see \code{gpar} in package \pkg{grid}). }
       }
-}}
+  }
+  \item{\ldots}{further arguments are added to \code{options}.}
+}
 %\details{
 %}
 \value{
@@ -163,7 +164,7 @@ visualization for high-dimensional data mining.
    package \pkg{grid} and
    \code{\link{seriate}}.
 }
-%\author{Michael Hahsler}
+\author{Michael Hahsler}
 \examples{
 data("iris")
 d <- dist(iris[-5])
@@ -195,16 +196,16 @@ popViewport()
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 
 ## more visualization options. Note that we reuse the reordered object res!
-## color: use 10 shades of blue (hue = 270)
-plot(res, options = list(main = "PAM + Seriation - blue, only avg.", 
-    col= 10, hue=260, averages = c(TRUE, TRUE), newpage = FALSE))
+## color: use 10 shades red-blue
+plot(res, options = list(main = "PAM + Seriation", 
+    col= colorRampPalette(c("red", "white", "blue"))(10), newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
 
 ## threshold and cubic scale to highlight differences
 plot(res, options = list(main = "PAM + Seriation - threshold", 
-    threshold = 1.5, power = 3, newpage = FALSE))
+    threshold = 1.5, power = .5, newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))

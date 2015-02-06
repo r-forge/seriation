@@ -30,8 +30,27 @@ path_dist <- function(x) {
   
   ## make C call
   m <- as.matrix(x)
+  
+  if(any(is.na(m))) stop("NAs not allowed in x.")
+  if(any(m<0)) stop("Negative values not allowed in x.")
   mode(m) <- "double"
+
+  ## replace Inf with large number
+  m[is.infinite(m)] <- .Machine$double.xmax
+  
+  if(any(m<0)) stop("Negative values not allowed in x.")
   
   m <- .Call("pathdist_floyd", m, PACKAGE = "seriation")
   as.dist(m)
+}
+
+VAT <- function(x, ...) {
+  if(!is(x, "dist")) stop("x needs to be of class 'dist'!")
+  pimage(x, seriate(x, "VAT"), ...)  
+}
+
+iVAT <- function(x, ...) {
+  if(!is(x, "dist")) stop("x needs to be of class 'dist'!")
+  x <- path_dist(x)
+  pimage(x, seriate(x, "VAT"), ...)  
 }

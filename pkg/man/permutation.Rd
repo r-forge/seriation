@@ -22,17 +22,19 @@ ser_permutation(x, \ldots)
       vector).}
   \item{\ldots}{permutation vectors for further dimensions}
     }
-%\details{
-%}
-%\value{
-%}
-%\references{}
-%\author{}
+\details{
+The basic functions \code{print}, \code{"["}, \code{"[["} and \code{c}
+are provided.
+}
+\value{
+An object of class \code{ser_permutation}.
+}
 \seealso{
 \code{\link{ser_permutation_vector}},
 \code{\link{get_order}},
 \code{\link{get_rank}}
 }
+\author{Michael Hahsler}
 \examples{
 o <- ser_permutation(1:5, 10:1)
 o

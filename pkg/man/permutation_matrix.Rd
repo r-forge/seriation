@@ -14,13 +14,11 @@ permutation_vector2matrix(x)
     permutation vector, e.g., a integer vector or a \code{hclust} object) or a 
     matrix representing a permutation. Arguments are checked.} 
 }
-%\details{
-%}
-%\author{Michael Hahsler}
 \seealso{
 \code{\link{ser_permutation}},
 \code{\link{permute}}
 }
+\author{Michael Hahsler}
 \examples{
 ## create a random permutation vector
 pv <- sample(1:5)

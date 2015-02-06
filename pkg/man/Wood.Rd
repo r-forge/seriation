@@ -13,8 +13,6 @@ Caraux and Pinloche (2005).
 \format{
   The format is a 136 x 6 matrix.
 }
-%\details{
-%}
 \source{
 The data was obtained from 
 \url{http://www.atgc-montpellier.fr/permutmatrix/manual/Exemples/Wood/Wood.htm}.

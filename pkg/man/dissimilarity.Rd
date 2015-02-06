@@ -1,25 +1,27 @@
 \name{dissimilarity}
 \alias{dist}
 \alias{seriation_dist}
+\alias{seriation_cor}
 \alias{seriation_align}
 \title{Dissimilarity Between Seriation Orders}
 \description{
-Calculates the dissimilarity between a set of seriation orders.
+Calculates dissimilarities/correlations between seriation orders in a list.
 }
 \usage{
-seriation_dist(x, method = "kendall")
-seriation_align(x, method = "manhattan")
+seriation_dist(x, method = "spearman")
+seriation_cor(x, method = "spearman")
+seriation_align(x, method = "spearman")
 }
 \arguments{
   \item{x}{seriation orders as a list with elements of class 
     \code{ser_permutation}.}
   \item{method}{ a character string with the name of the used measure
     (\code{"kendall"}, \code{"spearman"}, \code{"manhattan"}, 
-    \code{"euclidean"}). Alignment only supports \code{"manhattan"} and 
-    \code{"euclidean"}.}
+    \code{"euclidean"}).}
 }
 \details{
-The correlation coefficients (Kendall's tau and Spearman's rho) are converted
+For \code{seriation_dist},
+the correlation coefficients (Kendall's tau and Spearman's rho) are converted
 into a dissimilarity by taking one minus the absolute value. The absolute
 value is used since a negative correlation just means that reversing the
 order results in a positive correlation of the same magnitude.
@@ -31,7 +33,13 @@ ranks in a linear order is equivalent to Spearman's footrule
 metric (Diaconis 1988).
 
 \code{seriation_align} normalizes in a list of seriations the direction such 
-that ranking-based methods can be used. We use a modified version of Prim's
+that ranking-based methods can be used. For the 
+correlation coefficients \code{"spearman"} and \code{"kendall"} we 
+first find the order which has the largest sum of positive correlations with
+all other orders. We use this order as the seed and reverse all orders that 
+are negatively correlated. For \code{"manhattan"} and \code{"euclidean"}
+we add all reversed orders to the set and then
+use a modified version of Prim's
 algorithm for finding a minimum spanning tree (MST) to choose if the original seriation order or its reverse should be used. We use the orders first added to 
 the MST. Every time an order is added, its reverse is removed from the possible 
 orders.
@@ -47,11 +55,13 @@ P. Diaconis (1988): Group Representations in Probability and Statistics. Institu
 \seealso{
 \code{\link{ser_permutation_vector}}
 }
+\author{Michael Hahsler}
 \examples{
 ## seriate dist of 20 flowers from the iris data set
 data("iris")
 x <- as.matrix(iris[-5])
 x <- x[sample(1:nrow(x), 25),]
+rownames(x) <- 1:25
 d <- dist(x)
 
 ## create a list of different seriations
@@ -65,16 +75,21 @@ os <- sapply(methods, function(m) {
   o
 })
 
-## compare the methods
-ds1 <- seriation_dist(os, method="kendall")
-plot(hclust(ds1))  
+## compare the methods using distances
+ds <- seriation_dist(os)
+hmap(ds)
 
-ds2 <- seriation_dist(os, method="manhattan")
-plot(hclust(ds2))  
-
-## normalize direction so all seriations are visualized in the 
-## same general order
+## comapte using actual correlation (Note: reversed orders are neg. correlated!)
+cs <- seriation_cor(os)
+hmap(cs, col=colorRampPalette(c("red", "black", "blue"))(100))
+  
+## normalize direction of the seriation orders
 os2 <- seriation_align(os)
+cs2 <- seriation_cor(os2)
+hmap(cs2, col=colorRampPalette(c("red", "black", "blue"))(100), 
+  breaks=seq(-1, 1, length.out=101))
+ 
+## plot the actual seriations  
 for(i in os2) pimage(d, i, main = get_method(i))
 }
 \keyword{cluster}

@@ -17,7 +17,8 @@ ser_permutation_vector(x, method = NULL)
 }
 \arguments{
   \item{x}{ an object which contains a permutation vector (currently an
-      integer vector or an object of class \code{hclust})}
+      integer vector or an object of class \code{hclust}). The value \code{NA}
+      creates an identity permutation. }
   \item{method}{ a string representing the method used to obtain the
       permutation vector}
     }
@@ -35,18 +36,22 @@ which is a collection of \eqn{k} permutation vectors for \eqn{k}-mode data.
 The constructor \code{ser_permutation_vector} 
 checks if the permutation vector is valid 
 (i.e. if all integers occur exactly once).
+
+The following functions are implemented: \code{print}, \code{rev},
+\code{length}, \code{get_order}, \code{get_rank}, \code{get_method}.
 }
-%\value{
-%}
-%\references{}
-%\author{}
+\value{
+An object of class \code{ser_permutation_vector}.
+}
 \seealso{
 \code{\link{ser_permutation}},
 \code{\link{get_order}},
-\code{\link{get_rank}}
+\code{\link{get_rank}},
+\code{\link{permutation_vector2matrix}}.
 }
+\author{Michael Hahsler}
 \examples{
-p <- ser_permutation_vector(1:10, "identity")
+p <- ser_permutation_vector(sample(10), "random")
 p
 
 ## some methods
@@ -57,5 +62,9 @@ get_method(p)
 r <- rev(p)
 r
 get_order(r)
+
+## create a indentity permutation vector (with unknown length)
+i <- ser_permutation_vector(NA)
+i 
 }
 \keyword{classes}% at least one, from doc/KEYWORDS

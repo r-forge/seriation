@@ -11,6 +11,7 @@ create_lines_data <- function(n=250) {
   
   x <- rbind(x1, x2, x3)
   x <- x[sample(nrow(x)),]
+  rownames(x) <- 1:nrow(x)
   x
 }
 

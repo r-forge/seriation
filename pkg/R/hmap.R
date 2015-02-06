@@ -35,13 +35,16 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL, ...) {
   o_row <- seriate(dist_row, 
     method = method, control = control)[[1]]
   
-  ### is hierarchical? then let's do heatmap in stats
+  ### is hierarchical? then let's do heatmap in gplots
   if(is(o_col, "hclust")) {
     ## heatmap by default scales rows: we don't want that!
     ## options are ignored for now: we use ... 
     
     args <- list(...)
-    if(is.null(args$col)) args$col <- gray.colors(256)
+    if(is.null(args$col)) {
+      if(any(x<0)) args$col <- .diverge_pal()
+      else args$col <- .sequential_pal()
+    }
     if(is.null(args$scale)) args$scale <- "none"
     if(is.null(args$trace)) args$trace <- "none"
     if(is.null(args$density.info)) args$density.info <- "none"
@@ -70,19 +73,22 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL, ...) {
   
   ## options
   options <- list(...)
-  col     <- if(is.null(options$col)) gray.colors(256) else options$col
-  prop    <- if(is.null(options$prop)) FALSE else options$prop
-  newpage <- if(is.null(options$newpage)) TRUE else options$newpage
-  gp      <- if(is.null(options$gp)) gpar() else options$gp
-  main    <- options$main
-  dist    <- if(is.null(options$showdist)) TRUE else options$showdist
+  options <- .get_parameters(options, list(
+    col = .sequential_pal(),
+    prop = FALSE,
+    newpage = TRUE,
+    gp = gpar(),
+    main = NULL,
+    showdist = TRUE,
+    range = if(any(x<0)) max(abs(range(x))) * c(-1,1) else range(x)
+  ))
   
   x <- permute(x, ser_permutation(o_row, o_col))
   dist_row <- permute(dist_row, o_row)
   dist_col <- permute(dist_col, o_col)
   
   ## plot
-  if(newpage) grid.newpage()
+  if(options$newpage) grid.newpage()
   
   ## surrounding viewport
   pushViewport(viewport(layout=grid.layout(nrow = 5 , ncol = 3, 
@@ -101,7 +107,7 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL, ...) {
   
   
   ## main title
-  if(!is.null(main)){
+  if(!is.null(options$main)){
     pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
     grid.text(main, gp = gpar(cex = 1.3))
     upViewport(1)
@@ -109,8 +115,8 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL, ...) {
   
   
   ## plots
-  if(dist) {
-    if(prop) {
+  if(options$showdist) {
+    if(options$prop) {
       widths <- unit.c(
         unit(1-ncol(x)/sum(ncol(x), nrow(x)), "npc") - unit(.25, "lines"),
         unit(.5, "lines"),
@@ -137,33 +143,34 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL, ...) {
   }
   
   # data
-  if(dist) { 
+  if(options$showdist) { 
     pushViewport(viewport(layout.pos.row = 3, layout.pos.col = 3))
   } else {
     pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
   }
     
-  .grid_image(x, col = col, gp = gp)
+  .grid_image(x, col = options$col, gp = options$gp, zlim = options$range)
   popViewport(1)
   
-  if(dist){
+  if(options$showdist){
     # rows
     pushViewport(viewport(layout.pos.row = 3, layout.pos.col = 1))
     
-    .grid_image(as.matrix(dist_row), col = col, gp = gp)
+    .grid_image(as.matrix(dist_row), col = options$col, gp = options$gp)
     popViewport(1)
     
     # cols
     pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 3))
     
-    .grid_image(as.matrix(dist_col), col = col, gp = gp)
+    .grid_image(as.matrix(dist_col), col = options$col, gp = options$gp)
     popViewport(2)
   }
   
   # colorkey
   pushViewport(viewport(layout.pos.row = 4, layout.pos.col = 2))
   pushViewport(viewport(width = unit(0.75, "npc")))
-  .grid_colorkey(range(x, na.rm = TRUE), col = col, gp = gp) 
+  .grid_colorkey(options$range, col = options$col, 
+    gp = options$gp) 
   popViewport(2)
   
   popViewport(1)

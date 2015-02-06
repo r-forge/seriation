@@ -45,6 +45,7 @@ Data.
 \seealso{
 \code{\link[gclus]{reorder.hclust}}
 }
+\author{Michael Hahsler}
 \examples{
 ## cluster European cities by distance
 data("eurodist")

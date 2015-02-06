@@ -18,6 +18,7 @@
     Bertin, J. (1981): \emph{Graphics and Graphic Information Processing}.
       Berlin, Walter de Gruyter.
 }
+\author{Michael Hahsler}
 \examples{
 data("Townships")
 

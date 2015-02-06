@@ -34,6 +34,8 @@ hmap(x, distfun = dist, method = "OLO", control = NULL, ...)
                 page (see \code{gpar} in package \pkg{grid}).} 
           \item{\code{prop}}{a logical indicating whether the height and width of
                 \code{x} should be plotted proportional to its dimensions.}
+          \item{\code{range}}{range to display (defaults to the range 
+                of \code{x}).}
           \item{\code{showdist}}{display dissimilarity matrices to the top and 
                 to the left.} 
       }      
@@ -63,10 +65,10 @@ For \code{dendrogram = TRUE} the list can contain additional elements
 (see \code{heatmap} for details).
     
     }
-%\author{Michael Hahsler}
 \seealso{
 \code{\link{seriate.dist}} and
 \code{\link[gplots]{heatmap.2}} in \pkg{gplots}.}
+\author{Michael Hahsler}
 \examples{
 data("Wood")
 
@@ -74,18 +76,18 @@ data("Wood")
 ## average-link and optimal leaf ordering
 hmap(Wood)  
   
-## heatmap with corelation-based distance, read-green color and optimal
-## leaf ordering
-red_green <- colorRampPalette(c("green", "black", "red"))
+## heatmap with correlation-based distance, read-green color and optimal
+## leaf ordering and no row label
+red_green <- colorRampPalette(c("green", "black", "red"))(100)
 dist_cor <- function(x) as.dist(1-cor(t(x)))
   
-hmap(Wood, method="OLO", distfun = dist_cor, col=red_green(100), labRow=FALSE)
+hmap(Wood, method="OLO", distfun = dist_cor, col=red_green, labRow=FALSE)
   
 ## order-based heatmap
-hmap(Wood, method="MDS_angle", distfun = dist_cor, col=red_green(100))  
+hmap(Wood, method="MDS_angle", distfun = dist_cor, col=red_green)  
 
 ## order-based without dissimilarity matrices
 hmap(Wood, method="MDS_angle", distfun = dist_cor, showdist = FALSE, 
-  col=red_green(100))  
+  col=red_green)  
 }
 \keyword{hplot}

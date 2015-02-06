@@ -14,9 +14,12 @@ Changes in version 1.1-0 (xx/xx/2015)
     * Added Wood data set.
     * Simplified hmap interface.
     * pimage gained axes and prop. Interface was simplified.
+    * color palettes are now used consistently between hmap, pimage 
+        and dissplot.
     * control arguments for seriation are now checked consistently.
     * We use now package registry to manage methods.
     * Added reorder for hclust.
+    * Added iVAT with path distance.
 
 Changes in version 1.0-14 (12/02/2014) 
     * arsa.f: removed 0 flag in rand() so it compiles under AIX 

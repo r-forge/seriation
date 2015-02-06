@@ -25,14 +25,15 @@ seriate.dist <- function(x, method = "ARSA", control = NULL, ...) {
   
     ## add ... to control
     control <- c(control, list(...))
-    
-    #if(is.null(method)) method <- "ARSA"
-    #else 
+
+    ## check x
+    if(any(is.na(x))) stop("NAs not allowed in x!")
+    if(any(x<0)) stop("No negative values allowed in x!")
+
     if(!is.character(method) || (length(method) != 1L))
       stop("Argument 'method' must be a character string.")
-    
     method <- get_seriation_method("dist", method)
-  
+
     if(!is.null(control$verbose) && control$verbose) cat(method$name, ": ", 
       method$description, "\n", sep="")
     

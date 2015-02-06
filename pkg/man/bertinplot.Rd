@@ -88,7 +88,7 @@ In: Proceedings of the SoftStat '97 (Advances in Statistical Software 6),
     \code{\link{seriate}},
     Package \pkg{grid}.
 }
-%\author{Michael Hahsler}
+\author{Michael Hahsler}
 \examples{
 data("Irish")
 scale_by_rank <- function(x) apply(x, 2, rank)

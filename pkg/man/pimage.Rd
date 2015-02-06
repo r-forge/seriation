@@ -13,7 +13,7 @@
 }
 \usage{
 pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "", 
-  axes = "auto", range=NULL, colorkey=FALSE, 
+  axes = "auto", range=NULL, colorkey=FALSE, symkey=TRUE, 
   upper.tri = TRUE, lower.tri = TRUE, prop = NULL, 
   ..., newpage=TRUE, pop=TRUE, gp=NULL)
 }
@@ -25,7 +25,8 @@ pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "",
   \item{col}{a list of colors used. If \code{NULL}, a gray scale is used (for
       matrix larger values are displayed darker and for \code{dist} smaller
       distances are darker). For matrices containing logical data, black and
-      white is used. }
+      white is used. For matrices containing negative values a symmetric 
+      diverging color palette is used.}
   \item{main}{plot title.}
   \item{xlab, ylab}{labels for the x and y axes.}
   \item{axes}{ a character string indicating if axes labels (column and row 
@@ -38,6 +39,8 @@ pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "",
   \item{range}{ vector with two elements giving the range (min, max) for 
       representing the values in the matrix. }
   \item{colorkey}{ logical; add a color key?}
+  \item{symkey}{ logical; if \code{x} contains negative values, should the 
+    color palate be symmetric (zero is in the middle)>}
   \item{upper.tri, lower.tri}{ a logical indicating whether to show the
       upper or lower triangle of the distance matrix. }
   \item{prop}{logical; draw the cells in the image proportional (defaults to 
@@ -58,24 +61,27 @@ pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "",
   and \code{"colorkey"}.
 }
 \author{Christian Buchta and Michael Hahsler}
-%\seealso{}
 \examples{
 x <- matrix(sample(c(FALSE, TRUE), 300, rep=TRUE), ncol=10, 
   dimnames = list(1:30, LETTERS[1:10]))
 
-## matrix
+## matrix (large values are dark/black)
 pimage(x, main = "Random data")
 
-# plot seriated matrix (use red, proportional display and plot all axes)
+## plot seriated matrix (use red, proportional display and plot all axes)
 pimage(x, seriate(x), col = c("white", "red"), 
   prop = TRUE, axes="both", main = "Reordered data")
 
-## distances
+## show correlation (for neg. values a diverging color scheme is 
+## used automatically) 
+pimage(cor(x), colorkey=TRUE, prop=TRUE)
+  
+## distances (note that low distances are represented dark!)
 d <- dist(x, method = "binary")
 pimage(d, upper.tri = FALSE, main = "Distances")
 
 pimage(d, seriate(d), upper.tri = FALSE, main = "Distances", 
-  colorkey = TRUE, axes = "y")
+  colorkey = TRUE, axes = "both")
 
 ## add to the plot using grid (use pop = FALSE) 
 library(grid)
@@ -100,13 +106,16 @@ grid.newpage()
 pushViewport(viewport(layout=grid.layout(nrow = 1, ncol = 2)))
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
 
-pimage(x, main = "Random data", prop = TRUE, newpage = FALSE)
+  ### FIXME!!!!
+o <- seriate(d)  
+  
+pimage(x, c(o, ser_permutation_vector(1:ncol(x))), main = "Random data", prop = TRUE, axes = "both", newpage = FALSE)
   
 upViewport(1)
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 
-pimage(d, seriate(d), upper.tri = FALSE, main = "Distances", 
-  colorkey = TRUE, axes = "y", newpage = FALSE)
+pimage(d, o, upper.tri = FALSE, main = "Distances", 
+  colorkey = TRUE, axes = "both", newpage = FALSE)
   
 upViewport(1)
 popViewport(0)

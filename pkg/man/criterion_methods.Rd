@@ -49,6 +49,7 @@ order is an object of class \code{permutation_vector} and \code{...} can
 contain additional information for the method passed on from \code{criterion()}.
 The implementation has to return the criterion value as a scalar.
 }
+\author{Michael Hahsler}
 \examples{
 ## the registry
 registry_criterion

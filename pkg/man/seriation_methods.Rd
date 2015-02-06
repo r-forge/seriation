@@ -48,6 +48,7 @@ a list of objects which can be coerced into \code{ser_permutation_vector}
 objects (e.g., integer vectors). The elements in the list
 have to be in corresponding order to the dimensions of \code{x}.
 }
+\author{Michael Hahsler}
 \examples{
 ## registry
 registry_seriate

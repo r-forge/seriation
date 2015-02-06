@@ -252,7 +252,7 @@ smooth global patterns in gene expression profiles,
 
 
 }
-%\author{Christian Buchta and Michael Hahsler}
+\author{Christian Buchta and Michael Hahsler}
 \examples{
 ## create random data and calculate distances
 m <- matrix(runif(20),ncol=2)

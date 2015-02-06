@@ -17,7 +17,7 @@ Description: Infrastructure for seriation with an implementation of several
     matrices, and dendrograms. Also contains some visualizations techniques
     based on seriation.
 Classification/ACM: G.1.6, G.2.1, G.4
-URL: http://R-Forge.R-project.org/projects/seriation/, http://lyle.smu.edu/IDA/seriation/
+URL: http://lyle.smu.edu/IDA/seriation
 Depends: R (>= 2.14.0)
 Imports: TSP, grid, cluster, gclus, colorspace, MASS, gplots, registry
 Suggests: biclust, testthat

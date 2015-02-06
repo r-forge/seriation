@@ -24,54 +24,50 @@
 ## permutations
 
 ## constructor
-ser_permutation <- function(x,...) {
-    if(inherits(x, "ser_permutation")) {
-        if(length(list(...)) != 0)
-            warning("Argument 'x' already has class 'ser_permutation' ... ignored")
-        return(x)
-    }
-
-    ## check if all elements are ser_permutation_vector
-    #if(any(!sapply(x, inherits, "ser_permutation_vector")))
-    #stop("some elements are not of class ", sQuote("ser_permutation_vector"))
-    ## we make them ser_permutation_vector
-    x <- lapply(list(x, ...), "ser_permutation_vector")
-
-    class(x) <- c("ser_permutation", "list")
-    x
+ser_permutation <- function(x, ...) {
+  x <- c(list(x), list(...))
+  
+  x <- lapply(x, FUN = function(obj) {
+    if(is(obj, "ser_permutation")) return(obj)
+    if(is(obj, "ser_permutation_vector")) return(list(obj))
+    return(list(ser_permutation_vector(obj)))
+    })
+  
+  x <- unlist(x, recursive = FALSE)
+  class(x) <- c("ser_permutation", "list")
+  x
 }
 
 ## so we can say get_order to permutations
 get_order.ser_permutation <- function(x, dim = 1, ...) get_order(x[[dim]])
 
 ## print et al
-    print.ser_permutation <- function(x, ...) {
-	writeLines(c(
-		gettextf("object of class %s",
-			paste(sQuote(class(x)), collapse = ", ")),
-		gettextf("contains permutation vectors for %d-mode data\n",
-			length(x))
-		))
-
-    print(data.frame("vector length" = sapply(x, length),
-                     "seriation method" =
-                     sapply(x, get_method, printable = TRUE),
-                     check.names = FALSE))
-
-    invisible(x)
+print.ser_permutation <- function(x, ...) {
+  writeLines(c(
+    gettextf("object of class %s",
+      paste(sQuote(class(x)), collapse = ", ")),
+    gettextf("contains permutation vectors for %d-mode data\n",
+      length(x))
+  ))
+  
+  print(data.frame("vector length" = sapply(x, 
+    FUN = function(o) if(.is_identity_permutation(o)) NA_integer_ else length(o)),
+    "seriation method" =
+      sapply(x, get_method, printable = TRUE),
+    check.names = FALSE))
+  
+  invisible(x)
 }
 
 ## fake summary (we dont really provide a summary, 
 ## but summary produces now a reasonable result --- same as print)
 summary.ser_permutation <- function(object, ...) 
-    object
-
+  object
 
 c.ser_permutation <- function(..., recursive = FALSE) 
-    do.call("ser_permutation", 
-        unlist(lapply(list(...), unclass), recursive = FALSE))
+  do.call("ser_permutation", list(...)) 
 
 ## fixme [[<- needs to check for ser_permutation_vector
 
 "[.ser_permutation" <- function(object, i, ...) 
-    do.call("ser_permutation", unclass(object)[i])
+  do.call("ser_permutation", unclass(object)[i])

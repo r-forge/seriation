@@ -53,7 +53,7 @@ criterion.default <- criterion.dist
 criterion_path_length <- function(x, order = NULL, ...) {
     if (is.null(order)) order <- 1:attr(x, "Size")
     else order <- get_order(order)
-    .Call("order_length", x, order)
+    .Call("order_length", x, order, PACKAGE = "seriation")
 }
 
 
@@ -64,14 +64,14 @@ criterion_path_length <- function(x, order = NULL, ...) {
 criterion_least_squares <- function(x, order = NULL, ...) {
     if(is.null(order)) order <- 1:attr(x, "Size") 
     else order <- get_order(order)
-    .Call("least_squares_criterion", x, order)
+    .Call("least_squares_criterion", x, order, PACKAGE = "seriation")
 }
 
 ## inertia around the diagonal (see PermutMatrix)
 criterion_inertia <- function(x, order = NULL, ...) {
     if(is.null(order)) order <- 1:attr(x, "Size") 
     else order <- get_order(order)
-    .Call("inertia_criterion", x, order)
+    .Call("inertia_criterion", x, order, PACKAGE = "seriation")
 }
 
 ## anti-Robinson loss functions (Streng and Schoenfelder 1978, Chen
@@ -80,7 +80,7 @@ criterion_inertia <- function(x, order = NULL, ...) {
 .ar <- function(x, order = NULL, method = 1L) {
     if(is.null(order)) order <- 1:attr(x, "Size") 
     else order <- get_order(order)
-    .Call("ar", x, order, as.integer(method))
+    .Call("ar", x, order, as.integer(method), PACKAGE = "seriation")
 }
 
 criterion_ar_events <- function(x, order, ...) .ar(x, order, 1L)
@@ -92,19 +92,19 @@ criterion_rgar <- function(x, order, w=NULL, ...) {
   else order <- get_order(order)
   if(is.null(w)) w <- length(order)-1L
   if(w<1 || w>=length(order)) stop("Window w needs to be 1<=w<length(order)!")
-  .Call("rgar", x, order, as.integer(w)+1L)
+  .Call("rgar", x, order, as.integer(w)+1L, PACKAGE = "seriation")
 } 
 
 criterion_gradient_raw <- function(x, order, ...) {
     if(is.null(order)) order <- 1:attr(x, "Size")
     else order <- get_order(order)
-    .Call("gradient", x, order, 1L)
+    .Call("gradient", x, order, 1L, PACKAGE = "seriation")
 }
 
 criterion_gradient_weighted <- function(x, order, ...) {
     if(is.null(order)) order <- 1:attr(x, "Size")
     else order <- get_order(order)
-    .Call("gradient", x, order, 2L)
+    .Call("gradient", x, order, 2L, PACKAGE = "seriation")
 }
 
 criterion_ME_dist <- function(x, order, ...)

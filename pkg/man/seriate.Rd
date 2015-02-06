@@ -330,8 +330,9 @@ Tsafrir, D., Tsafrir, I., Ein-Dor, L., Zuk, O., Notterman, D.A. and Domany, E.
 \code{\link{list_seriation_methods}},
 \code{\link{criterion}},
 \code{\link[TSP]{solve_TSP}} in \pkg{TSP},
-\code{\link{hclust}} in \pkg{stats}
+\code{\link{hclust}} in \pkg{stats}.
 }
+\author{Michael Hahsler}
 \examples{
 ## show available seriation methods (for dist and matrix)
 show_seriation_methods("dist")

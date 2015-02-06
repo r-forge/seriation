@@ -32,12 +32,11 @@ rank of the objects \eqn{1, 2, \dots, n}.
 \value{
 Returns an integer vector.
 }
-%\references{}
-%\author{}
 \seealso{
 \code{\link{ser_permutation_vector}},
 \code{\link{ser_permutation}}
 }
+\author{Michael Hahsler}
 \examples{
 ## permutation_vector
 o <- ser_permutation_vector(sample(10))

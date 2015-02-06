@@ -20,13 +20,17 @@
 ## the rows and columns are swapped and the order of the
 ## columns (original rows) is reversed.
 
-
-
-
+pimage <-
+  function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
+    axes="auto", range=NULL, colorkey=FALSE, symkey=TRUE,
+    upper.tri=TRUE, lower.tri=TRUE, prop=NULL,
+    ..., 
+    newpage=TRUE, pop=TRUE, gp=NULL)
+    UseMethod("pimage")
 
 ### Note for matrix large values are dark, for dist large values are light!
 pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
-  axes="auto", range=NULL, colorkey=FALSE, 
+  axes="auto", range=NULL, colorkey=FALSE, symkey=TRUE, 
   upper.tri=TRUE, lower.tri=TRUE, prop = NULL, ..., 
   newpage=TRUE, pop=TRUE, gp=NULL) {
   
@@ -34,7 +38,12 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
   
   if(is.null(col)) {
     if(is.logical(x)) col <- c("white","black")
-    else col <- gray.colors(64)    
+    else if(any(x<0))  {
+      col <- .diverge_pal()
+      if(is.null(range) && symkey) 
+        range <- rep(max(abs(range(x))), times = 2) * c(-1,1)
+    }
+    else col <- .sequential_pal() 
   }
   
   if(!is.null(order)) x <- permute(x, order)
@@ -97,33 +106,25 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
       if(pop) popViewport(3) else upViewport(3)
 }
 
+pimage.default <- pimage.matrix
+
 ## small values are dark
 pimage.dist <- 
   function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
-    axes="auto", range=NULL, colorkey=FALSE, 
+    axes="auto", range=NULL, colorkey=FALSE, symkey=TRUE,
     upper.tri=TRUE, lower.tri=TRUE, prop=NULL,..., 
     newpage=TRUE, pop=TRUE, gp=NULL) { 
     
-    if(is.null(col)) col <- gray.colors(64)    
+    if(is.null(col)) col <- rev(.sequential_pal()) 
     if(is.null(prop)) prop <- TRUE    
     if(!is.null(order)) x <- permute(x, order)
     
     pimage.matrix(x, order=NULL, main=main, xlab=xlab, ylab=ylab, 
       col=col, axes = axes,
-      range=range, colorkey=colorkey, 
+      range=range, colorkey=colorkey, symkey=symkey,
       upper.tri=upper.tri, lower.tri=lower.tri, prop=prop,
       ...,
       newpage=newpage, pop=pop, gp=gp)
     
   }
-
-pimage <-
-  function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
-    axes="auto", range=NULL, colorkey=FALSE,
-    upper.tri=TRUE, lower.tri=TRUE, prop=NULL,
-    ..., 
-    newpage=TRUE, pop=TRUE, gp=NULL)
-    UseMethod("pimage")
-
-pimage.default <- pimage.matrix
 

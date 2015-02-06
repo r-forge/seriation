@@ -39,8 +39,6 @@ UCI Repository of machine learning databases,
 \url{http://www.ics.uci.edu/~mlearn/MLRepository.html},
 University of California, Irvine, Dept. of Information and Computer Sciences.
 }
-%\references{
-%}
 \examples{
 data("Zoo")
 x <- scale(Zoo[, -17])
