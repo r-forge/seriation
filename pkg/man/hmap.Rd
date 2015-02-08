@@ -6,7 +6,7 @@ Provides several reordered versions of heat map including dendrogram based
 reordering with optimal leaf order and matrix seriation based heat maps.
 }
 \usage{
-hmap(x, distfun = dist, method = "OLO", control = NULL, ...)
+hmap(x, distfun = dist, method = "OLO", control = NULL, zlim = NULL, ...)
 }
 \arguments{
   \item{x}{a matrix or a dissimilarity matrix of class dist. If a dissimilarity
@@ -19,13 +19,15 @@ hmap(x, distfun = dist, method = "OLO", control = NULL, ...)
       reordered distance matrices are shown instead.}
   \item{control}{a list of control options passed on to the seriation 
       algorithm specified in \code{method}.} 
+  \item{zlim}{range of values to display (defaults to the range 
+      of \code{x}).}
   \item{\dots}{further arguments. For dendrogram based heat maps the 
       arguments are passed on to \code{heatmap.2} in
       \pkg{gplots}. See for example \code{margins} and \code{col}.
       The following arguments for \code{heatmap.2} cannot be used:
       \code{Rowv, Colv, hclustfun, reorderfun}.
       
-      For order-based heat maps further arguments include:
+  For order-based heat maps further arguments include:
        \describe{
           \item{\code{gp}}{an object of class \code{gpar} containing graphical
                 parameters (see \code{gpar} in package \pkg{grid}).}
@@ -34,10 +36,17 @@ hmap(x, distfun = dist, method = "OLO", control = NULL, ...)
                 page (see \code{gpar} in package \pkg{grid}).} 
           \item{\code{prop}}{a logical indicating whether the height and width of
                 \code{x} should be plotted proportional to its dimensions.}
-          \item{\code{range}}{range to display (defaults to the range 
-                of \code{x}).}
           \item{\code{showdist}}{display dissimilarity matrices to the top and 
                 to the left.} 
+         \item{\code{key}}{logical; show a colorkey?.} 
+         \item{\code{axes}}{ one of \code{"auto"} (default; show axis labels if there are
+           less than 25 labels), \code{"x"}, \code{"y"}, 
+           \code{"both"} and \code{"none"}.} 
+         \item{\code{margins}}{ bottom and right-hand-side margins are 
+           calculated automatically or can be specifies as a vector of two 
+          numbers (in lines).} 
+         \item{\code{zlim}}{ range of values displayed.} 
+         \item{\code{col}, \code{col_dist}}{ color palettes used.} 
       }      
       }
 }
@@ -66,7 +75,9 @@ For \code{dendrogram = TRUE} the list can contain additional elements
     
     }
 \seealso{
-\code{\link{seriate.dist}} and
+\code{\link{seriate}},
+\code{\link{pimage}},
+\code{\link{dissplot}},
 \code{\link[gplots]{heatmap.2}} in \pkg{gplots}.}
 \author{Michael Hahsler}
 \examples{

@@ -23,11 +23,7 @@
 .grid_basic_layout <- function(main = "", 
   left=unit(4, "lines"), right = unit(4, "lines"), 
   bottom = unit(4, "lines"),
-  gp = NULL){
-
-  if(is.null(gp)) gp <- gpar()
-  gp$cex <- 1.3
-  gp$fontface <- "bold"
+  gp = gpar()){
   
   pushViewport(viewport(layout = grid.layout(4, 3,
     widths = unit.c(
@@ -41,10 +37,14 @@
       unit(1, "npc") - unit(4, "lines") - bottom, # plot
       bottom                            # space
     )
-  )))
+  ), gp = gp))
   
   pushViewport(viewport(layout.pos.col = 2, layout.pos.row = 1, 
     name="main"))
+
+  gp$cex <- 1.3
+  gp$fontface <- "bold"
+  
   grid.text(main, gp = gp)
   upViewport(1)
   
@@ -56,11 +56,7 @@
 .grid_basic_layout_with_colorkey <- function(main = "",
   left=unit(4, "lines"), right = unit(4, "lines"), 
   bottom = unit(4, "lines"),
-  gp = NULL){
-  
-  if(is.null(gp)) gp <- gpar()
-  gp$cex <- 1.3
-  gp$fontface <- "bold"
+  gp = gpar()){
   
   pushViewport(viewport(layout = grid.layout(4, 3,
     widths = unit.c(
@@ -74,10 +70,13 @@
       unit(1, "npc") - unit(4, "lines") - bottom, # plot
       bottom                            # space
     )
-  )))
+  ), gp = gp))
   
   pushViewport(viewport(layout.pos.col = 2, layout.pos.row = 1, 
     name="main"))
+  
+  gp$cex <- 1.3
+  gp$fontface <- "bold"
   grid.text(main, gp = gp)
   upViewport(1)
   
@@ -208,7 +207,7 @@
 
 
 .grid_barplot_horiz <- function(height, name = "barplot", xlab="", 
-  gp = gpar()) {
+  gp = gpar(), gp_bars = gpar(fill="lightgray")) {
   
   n <-  length(height)
   
@@ -217,22 +216,16 @@
   
   ## create a viewport
   vp <- viewport(
-    xscale = lim , yscale = c((n+1),0), default.units = "native", name = name)
+    xscale = lim , yscale = c(n,0), default.units = "native", name = name, 
+    gp =gp)
   pushViewport(vp)
   
-  ## make bars
-  gp_bars     <- gp
-  gp_bars$col <- 0
-  if(is.null(gp_bars$fill) || gp_bars$fill == "transparent") 
-    gp_bars$fill <- "lightgray"
-  
-  grid.rect(x = 0, y = 1:n, width = height, height = 1,
-    just = c("left", "center"), default.units = "native",
-    gp = gp_bars)
+  grid.rect(x = 0, y = (1:n)-.5, width = height, height = 1,
+    just = c("left", "center"), default.units = "native", gp =gp_bars)
   
   ## hopefuly there is space outside for axes
-  grid.xaxis(gp = gp)
-  grid.text(xlab, y = unit(-3, "lines"), gp = gp)
+  grid.xaxis()
+  grid.text(xlab, y = unit(-3, "lines"))
   
   upViewport(1)
 }

@@ -88,26 +88,21 @@ dissplot(x, labels = NULL, method = "ARSA",
     \item{\code{silhouettes}}{ a logical indicating  whether to include a
       silhouette plot (see Rousseeuw, 1987).} 
     \item{\code{threshold}}{ a numeric. If used, only plot distances below the
-      threshold are displayed.} 
-    \item{\code{col}}{ colors used for the image plot. If \code{col} is a single
-  number, it specifies the number of different shades used in the plot
-  (default: 100 shades of gray using the HCL colorspace). If \code{col} 
-  not a single number, it is expected to be a full color palette and
-  the potions \code{hue} and \code{power} are ignored.}
+      threshold are displayed. Consider also using \code{zlim} for this purpose.} 
+    \item{\code{col}}{ colors used for the image plot.}
     \item{\code{power}}{ determines how luminance (and chroma for color) 
 	should be increased (1 = linear, 2 = quadratic, etc.) with dissimilarity. }
-    \item{\code{colorkey}}{ a logical indicating  whether to place a color key
+    \item{\code{key}}{ a logical indicating  whether to place a color key
       below the plot. }
-    \item{\code{range}}{ range to display (defaults to range \code{x}).}
-    \item{\code{labels}}{ display labels to the right of the image (by default 
-      enabled for less than 20 objects).}
+    \item{\code{zlim}}{ range of values to display (defaults to range \code{x}).}
+    \item{\code{axes}}{ \code{"auto"} (default; enabled for less than 
+        25 objects), \code{"y"} or \code{"none"}.}
     \item{\code{main}}{ title for the plot.}
-    \item{\code{lines_col}}{ color used for the lines to separate clusters. }
     \item{\code{newpage}}{ a logical indicating  whether to start plot on a new
       page (see \code{grid.newpage} in package \pkg{grid}). }
     \item{\code{pop}}{a logical indicating  whether to pop the created viewports
       (see package \pkg{grid})?  }
-    \item{\code{gp_image}, \code{gp_labels}, \code{gp_main}}{ 
+    \item{\code{gp}, \code{gp_lines}, \code{gp_labels}}{ 
       objects of class \code{gpar}       
       containing graphical
       parameters (see \code{gpar} in package \pkg{grid}). }
@@ -115,8 +110,6 @@ dissplot(x, labels = NULL, method = "ARSA",
   }
   \item{\ldots}{further arguments are added to \code{options}.}
 }
-%\details{
-%}
 \value{
 An invisible object of class \code{cluster_proximity_matrix} with the following
 elements:
@@ -159,10 +152,10 @@ visualization for high-dimensional data mining.
 
 }
 \seealso{
-  \code{\link[stats]{dist}}
-  (in package \pkg{stats}),
-   package \pkg{grid} and
-   \code{\link{seriate}}.
+  \code{\link[stats]{dist}},
+  \code{\link{seriate}},
+  \code{\link{pimage}} and
+  \code{\link{hmap}}.
 }
 \author{Michael Hahsler}
 \examples{
@@ -205,7 +198,7 @@ pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
 
 ## threshold and cubic scale to highlight differences
 plot(res, options = list(main = "PAM + Seriation - threshold", 
-    threshold = 1.5, power = .5, newpage = FALSE))
+    zlim = c(0, 1.5), power = 2, newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))

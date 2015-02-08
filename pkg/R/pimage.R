@@ -22,7 +22,7 @@
 
 pimage <-
   function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
-    axes="auto", range=NULL, colorkey=FALSE, symkey=TRUE,
+    axes="auto", zlim=NULL, key=FALSE, symkey=TRUE,
     upper.tri=TRUE, lower.tri=TRUE, prop=NULL,
     ..., 
     newpage=TRUE, pop=TRUE, gp=NULL)
@@ -30,7 +30,7 @@ pimage <-
 
 ### Note for matrix large values are dark, for dist large values are light!
 pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
-  axes="auto", range=NULL, colorkey=FALSE, symkey=TRUE, 
+  axes="auto", zlim=NULL, key=FALSE, symkey=TRUE, 
   upper.tri=TRUE, lower.tri=TRUE, prop = NULL, ..., 
   newpage=TRUE, pop=TRUE, gp=NULL) {
   
@@ -40,8 +40,8 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
     if(is.logical(x)) col <- c("white","black")
     else if(any(x<0))  {
       col <- .diverge_pal()
-      if(is.null(range) && symkey) 
-        range <- rep(max(abs(range(x))), times = 2) * c(-1,1)
+      if(is.null(zlim) && symkey) 
+        zlim <- max(abs(range(x, na.rm = TRUE))) * c(-1,1)
     }
     else col <- .sequential_pal() 
   }
@@ -49,7 +49,7 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
   if(!is.null(order)) x <- permute(x, order)
   if(is.null(prop)) prop <- FALSE    
   if(is.null(gp)) gp <- gpar()   
-  if(is.null(range)) range <- range(x, na.rm=TRUE)
+  if(is.null(zlim)) zlim <- range(x, na.rm=TRUE)
 
   if(any(!upper.tri || !lower.tri) && nrow(x)!=ncol(x)) stop("Upper or lower triangle can only be suppressed for square matrices!")
   if(!upper.tri) x[upper.tri(x)] <- NA
@@ -72,36 +72,36 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
 
   if(newpage) grid.newpage()
   
-  if(colorkey) {
+  if(key) {
     .grid_basic_layout_with_colorkey(main = main, 
       left = left_mar, bottom = bottom_mar, gp=gp)
     downViewport("colorkey")
-    .grid_colorkey(range, col=col, horizontal=FALSE, gp=gp) 
+    .grid_colorkey(zlim, col=col, horizontal=FALSE) #, gp=gp) 
     upViewport(1)
     
   } else .grid_basic_layout(main = main, left = left_mar, 
     bottom = bottom_mar, gp = gp)
   
   downViewport("plot")
-  .grid_image(x, col=col, zlim=range, prop=prop, gp=gp)
+  .grid_image(x, col=col, zlim=zlim, prop=prop) #, gp=gp)
   
   ## axes and labs
   downViewport("image")
       if(axes_col) 
         grid.text(colnames(x), y = unit(-1, "lines"), 
-        x=unit(1:ncol(x), "native"), rot=90, just="right", gp=gp)
+        x=unit(1:ncol(x), "native"), rot=90, just="right") #, gp=gp)
       #grid.xaxis(at=1:ncol(x), 
       #	    label=colnames(x))
       if(axes_row) grid.text(rownames(x), x = unit(-1, "lines"), 
-        y=unit(1:nrow(x), "native"), just="right", gp=gp)
+        y=unit(1:nrow(x), "native"), just="right") #, gp=gp)
       #grid.yaxis(at=1:nrow(x), 
       #    label=rownames(x))
       
   
-      if(xlab!="") grid.text(xlab, y = -1*bottom_mar + unit(1, "lines"), 
-        gp=gp)
+      if(xlab!="") grid.text(xlab, y = -1*bottom_mar + unit(1, "lines"))
+        #, gp=gp)
       if(ylab!="") grid.text(ylab, x = , -1*left_mar + unit(1, "lines"), 
-        rot=90, gp=gp)
+        rot=90) #, gp=gp)
       
       if(pop) popViewport(3) else upViewport(3)
 }
@@ -111,7 +111,7 @@ pimage.default <- pimage.matrix
 ## small values are dark
 pimage.dist <- 
   function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
-    axes="auto", range=NULL, colorkey=FALSE, symkey=TRUE,
+    axes="auto", zlim=NULL, key=FALSE, symkey=TRUE,
     upper.tri=TRUE, lower.tri=TRUE, prop=NULL,..., 
     newpage=TRUE, pop=TRUE, gp=NULL) { 
     
@@ -121,7 +121,7 @@ pimage.dist <-
     
     pimage.matrix(x, order=NULL, main=main, xlab=xlab, ylab=ylab, 
       col=col, axes = axes,
-      range=range, colorkey=colorkey, symkey=symkey,
+      zlim=zlim, key=key, symkey=symkey,
       upper.tri=upper.tri, lower.tri=lower.tri, prop=prop,
       ...,
       newpage=newpage, pop=pop, gp=gp)

@@ -8,18 +8,19 @@ Changes in version 1.1-0 (xx/xx/2015)
     * Several aliases for seriation methods added.
     * Criterion 'RWGAR' added.
     * permutation_matrix2vector and permutation_vector2matrix added.
+    * Identity permutation (value NA) added.
+    * ser_permutation and ser_permutation_vector can now be used interchangably,
     * get_rank for permutation vectors added.
     * seriation_dist and seriation_alignment to calculate 
         dissimilarities between seriation orders added.
-    * Added Wood data set.
-    * Simplified hmap interface.
-    * pimage gained axes and prop. Interface was simplified.
-    * color palettes are now used consistently between hmap, pimage 
-        and dissplot.
-    * control arguments for seriation are now checked consistently.
+    * Wood data set added.
+    * pimage, hmap and dissplot: Simplified and made interfaces more 
+        consistent (all use now zlim, consistent default color palettes).
+    * pimage gained axes and prop.
+    * seriation checks now control arguments consistently.
     * We use now package registry to manage methods.
-    * Added reorder for hclust.
-    * Added iVAT with path distance.
+    * reorder for hclust added.
+    * iVAT with path distance added.
 
 Changes in version 1.0-14 (12/02/2014) 
     * arsa.f: removed 0 flag in rand() so it compiles under AIX 

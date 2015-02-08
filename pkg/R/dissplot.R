@@ -27,6 +27,9 @@ dissplot <- function(x, labels = NULL, method = "ARSA",
   
   ## add ... to options
   options <- c(options, list(...))
+
+  
+  
   
   ## make x dist
   if(!inherits(x, "dist")) {
@@ -60,7 +63,7 @@ dissplot <- function(x, labels = NULL, method = "ARSA",
   
   m <- method
   
-    
+  
   ## set everything to NULL first
   order               <- NULL
   k                   <- NULL             # number of clusters
@@ -259,27 +262,30 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
   ## default plot options
   options <- .get_parameters(options, list(
     cluster_labels = TRUE, 
+    lines       = TRUE, 
     averages	  = c(FALSE, TRUE), ## (upper.tri, lower.tri); NA means white
     flip		    = FALSE,
-    lines       = TRUE, 
     silhouettes = FALSE,
-    range       = NULL,
     col         = NULL, 
     power		    = 1,
     threshold   = NULL,
+    zlim        = NULL,
+    key         = TRUE,
     main        = NULL,
-    colorkey    = TRUE,
-    labels      = nrow(m) < 20,
-    lines_col   = "black",
+    axes        = "auto",
+    gp          = gpar(),
+    gp_lines    = gpar(),
+    gp_labels   = gpar(),
     newpage     = TRUE, 
-    pop         = TRUE,
-    gp_image    = gpar(),
-    gp_main     = gpar(cex = 1.3, fontface = "bold"),
-    gp_labels   = gpar(cex = .8)
+    pop         = TRUE
   )) 
   
   if(is.null(options$col)) 
     options$col <- rev(.sequential_pal(power=options$power))
+  
+  i <- pmatch(options$axes, c("auto", "x", "y", "both", "none"))
+  if(is.na(i)) stop("Illegal vaule for axes. Use: 'auto', 'x', 'y', 'both' or 'none'!")
+  options$axes <- c("auto", "x", "y", "both", "none")[i]
   
   ## clear page
   if(options$newpage) grid.newpage()
@@ -363,18 +369,15 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
         unit(1, "lines"),                       # colorkey
         unit(2, "lines")                        # space
       )
-    )))
+    ), gp=options$gp))
     
     main_vp     <- viewport(layout.pos.col = 2, layout.pos.row = 1, 
       name="main")
-    
-    ## gets name "image" from image (see grid.R)
     image_vp    <- viewport(layout.pos.col = 2, layout.pos.row = 3)
-    
     colorkey_vp <- viewport(layout.pos.col = 2, layout.pos.row = 5,
       name = "colorkey")
     
-  }else{
+  }else{ ## with silhouettes
     pushViewport(viewport(layout = grid.layout(6, 5,
       widths = unit.c(
         unit(2, "lines"),                       # space
@@ -391,16 +394,13 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
         unit(1, "lines"),                       # colorkey
         unit(2, "lines")                        # space
       )
-    )))
+    ), gp = options$gp))
     
     main_vp     <- viewport(layout.pos.col = 2:4, layout.pos.row = 1,
       name="main")
-    
-    ## gets name "image" from image (see grid.R)
     image_vp    <- viewport(layout.pos.col = 2,   layout.pos.row = 3)
-    
-    barplot_vp  <- viewport(layout.pos.col = 4,   layout.pos.row = 3,
-      name="barplot")
+    sil_vp  <- viewport(layout.pos.col = 4,   layout.pos.row = 3,
+      name="sil")
     colorkey_vp <- viewport(layout.pos.col = 2,   layout.pos.row = 5,
       name="colorkey")
     
@@ -408,7 +408,7 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
   
   ## main
   pushViewport(main_vp)
-  grid.text(options$main, gp = options$gp_main)
+  grid.text(options$main, gp = gpar(cex = 1.3, fontface = "bold"))
   upViewport(1)
   
   ## silhouette
@@ -416,23 +416,23 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
     ## get and reorder silhouettes
     s <- x$sil[,"sil_width"]
     
-    pushViewport(barplot_vp)
-    .grid_barplot_horiz(s, xlab = "Silhouette width", gp = options$gp_image)
+    pushViewport(sil_vp)
+    .grid_barplot_horiz(s, xlab = "Silhouette width", 
+      gp_bars = gpar(fill = "lightgrey", col = 0))
     upViewport(1)
     
   }
   
   ## image
-  pushViewport(image_vp)
-  
-  if(is.null(options$range)) options$range <- range(m, na.rm = TRUE)
+  if(is.null(options$zlim)) options$zlim <- range(m, na.rm = TRUE)
   if(!is.null(options$threshold)) m[m > options$threshold] <- NA
+
+  pushViewport(image_vp)
+  .grid_image(m, col = options$col, zlim = options$zlim)
   
-  .grid_image(m, col = options$col, zlim = options$range, 
-    gp = options$gp_image)
-  
-  if(options$labels) {
-    ## add labels
+  ## add labels?
+  if(options$axes == "auto" && nrow(m)<25) options$axes <- "both"
+  if(options$axes != "none") {
     downViewport("image")
     #grid.text(colnames(m), y = unit(-1, "lines"),
     #  x=unit(1:ncol(m), "native"), rot=90, just="right")
@@ -444,10 +444,11 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
   
   upViewport(1)
   
-  if(options$colorkey) {
+  ## color key?  
+  if(options$key) {
     pushViewport(colorkey_vp)
-    .grid_colorkey(options$range, col = options$col, 
-      threshold = options$threshold, gp = options$gp_image)
+    .grid_colorkey(options$zlim, col = options$col, 
+      threshold = options$threshold)
     upViewport(1)
   }
   
@@ -481,53 +482,36 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
       grid.text(labels_unique_x,
         x = cluster_center_x, 
         y = unit(1, "npc") + unit(1, "lines"),
-        default.units = "native",
-        gp = options$gp_labels)
+        default.units = "native", gp = options$gp_labels)
       ## left of the plot
       grid.text(labels_unique_y, 
         x = unit(-1, "lines"),
         y = cluster_center_y,
-        default.units = "native",
-        gp = options$gp_labels)
+        default.units = "native", gp = options$gp_labels)
       upViewport(2)
     }
     
     if(options$lines) {
-      gp_lines        <- options$gp_image
-      gp_lines$col    <- options$lines_col
-      
       ## draw lines separating the clusters
       #cluster_cuts <- cluster_cuts[-length(cluster_cuts)]
       ## remove last line
       
       seekViewport("image")
-      for(i in 1:k) {
+      for(i in 1:(k-1)) {
         
         grid.lines(
           #x = c(0, dim), 
           x = c(0.5, dim + 0.5), 
           y = cluster_cuts_y[i]+.5, 
-          default.units = "native", gp = gp_lines)
+          default.units = "native", gp = options$gp_lines)
         
         grid.lines(
           x = cluster_cuts_x[i]+.5, 
           #y = c(0, dim), 
           y = c(0.5, dim + 0.5), 
-          default.units = "native", gp=gp_lines)
+          default.units = "native", gp = options$gp_lines)
         
       }
-      
-      ## draw diagonal
-      #grid.lines(x = c(0.5, dim + 0.5), y = c(0.5, dim + 0.5),
-      #    default.unit="native", gp = options$gp_lines)
-      
-      ## redraw border
-      #grid.rect(x = 0,5 * dim, y = 0.5 * dim, width = dim - 1, 
-      #    height =  dim - 1, default.units = "native", 
-      #    gp = gp_lines)
-      
-      #grid.rect(gp = gp_lines)
-      
       upViewport(2)
       
     }

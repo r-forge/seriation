@@ -13,7 +13,7 @@
 }
 \usage{
 pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "", 
-  axes = "auto", range=NULL, colorkey=FALSE, symkey=TRUE, 
+  axes = "auto", zlim=NULL, key=FALSE, symkey=TRUE, 
   upper.tri = TRUE, lower.tri = TRUE, prop = NULL, 
   ..., newpage=TRUE, pop=TRUE, gp=NULL)
 }
@@ -36,9 +36,9 @@ pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "",
     \code{"y"},
     \code{"both"} and 
     \code{"none"}.}
-  \item{range}{ vector with two elements giving the range (min, max) for 
+  \item{zlim}{ vector with two elements giving the range (min, max) for 
       representing the values in the matrix. }
-  \item{colorkey}{ logical; add a color key?}
+  \item{key}{ logical; add a color key?}
   \item{symkey}{ logical; if \code{x} contains negative values, should the 
     color palate be symmetric (zero is in the middle)>}
   \item{upper.tri, lower.tri}{ a logical indicating whether to show the
@@ -60,6 +60,11 @@ pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "",
   The viewports used for plotting are called: \code{"plot"}, \code{"image"}
   and \code{"colorkey"}.
 }
+\seealso{
+\code{\link{seriate}}, 
+\code{\link{hmap}},
+\code{\link{dissplot}} and
+\code{\link[graphics]{image}}.}
 \author{Christian Buchta and Michael Hahsler}
 \examples{
 x <- matrix(sample(c(FALSE, TRUE), 300, rep=TRUE), ncol=10, 
@@ -74,14 +79,14 @@ pimage(x, seriate(x), col = c("white", "red"),
 
 ## show correlation (for neg. values a diverging color scheme is 
 ## used automatically) 
-pimage(cor(x), colorkey=TRUE, prop=TRUE)
+pimage(cor(x), key=TRUE, prop=TRUE)
   
 ## distances (note that low distances are represented dark!)
 d <- dist(x, method = "binary")
 pimage(d, upper.tri = FALSE, main = "Distances")
 
 pimage(d, seriate(d), upper.tri = FALSE, main = "Distances", 
-  colorkey = TRUE, axes = "both")
+  key = TRUE, axes = "both")
 
 ## add to the plot using grid (use pop = FALSE) 
 library(grid)
@@ -115,7 +120,7 @@ upViewport(1)
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 
 pimage(d, o, upper.tri = FALSE, main = "Distances", 
-  colorkey = TRUE, axes = "both", newpage = FALSE)
+  key = TRUE, axes = "both", newpage = FALSE)
   
 upViewport(1)
 popViewport(0)
