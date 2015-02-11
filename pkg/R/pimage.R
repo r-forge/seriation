@@ -22,7 +22,7 @@
 
 pimage <-
   function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
-    axes="auto", zlim=NULL, key=FALSE, symkey=TRUE,
+    axes="auto", zlim=NULL, key=FALSE, key.lab="", symkey=TRUE,
     upper.tri=TRUE, lower.tri=TRUE, prop=NULL,
     ..., 
     newpage=TRUE, pop=TRUE, gp=NULL)
@@ -30,7 +30,7 @@ pimage <-
 
 ### Note for matrix large values are dark, for dist large values are light!
 pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
-  axes="auto", zlim=NULL, key=FALSE, symkey=TRUE, 
+  axes="auto", zlim=NULL, key=FALSE, key.lab="", symkey=TRUE, 
   upper.tri=TRUE, lower.tri=TRUE, prop = NULL, ..., 
   newpage=TRUE, pop=TRUE, gp=NULL) {
   
@@ -76,7 +76,7 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
     .grid_basic_layout_with_colorkey(main = main, 
       left = left_mar, bottom = bottom_mar, gp=gp)
     downViewport("colorkey")
-    .grid_colorkey(zlim, col=col, horizontal=FALSE) #, gp=gp) 
+    .grid_colorkey(zlim, col=col, horizontal=FALSE, lab=key.lab) #, gp=gp) 
     upViewport(1)
     
   } else .grid_basic_layout(main = main, left = left_mar, 
@@ -111,17 +111,18 @@ pimage.default <- pimage.matrix
 ## small values are dark
 pimage.dist <- 
   function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
-    axes="auto", zlim=NULL, key=FALSE, symkey=TRUE,
+    axes="auto", zlim=NULL, key=FALSE, key.lab="", symkey=TRUE,
     upper.tri=TRUE, lower.tri=TRUE, prop=NULL,..., 
     newpage=TRUE, pop=TRUE, gp=NULL) { 
     
-    if(is.null(col)) col <- rev(.sequential_pal()) 
+    if(is.null(col)) col <- rev(.sequential_pal())
+    else col <- rev(col)
     if(is.null(prop)) prop <- TRUE    
     if(!is.null(order)) x <- permute(x, order)
     
     pimage.matrix(x, order=NULL, main=main, xlab=xlab, ylab=ylab, 
       col=col, axes = axes,
-      zlim=zlim, key=key, symkey=symkey,
+      zlim=zlim, key=key, key.lab=key.lab, symkey=symkey,
       upper.tri=upper.tri, lower.tri=lower.tri, prop=prop,
       ...,
       newpage=newpage, pop=pop, gp=gp)

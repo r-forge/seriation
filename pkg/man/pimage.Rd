@@ -13,7 +13,7 @@
 }
 \usage{
 pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "", 
-  axes = "auto", zlim=NULL, key=FALSE, symkey=TRUE, 
+  axes = "auto", zlim=NULL, key=FALSE, key.lab="", symkey=TRUE, 
   upper.tri = TRUE, lower.tri = TRUE, prop = NULL, 
   ..., newpage=TRUE, pop=TRUE, gp=NULL)
 }
@@ -39,6 +39,7 @@ pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "",
   \item{zlim}{ vector with two elements giving the range (min, max) for 
       representing the values in the matrix. }
   \item{key}{ logical; add a color key?}
+  \item{key.lab}{ string plotted next to the color key.}
   \item{symkey}{ logical; if \code{x} contains negative values, should the 
     color palate be symmetric (zero is in the middle)>}
   \item{upper.tri, lower.tri}{ a logical indicating whether to show the
@@ -83,7 +84,7 @@ pimage(cor(x), key=TRUE, prop=TRUE)
   
 ## distances (note that low distances are represented dark!)
 d <- dist(x, method = "binary")
-pimage(d, upper.tri = FALSE, main = "Distances")
+pimage(d, upper.tri = FALSE, main = "Distances", key = TRUE)
 
 pimage(d, seriate(d), upper.tri = FALSE, main = "Distances", 
   key = TRUE, axes = "both")
@@ -111,16 +112,16 @@ grid.newpage()
 pushViewport(viewport(layout=grid.layout(nrow = 1, ncol = 2)))
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
 
-  ### FIXME!!!!
-o <- seriate(d)  
-  
-pimage(x, c(o, ser_permutation_vector(1:ncol(x))), main = "Random data", prop = TRUE, axes = "both", newpage = FALSE)
+## seriate matrix
+o <- seriate(x)  
+pimage(x, o, main = "Random data", prop = TRUE, axes = "both", newpage = FALSE)
   
 upViewport(1)
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 
-pimage(d, o, upper.tri = FALSE, main = "Distances", 
-  key = TRUE, axes = "both", newpage = FALSE)
+## add the reordered disimilarity matrix for rowa
+pimage(d, o[[1]], upper.tri = FALSE, main = "Distances", axes = "both", 
+  newpage = FALSE)
   
 upViewport(1)
 popViewport(0)

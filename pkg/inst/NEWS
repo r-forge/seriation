@@ -14,13 +14,16 @@ Changes in version 1.1-0 (xx/xx/2015)
     * seriation_dist and seriation_alignment to calculate 
         dissimilarities between seriation orders added.
     * Wood data set added.
+    * Chameleon data sets added.
+    * create_lines_data, create_ordered_data added.
     * pimage, hmap and dissplot: Simplified and made interfaces more 
         consistent (all use now zlim, consistent default color palettes).
     * pimage gained axes and prop.
     * seriation checks now control arguments consistently.
-    * We use now package registry to manage methods.
+    * we use now package registry to manage methods.
     * reorder for hclust added.
     * iVAT with path distance added.
+    * col_br, col_gr and col_gray added.
 
 Changes in version 1.0-14 (12/02/2014) 
     * arsa.f: removed 0 flag in rand() so it compiles under AIX 

@@ -22,7 +22,8 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
   args <- list(...)
   
   ## dist or matrix 
-  if(is(x, "dist")) {
+  is_dist <- is(x, "dist")
+  if(is_dist) {
     dist_row <- dist_col <- x
     o_col <- o_row <- seriate(x, 
       method = method, control = control)[[1]]
@@ -31,8 +32,8 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
     if(!is.matrix(x)) x <- as.matrix(x)
 
     if(!is.null(args$scale)) {
-      if(arg$scale == "row") x <- t(scale(t(x)))
-      if(arg$scale == "col") x <- scale(x)
+      if(args$scale == "row") x <- t(scale(t(x)))
+      if(args$scale == "col") x <- scale(x)
     }
     
     dist_row <- distfun(x)
@@ -56,6 +57,9 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
       if(any(x<0, na.rm = TRUE)) args$col <- .diverge_pal()
       else args$col <- .sequential_pal()
     }
+    
+    ## dist uses reversed colors!
+    if(is_dist) args$col <- rev(args$col)
     
     args$scale <- "none"
     if(is.null(args$trace)) args$trace <- "none"
@@ -86,11 +90,12 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
   ## options
   options <- list(...)
   options <- .get_parameters(options, list(
-    col       = .sequential_pal(),
-    col_dist  = .diverge_pal(),
+    col       = if(any(x<0)) .diverge_pal() else .sequential_pal(),
+    col_dist  = .sequential_pal(),
     prop      = FALSE,
     main      = NULL,
     key       = TRUE,
+    key.lab = "",
     axes      = "auto",
     showdist  = TRUE,
     margins   = NULL,
@@ -99,6 +104,8 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
     newpage   = TRUE,
     gp        = gpar()
   ))
+  
+  options$col_dist <- rev(options$col_dist)
   
   x <- permute(x, ser_permutation(o_row, o_col))
   
@@ -221,7 +228,7 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
     pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
     
     pushViewport(viewport(width = unit(0.5, "npc"), height = unit(1, "lines")))
-    .grid_colorkey(options$zlim, col = options$col, 
+    .grid_colorkey(options$zlim, col = options$col, lab = options$key.lab, 
       gp = options$gp) 
     popViewport(2)
   }

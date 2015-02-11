@@ -18,6 +18,10 @@
 
 reorder.hclust <- function(x, dist, method = "OLO", ...) {
   method <- match.arg(tolower(method), choices = c("olo", "gw"))
+  
+  ## no reordering for less than 3 objects!
+  if(length(x$order)<3) return(x)
+  
   switch(method, 
       olo = .seriate_optimal(x, dist),
       gw  = .seriate_gruvaeus(x, dist)

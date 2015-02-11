@@ -223,7 +223,7 @@
   grid.rect(x = 0, y = (1:n)-.5, width = height, height = 1,
     just = c("left", "center"), default.units = "native", gp =gp_bars)
   
-  ## hopefuly there is space outside for axes
+  ## hopefully there is space outside for axes
   grid.xaxis()
   grid.text(xlab, y = unit(-3, "lines"))
   
@@ -267,7 +267,7 @@
   upViewport(1)
 }
 
-.grid_colorkey <- function(range, col, threshold = NULL, 
+.grid_colorkey <- function(range, col, threshold = NULL, lab = "",
   name = "colorkey", horizontal=TRUE, gp = gpar()) {
   
   if(horizontal)
@@ -308,6 +308,9 @@
   
   if(horizontal) grid.xaxis(gp = gp)
   else grid.yaxis(main = FALSE, gp = gp)
+  
+  if(horizontal) grid.text(lab, y= unit(-2.5, "lines"))  
+  else grid.text(lab, x= unit(3.5, "lines"), rot = 90)
   
   upViewport(1)
 }

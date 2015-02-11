@@ -39,6 +39,7 @@ hmap(x, distfun = dist, method = "OLO", control = NULL, zlim = NULL, ...)
           \item{\code{showdist}}{display dissimilarity matrices to the top and 
                 to the left.} 
          \item{\code{key}}{logical; show a colorkey?.} 
+         \item{key.lab}{ string plotted next to the color key.}
          \item{\code{axes}}{ one of \code{"auto"} (default; show axis labels if there are
            less than 25 labels), \code{"x"}, \code{"y"}, 
            \code{"both"} and \code{"none"}.} 
@@ -87,18 +88,17 @@ data("Wood")
 ## average-link and optimal leaf ordering
 hmap(Wood)  
   
-## heatmap with correlation-based distance, read-green color and optimal
-## leaf ordering and no row label
-red_green <- colorRampPalette(c("green", "black", "red"))(100)
+## heatmap with correlation-based distance, green-red color (col_gr is 
+## predefined) and optimal leaf ordering and no row label
 dist_cor <- function(x) as.dist(1-cor(t(x)))
   
-hmap(Wood, method="OLO", distfun = dist_cor, col=red_green, labRow=FALSE)
+hmap(Wood, method="OLO", distfun = dist_cor, col=col_gr(), labRow=FALSE)
   
 ## order-based heatmap
-hmap(Wood, method="MDS_angle", distfun = dist_cor, col=red_green)  
+hmap(Wood, method="MDS_angle", distfun = dist_cor, col=col_gr())  
 
 ## order-based without dissimilarity matrices
 hmap(Wood, method="MDS_angle", distfun = dist_cor, showdist = FALSE, 
-  col=red_green)  
+  col=col_gr())  
 }
 \keyword{hplot}

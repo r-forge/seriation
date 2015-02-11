@@ -282,6 +282,8 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
   
   if(is.null(options$col)) 
     options$col <- rev(.sequential_pal(power=options$power))
+  else 
+    options$col <- rev(options$col)
   
   i <- pmatch(options$axes, c("auto", "x", "y", "both", "none"))
   if(is.na(i)) stop("Illegal vaule for axes. Use: 'auto', 'x', 'y', 'both' or 'none'!")
@@ -431,7 +433,7 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
   .grid_image(m, col = options$col, zlim = options$zlim)
   
   ## add labels?
-  if(options$axes == "auto" && nrow(m)<25) options$axes <- "both"
+  if(options$axes == "auto" && nrow(m)>25) options$axes <- "none"
   if(options$axes != "none") {
     downViewport("image")
     #grid.text(colnames(m), y = unit(-1, "lines"),

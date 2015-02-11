@@ -14,8 +14,8 @@ Authors@R: c(
 	person("Hans-Friedrich", "Koehn", role = c("ctb", "cph")))
 Description: Infrastructure for seriation with an implementation of several
     seriation/sequencing techniques to reorder matrices, dissimilarity
-    matrices, and dendrograms. Also contains some visualizations techniques
-    based on seriation.
+    matrices, and dendrograms. Also provides (optimally) reordered heatmaps, 
+    color images and clustering visualization (dissplot, VAT, iVAT).
 Classification/ACM: G.1.6, G.2.1, G.4
 URL: http://lyle.smu.edu/IDA/seriation
 Depends: R (>= 2.14.0)

@@ -2,8 +2,7 @@
 \alias{path_dist}
 \alias{iVAT}
 \alias{VAT}
-\alias{create_lines_data}
-\title{Visual Analysis for Cluster Tendency Assessment (VAT)}
+\title{Visual Analysis for Cluster Tendency Assessment (VAT/iVAT)}
 \description{
 Implements Visual Analysis
 for Cluster Tendency Assessment (VAT; Bezdek and Hathaway, 2002) and Improved
@@ -13,32 +12,26 @@ Visual Analysis for Cluster Tendency Assessment (iVAT; Wang et al, 2010).
 VAT(x, ...)
 iVAT(x, ...)
 path_dist(x)
-  
-create_lines_data(n=250)
 }
 \arguments{
   \item{x}{a \code{dist} object.}
-  \item{n}{number of data points to create.}
   \item{...}{further arguments are passed on to \code{pimage}.}
 }
 \details{
-
 \code{path_dist} redefines the distance between two objects as the minimum over
 the largest distances in all possible paths between the objects as used for 
 iVAT.
-
-\code{creat_lines_data} creates the lines data set used in 
-Havens and Bezdeck (2011).
 }
 \seealso{
 \code{\link{seriate}},
-\code{\link{pimage}}.
+\code{\link{pimage}},
+\code{\link{create_lines_data}}.
 }
 \references{
 Bezdek, J.C. and Hathaway, R.J. (2002): VAT: a tool for visual assessment of (cluster) tendency. \emph{Proceedings of the 2002 International Joint 
 Conference on Neural Networks (IJCNN '02)}, Volume: 3, 2225--2230. 
     
-Havens, T.C. and Bezdek, J.C. (2011):
+Havens, T.C. and Bezdek, J.C. (2012):
 An Efficient Formulation of the Improved Visual Assessment of Cluster Tendency (iVAT) Algorithm, \emph{IEEE Transactions on Knowledge and Data Engineering,}   \bold{24}(5), 813--822. 
 
 Wang L., U.T.V. Nguyen, J.C. Bezdek,
@@ -66,7 +59,11 @@ iVAT(d, main = "iVAT")
 
 ## compare with dissplot (shows banded structures and relationship between 
 ## center line and the two outer lines)
-dissplot(d, method="OLO_single", main = "Dissplot")
+dissplot(d, method="OLO_single", main = "Dissplot", col = col_br(bias = .5))
+
+## compare with optimally reordered heatmap
+hmap(d, method="OLO_single", main = "Heat map (opt. leaf ordering)", 
+col = col_br(bias = .5))
 }
 \keyword{cluster}
 \keyword{manip}

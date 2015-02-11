@@ -191,12 +191,12 @@ pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 ## more visualization options. Note that we reuse the reordered object res!
 ## color: use 10 shades red-blue
 plot(res, options = list(main = "PAM + Seriation", 
-    col= colorRampPalette(c("red", "white", "blue"))(10), newpage = FALSE))
+    col= colorRampPalette(c("blue", "white", "red"))(10), newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
 
-## threshold and cubic scale to highlight differences
+## threshold (using zlim) and cubic scale to highlight differences
 plot(res, options = list(main = "PAM + Seriation - threshold", 
     zlim = c(0, 1.5), power = 2, newpage = FALSE))
 
