@@ -38,10 +38,10 @@ export(
     create_lines_data,
     create_ordered_data,
   
-    col_br,
-    col_gr,
-    col_gray,
-    col_grey,
+    bluered,
+    greenred,
+    grays,
+    greys,
 
   ## registries
     set_criterion_method,

@@ -1,31 +1,32 @@
 \name{color_palettes}
-\alias{col_br}
-\alias{col_gr}
-\alias{col_gray}
-\alias{col_grey}
+\alias{greenred}
+\alias{bluered}
+\alias{grays}
+\alias{greys}
 \title{Different Useful Color Palettes}
 \description{
 Defines several color palettes for \code{pimage}, \code{dissplot}
 and \code{hmap}.
 }
 \usage{
-col_br(n = 100, bias = 1)
-col_gr(n = 100, bias = 1)
-col_gray(n = 100, power = 1)
-col_grey(n = 100, power = 1)
+bluered(n, bias = 1)
+greenred(n, bias = 1)
+grays(n, power = 1)
+greys(n, power = 1)
 }
 \arguments{
   \item{n}{ number of different colors produces. }
   \item{bias}{a positive number. Higher values give more widely 
     spaced colors at the high end.}
-  \item{power}{ control parameter determining how luminance should be increased (1 = linear, 2 = quadratic, etc.).}
+  \item{power}{ control parameter determining how luminance should be 
+    increased (1 = linear, 2 = quadratic, etc.).}
 }
 \details{
-\code{col_br} creates a blue-red color palette.
+\code{bluered} creates a blue-red color palette.
 
-\code{col_gr} creates a green-read color palette.
+\code{greenred} creates a green-read color palette.
 
-\code{col_gray} and \code{col_grey} creates gray scales.
+\code{greys} and \code{grays} creates gray scales.
 
 See \code{colorRampPalette} to create your own color palettes.
 }
@@ -40,9 +41,18 @@ A vector with \code{n} colors.
 }
 \author{Michael Hahsler}
 \examples{
-  pimage(rbind(1:100), key=TRUE)
-  pimage(rbind(1:100), key=TRUE, col = col_br())
-  pimage(rbind(1:100), key=TRUE, col = col_br(bias = 2))
-  pimage(rbind(1:100), key=TRUE, col = col_gr())
+pimage(rbind(1:100))
+pimage(rbind(1:100), col = greys(100, power=2))
+pimage(rbind(1:100), col = bluered(100))
+pimage(rbind(1:100), col = bluered(100, bias = 2))
+pimage(rbind(-100:100), col = greenred(10))
+
+## create your own color palettes 
+## red to green (with 10 colors)
+pimage(rbind(1:100), 
+  col = colorRampPalette(colors = c("red", "yellow", "green"))(10))
+## white to blue (with 100 colors)
+pimage(rbind(1:100), 
+  col = colorRampPalette(colors = c("white", "blue"))(100))
 }
 \keyword{hplot}

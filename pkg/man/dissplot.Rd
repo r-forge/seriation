@@ -90,8 +90,6 @@ dissplot(x, labels = NULL, method = "ARSA",
     \item{\code{threshold}}{ a numeric. If used, only plot distances below the
       threshold are displayed. Consider also using \code{zlim} for this purpose.} 
     \item{\code{col}}{ colors used for the image plot.}
-    \item{\code{power}}{ determines how luminance (and chroma for color) 
-	should be increased (1 = linear, 2 = quadratic, etc.) with dissimilarity. }
     \item{\code{key}}{ a logical indicating  whether to place a color key
       below the plot. }
     \item{\code{zlim}}{ range of values to display (defaults to range \code{x}).}
@@ -191,21 +189,21 @@ pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 ## more visualization options. Note that we reuse the reordered object res!
 ## color: use 10 shades red-blue
 plot(res, options = list(main = "PAM + Seriation", 
-    col= colorRampPalette(c("blue", "white", "red"))(10), newpage = FALSE))
+    col= bluered(10, bias=.5), newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
 
 ## threshold (using zlim) and cubic scale to highlight differences
 plot(res, options = list(main = "PAM + Seriation - threshold", 
-    zlim = c(0, 1.5), power = 2, newpage = FALSE))
+    zlim = c(0, 1.5), col = greys(100, power = 2), newpage = FALSE))
 
 popViewport()
 pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
 
 ## use custom (logistic) scale
 plot(res, options = list(main = "PAM + Seriation - logistic scale", 
-    col= hcl(c = 0, l = (plogis(seq(0, 10, length=100), 
+    col= hcl(c = 0, l = (plogis(seq(10, 0, length=100), 
 	location = 2, scale = 1/2, log = FALSE))*100), 
 	newpage = FALSE))
 

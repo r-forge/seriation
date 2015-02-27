@@ -267,7 +267,6 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
     flip		    = FALSE,
     silhouettes = FALSE,
     col         = NULL, 
-    power		    = 1,
     threshold   = NULL,
     zlim        = NULL,
     key         = TRUE,
@@ -281,7 +280,7 @@ plot.reordered_cluster_dissimilarity_matrix <- function(x, options = NULL, ...) 
   )) 
   
   if(is.null(options$col)) 
-    options$col <- rev(.sequential_pal(power=options$power))
+    options$col <- rev(.sequential_pal())
   else 
     options$col <- rev(options$col)
   

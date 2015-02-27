@@ -66,7 +66,7 @@ d <- dist(x)
 
 ## create a list of different seriations
 methods <- c("HC_single", "HC_complete", "OLO", "GW", "R2E", "VAT", 
-  "TSP", "Spectral", "MDS", "Identity", "Random")
+  "TSP", "Spectral", "SPIN", "MDS", "Identity", "Random")
 
 os <- sapply(methods, function(m) {
   cat("Doing ", m, " ... ")
@@ -75,19 +75,18 @@ os <- sapply(methods, function(m) {
   o
 })
 
-## compare the methods using distances
+## compare the methods using distances (default distance ignores reversed orders)
 ds <- seriation_dist(os)
-hmap(ds)
+hmap(ds, margin=c(7,7))
 
-## comapte using actual correlation (Note: reversed orders are neg. correlated!)
+## comapte using actual correlation (reversed orders are neg. correlated!)
 cs <- seriation_cor(os)
-hmap(cs, col=colorRampPalette(c("red", "black", "blue"))(100))
+hmap(cs, margin=c(7,7))
   
 ## normalize direction of the seriation orders
 os2 <- seriation_align(os)
 cs2 <- seriation_cor(os2)
-hmap(cs2, col=colorRampPalette(c("red", "black", "blue"))(100), 
-  breaks=seq(-1, 1, length.out=101))
+hmap(cs2, margin=c(7,7))
  
 ## plot the actual seriations  
 for(i in os2) pimage(d, i, main = get_method(i))

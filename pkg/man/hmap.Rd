@@ -88,17 +88,17 @@ data("Wood")
 ## average-link and optimal leaf ordering
 hmap(Wood)  
   
-## heatmap with correlation-based distance, green-red color (col_gr is 
+## heatmap with correlation-based distance, green-red color (greenred is 
 ## predefined) and optimal leaf ordering and no row label
 dist_cor <- function(x) as.dist(1-cor(t(x)))
   
-hmap(Wood, method="OLO", distfun = dist_cor, col=col_gr(), labRow=FALSE)
+hmap(Wood, method="OLO", distfun = dist_cor, col=greenred(100), labRow=FALSE)
   
 ## order-based heatmap
-hmap(Wood, method="MDS_angle", distfun = dist_cor, col=col_gr())  
+hmap(Wood, method="MDS_angle", distfun = dist_cor, col=greenred(100))  
 
 ## order-based without dissimilarity matrices
 hmap(Wood, method="MDS_angle", distfun = dist_cor, showdist = FALSE, 
-  col=col_gr())  
+  col=greenred(100))  
 }
 \keyword{hplot}

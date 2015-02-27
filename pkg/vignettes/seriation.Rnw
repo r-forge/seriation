@@ -772,9 +772,9 @@ For \code{matrix} and \code{array} the additional argument
 i.e., the columns of a matrix, are seriated).
 
 %\begin{landscape}
-\begin{table}[t]
+\begin{table}[tp]
 \centering
-    \begin{tabular}{llp{4cm}l}
+    \begin{tabular}{p{5cm}p{3cm}p{4cm}l}
         \hline
 Algorithm & \code{method} & Optimizes & Input data \\
         \hline
@@ -782,19 +782,40 @@ Simulated annealing & \code{"ARSA"} & Gradient measure &\code{dist} \\
 Branch-and-bound & \code{"BBURCG"} & Gradient measure &\code{dist} \\
 Branch-and-bound & \code{"BBWRCG"} & Gradient measure (weighted)& \code{dist} \\
 TSP solver & \code{"TSP"} & Hamiltonian path length& \code{dist} \\
-Optimal leaf ordering  & \code{"OLO"} & 
-    Hamiltonian path length (restricted)& \code{dist} \\
-Gruvaeus and Wainer & \code{"GW"} & Hamiltonian path length (restricted) & \code{dist} \\
+Optimal leaf ordering  & \code{"OLO"} 
+\code{"OLO_single"}
+\code{"OLO_average"}
+\code{"OLO_complete"}
+& Hamiltonian path length (restricted)& \code{dist} \\
+Gruvaeus and Wainer & \code{"GW"}
+\code{"GW_single"}
+\code{"GW_average"}
+\code{"GW_complete"}
+& Hamiltonian path length (restricted) & \code{dist} \\
 Bond Energy Algorithm & \code{"BEA"} &
     Measure of effectiveness & \code{matrix} \\
 TSP to optimize ME & \code{"BEA\_TSP"} &
     Measure of effectiveness& \code{matrix} \\
-MDS -- first dimension & \code{"MDS"} & Least square crit.& \code{dist} \\
-First principal component & \code{"PCA"} & 
+MDS & \code{"MDS"}
+\code{"MDS_metric"} 
+\code{"MDS_nonmetric"} 
+\code{"MDS_angle"}
+& Least square crit.& \code{dist} \\
+Principal component analysis& \code{"PCA"}
+\code{"PCA_angle"}& 
     Least square crit.& \code{matrix} \\
-Spectral seriation & \code{"Spectral"} & Inertia criterion & \code{dist} \\
-Hierarchical clustering & \code{"HC"} & Other& \code{dist} \\
+Spectral seriation & \code{"Spectral"} 
+\code{"Spectral_norm"}
+& Inertia criterion & \code{dist} \\
+Hierarchical clustering & \code{"HC"} 
+\code{"HC_single"}
+\code{"HC_average"}
+\code{"HC_complete"}
+& Other& \code{dist} \\
 Rank-two ellipse seriation  & \code{"R2E"} & Other& \code{dist} \\
+Sorting Points Into Neighborhoods & \code{"SPIN_NH"}
+\code{"SPIN_STS"} & Other& \code{dist} \\
+Visual Assessment of (Clustering) Tendency & \code{"VAT"}& Other& \code{dist} \\
         \hline
     \end{tabular}
     \caption{Currently implemented methods for \func{seriation}.}
@@ -965,10 +986,10 @@ matrix shading with \func{pimage} (the result is shown in
 Figure~\ref{fig:pimage1}).
 
 <<label=pimage1, fig=TRUE, include=FALSE, width=7.5>>=
-pimage(d, main = "Random", colorkey=TRUE)
+pimage(d, main = "Random")
 @
 <<label=pimage1-2, fig=TRUE, include=FALSE, width=7.5>>=
-pimage(d, o, main = "Reordered", colorkey=TRUE)
+pimage(d, o, main = "Reordered")
 @
 \begin{figure}
     \centering
@@ -995,27 +1016,25 @@ To visually compare the original data matrix and the
 result of seriation, we can also use \func{pimage}.
 We standardize the data using scale such that the visualized value
 is the number of standard diviations an object differs from the
-variable mean visualized using a divergent color scale from \pkg{colorspace}.
+variable mean. For matrices containing negative values, \code{pimage}
+uses automatically a divergent palette. 
 After using \func{pimage} for the original random data matrix, 
 we create a suitable \code{ser\_permutation} object for the original 
 two-mode data. Since the seriation above only produced an order for the rows
 of the data, we add an identity permutation vector 
-for the columns (which leaves them in original order) 
+for the columns (represented by \code{NA}) 
 to the permutations object using the combine
 function \func{c}. This new permutation object for $2$-mode data is used
 for displaying the reordered scaled data. The two plots are shown in 
 Figure~\ref{fig:pimage2}.
 
 <<label=pimage2, fig=TRUE, include=FALSE, width=7.5>>=
-library("colorspace")
-pimage(scale(x), main = "Random", colorkey=TRUE, 
-    col=diverge_hcl(100), range=c(-3.5,3.5))
+pimage(scale(x), main = "Random")
 @
 
 <<label=pimage2-2, fig=TRUE, include=FALSE, width=7.5>>=
-o_2mode <- c(o, ser_permutation(seq_len(ncol(x))))
-pimage(scale(x), o_2mode, main = "Reordered", 
-    colorkey=TRUE, col=diverge_hcl(100), range=c(-3.5,3.5))
+o_2mode <- c(o, NA)
+pimage(scale(x), o_2mode, main = "Reordered")
 @
 
 \begin{figure}
@@ -1081,13 +1100,13 @@ and then the orderings are displayed using matrix shading
 
 <<label=pimage3-pre, eval=FALSE>>=
 o <- seriation_align(o)
-for(s in o) pimage(d, s, main = get_method(s))
+for(s in o) pimage(d, s, main = get_method(s), key = FALSE)
 @
 <<label=pimage3, echo=FALSE, fig=TRUE, include=FALSE>>=
 o <- seriation_align(o)
 for(i in 1:length(o)) {
     pdf(file=paste("seriation-pimage_comp_", i , ".pdf", sep=""))
-    pimage(d, o[[i]], main = get_method(o[[i]]))
+    pimage(d, o[[i]], main = get_method(o[[i]]), key = FALSE)
     dev.off()
 }
 
@@ -1208,12 +1227,12 @@ register a new seriation method.
 
 In the registry we distinguish between methods for different types of
 input data.  With the following two commands we produce a short overview
-of the available seriation methods for input data of class \code{dist}
+of the the first few available seriation methods for input data of class \code{dist}
 and \code{matrix}.
 
 <<>>=
-show_seriation_methods("dist")
-show_seriation_methods("matrix")
+show_seriation_methods("dist")[1:3]
+show_seriation_methods("matrix")[1:3]
 @
 
 The overview is intended to make it convenient for the user to choose an
@@ -1303,11 +1322,12 @@ we use standard scaling.
 x <- scale(x, center = FALSE)
 @
 
-To produce a heat map with optimally reordered dendrograms, the function
+To produce a heat map with optimally reordered dendrograms (using
+by default Optimal Leaf Ordering), the function
 \func{hmap} can be used with its default settings. 
 
 <<eval=FALSE>>=
-hmap(x)
+hmap(x, margin =c(7, 4), cexCol=1, labRow = FALSE)
 @
 
 With these settings, the
@@ -1318,12 +1338,12 @@ resulting dendrograms are optimally reordered, and \func{heatmap} in package
 (see Figure~\ref{fig:heatmap}(a) for the resulting plot).
 
 <<eval=FALSE>>=
-hmap(x, hclustfun = NULL)
+hmap(x, method = "MDS")
 @
 
-If \code{hclustfun = NULL} is used, instead of hierarchical clustering,
+If a seriation method is used that does not depend on dendrograms, instead of hierarchical clustering,
 seriation on the dissimilarity matrices for rows and columns is
-performed (using a TSP heuristic by default) and the reordered matrix
+performed and the reordered matrix
 with the reordered dissimilarity matrices to the left and on top is
 displayed (see Figure~\ref{fig:heatmap}(b)). A \code{method} argument can be used to choose different
 seriation methods.
@@ -1332,12 +1352,12 @@ seriation methods.
 #bitmap(file = "seriation-heatmap1.png", type = "pnggray", 
 #    height = 6, width = 6, res = 300, pointsize=14)
 pdf(file = "seriation-heatmap1.pdf")
-hmap(x, cexCol=1, labRow = "", margin =c(7,7))
+hmap(x, margin = c(7, 4), labRow = FALSE, cexCol=1)
 tmp <- dev.off()
 @
 <<echo=FALSE, fig=FALSE, include=FALSE>>=
 pdf(file = "seriation-heatmap2.pdf")
-hmap(x, hclustfun = NULL)
+hmap(x, method="MDS")
 tmp <- dev.off()
 @
 

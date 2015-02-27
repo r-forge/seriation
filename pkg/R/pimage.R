@@ -22,7 +22,7 @@
 
 pimage <-
   function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
-    axes="auto", zlim=NULL, key=FALSE, key.lab="", symkey=TRUE,
+    axes="auto", zlim=NULL, key=TRUE, key.lab="", symkey=TRUE,
     upper.tri=TRUE, lower.tri=TRUE, prop=NULL,
     ..., 
     newpage=TRUE, pop=TRUE, gp=NULL)
@@ -30,7 +30,7 @@ pimage <-
 
 ### Note for matrix large values are dark, for dist large values are light!
 pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
-  axes="auto", zlim=NULL, key=FALSE, key.lab="", symkey=TRUE, 
+  axes="auto", zlim=NULL, key=TRUE, key.lab="", symkey=TRUE, 
   upper.tri=TRUE, lower.tri=TRUE, prop = NULL, ..., 
   newpage=TRUE, pop=TRUE, gp=NULL) {
   

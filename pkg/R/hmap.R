@@ -74,11 +74,15 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
     ret <- do.call(gplots::heatmap.2, args)
     
     ret$seriation_method <- method
-    return(invisible(ret))
   } else {
     ### we plot seriated distance matrices
-    .hmap_dist(x, method, dist_row, dist_col, o_row, o_col, ...)    
+    .hmap_dist(x, method, dist_row, dist_col, o_row, o_col, ...)  
+    
+    ## return permutation indices
+    ret <- list(rowInd = o_row, colInd = o_col, seriation_method = method)
   }
+
+  return(invisible(ret))
   
 }
 
@@ -234,8 +238,5 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
   }
   
   popViewport(2)
-  
-  ## return permutation indices
-  invisible(list(rowInd = o_row, colInd = o_col, 
-    seriation_method = method))
+
 }

@@ -59,11 +59,11 @@ iVAT(d, main = "iVAT")
 
 ## compare with dissplot (shows banded structures and relationship between 
 ## center line and the two outer lines)
-dissplot(d, method="OLO_single", main = "Dissplot", col = col_br(bias = .5))
+dissplot(d, method="OLO_single", main = "Dissplot", col = bluered(100, bias = .5))
 
 ## compare with optimally reordered heatmap
 hmap(d, method="OLO_single", main = "Heat map (opt. leaf ordering)", 
-col = col_br(bias = .5))
+col = bluered(100, bias = .5))
 }
 \keyword{cluster}
 \keyword{manip}
