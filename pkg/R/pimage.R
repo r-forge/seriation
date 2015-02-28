@@ -39,11 +39,11 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
   if(is.null(col)) {
     if(is.logical(x)) col <- c("white","black")
     else if(any(x<0))  {
-      col <- .diverge_pal()
+      col <- .diverge_pal(100)
       if(is.null(zlim) && symkey) 
         zlim <- max(abs(range(x, na.rm = TRUE))) * c(-1,1)
     }
-    else col <- .sequential_pal() 
+    else col <- .sequential_pal(100) 
   }
   
   if(!is.null(order)) x <- permute(x, order)
@@ -115,7 +115,7 @@ pimage.dist <-
     upper.tri=TRUE, lower.tri=TRUE, prop=NULL,..., 
     newpage=TRUE, pop=TRUE, gp=NULL) { 
     
-    if(is.null(col)) col <- rev(.sequential_pal())
+    if(is.null(col)) col <- rev(.sequential_pal(100))
     else col <- rev(col)
     if(is.null(prop)) prop <- TRUE    
     if(!is.null(order)) x <- permute(x, order)
