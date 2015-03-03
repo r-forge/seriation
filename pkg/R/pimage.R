@@ -38,7 +38,7 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
   
   if(is.null(col)) {
     if(is.logical(x)) col <- c("white","black")
-    else if(any(x<0))  {
+    else if(any(x<0, na.rm = TRUE))  {
       col <- .diverge_pal(100)
       if(is.null(zlim) && symkey) 
         zlim <- max(abs(range(x, na.rm = TRUE))) * c(-1,1)

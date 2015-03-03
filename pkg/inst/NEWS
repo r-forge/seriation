@@ -18,7 +18,7 @@ Changes in version 1.1-0 (xx/xx/2015)
     * create_lines_data, create_ordered_data added.
     * pimage, hmap and dissplot: Simplified and made interfaces more 
         consistent (all use now zlim, consistent default color palettes).
-    * pimage gained axes and prop.
+    * pimage gained axes and prop; NA in matrix now works.
     * seriation checks now control arguments consistently.
     * we use now package registry to manage methods.
     * reorder for hclust added.
