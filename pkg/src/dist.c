@@ -38,12 +38,15 @@ SEXP reorder_dist(SEXP R_dist, SEXP R_order) {
 
     PROTECT(R_dist_out = allocVector(REALSXP, n_out*(n_out-1)/2));
 
+    double *dist = REAL(R_dist);
+    double *dist_out = REAL(R_dist_out);
+
     for (int i = 1; i <= n_out; i++) {		
         for (int j = (i+1); j <=n_out; j++) {
 
-            if(o[i-1] == o[j-1]) REAL(R_dist_out)[LT_POS(n_out, i, j)] = 0.0;	
-            else REAL(R_dist_out)[LT_POS(n_out, i, j)] = 
-                REAL(R_dist)[LT_POS(n, o[i-1], o[j-1])];
+            if(o[i-1] == o[j-1]) dist_out[LT_POS(n_out, i, j)] = 0.0;	
+            else dist_out[LT_POS(n_out, i, j)] = 
+                dist[LT_POS(n, o[i-1], o[j-1])];
         }
     }
 

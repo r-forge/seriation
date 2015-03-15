@@ -36,13 +36,14 @@ SEXP least_squares_criterion(SEXP R_dist, SEXP R_order) {
     double sum = 0.0;
     int p = INTEGER(getAttrib(R_dist, install("Size")))[0];
     int *o = INTEGER(R_order);
+    double *dist = REAL(R_dist);
     double x = 0.0; 
     SEXP R_out;
 
     /* since d ist symmetric we only need to sum up half the matrix */
     for (int i = 1; i <= p; i++) {
         for (int j = 1; j < i; j++) {
-            x = (REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])] - abs(i-j));
+            x = (dist[LT_POS(p, o[i-1], o[j-1])] - abs(i-j));
             sum += x*x;
         }
     }
@@ -64,6 +65,7 @@ SEXP inertia_criterion(SEXP R_dist, SEXP R_order) {
     double sum = 0.0;
     int p = INTEGER(getAttrib(R_dist, install("Size")))[0];
     int *o = INTEGER(R_order);
+    double *dist = REAL(R_dist);
     int x = 0; 
     SEXP R_out;
 
@@ -71,7 +73,7 @@ SEXP inertia_criterion(SEXP R_dist, SEXP R_order) {
     for (int i = 1; i <= p; i++) {
         for (int j = 1; j < i; j++) {
             x = abs(i-j);
-            sum += REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])] * x*x;
+            sum += dist[LT_POS(p, o[i-1], o[j-1])] * x*x;
         }
     }
     sum *= 2.0;
@@ -98,6 +100,7 @@ SEXP ar(SEXP R_dist, SEXP R_order, SEXP R_which) {
     
     int p = INTEGER(getAttrib(R_dist, install("Size")))[0];
     int *o = INTEGER(R_order);
+    double *dist = REAL(R_dist);
     int which = INTEGER(R_which)[0];
     
     double sum = 0.0;
@@ -107,14 +110,13 @@ SEXP ar(SEXP R_dist, SEXP R_order, SEXP R_which) {
     SEXP R_out;
 
     
-    
     /* sum_i=1^p sum_j<k<i I(d_ij < d_ik) * weight */
     for (int i = 3; i <= p; i++) {
         for(int k = 2; k < i; k++) {
-            d_ik = REAL(R_dist)[LT_POS(p, o[i-1], o[k-1])];
+            d_ik = dist[LT_POS(p, o[i-1], o[k-1])];
             
             for(int j = 1; j < k; j++) {
-                d_ij = REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])];
+                d_ij = dist[LT_POS(p, o[i-1], o[j-1])];
 
                 if(d_ij < d_ik) {
                     if(which == 1) { 
@@ -131,9 +133,9 @@ SEXP ar(SEXP R_dist, SEXP R_order, SEXP R_which) {
     /* sum_i=1^p sum_i<j<k I(d_ij > d_ik) * weight */
     for (int i = 1; i < (p-1); i++) {
         for(int j = i+1; j < p; j++) {
-            d_ij = REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])];
+            d_ij = dist[LT_POS(p, o[i-1], o[j-1])];
             for(int k = j+1; k <= p; k++) {
-                d_ik = REAL(R_dist)[LT_POS(p, o[i-1], o[k-1])];
+                d_ik = dist[LT_POS(p, o[i-1], o[k-1])];
 
                 if(d_ij > d_ik) {
                     if(which == 1) {
@@ -162,6 +164,7 @@ SEXP rgar(SEXP R_dist, SEXP R_order, SEXP R_w) {
 
     int p = INTEGER(getAttrib(R_dist, install("Size")))[0];
     int *o = INTEGER(R_order);
+    double *dist = REAL(R_dist);
     /* w ... window size [p,1] */
     int w = INTEGER(R_w)[0];
     
@@ -175,10 +178,10 @@ SEXP rgar(SEXP R_dist, SEXP R_order, SEXP R_w) {
     /* sum_i=1^p sum_(i-w)<=j<k<i I(d_ij < d_ik) */
     for (int i = 3; i <= p; i++) {
         for(int k = MAX(i-w+1, 2); k < i; k++) {
-            d_ik = REAL(R_dist)[LT_POS(p, o[i-1], o[k-1])];
+            d_ik = dist[LT_POS(p, o[i-1], o[k-1])];
             
             for(int j = MAX(i-w, 1); j < k; j++) {
-                d_ij = REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])];
+                d_ij = dist[LT_POS(p, o[i-1], o[j-1])];
                 
 		count++;
                 if(d_ij < d_ik) {
@@ -191,9 +194,9 @@ SEXP rgar(SEXP R_dist, SEXP R_order, SEXP R_w) {
     /* sum_i=1^p sum_i<j<k<=(i+w) I(d_ij > d_ik) * weight */
     for (int i = 1; i < (p-1); i++) {
         for(int j = i+1; j < MIN(i+w-1, p); j++) {
-            d_ij = REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])];
+            d_ij = dist[LT_POS(p, o[i-1], o[j-1])];
             for(int k = j+1; k <= MIN(i+w, p); k++) {
-                d_ik = REAL(R_dist)[LT_POS(p, o[i-1], o[k-1])];
+                d_ik = dist[LT_POS(p, o[i-1], o[k-1])];
 
 		count++;
                 if(d_ij > d_ik) {
@@ -224,6 +227,7 @@ SEXP gradient(SEXP R_dist, SEXP R_order, SEXP R_which) {
     
     int p = INTEGER(getAttrib(R_dist, install("Size")))[0];
     int *o = INTEGER(R_order);
+    double *dist = REAL(R_dist);
     int which = INTEGER(R_which)[0];
     
     double sum = 0.0;
@@ -239,10 +243,10 @@ SEXP gradient(SEXP R_dist, SEXP R_order, SEXP R_which) {
     /* sum_i<k<j(f(d_ik,d_ij)) */ 
     for (i = 1; i <= p-2; i++){
         for(k = i+1; k <= p-1; k++) {
-            d_ik = REAL(R_dist)[LT_POS(p, o[i-1], o[k-1])];
+            d_ik = dist[LT_POS(p, o[i-1], o[k-1])];
                 
             for(j = k+1; j <= p; j++) {
-                d_ij = REAL(R_dist)[LT_POS(p, o[i-1], o[j-1])];
+                d_ij = dist[LT_POS(p, o[i-1], o[j-1])];
             
                 /* diff = d_ik - d_ij; seems to be wrong in the book*/ 
                 diff = d_ij - d_ik;
@@ -258,7 +262,7 @@ SEXP gradient(SEXP R_dist, SEXP R_order, SEXP R_which) {
                 }
                 
                 /* second sum */
-                d_kj = REAL(R_dist)[LT_POS(p, o[k-1], o[j-1])];
+                d_kj = dist[LT_POS(p, o[k-1], o[j-1])];
             
                 /* diff = d_kj - d_ij; seems to be wrong in the book*/
                 diff = d_ij - d_kj;
