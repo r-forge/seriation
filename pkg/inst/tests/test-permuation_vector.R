@@ -45,7 +45,7 @@ d <- dist(matrix(runif(25), ncol=5))
 attr(d, "call") <- NULL   ### permute removes the call attribute
 expect_identical(permute(d, ser_permutation(1:5)), d)
 ### is_equivalent_to ignores attributes
-expect_equivalent_to(permute(d, ser_permutation(5:1)), as.dist(as.matrix(d)[5:1,5:1]))
+expect_equivalent(permute(d, ser_permutation(5:1)), as.dist(as.matrix(d)[5:1,5:1]))
 
 expect_error(permute(d, ser_permutation(1:8)))
 
@@ -58,3 +58,4 @@ pm <- permutation_vector2matrix(pv)
 
 ## convert back  
 expect_identical(permutation_matrix2vector(pm), pv)
+

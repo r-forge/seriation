@@ -1,4 +1,4 @@
-Changes in version 1.1-0 (xx/xx/2015) 
+Changes in version 1.1-0 (06/09/2015) 
     * Seriation method 'Identity' added.
     * Seriation method 'Random' added.
     * Seriation method 'VAT' added.
@@ -25,6 +25,7 @@ Changes in version 1.1-0 (xx/xx/2015)
     * iVAT with path distance added.
     * col_br, col_gr and col_gray added.
     * improved speed of C code. 
+    * problem with testthat filenames fixed.
 
 Changes in version 1.0-14 (12/02/2014) 
     * arsa.f: removed 0 flag in rand() so it compiles under AIX 

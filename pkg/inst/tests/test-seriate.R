@@ -29,3 +29,4 @@ os <- lapply(methods, function(m) {
   o
 })
 names(os) <- methods
+

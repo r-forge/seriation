@@ -45,10 +45,9 @@ colnames(Brmatrix) <- colnames(Brmatrix,FALSE)
 
 bertinplot(Brmatrix)
 bertinplot(Brmatrix, options=list(panel=panel.circles))
-## FIXME: this one fails!!!
 bertinplot(Brmatrix, options=list(panel=panel.circles, reverse=TRUE))
 
-## R may use internal housekeeping to keep matrix columns hogogeneous. Check!
+## R may use internal housekeeping to keep matrix columns homogeneous. Check!
 ## Use row matrix and column matrix for tests.
 Bcmatrix <- cbind(Bzero, Bone, Bmone, Binc, Bdec, Bstep, Bhat)
 rownames(Bcmatrix) <- rownames(Bcmatrix,FALSE)
@@ -70,7 +69,6 @@ bertinplot(Brmatrixx, options=list(shading=TRUE))
 bertinplot(Brmatrixx, options=list(reverse=TRUE))
 bertinplot(Brmatrixx, options=list(panel=panel.squares))
 
-## FIXME: this one fails!!!
 bertinplot(Brmatrixx, options=list(panel=panel.circles, reverse=TRUE))
 
 Bcmatrixx <- cbind(Bzero, Bone, Bmone, Binc, Bdec, Bstep, Bhat, Bnazero,
