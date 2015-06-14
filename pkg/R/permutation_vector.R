@@ -25,13 +25,13 @@
 
 ## constructor (NA is identity vector)
 ser_permutation_vector <- function(x, method = NULL) {
+  if(inherits(x, "ser_permutation_vector")) return(x)
+  
   ## make sure it's an integer vector
   if(is.vector(x) && !is.integer(x)) x <- as.integer(x)
 
   if(.is_identity_permutation(x)) attr(x, "method") <- "identity permutation"
   if(!is.null(method)) attr(x, "method") <- method
-  
-  if(inherits(x, "ser_permutation_vector")) return(x)
     
   class(x) <- c("ser_permutation_vector", class(x))
   .valid_permutation_vector(x)
@@ -49,6 +49,7 @@ get_order.hclust <- function(x, ...) {
 
 get_order.integer <- function(x, ...) {
   o <- as.integer(x)
+  if(.is_identity_permutation(x)) stop("Cannot get order from identity permutation.")
   #names(o) <- names(x)[o]
   o
 }
@@ -58,7 +59,10 @@ get_order.default <- function(x, ...)
     class(x)))
 
 
-get_rank <- function(x, ...) order(get_order(x, ...))
+#get_rank <- function(x, ...) order(get_order(x, ...))
+
+get_permutation_matrix <- function(x, ...) 
+  permutation_vector2matrix(get_order(x, ...))
 
 ## c will create a ser_permutation!
 c.ser_permutation_vector <- function(..., recursive = FALSE) 
@@ -98,7 +102,8 @@ get_method <- function(x, printable = FALSE) {
 
 
 ## print et al
-length.ser_permutation_vector <- function(x) length(get_order(x)) 
+length.ser_permutation_vector <- function(x) 
+  if(!.is_identity_permutation(x)) length(get_order(x)) else 0L 
 
 print.ser_permutation_vector <-
   function(x, ...)
@@ -106,8 +111,7 @@ print.ser_permutation_vector <-
     writeLines(
       c(gettextf("object of class %s",
         paste(sQuote(class(x)), collapse = ", ")),
-        gettextf("contains a permutation vector of length %d",
-          if(.is_identity_permutation(x)) NA_integer_ else length(x)),
+        gettextf("contains a permutation vector of length %d", length(x)),
         gettextf("used seriation method: '%s'",
           get_method(x, printable = TRUE))))
     invisible(x)
@@ -122,7 +126,7 @@ summary.ser_permutation_vector <- function(object, ...) {
 
 ## helpers
 .is_identity_permutation <- function (x) 
-  if(length(x)==1 && is.na(x[1])) TRUE else FALSE
+  if(is(x, "integer") && length(as.vector(x))==1 && is.na(x[1])) TRUE else FALSE
 
 .valid_permutation_vector <- function(x) {
   ## identity vector

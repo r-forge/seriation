@@ -229,7 +229,6 @@ Information visualization via iteratively generated correlation matrices,
 L. Hubert, P. Arabie, and J. Meulman (2001): \emph{Combinatorial Data Analysis: 
 Optimization by Dynamic Programming.} Society for Industrial Mathematics.
 
-
 S. Niermann (2005): Optimizing the Ordering of Tables 
 With Evolutionary Computation, \emph{The American Statistician,}
 \bold{59}(1), 41--46.

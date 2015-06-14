@@ -41,7 +41,7 @@
 .permute_1d <-
   function(x, order)
   {
-    if(!inherits(order, "ser_permutation_vector")) 
+    if(!inherits(order, "ser_permutation")) 
       order <- ser_permutation(order)
     
     if(length(order) != 1)

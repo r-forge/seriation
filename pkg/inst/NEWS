@@ -1,3 +1,11 @@
+Changes in version 1.1-1 (xx/xx/2015) 
+    * get_permutation_matrix added.
+    * removed get_rank to avoid confusion since get_order returns the rank.
+    * seriation_dist measure "ppc" (positional proximity coefficient) added.
+    * Fixed bug with permute and ser_permutation_vectors.
+    * Identity permutations (NA) give now an error for get_order and
+        get_permutation_matrix.
+
 Changes in version 1.1-0 (06/09/2015) 
     * Seriation method 'Identity' added.
     * Seriation method 'Random' added.
@@ -23,9 +31,10 @@ Changes in version 1.1-0 (06/09/2015)
     * we use now package registry to manage methods.
     * reorder for hclust added.
     * iVAT with path distance added.
-    * col_br, col_gr and col_gray added.
+    * color palettes (bluered, greenred, greys) added.
     * improved speed of C code. 
-    * problem with testthat filenames fixed.
+    * fixed problem with testthat filenames fixed.
+    * bburg.f/bbwrg.f: memory access problem fixed.
 
 Changes in version 1.0-14 (12/02/2014) 
     * arsa.f: removed 0 flag in rand() so it compiles under AIX 

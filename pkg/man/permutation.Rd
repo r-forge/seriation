@@ -32,7 +32,7 @@ An object of class \code{ser_permutation}.
 \seealso{
 \code{\link{ser_permutation_vector}},
 \code{\link{get_order}},
-\code{\link{get_rank}}
+\code{\link{get_permutation_matrix}}
 }
 \author{Michael Hahsler}
 \examples{

@@ -19,6 +19,12 @@ os <- sapply(methods, function(m) {
   o
 })
 
+### Stress test to find memory access problems with randomized algorithms
+#context("memory stress test")
+#replicate(1000, seriate(d, method="bburcg"))
+#replicate(1000, seriate(d, method="bbwrcg"))
+#replicate(1000, seriate(d, method="arsa"))
+
 context("seriate_matrix")
 
 methods <- list_seriation_methods(kind = "matrix")

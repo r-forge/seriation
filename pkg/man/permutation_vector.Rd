@@ -46,7 +46,7 @@ An object of class \code{ser_permutation_vector}.
 \seealso{
 \code{\link{ser_permutation}},
 \code{\link{get_order}},
-\code{\link{get_rank}},
+\code{\link{get_permutation_matrix}},
 \code{\link{permutation_vector2matrix}}.
 }
 \author{Michael Hahsler}
@@ -56,8 +56,9 @@ p
 
 ## some methods
 length(p)
-get_order(p)
 get_method(p)
+get_order(p)
+get_permutation_matrix(p)
 
 r <- rev(p)
 r

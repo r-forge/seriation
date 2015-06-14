@@ -311,7 +311,7 @@ seriate_dist_VAT <- function(x, control = NULL) {
 ## spectral seriation
 ## Ding, C. and Xiaofeng He (2004): Linearized cluster assignment via
 ## spectral orderingProceedings of the Twenty-first.
-## International Conference on Machine learning (ICML ’04)
+## International Conference on Machine learning (ICML '04)
 
 seriate_dist_spectral <- function(x, control = NULL) {
   param <- .get_parameters(control, NULL)

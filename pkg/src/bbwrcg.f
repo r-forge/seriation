@@ -41,10 +41,11 @@ C 10/13/01 This program fits an "weighted" row gradient criterion
 C         to a symmetric proximity matrix.  Count +1 if the anti-
 C         Robinson triple is satisfied, -1 if its not, and 0 for
 C         ties.  Only look at upper half of matrix
-C 7/20/02: Improved symmetry test implemented.
-C 7/26/03: Fixed the incorrect symmetry test, added an interchange test
+C 07/20/02: Improved symmetry test implemented.
+C 07/26/03: Fixed the incorrect symmetry test, added an interchange test
 C          avoid use of so many "IF" statements using F & D matrices
 C 12/24/03: Add insertion test to interchange test.
+C 07/09/15: Fixed memory issue (MFH)
 C #################################################################
 C
 C      OPEN(1,FILE='AMAT.DAT')          ! Dissimilarity matrix
@@ -222,8 +223,10 @@ C   main loop
 C
   2   Q(M)=Q(M)+1
 C
+C MFH: Make sure to not get out of bounds with S(Q(M)) - 7/9/15
+      IF(Q(M).GT.N) GO TO 222
       IF(S(Q(M)).EQ.1) GO TO 2               ! REDUNDANCY
-      IF(M.EQ.1.AND.Q(M).GT.N) GO TO 9       ! TERMINATE
+  222 IF(M.EQ.1.AND.Q(M).GT.N) GO TO 9       ! TERMINATE
       IF(M.GT.1.AND.Q(M).GT.N) GO TO 7       ! GO TO RETRACTION
 C only for bbwrcg
       IF(TRIG.EQ.0.AND.Q(M).EQ.2) GO TO 2    ! SYMMETRY FATHOM
@@ -360,8 +363,10 @@ C          ism3 = ism3 + 1
       END IF
 C
    7  IF(Q(M).EQ.1) TRIG=0
+C MFH: Make sure to not get out of bounds with S(Q(M)) - 6/9/15
+      IF(Q(M).GT.N) GO TO 777
       S(Q(M))=0
-      Q(M)=0
+  777 Q(M)=0
       M=M-1
       IF(Q(M).EQ.1) TRIG=0
       S(Q(M))=0

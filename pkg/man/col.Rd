@@ -24,7 +24,7 @@ greys(n, power = 1)
 \details{
 \code{bluered} creates a blue-red color palette.
 
-\code{greenred} creates a green-read color palette.
+\code{greenred} creates a green-red color palette.
 
 \code{greys} and \code{grays} creates gray scales.
 
