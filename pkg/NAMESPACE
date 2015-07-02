@@ -8,7 +8,9 @@ importFrom("gclus", "reorder.hclust") ## we use :: for gclus in seriate.hclust
 importFrom("cluster", "silhouette") ## we use :: for silhouette in dissplot
 importFrom("MASS", "isoMDS", "sammon")
 importFrom("gplots", "heatmap.2")
-importFrom("stats", "reorder")
+importFrom("stats", "reorder", "as.dist", "hclust", "runif", "rnorm", "as.dendrogram", "cmdscale", "prcomp", "cor", "dist")
+importFrom("methods", "is")
+importFrom("grDevices", "gray.colors", "gray")
 
 export(
     bertinplot,

@@ -21,13 +21,17 @@ hmap(x, distfun = dist, method = "OLO", control = NULL, zlim = NULL, ...)
       algorithm specified in \code{method}.} 
   \item{zlim}{range of values to display (defaults to the range 
       of \code{x}).}
-  \item{\dots}{further arguments. For dendrogram based heat maps the 
+  \item{\dots}{further arguments.} 
+}  
+\details{
+  
+  For dendrogram based heat maps the 
       arguments are passed on to \code{heatmap.2} in
       \pkg{gplots}. See for example \code{margins} and \code{col}.
       The following arguments for \code{heatmap.2} cannot be used:
       \code{Rowv, Colv, hclustfun, reorderfun}.
       
-  For order-based heat maps further arguments include:
+  For seriation-based heat maps further arguments include:
        \describe{
           \item{\code{gp}}{an object of class \code{gpar} containing graphical
                 parameters (see \code{gpar} in package \pkg{grid}).}
@@ -49,9 +53,7 @@ hmap(x, distfun = dist, method = "OLO", control = NULL, zlim = NULL, ...)
          \item{\code{zlim}}{ range of values displayed.} 
          \item{\code{col}, \code{col_dist}}{ color palettes used.} 
       }      
-      }
-}
-\details{
+
 For \code{dendrogram = TRUE}, \code{seriate.hclust} 
 with the default method \code{"optimal"} is used for arranging the
 dendrograms and \code{x}. \code{heatmap} is used for plotting.

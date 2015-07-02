@@ -72,22 +72,21 @@ x <- matrix(sample(c(FALSE, TRUE), 300, rep=TRUE), ncol=10,
   dimnames = list(1:30, LETTERS[1:10]))
 
 ## matrix (large values are dark/black)
-pimage(x, main = "Random data")
+pimage(x, main = "Random data", key = FALSE)
 
 ## plot seriated matrix (use red, proportional display and plot all axes)
 pimage(x, seriate(x), col = c("white", "red"), 
-  prop = TRUE, axes="both", main = "Reordered data")
+  prop = TRUE, axes="both", main = "Reordered data", key = FALSE)
 
 ## show correlation (for neg. values a diverging color scheme is 
 ## used automatically) 
-pimage(cor(x), key=TRUE, prop=TRUE)
+pimage(cor(x), prop=TRUE)
   
 ## distances (note that low distances are represented dark!)
 d <- dist(x, method = "binary")
-pimage(d, upper.tri = FALSE, main = "Distances", key = TRUE)
+pimage(d, upper.tri = FALSE, main = "Distances")
 
-pimage(d, seriate(d), upper.tri = FALSE, main = "Distances", 
-  key = TRUE, axes = "both")
+pimage(d, seriate(d), upper.tri = FALSE, main = "Distances", axes = "both")
 
 ## add to the plot using grid (use pop = FALSE) 
 library(grid)
@@ -114,14 +113,15 @@ pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
 
 ## seriate matrix
 o <- seriate(x)  
-pimage(x, o, main = "Random data", prop = TRUE, axes = "both", newpage = FALSE)
+pimage(x, o, main = "Random data", prop = TRUE, axes = "both", key = FALSE, 
+  newpage = FALSE)
   
 upViewport(1)
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
 
 ## add the reordered disimilarity matrix for rowa
 pimage(d, o[[1]], upper.tri = FALSE, main = "Distances", axes = "both", 
-  newpage = FALSE)
+  key = FALSE, newpage = FALSE)
   
 upViewport(1)
 popViewport(0)

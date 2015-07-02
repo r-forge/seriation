@@ -1,10 +1,11 @@
-Changes in version 1.1-1 (xx/xx/2015) 
+Changes in version 1.1-1 (7/30/2015) 
     * get_permutation_matrix added.
     * removed get_rank to avoid confusion since get_order returns the rank.
     * seriation_dist measure "ppc" (positional proximity coefficient) added.
     * Fixed bug with permute and ser_permutation_vectors.
     * Identity permutations (NA) give now an error for get_order and
         get_permutation_matrix.
+    * Fixed imports for non-base R packages.
 
 Changes in version 1.1-0 (06/09/2015) 
     * Seriation method 'Identity' added.

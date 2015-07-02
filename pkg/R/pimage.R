@@ -58,11 +58,11 @@ pimage.matrix <- function(x, order=NULL, col=NULL, main="", xlab="", ylab="",
   ## axes
   m <- pmatch(axes, c("auto", "x", "y", "both", "none"))
   if(is.na(m)) stop("Illegal vaule for axes. Use: 'auto', 'x', 'y', 'both' or 'none'!")
-  if(m==1) { axes_row <- nrow(x)<=25; axes_col <- ncol(x)<=25 }
-  else if(m==2) { axes_row <- FALSE; axes_col <- TRUE  }
-  else if(m==3) { axes_row <- TRUE;  axes_col <- FALSE }
-  else if(m==4) { axes_row <- TRUE;  axes_col <- TRUE  }
-  else if(m==5) { axes_row <- FALSE; axes_col <- FALSE }
+  if(m==1L) { axes_row <- nrow(x)<=25; axes_col <- ncol(x)<=25 }
+  else if(m==2L) { axes_row <- FALSE; axes_col <- TRUE  }
+  else if(m==3L) { axes_row <- TRUE;  axes_col <- FALSE }
+  else if(m==4L) { axes_row <- TRUE;  axes_col <- TRUE  }
+  else if(m==5L) { axes_row <- FALSE; axes_col <- FALSE }
   if(is.null(colnames(x))) axes_col <- FALSE
   if(is.null(rownames(x))) axes_row <- FALSE
   bottom_mar <- if(axes_col) 
@@ -111,7 +111,7 @@ pimage.default <- pimage.matrix
 ## small values are dark
 pimage.dist <- 
   function(x, order=NULL, col=NULL, main="", xlab="", ylab="", 
-    axes="auto", zlim=NULL, key=FALSE, key.lab="", symkey=TRUE,
+    axes="auto", zlim=NULL, key=TRUE, key.lab="", symkey=TRUE,
     upper.tri=TRUE, lower.tri=TRUE, prop=NULL,..., 
     newpage=TRUE, pop=TRUE, gp=NULL) { 
     
