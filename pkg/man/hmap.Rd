@@ -73,8 +73,7 @@ An invisible list with elements:
 \item{rowInd, colInd}{index permutation vectors.}
 \item{reorder_method}{name of the method used to reorder the matrix.}
 
-For \code{dendrogram = TRUE} the list can contain additional elements 
-(see \code{heatmap} for details).
+The list may contain additional elements (dendrograms, colors, etc).
     
     }
 \seealso{

@@ -19,7 +19,7 @@ export(
     dissplot,
     get_method,
     get_order,
-#    get_rank,
+    get_rank,
     get_permutation_matrix,
     hmap,
     panel.bars, 
@@ -58,9 +58,9 @@ export(
     registry_criterion,
     registry_seriate,
     
-    seriation_dist,
-    seriation_cor,
-    seriation_align
+    ser_dist,
+    ser_cor,
+    ser_align
     )
 
 S3method("c", "ser_permutation")

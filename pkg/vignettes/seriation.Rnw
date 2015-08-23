@@ -951,6 +951,10 @@ remove the species classification and reorder the objects randomly since
 they are already sorted by species in the data set. Then we calculate
 the Euclidean distances between objects.
 
+<<echo=FALSE>>=
+set.seed(1234)
+@
+
 <<>>=
 library("seriation")
 
@@ -1099,17 +1103,17 @@ and then the orderings are displayed using matrix shading
 
 
 <<label=pimage3-pre, eval=FALSE>>=
-o <- seriation_align(o)
+o <- ser_align(o)
 for(s in o) pimage(d, s, main = get_method(s), key = FALSE)
 @
+
 <<label=pimage3, echo=FALSE, fig=TRUE, include=FALSE>>=
-o <- seriation_align(o)
+o <- ser_align(o)
 for(i in 1:length(o)) {
     pdf(file=paste("seriation-pimage_comp_", i , ".pdf", sep=""))
     pimage(d, o[[i]], main = get_method(o[[i]]), key = FALSE)
     dev.off()
 }
-
 @
 
 \begin{figure}
@@ -1147,42 +1151,44 @@ image for hierarchical clustering (HC in Figure~\ref{fig:pimage3}) is the
 distinct cross going right through the center of the plot. This indicates that
 several relatively dissimilar objects are caught in an otherwise homogeneous
 block. This effect vanishes after rearranging the dendrogram branches
-(see GW and OLO in Figure~\ref{fig:pimage3}). To investigate this effect,
-we plot the dendrogram obtained by hierarchical clustering which is used
-to order the objects and compare it to the dendrogram rearranged
-using the Gruvaeus Wainer heuristic.
+(see GW and OLO in Figure~\ref{fig:pimage3}). 
 
-<<label=pimage3_dend, eval=FALSE>>=
-plot(o[["HC"]], labels = FALSE, main = "Dendrogram HC")
-plot(o[["GW"]], labels = FALSE, main = "Dendrogram GW")
-@
-<<echo=FALSE, fig=FALSE, include=FALSE, width=9>>=
-def.par <- par(no.readonly = TRUE)
-pdf(file="seriation-pimage3_dendrogram.pdf", width=9, height=4) 
-layout(t(1:2))
-plot(o[["HC"]], labels = FALSE, main = "Dendrogram HC")
-symbols(74.7,.5, rect = matrix(c(4, 3), ncol=2), add= TRUE, 
-    inches = FALSE, lwd =2)
-
-plot(o[["GW"]], labels = FALSE, main = "Dendrogram GW")
-symbols(98.7,.5, rect = matrix(c(4, 3), ncol=2), add= TRUE, 
-    inches = FALSE, lwd =2)
-par(def.par)
-tmp <- dev.off()
-@
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth, trim=0 80 0 0, clip=TRUE]{seriation-pimage3_dendrogram}
-    \caption{Dendrograms for the seriation with HC and GW.}
-    \label{fig:pimage3_dendrogram}
-\end{figure}
-
-Comparing the two dendrograms in Figure~\ref{fig:pimage3_dendrogram}, we see
-that the branch left from the top is almost unchanged. The branch which is
-responsible for the light cross in the shaded image is highlighted by a box.
-The Gruvaeus Wainer heuristic rotates the highlighted branch towards the right
-since the objects in it are more similar to the objects in there.
+%' To investigate this effect,
+%' we plot the dendrogram obtained by hierarchical clustering which is used
+%' to order the objects and compare it to the dendrogram rearranged
+%' using the Gruvaeus Wainer heuristic.
+%' 
+%' <<label=pimage3_dend, eval=FALSE>>=
+%' plot(o[["HC"]], labels = FALSE, main = "Dendrogram HC")
+%' plot(o[["GW"]], labels = FALSE, main = "Dendrogram GW")
+%' @
+%' <<echo=FALSE, fig=FALSE, include=FALSE, width=9>>=
+%' def.par <- par(no.readonly = TRUE)
+%' pdf(file="seriation-pimage3_dendrogram.pdf", width=9, height=4) 
+%' layout(t(1:2))
+%' plot(o[["HC"]], labels = FALSE, main = "Dendrogram HC")
+%' symbols(74.7,.5, rect = matrix(c(4, 3), ncol=2), add= TRUE, 
+%'     inches = FALSE, lwd =2)
+%' 
+%' plot(o[["GW"]], labels = FALSE, main = "Dendrogram GW")
+%' symbols(98.7,.5, rect = matrix(c(4, 3), ncol=2), add= TRUE, 
+%'     inches = FALSE, lwd =2)
+%' par(def.par)
+%' tmp <- dev.off()
+%' @
+%' 
+%' \begin{figure}
+%'     \centering
+%'     \includegraphics[width=\linewidth, trim=0 80 0 0, clip=TRUE]{seriation-pimage3_dendrogram}
+%'     \caption{Dendrograms for the seriation with HC and GW.}
+%'     \label{fig:pimage3_dendrogram}
+%' \end{figure}
+%' 
+%' Comparing the two dendrograms in Figure~\ref{fig:pimage3_dendrogram}, we see
+%' that the branch left from the top is almost unchanged. The branch which is
+%' responsible for the light cross in the shaded image is highlighted by a box.
+%' The Gruvaeus Wainer heuristic rotates the highlighted branch towards the right
+%' since the objects in it are more similar to the objects in there.
 
 Finally, we compare the values of the loss/merit functions 
 for the different seriation methods. 
@@ -1240,7 +1246,7 @@ appropriate method.  It contains the name of the method used as the
 \code{method} argument for \func{seriate} and a short description.  To
 get just the names the following function is also available:
 <<>>=
-list_seriation_methods("matrix")
+list_seriation_methods("dist")
 @
 
 To add a new seriation method, we first have to implement the seriation code as
@@ -1333,8 +1339,8 @@ hmap(x, margin =c(7, 4), cexCol=1, labRow = FALSE)
 With these settings, the
 Euclidean distances between rows and between columns are calculated (with
 \func{dist}), hierarchical clustering (\func{hclust}) is performed, the
-resulting dendrograms are optimally reordered, and \func{heatmap} in package
-\pkg{stats} is used for plotting 
+resulting dendrograms are optimally reordered, and \func{heatmap.2} in package
+\pkg{gplots} is used for plotting 
 (see Figure~\ref{fig:heatmap}(a) for the resulting plot).
 
 <<eval=FALSE>>=

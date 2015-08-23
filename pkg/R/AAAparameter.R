@@ -31,19 +31,19 @@
     
     ## unknown parameter
     if(any(is.na(o))){
+      warning(sprintf(ngettext(length(is.na(o)),
+        "Unknown parameter: %s",
+        "Unknown parameters: %s"),
+        paste(names(parameter)[is.na(o)],
+          collapse = ", ")), call. = FALSE, immediate. = TRUE)
+      
       cat("Available parameter (with default values):\n")
       #print(defaults)
       cat(rbind(names(defaults)," = ", gsub("\n"," ",as.character(defaults))), 
         sep=c("\t"," ","\n"))
-      
-      stop(sprintf(ngettext(length(is.na(o)),
-        "Unknown parameter: %s",
-        "Unknown parameters: %s"),
-        paste(names(parameter)[is.na(o)],
-          collapse = " ")), call. = FALSE)
-    }
+    } 
     
-    defaults[o] <- parameter
+    defaults[o[!is.na(o)]] <- parameter[!is.na(o)]
   }
 
   if(defaults$verbose) {

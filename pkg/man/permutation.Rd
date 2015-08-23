@@ -1,10 +1,10 @@
-\name{ser_permutation}
+\name{permutation}
 \alias{ser_permutation}
 \alias{permutation}
 \alias{print.ser_permutation}
 \alias{c.ser_permutation}
 \alias{"[.ser_permutation"}
-\title{Class ser\_permutation -- A Collection of 
+\title{Class ser_permutation -- A Collection of 
 Permutation Vectors for Seriation}
 \description{
 The class \code{ser_permutation} is a collection of permutation vectors

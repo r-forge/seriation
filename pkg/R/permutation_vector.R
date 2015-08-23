@@ -54,12 +54,13 @@ get_order.integer <- function(x, ...) {
   o
 }
 
+## returns the order of objects (index of first, second, etc. object)
 get_order.default <- function(x, ...) 
   stop(gettextf("No permutation accessor implemented for class '%s'. ",
     class(x)))
 
-
-#get_rank <- function(x, ...) order(get_order(x, ...))
+## returns for each object its rank (rank of first, second, etc. object)
+get_rank <- function(x, ...) order(get_order(x, ...))
 
 get_permutation_matrix <- function(x, ...) 
   permutation_vector2matrix(get_order(x, ...))

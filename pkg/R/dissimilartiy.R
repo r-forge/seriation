@@ -20,52 +20,56 @@
 .dist_methods <- c("spearman", "kendall", "manhattan", "euclidean", "hamming",
   "ppc")
 
-seriation_cor <- function(x, method="spearman") 
-cor(t(.lget_rank(x)), method=method)
-
-seriation_dist <- function(x, method="spearman", align=TRUE) {
+ser_cor <- function(x, method = "spearman", reverse = FALSE) { 
+  ## Note: not all .dist_methods are implemented!
+  method <- match.arg(tolower(method), .dist_methods)
   
+  if(method == "ppc") return(.ppc(x))
+  
+  ## cor based methods 
+  #if(reverse) .find_best_max(cor(.lget_rank(.add_rev(x)), method = method))
+  if(reverse) abs(cor(.lget_rank(x), method = method))
+  else cor(.lget_rank(x), method = method)
+}
+
+ser_dist <- function(x, method = "spearman", reverse = FALSE) {
   if(!is.list(x) || any(!sapply(x, is, "ser_permutation_vector"))) stop("x needs to be a list with elements of type 'ser_permutation_vector'")
   
   method <- match.arg(tolower(method), .dist_methods)
   
-  #if(align) x <- seriation_align(x, method=method)
-  
-  if(!align) switch(method,
-    spearman = as.dist(1-abs(seriation_cor(x, method="spearman"))),
-    kendall = as.dist(1-abs(seriation_cor(x, method="kendal"))),
+  if(!reverse) switch(method,
+    spearman = as.dist(1-ser_cor(x, method="spearman", reverse = FALSE)),
+    kendall = as.dist(1-ser_cor(x, method="kendal", reverse = FALSE)),
     
     ### Manhattan == Spearman's footrule  
-    manhattan = dist(.lget_rank(x), method="manhattan"),
-    euclidean = dist(.lget_rank(x), method="euclidean"),
-    hamming   = .dist_hamming(.lget_rank(x)), 
-    ppc = .ppc2(x)
+    manhattan = dist(t(.lget_rank(x)), method="manhattan"),
+    euclidean = dist(t(.lget_rank(x)), method="euclidean"),
+    hamming   = .dist_hamming(t(.lget_rank(x))), 
+    ppc = as.dist(1-ser_cor(x, method="ppc", reverse = FALSE))
   )
   
   else switch(method,
-    spearman = .find_best(as.dist(1-abs(seriation_cor(.add_rev(x), 
-      method="spearman")))),
-    kendall = .find_best(as.dist(1-abs(seriation_cor(.add_rev(x), 
-      method="kendal")))),
+    spearman = as.dist(1-ser_cor(x, method="spearman", reverse = TRUE)),
+    kendall =  as.dist(1-ser_cor(x, method="kendal", reverse = TRUE)),
     
     ### Manhattan == Spearman's footrule  
-    manhattan = .find_best(dist(.lget_rank(.add_rev(x)), method="manhattan")),
-    euclidean = .find_best(dist(.lget_rank(.add_rev(x)), method="euclidean")),
-    hamming   = .find_best(.dist_hamming(.lget_rank(.add_rev(x)))),
+    manhattan = .find_best(dist(t(.lget_rank(.add_rev(x))), 
+      method="manhattan")),
+    euclidean = .find_best(dist(t(.lget_rank(.add_rev(x))), 
+      method="euclidean")),
+    hamming   = .find_best(.dist_hamming(t(.lget_rank(.add_rev(x))))),
     
     ### positional proximity coefficient is direction invariant
-    ppc = .ppc2(x)
+    ppc = as.dist(1-ser_cor(x, method="ppc", reverse = FALSE))
   )
 }
 
-seriation_align <- function(x, method = "spearman") {
-    if(!is.list(x) || any(!sapply(x, is, "ser_permutation_vector"))) stop("x needs to be a list with elements of type 'ser_permutation_vector'")  
+ser_align <- function(x, method = "spearman") {
+    if(!is.list(x) || any(!sapply(x, is, "ser_permutation_vector"))) 
+      stop("x needs to be a list with elements of type 'ser_permutation_vector'")  
   
-    method <- match.arg(tolower(method), .dist_methods) 
-    
     .do_rev(x, .alignment(x, method=method))
 }
-
 
 .dist_hamming <- function(x) {
   n <- nrow(x)
@@ -78,10 +82,8 @@ seriation_align <- function(x, method = "spearman") {
   as.dist(m)
 }
 
-### make a permutation list into a rank matrix
-#.lget_rank <- function(x) t(sapply(x, get_rank))
-#.lget_rank <- function(x) t(apply(t(sapply(x, get_order)), MARGIN=1, order))
-.lget_rank <- function(x) t(sapply(x, get_order))
+### make a permutation list into a rank matrix (cols are permutations)
+.lget_rank <- function(x) sapply(x, get_rank)
 
 ### add reversed permutations to a list of permutations
 .add_rev <- function(x) {
@@ -90,7 +92,7 @@ seriation_align <- function(x, method = "spearman") {
   os
 }
 
-### reverses permutations in the list given an logical indicator vector
+### reverses permutations in the list given a logical indicator vector
 .do_rev <- function(x, rev) {
   for(i in which(rev)) x[[i]] <- rev(x[[i]])
   x
@@ -105,47 +107,54 @@ seriation_align <- function(x, method = "spearman") {
   m2 <- m[(n+1):(2*n), (n+1):(2*n)]
   m3 <- m[1:n, (n+1):(2*n)]
   m4 <- m[(n+1):(2*n), 1:n]
-  as.dist(pmin(m1,m2,m3,m4))
+  as.dist(pmin(m1, m2, m3, m4))
 }
 
+### find largest values in matrix
+.find_best_max <- function(d) {
+  m <- as.matrix(d)
+  n <- nrow(m)/2
+  m1 <- m[1:n, 1:n]
+  m2 <- m[(n+1):(2*n), (n+1):(2*n)]
+  m3 <- m[1:n, (n+1):(2*n)]
+  m4 <- m[(n+1):(2*n), 1:n]
+  pmax(m1, m2, m3, m4)
+}
+
+
 ### returns TRUE for sequences which should be reversed
-.alignment <- function(x, method="spearman") {
+.alignment <- function(x, method = "spearman") {
     if(!is.list(x) || any(!sapply(x, is, "ser_permutation_vector"))) stop("x needs to be a list with elements of type 'ser_permutation_vector'")  
   
     method <- match.arg(tolower(method), .dist_methods) 
-  
-    ### for corr. coefficients neg. means that the order should be reversed
-    if(method %in% c("spearman", "kendall")) {
-      cr <- cor(t(.lget_rank(x)), method=method)
-      ## find the seed method which has the highers absolute 
-      ## correlations with others and then reverse the neg. correlated ones
-      cr2 <- cr; cr2[cr2<0] <- 0
-      seed <- which.max(rowSums(abs(cr2)))
-      return(cr[seed,]<0)
-    }  
     
-    ## add reverse orders
-    os <- .add_rev(x)
-  
-    ## calculate dist   
-    d <- seriation_dist(os, method=method, align=FALSE)
-    m <- as.matrix(d)
-    diag(m) <- NA
-    
-    ## find closest pair
     n <- length(x)
-    take <- which(m == min(m, na.rm = TRUE), arr.ind = TRUE)[1,]
+  
+    ## calculate dist (orders + reversed orders)  
+    d <- as.matrix(ser_dist(.add_rev(x), method=method, reverse=FALSE))
+    diag(d) <- NA
+    for(i in 1:n) { 
+      d[i, n+i] <- NA
+      d[n+i, i] <- NA  
+    }
+     
+    ## start with closest pair
+    take <- which(d == min(d, na.rm = TRUE), arr.ind = TRUE)[1,]
+    #d[, c(take, (take+n) %% (2*n))] <- NA
     
-    ## mark taken
-    m[, take] <- NA
-    ## mark complements taken
-    m[, (take+n) %% (2*n)] <- NA
+    ## mark order and complement as taken
+    d[, c(take, (take+n) %% (2*n))] <- Inf
 
+    ## keep adding the closest 
     while(length(take) < n) {
-      t2 <- which(m[take,] == min(m[take,], na.rm = TRUE), arr.ind = TRUE)[1, 2]
+      t2 <- which(d[take,] == min(d[take,], na.rm = TRUE), arr.ind = TRUE)[1, 2]
+      #d[, c(t2,  (t2+n) %% (2*n))] <- NA
+      
+      ### closest to all
+      #t2 <- which.min(colSums(d[take,], na.rm = T))
+      d[, c(t2,  (t2+n) %% (2*n))] <- Inf
+      
       take <- append(take, t2)
-      m[, t2] <- NA
-      m[, (t2+n) %% (2*n)] <- NA
     }
   
     ## create indicator vector for the orders which need to be reversed
@@ -155,21 +164,28 @@ seriation_align <- function(x, method = "spearman") {
     take_ind
 }
    
-## Propositional Proximity Coefficient
+## Propositional Proximity Coefficient (1 - generalized corr. coef.)
 ## Goulermas, Kostopoulos and Mu, A new measure for analyzing and fusing 
 ## sequences of objects, IEEE Transactions on Pattern Analysis and Machine
 ## Intelligence, forthcomming.
 ##
 ## x,y ... permutation vectors (ranks)
-.ppc <- function(x, y) {
-  x <- get_order(x)
-  y <- get_order(y)
+.ppc_int <- function(x, y) {
+  x <- get_rank(x)
+  y <- get_rank(y)
   n <- length(x)
   
-  sum <- 0
-  for(j in 2:n) for(i in 1:(j-1)) sum <- sum + (x[i]-x[j])^2 * (y[i]-y[j])^2
-  1 - (2 * sum / (n^6/15 - n^4/6 + n^2/10)) 
+  #sum <- 0
+  #for(j in 2:n) for(i in 1:(j-1)) sum <- sum + (x[i]-x[j])^2 * (y[i]-y[j])^2
+
+  ## use fast matrix algebra instead
+  Ax <- (x %*% rbind(rep_len(1, n)) - tcrossprod(cbind(rep_len(1, n)), x))^2
+  Ay <- (y %*% rbind(rep_len(1, n)) - tcrossprod(cbind(rep_len(1, n)), y))^2
+  sum <- sum(diag(Ax %*% Ay))
+  
+  ## scale by theoretical maximum
+  sum / (n^6/15 - n^4/6 + n^2/10) 
 }
 
-.vppc <- Vectorize(.ppc)
-.ppc2 <- function(x) as.dist(outer(x, x, .vppc))
+.vppc <- Vectorize(.ppc_int)
+.ppc <- function(x) outer(x, x, .vppc)

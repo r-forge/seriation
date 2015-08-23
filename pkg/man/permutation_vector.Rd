@@ -1,11 +1,11 @@
-\name{ser_permutation_vector}
+\name{permutation_vector}
 \alias{ser_permutation_vector}
 \alias{permutation_vector}
 \alias{print.ser_permutation_vector}
 \alias{rev.ser_permutation_vector}
 \alias{get_method}
 \alias{length.ser_permutation_vector}
-\title{Class ser\_permutation\_vector -- 
+\title{Class ser_permutation_vector -- 
 A Single Permutation Vector for Seriation}
 \description{
 The class \code{ser_permutation_vector} 
@@ -23,11 +23,17 @@ ser_permutation_vector(x, method = NULL)
       permutation vector}
     }
 \details{
-A permutation vector is a permutation of the integer vector 
-\eqn{<1, 2, ..., n>}, were \eqn{n} is the number of objects. For example,
-the permutation vector \eqn{<3, 1, 2>} indicates that in first position is the
-object with index 3 then the object with index 1 and finally the object
-with index 2.
+A permutation vector 
+maps a set of \eqn{n} objects \eqn{\{O_1, O_2, ..., O_n\}}{{O_1, O_2, ..., O_n}} onto itself.
+In \pkg{seriation} we represent a permutation \eqn{\pi}{\pi} 
+as a vector which lists the objects in their permuted order. 
+For example, the permutation vector \eqn{\langle3, 1, 2\rangle}{<3, 1, 2>} indicates that in first position is the object with index 3 then the object with index 1 and finally 
+the object with index 2. 
+A permutation vector can be extracted from a permuation vector object 
+via \code{get_order()}. Such a permutation vector can be directly used
+to subset the list of original objects with \code{"["} to apply the permutation.
+\emph{Note:} An alternative way to specify a permutation is via a list of the ranks of the objects after permutation (see \code{get_rank()}).
+
 
 \code{ser_permutation_vector} objects are usually packed into 
 a \code{ser_permutation} object
@@ -46,6 +52,7 @@ An object of class \code{ser_permutation_vector}.
 \seealso{
 \code{\link{ser_permutation}},
 \code{\link{get_order}},
+\code{\link{get_rank}},
 \code{\link{get_permutation_matrix}},
 \code{\link{permutation_vector2matrix}}.
 }
@@ -58,6 +65,7 @@ p
 length(p)
 get_method(p)
 get_order(p)
+get_rank(p)
 get_permutation_matrix(p)
 
 r <- rev(p)
@@ -65,7 +73,7 @@ r
 get_order(r)
 
 ## create a indentity permutation vector (with unknown length)
-i <- ser_permutation_vector(NA)
-i 
+ip <- ser_permutation_vector(NA)
+ip 
 }
 \keyword{classes}% at least one, from doc/KEYWORDS

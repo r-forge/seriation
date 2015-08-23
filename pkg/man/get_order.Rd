@@ -4,7 +4,7 @@
 \alias{get_order.hclust}
 \alias{get_order.ser_permutation_vector}
 \alias{get_order.ser_permutation}
-%\alias{get_rank}
+\alias{get_rank}
 \alias{get_permutation_matrix}
 \title{Extracting Order Information from a Permutation Object}
 \description{
@@ -18,7 +18,7 @@ get_order(x, \ldots)
 \method{get_order}{ser_permutation_vector}(x, \ldots)
 \method{get_order}{ser_permutation}(x, dim = 1, \ldots)
 
-%get_rank(x, \ldots)
+get_rank(x, \ldots)
 
 get_permutation_matrix(x, \ldots)
 }
@@ -27,24 +27,27 @@ get_permutation_matrix(x, \ldots)
       \code{ser_permutation_vector}.}
   \item{dim}{ order information for which dimension should be returned?}
   \item{\ldots}{further arguments are ignorred for \code{get_order}. 
-  %  For \code{get_rank} and 
-    For
-    \code{get_permutation_matrix} the additional arguments are passed on to 
+    For \code{get_rank} and 
+    for \code{get_permutation_matrix} the additional arguments are passed on to 
     \code{get_order} (e.g., as \code{dim}).}
     }
 \details{
 \code{get_order} returns the seriation as an integer vector containing
-  the rank/position of each object of the \eqn{n} objects in the permuted order
-  (i.e., position of 1st object, 2nd object, ... \eqn{n}th object).
+  the order of the objects after permutation. That is, the index of the first,
+  second, \eqn{..., n}-th object. These permuation vectors can directly be
+  used to reorder objects using subsetting with \code{"["}.
+  \emph{Note:} In \pkg{seriation} we usually use these
+  order-based permutation vectors.
 
-%\code{get_rank} returns the seriation as a vector indicating the 
-%object for each position 
-%(i.e., object in position 1, object in position 2, ...).
+\code{get_rank} returns the seriation as an integer vector containing
+  the rank/position for each objects in the permutation. That is, 
+  position of the first, second, \eqn{..., n}-th object after permutation.
+  
 
 \code{get_permutation_matrix} returns a \eqn{n \times n}{n x n} permutation matrix. 
 }
 \value{
-Returns an integer vector.
+Returns an integer permutation vector/a permutation matrix.
 }
 \seealso{
 \code{\link{ser_permutation_vector}},
@@ -57,6 +60,7 @@ o <- ser_permutation_vector(sample(10))
 o
 
 get_order(o)
+get_rank(o)
 get_permutation_matrix(o)
 
 ## permutation
@@ -64,6 +68,7 @@ o2 <- ser_permutation(o, sample(5))
 o2
 
 get_order(o2, dim = 2)
+get_rank(o2, dim = 2)
 get_permutation_matrix(o2, dim = 2)
 }
 \keyword{manip}% at least one, from doc/KEYWORDS

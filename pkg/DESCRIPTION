@@ -1,8 +1,8 @@
 Package: seriation
 Type: Package
 Title: Infrastructure for Seriation
-Version: 1.1-1
-Date: 2015-7-30
+Version: 1.1-2
+Date: 2015-8-23
 Authors@R: c(
 	person("Michael", "Hahsler", role = c("aut", "cre", "cph"),
 	    email = "mhahsler@lyle.smu.edu"),
@@ -19,6 +19,7 @@ Description: Infrastructure for seriation with an implementation of several
     visual assessment of cluster tendency plots (VAT and iVAT).
 Classification/ACM: G.1.6, G.2.1, G.4
 URL: http://lyle.smu.edu/IDA/seriation
+BugReports: https://r-forge.r-project.org/projects/seriation/
 Depends: R (>= 2.14.0)
 Imports: TSP, grid, cluster, gclus, colorspace, MASS, gplots, registry, methods, stats, grDevices
 Suggests: biclust, testthat
