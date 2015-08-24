@@ -167,7 +167,7 @@ be supplied using an element named \code{"hclust"}.
     to the MST.
     }
 
-\item{\code{"Spectral"}, \code{"Spectral_norm"}}{ Spectral seriation (Deng and He 2004). 
+\item{\code{"Spectral"}, \code{"Spectral_norm"}}{ Spectral seriation (Ding and He 2004). 
 
 Spectral seriation uses a relaxation to maximize the \bold{Inertia criterion} by using the order of the Fielder vector of 
 the similarity matrix's (normalized) Laplacian.  

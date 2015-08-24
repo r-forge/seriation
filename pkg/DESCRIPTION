@@ -1,8 +1,8 @@
 Package: seriation
 Type: Package
 Title: Infrastructure for Seriation
-Version: 1.1-2
-Date: 2015-8-23
+Version: 1.1-3
+Date: 2015-x-xx
 Authors@R: c(
 	person("Michael", "Hahsler", role = c("aut", "cre", "cph"),
 	    email = "mhahsler@lyle.smu.edu"),

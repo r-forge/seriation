@@ -86,8 +86,12 @@ seriate_dist_tsp <- function(x, control = NULL){
   ## add a dummy city for cutting
   tsp <- insert_dummy(TSP(x), n = 1, label = "cut_here")
   
-  #    if(is.null(control)) control <- list(method="nearest_insertion")
-  if(is.null(control)) control <- list(method="farthest_insertion")
+  if(is.null(control)) 
+    control <- list(
+      method="arbitrary insertion", 
+      rep = 10, 
+      two_opt = TRUE
+    )
   
   tour <- solve_TSP(tsp, method = control$method,
     control = control$control)
@@ -308,21 +312,25 @@ seriate_dist_VAT <- function(x, control = NULL) {
 }
 
 
-## spectral seriation
+## Spectral Seriation
 ## Ding, C. and Xiaofeng He (2004): Linearized cluster assignment via
 ## spectral orderingProceedings of the Twenty-first.
 ## International Conference on Machine learning (ICML '04)
+
+## Minimizes: sum_{i,j} (i-j)^2 * d_{pi_i,pi_j}
 
 seriate_dist_spectral <- function(x, control = NULL) {
   param <- .get_parameters(control, NULL)
   
   ### calculate Laplacian
-  A <- 1/(1+as.matrix(x))
-  D <- diag(rowSums(A))
-  L <- D - A
+  W <- 1/(1+as.matrix(x))
+  D <- diag(rowSums(W))
+  L <- D - W
   
-  e <- eigen(L)
-  fielder <- e$vectors[,ncol(A)-1L]
+  ## Fielder vector q1 is eigenvector with the smallest eigenvalue
+  ## eigen reports eigenvectors/values in decreasing order
+  q <- eigen(L)
+  fielder <- q$vectors[,ncol(W)-1L]
   o <- order(fielder)
   names(o) <- names(x)[o]
   o
@@ -333,17 +341,16 @@ seriate_dist_spectral_norm <- function(x, control = NULL) {
   param <- .get_parameters(control, NULL)
   
   ### calculate normalized Laplacian
-  A <- 1/(1+as.matrix(x))
-  D_sqrt<- diag(rowSums(A))^.5
-  #I <- diag(nrow(A))
-  #L <- I - D_sqrt %*% A %*% D_sqrt
-  L <- D_sqrt %*% A %*% D_sqrt
+  W <- 1/(1+as.matrix(x))
+  D_sqrt<- diag(rowSums(1/W^.5))
+  L <- D_sqrt %*% W %*% D_sqrt
   
   z <- eigen(L)$vectors
   q <- D_sqrt %*% z
-  #o <- order(q[,ncol(q)-1L])
-  o <- order(q[,2L])
-  #pimage(x, o)
+  
+  ## look for the vector with the largest eigenvalue
+  largest_ev <- q[,2L]
+  o <- order(largest_ev)
   names(o) <- names(x)[o]
   o
 }
