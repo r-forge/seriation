@@ -61,16 +61,21 @@ permute(m, ser_permutation(5:1, 2:1))
 ## permute only columns
 permute(m, ser_permutation(NA, 2:1))
   
-## permute dist
+## permute objects in a dist object
 d <- dist(m)
 d
 
 permute(d, ser_permutation(c(3,2,1,4,5)))
 
-## permute list
+## permute a list
 l <- list(a=1:5, b=letters[1:3], c=0)
 l
   
 permute(l, c(2,3,1))    
+
+## permute a dendrogram
+hc <- hclust(d)
+plot(hc)
+plot(permute(hc, 5:1))
 }
 \keyword{manip}

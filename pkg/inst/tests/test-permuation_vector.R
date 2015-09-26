@@ -58,9 +58,7 @@ expect_identical(permute(l, 3:1), rev(l))
 
 ## hclust
 hc <- hclust(d)
-## FIXME: meta-data does not match
-#expect_identical(hc, permute(hc, 1:5))
-expect_identical(hc$order, permute(hc, 1:5)$order)
+expect_identical(hc, permute(hc, 1:5))
 expect_identical(hc$order[5:1], permute(hc, 5:1)$order)
 
 ## test illegal order

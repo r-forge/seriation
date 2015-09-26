@@ -91,9 +91,14 @@ permute.dendrogram <- function(x, order, incompatible = "warn", ...) {
   new_dend
 }
 
-### FIXME: hclust meta-data
-permute.hclust <- function(x, order, ...) 
-  as.hclust(permute(as.dendrogram(x), order, ...))
+permute.hclust <- function(x, order, ...) {
+  nd <- as.hclust(permute(as.dendrogram(x), order, ...))
+  x$merge <- nd$merge
+  x$height <- nd$height
+  x$order <- nd$order
+  
+  x
+}
   
 ## helper
 .check_dist_perm <- function(x, order){

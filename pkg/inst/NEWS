@@ -4,6 +4,7 @@ Changes in version 1.1-3 (x/xx/2015)
       one of "none" (default), "row", "column", or "both". 
     * ser_cor and ser_dist gained parameter y. ser_cor gained parameter test
       to perform tests for association.
+    * added permute method for hclust and dendrogram.
 
 Changes in version 1.1-2 (8/23/2015) 
     * Argument (control and ...) check warns now instead of throwing an error.
