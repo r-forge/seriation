@@ -1,5 +1,6 @@
 library(seriation)
 
+
 ## FIXME add tests for ser_align
 
 set.seed(0)
@@ -11,12 +12,13 @@ x <- list(
   d = sample(100)
 )
 
+
 context("ser_dist")
 
 ## Default is Spearman
 ## first two are largest distance (2)
 d <- ser_dist(x)
-expect_true(all(d >=0))
+expect_true(all(d >= 0))
 expect_equal(d[1], 2)
 
 ## x,y interface

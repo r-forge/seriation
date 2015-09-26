@@ -3,7 +3,7 @@
 \alias{reorder.hclust}
 \title{Reorder Dendrograms using Optimal Leaf Ordering}
 \description{
-Reorder dendrograms for optimal leaf ordering.
+Reorder method for dendrograms for optimal leaf ordering.
 }
 \usage{
 \method{reorder}{hclust}(x, dist, method = "OLO", ...)

@@ -1,9 +1,9 @@
 \name{hmap}
 \alias{hmap}
-\title{Plot Heat Map Reordered by Different Algorithms}
+\title{Plot Heat Map Reordered Using Seriation}
 \description{
-Provides several reordered versions of heat map including dendrogram based
-reordering with optimal leaf order and matrix seriation based heat maps.
+Provides heat maps reordered using several different seriation methods.
+This includes dendrogram based reordering with optimal leaf order and matrix seriation based heat maps.
 }
 \usage{
 hmap(x, distfun = dist, method = "OLO", control = NULL, zlim = NULL, ...)

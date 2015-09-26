@@ -1,5 +1,5 @@
 library(seriation)
-
+set.seed(0)
 
 context("ser_permutation_vector")
 
@@ -27,13 +27,15 @@ expect_identical(length(ser_permutation(ser_permutation(sp), 1:10)), 2L)
 
 context("permute")
 
+## vector
 expect_identical(permute(1:10, ser_permutation(1:10)), 1:10)
 expect_identical(permute(LETTERS[1:10], ser_permutation(1:10)), LETTERS[1:10])
 expect_identical(permute(1:10, ser_permutation(10:1)), 10:1)
-expect_identical(permute(LETTERS[1:10], ser_permutation(1:10)), LETTERS[1:10])
+expect_identical(permute(LETTERS[1:10], ser_permutation(10:1)), LETTERS[10:1])
 
 expect_error(permute(1:10, ser_permutation(1:11)))
 
+## matrix
 m <- matrix(runif(9), ncol=3)
 expect_identical(permute(m, ser_permutation(1:3, 3:1)), m[,3:1])
 expect_identical(permute(m, ser_permutation(3:1, 3:1)), m[3:1,3:1])
@@ -41,6 +43,7 @@ expect_identical(permute(m, ser_permutation(3:1, 3:1)), m[3:1,3:1])
 expect_error(permute(m, ser_permutation(1:10, 1:9)))
 expect_error(permute(m, ser_permutation(1:9, 1:11)))
 
+## dist
 d <- dist(matrix(runif(25), ncol=5))
 attr(d, "call") <- NULL   ### permute removes the call attribute
 expect_identical(permute(d, ser_permutation(1:5)), d)
@@ -49,6 +52,22 @@ expect_equivalent(permute(d, ser_permutation(5:1)), as.dist(as.matrix(d)[5:1,5:1
 
 expect_error(permute(d, ser_permutation(1:8)))
 
+## list
+l <- list(a = 1:10, b = letters[1:5], 25)
+expect_identical(permute(l, 3:1), rev(l))
+
+## hclust
+hc <- hclust(d)
+## FIXME: meta-data does not match
+#expect_identical(hc, permute(hc, 1:5))
+expect_identical(hc$order, permute(hc, 1:5)$order)
+expect_identical(hc$order[5:1], permute(hc, 5:1)$order)
+
+## test illegal order
+o <- sample(5)
+expect_warning(permute(hc, o))
+expect_error(permute(hc, o, incompatible = "stop"))
+expect_is(permute(hc, o, incompatible = "ignore"), "hclust")
 
 context("permutation_matrix2vector")
 pv <- sample(1:100)
@@ -58,4 +77,5 @@ pm <- permutation_vector2matrix(pv)
 
 ## convert back  
 expect_identical(permutation_matrix2vector(pm), pv)
+
 

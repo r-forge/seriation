@@ -6,17 +6,19 @@
 \alias{permute.matrix}
 \alias{permute.array}
 \alias{permute.data.frame}
-\title{Permute a dist Object, a Matrix, an Array, a List, or a Vector}
+\alias{permute.hclust}
+\alias{permute.dendrogram}
+\title{Permute the Order in Various Objects}
 \description{
-A method for permuting 
-various classes including 
-the observations in a
-\code{dist} object, the rows and columns of a matrix,
-and all dimensions of an array given a suitable \code{ser_permutation}
+Provides the generic function and
+methods for permuting the order of various objects
+including  vectors, dendrograms (also \code{hclust} objects),
+the order of observations in a \code{dist} object, 
+the rows and columns of a matrix, all dimensions of an array given a suitable \code{ser_permutation}
 object.
 }
 \usage{
-permute(x, order)
+permute(x, order, ...)
 }
 \arguments{
   \item{x}{an object (a list, a vector, a \code{dist} object, a matrix,
@@ -24,6 +26,7 @@ permute(x, order)
       subsetting with \code{"["}).} 
   \item{order}{an object of class \code{ser_permutation}
       which contains suitable permutation vectors for \code{x}.}
+  \item{...}{ additional arguments for the permutation function.}
 }
 \details{
 The permutation vectors in \code{ser_permutation} 
@@ -36,6 +39,12 @@ For 1-dimensional/1-mode data (list, vector, \code{dist}),
 permutation vector of class \code{ser_permutation_vector} or data which can be 
 automatically coerced to this class
 (e.g. a numeric vector).
+
+For \code{dendrograms} and \code{hclust}, subtrees are rotated to
+represent the order best possible. If the order is not achived perfectly
+then the user is warned. This behavior can be changed with the extra
+parameter \code{incompatible} which can take the values 
+\code{"warn"} (default), \code{"stop"} or \code{"ignore"}.
 }
 \seealso{
 \code{\link{ser_permutation}},
