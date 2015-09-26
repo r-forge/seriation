@@ -40,16 +40,17 @@ hmap(x, distfun = dist, method = "OLO", control = NULL, zlim = NULL, ...)
                 page (see \code{gpar} in package \pkg{grid}).} 
           \item{\code{prop}}{a logical indicating whether the height and width of
                 \code{x} should be plotted proportional to its dimensions.}
-          \item{\code{showdist}}{display dissimilarity matrices to the top and 
-                to the left.} 
+          \item{\code{showdist}}{Display seriated dissimilarity matrices?                      Values are \code{"none"}, \code{"both"}, 
+                \code{"rows"} or \code{"columns"}. } 
          \item{\code{key}}{logical; show a colorkey?.} 
          \item{key.lab}{ string plotted next to the color key.}
-         \item{\code{axes}}{ one of \code{"auto"} (default; show axis labels if there are
-           less than 25 labels), \code{"x"}, \code{"y"}, 
-           \code{"both"} and \code{"none"}.} 
+         \item{\code{axes}}{ one of \code{"auto"} (default; show axis 
+                labels if there are
+                less than 25 labels), \code{"x"}, \code{"y"}, 
+                \code{"both"} and \code{"none"}.} 
          \item{\code{margins}}{ bottom and right-hand-side margins are 
-           calculated automatically or can be specifies as a vector of two 
-          numbers (in lines).} 
+                calculated automatically or can be specifies as a vector 
+                of two numbers (in lines).} 
          \item{\code{zlim}}{ range of values displayed.} 
          \item{\code{col}, \code{col_dist}}{ color palettes used.} 
       }      
@@ -98,8 +99,8 @@ hmap(Wood, method="OLO", distfun = dist_cor, col=greenred(100), labRow=FALSE)
 ## order-based heatmap
 hmap(Wood, method="MDS_angle", distfun = dist_cor, col=greenred(100))  
 
-## order-based without dissimilarity matrices
-hmap(Wood, method="MDS_angle", distfun = dist_cor, showdist = FALSE, 
+## order-based with dissimilarity matrices
+hmap(Wood, method="MDS_angle", distfun = dist_cor, showdist = "both", 
   col=greenred(100))  
 }
 \keyword{hplot}

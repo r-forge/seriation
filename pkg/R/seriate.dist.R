@@ -134,7 +134,7 @@ seriate_dist_angle <- function(x, control = NULL) {
   .get_parameters(control, NULL)
   
   sc <- cmdscale(x, k=2)
-  o <- .order_angle(sc)
+  .order_angle(sc)
 }
 
 
@@ -269,14 +269,16 @@ seriate_dist_bbwrcg <- function(x, control = NULL) {
 }
 
 seriate_dist_identity <- function(x, control = NULL) {
-  param <- .get_parameters(control, NULL)
+  #param <- .get_parameters(control, NULL)
+  .get_parameters(control, NULL)
+  
   o <- 1:attr(x, "Size")
   names(o) <- labels(x)
   o
 }
 
 seriate_dist_random <- function(x, control = NULL) {
-  param <- .get_parameters(control, NULL)
+  #param <- .get_parameters(control, NULL)
   o <- 1:attr(x, "Size")
   names(o) <- labels(x)
   sample(o)
@@ -287,7 +289,8 @@ seriate_dist_random <- function(x, control = NULL) {
 ## Proceedings of the 2002 International Joint Conference on
 ## Neural Networks, 2002. IJCNN '02. (Volume:3)
 seriate_dist_VAT <- function(x, control = NULL) {
-  param <- .get_parameters(control, NULL)
+  #param <- .get_parameters(control, NULL)
+  .get_parameters(control, NULL)
   
   D <- as.matrix(x)
   N <- nrow(D)
@@ -320,7 +323,8 @@ seriate_dist_VAT <- function(x, control = NULL) {
 ## Minimizes: sum_{i,j} (i-j)^2 * d_{pi_i,pi_j}
 
 seriate_dist_spectral <- function(x, control = NULL) {
-  param <- .get_parameters(control, NULL)
+  #param <- .get_parameters(control, NULL)
+  .get_parameters(control, NULL)
   
   ### calculate Laplacian
   W <- 1/(1+as.matrix(x))
@@ -336,9 +340,9 @@ seriate_dist_spectral <- function(x, control = NULL) {
   o
 }
 
-### FIXME?
 seriate_dist_spectral_norm <- function(x, control = NULL) {
-  param <- .get_parameters(control, NULL)
+  #param <- .get_parameters(control, NULL)
+  .get_parameters(control, NULL)
   
   ### calculate normalized Laplacian
   W <- 1/(1+as.matrix(x))
@@ -433,7 +437,7 @@ seriate_dist_SPIN <- function(x, control = NULL) {
       energy_best <- sum(diag(P %*% M))
       if(verbose) cat("best energy is now:", energy_best, "\n\n")
     }else {
-      W_m <- crossprod(P, W_orig) ### t(P) %*% W
+      W <- crossprod(P, W_orig) ### t(P) %*% W
     }
   }
   

@@ -20,22 +20,47 @@
 .dist_methods <- c("spearman", "kendall", "manhattan", "euclidean", "hamming",
   "ppc")
 
-ser_cor <- function(x, method = "spearman", reverse = FALSE) { 
+ser_cor <- function(x, y = NULL, method = "spearman", 
+  reverse = FALSE, test=FALSE) { 
   ## Note: not all .dist_methods are implemented!
   method <- match.arg(tolower(method), .dist_methods)
   
-  if(method == "ppc") return(.ppc(x))
+  ## make sure everything is a permutation vector
+  if(!is.null(y)) 
+    x <- list(ser_permutation_vector(x), ser_permutation_vector(y))
+  else x <- lapply(x, ser_permutation_vector)
   
+  m <- .lget_rank(x)
+  
+  if(method == "ppc") {
+    if(test) stop("No test for association available for PPC!")
+    return(.ppc(x))
+  }
+    
   ## cor based methods 
-  #if(reverse) .find_best_max(cor(.lget_rank(.add_rev(x)), method = method))
-  if(reverse) abs(cor(.lget_rank(x), method = method))
-  else cor(.lget_rank(x), method = method)
+  co <- cor(m, method = method)
+  if(reverse) co <- abs(co) 
+
+  ## add a test?
+  if(test) {
+    p <- outer(1:ncol(m), 1:ncol(m), FUN = 
+      Vectorize(
+        function(i, j) cor.test(m[,i], m[,j], method = method)$p.value))
+    dimnames(p) <- dimnames(co)
+    attr(co, "p-value") <- p
+  }
+  
+  co
 }
 
-ser_dist <- function(x, method = "spearman", reverse = FALSE) {
-  if(!is.list(x) || any(!sapply(x, is, "ser_permutation_vector"))) stop("x needs to be a list with elements of type 'ser_permutation_vector'")
+ser_dist <- function(x, y = NULL, method = "spearman", reverse = FALSE) {
   
   method <- match.arg(tolower(method), .dist_methods)
+  
+  ## make sure everything is a permutation vector
+  if(!is.null(y)) 
+    x <- list(ser_permutation_vector(x), ser_permutation_vector(y))
+  else x <- lapply(x, ser_permutation_vector)
   
   if(!reverse) switch(method,
     spearman = as.dist(1-ser_cor(x, method="spearman", reverse = FALSE)),
@@ -88,7 +113,7 @@ ser_align <- function(x, method = "spearman") {
 ### add reversed permutations to a list of permutations
 .add_rev <- function(x) {
   os <- append(x, lapply(x, rev))
-  names(os) <- c(names(x), paste(names(x), "_rev", sep=""))
+  names(os) <- c(labels(x), paste(labels(x), "_rev", sep=""))
   os
 }
 
@@ -181,7 +206,8 @@ ser_align <- function(x, method = "spearman") {
   ## use fast matrix algebra instead
   Ax <- (x %*% rbind(rep_len(1, n)) - tcrossprod(cbind(rep_len(1, n)), x))^2
   Ay <- (y %*% rbind(rep_len(1, n)) - tcrossprod(cbind(rep_len(1, n)), y))^2
-  sum <- sum(diag(Ax %*% Ay))
+  ## note: Ay is symetric
+  sum <- sum(diag(Ax %*% Ay)) 
   
   ## scale by theoretical maximum
   sum / (n^6/15 - n^4/6 + n^2/10) 

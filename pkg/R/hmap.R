@@ -37,11 +37,11 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
     }
     
     dist_row <- distfun(x)
-    dist_col <- distfun(t(x))
-    
-    o_col <- seriate(dist_col, 
-      method = method, control = control)[[1]]
     o_row <- seriate(dist_row, 
+      method = method, control = control)[[1]]
+    
+    dist_col <- distfun(t(x))
+    o_col <- seriate(dist_col, 
       method = method, control = control)[[1]]
   }
   
@@ -101,7 +101,8 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
     key       = TRUE,
     key.lab = "",
     axes      = "auto",
-    showdist  = TRUE,
+    showdist  = "none",
+    symm      = FALSE,
     margins   = NULL,
     zlim      = if(any(x<0, na.rm = TRUE)) 
       max(abs(range(x, na.rm=TRUE))) * c(-1,1) else range(x, na.rm = TRUE),
@@ -110,10 +111,21 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
   ))
   
   options$col_dist <- rev(options$col_dist)
+  .showdist_options <- c("none", "row", "column", "both")
+  options$showdist <- .showdist_options[pmatch(options$showdist, 
+    .showdist_options)]
+  if(is.na(options$showdist)) stop("Unknown value for showdist. Use one of: ",
+    paste(dQuote(.showdist_options), collapse = ", "))
+  
+  ## if symmetric then we only use o_row and dist_row
+  if(length(o_row) == length(o_col) && options$symm == TRUE) {
+    o_col <- o_row
+    dist_col <- dist_row
+  }
   
   x <- permute(x, ser_permutation(o_row, o_col))
   
-  if(!options$showdist) {
+  if(options$showdist == "none") {
     pimage(x, col=options$col, main=options$main, axes=options$axes, 
       zlim=options$zlim, prop=options$prop, key=options$key, 
       newpage=options$newpage, gp=options$gp)
@@ -215,17 +227,18 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
   popViewport(1)
   
   # rows
-  pushViewport(viewport(layout.pos.row = 3, layout.pos.col = 1))
-  
-  .grid_image(as.matrix(dist_row), col = options$col_dist, gp = options$gp)
-  popViewport(1)
+  if(options$showdist %in% c("row", "both")) {
+    pushViewport(viewport(layout.pos.row = 3, layout.pos.col = 1))
+    .grid_image(as.matrix(dist_row), col = options$col_dist, gp = options$gp)
+    popViewport(1)
+  }
   
   # cols
-  pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 3))
-  
-  .grid_image(as.matrix(dist_col), col = options$col_dist, gp = options$gp) 
-  
-  popViewport(1)
+  if(options$showdist %in% c("column", "both")) {
+    pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 3))
+    .grid_image(as.matrix(dist_col), col = options$col_dist, gp = options$gp) 
+    popViewport(1)
+  } 
   
   # colorkey
   if(options$key) {

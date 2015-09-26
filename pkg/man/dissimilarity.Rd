@@ -8,13 +8,14 @@
 Calculates dissimilarities/correlations between seriation orders in a list.
 }
 \usage{
-ser_dist(x, method = "spearman", reverse = FALSE)
-ser_cor(x, method = "spearman", reverse = FALSE)
+ser_cor(x, y = NULL, method = "spearman", reverse = FALSE, test = FALSE)
+ser_dist(x, y = NULL, method = "spearman", reverse = FALSE)
 ser_align(x, method = "spearman")
 }
 \arguments{
-  \item{x}{set of seriation orders as a list with elements of class 
-    \code{ser_permutation_vector}.}
+  \item{x}{set of seriation orders as a list with elements which can be 
+  coerced into \code{ser_permutation_vector} objects. }
+  \item{y}{ if not \code{NULL} then a single seriation order can be specified.   In this case \code{x} has to be a single seriation order and not a list. }
   \item{method}{ a character string with the name of the used measure. Available
     measures are:
     \code{"kendall"}, \code{"spearman"}, \code{"manhattan"}, 
@@ -25,6 +26,7 @@ ser_align(x, method = "spearman")
     reverse order and the best value (highest correlation, lowed distance) is
     reported. This only affect ranking-based measures and not precedence
     invariant measures (e.g., ppc). } 
+  \item{test}{a logical indicating if a correlation test should be performed. } 
 }
 \details{
 \code{ser_cor} calculates the correlation between two sequences (orders).
@@ -34,6 +36,9 @@ rankings.
 For ranking-based correlation measures (Spearman and Kendall) 
 the absolute value of the correlation is returned for \code{reverse = TRUE}
 (in effect returning the correltation for the reversed order).
+If \code{test = TRUE} then the appropriate test for association is performed
+and a matrix with p-values is returned as the attribute \code{"p-value"}. Note
+that no correction for multiple testing is performed.
 
 For \code{ser_dist},
 the correlation coefficients (Kendall's tau and Spearman's rho) are converted
