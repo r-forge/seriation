@@ -21,9 +21,9 @@
 ## seriate matrices 
 
 seriate.matrix <- function(x, method = "PCA", control = NULL, 
-    margin = c(1,2), ...)
-    .seriate_array_helper(x, method, control, margin, 
-      datatype = "matrix", defmethod = "BEA_TSP", ...)
+  margin = c(1,2), ...)
+  .seriate_array_helper(x, method, control, margin, 
+    datatype = "matrix", defmethod = "BEA_TSP", ...)
 
 ## Algorithm B
 ##  F. Murtagh (1985). Multidimensional Cluster Algorithms. Lectures
@@ -138,7 +138,7 @@ seriate_matrix_angle <- function(x, control = NULL) {
     center = TRUE,
     scale. = FALSE,
     tol = NULL
-    ))
+  ))
   
   center  <- control$center
   scale.  <- control$scale.

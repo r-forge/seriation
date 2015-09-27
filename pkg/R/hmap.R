@@ -65,13 +65,26 @@ hmap <- function(x, distfun = dist, method = "OLO", control = NULL,
     if(is.null(args$trace)) args$trace <- "none"
     if(is.null(args$density.info)) args$density.info <- "none"
     
+    ## cex
+    if(is.null(args$cexRow)) args$cexRow <- 1
+    if(is.null(args$cexCol)) args$cexCol <- 1
+    
+    ## zlim
+    if(!is.null(zlim))
+      args$breaks <- seq(zlim[1], zlim[2],  length.out = length(args$col)+1L)
+    
     args <- c(list( 
       x=x, 
       Colv = as.dendrogram(o_col), 
       Rowv = as.dendrogram(o_row)), 
       args
     )
-    ret <- do.call(gplots::heatmap.2, args)
+    
+    ## FIXME: image throws warning about unsorted breaks 
+    ## if breaks are specified!
+    suppressWarnings(
+      ret <- do.call(gplots::heatmap.2, args)
+    )
     
     ret$seriation_method <- method
   } else {

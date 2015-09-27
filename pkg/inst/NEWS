@@ -1,10 +1,11 @@
 Changes in version 1.1-3 (x/xx/2015) 
     * Fixed Spectral_norm seriation.
-    * hmap gained option sym for seriation based maps. showdist can now be 
+    * hmap now honors zlim also in dendrogram-based maps. 
+      hmap gained option sym for seriation based maps. showdist can now be 
       one of "none" (default), "row", "column", or "both". 
     * ser_cor and ser_dist gained parameter y. ser_cor gained parameter test
       to perform tests for association.
-    * added permute method for hclust and dendrogram.
+    * added permute method for hclust and dendrogram objects.
 
 Changes in version 1.1-2 (8/23/2015) 
     * Argument (control and ...) check warns now instead of throwing an error.
