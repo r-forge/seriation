@@ -1,4 +1,5 @@
 Changes in version 1.1-3 (x/xx/2015) 
+    * added is.robinson to recognize (pre) Robinson matrices.
     * Fixed Spectral_norm seriation.
     * hmap now honors zlim also in dendrogram-based maps. 
       hmap gained option sym for seriation based maps. showdist can now be 

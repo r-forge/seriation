@@ -36,6 +36,7 @@ export(
     permutation_vector2matrix,
     pimage, 
     seriate,
+    is.robinson,
   
     path_dist,
     VAT,
