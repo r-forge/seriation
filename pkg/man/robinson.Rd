@@ -1,6 +1,7 @@
 \name{Robinson}
 \alias{Robinson}
 \alias{is.robinson}
+\alias{random.robinson}
 \title{Create and Recognize Robinson and Pre-Robinson Matrices}
 \description{
 Provides functions to create and 
@@ -20,7 +21,7 @@ random.robinson(n, anti = TRUE, pre = FALSE,
   (a \code{dist} object). }
   \item{anti}{logical; check for anti Robinson structure? Note
   that for distances, anti Robinson structure is appropriate. }
-  \item{anti}{logical; recognize also pre-Robinson matrices. }
+  \item{pre}{logical; recognize/create pre-Robinson matrices. }
   \item{n}{ number of objects. } 
   \item{scale, power}{ influences the distribution of the values in the matrix. } 
 }  
