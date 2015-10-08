@@ -13,8 +13,7 @@ permutations of rows and columns.
 }
 \usage{
 is.robinson(x, anti = TRUE, pre = FALSE)
-random.robinson(n, anti = TRUE, pre = FALSE, 
-  scale = 1, power = 1)
+random.robinson(n, anti = TRUE, pre = FALSE, noise = 0)
 }
 \arguments{
   \item{x}{a symmetric, positive matrix or a dissimilarity matrix 
@@ -23,7 +22,8 @@ random.robinson(n, anti = TRUE, pre = FALSE,
   that for distances, anti Robinson structure is appropriate. }
   \item{pre}{logical; recognize/create pre-Robinson matrices. }
   \item{n}{ number of objects. } 
-  \item{scale, power}{ influences the distribution of the values in the matrix. } 
+  \item{noise}{ zero means no noise. Noise more than zero results in 
+    non-Robinson matrices. } 
 }  
 \details{
 Note that the default matrices are anti Robinson matrices. This is done because
@@ -33,10 +33,14 @@ with values increasing when moving away from the diagonal.
 Robinson matrices are recognized using the fact that they have zero anti Robinson events. For pre-Robinson matrices we use spectral seriation first since spectral seriation is guaranteed to perfectly reorder pre-Robinson matrices.
 
 Random pre-Robinson matrices are generated 
-using \eqn{dist((x*scale)^power)} where 
+using \eqn{dist(x)} where 
 \eqn{x} is a vector of \code{n} values drawn from a random 
 uniform distribution with range \eqn{[0,1]}. For Robinson matrices, 
 \eqn{x} is sorted. 
+
+For noise, randomly chosen \eqn{y} coordinates are added. The coordinates
+are chosen from a normal distribution with a mean of zero and a standard deviation
+given by the desired noise level. Reasonable levels are close to zero.
 }
 \value{
 A single logical value.
