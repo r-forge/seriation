@@ -107,10 +107,33 @@ criterion_gradient_weighted <- function(x, order, ...) {
     .Call("gradient", x, order, 2L, PACKAGE = "seriation")
 }
 
+.A_2SUM <- function(n)
+  outer(1:n,1:n, FUN = function(i,j) (i-j)^2)
+
+criterion_2SUM <- function(x, order, ...) {
+    if(is.null(order)) order <- 1:attr(x, "Size")
+    else order <- get_order(order)
+    
+    qap::qap.obj(.A_2SUM(attr(x, "Size")), 1/(1+as.matrix(x)), order)
+}
+
+.A_LS <- function(n)
+  outer(1:n,1:n, FUN = function(i,j) n-abs(i-j))
+
+criterion_LS <- function(x, order, ...) {
+    if(is.null(order)) order <- 1:attr(x, "Size")
+    else order <- get_order(order)
+    
+    qap::qap.obj(.A_LS(attr(x, "Size")), as.matrix(x), order)
+}
+
+
 criterion_ME_dist <- function(x, order, ...)
     criterion(as.matrix(x), c(order, order), "ME")
+
 criterion_Moore_stress_dist  <- function(x, order, ...)
     criterion(as.matrix(x), c(order, order), "Moore_stress")
+
 criterion_Neumann_stress_dist  <- function(x, order, ...)
     criterion(as.matrix(x), c(order, order), "Neumann_stress")
 
@@ -139,3 +162,7 @@ set_criterion_method("dist", "Moore_stress", criterion_Moore_stress_dist,
     "Stress (Moore neighborhood)", FALSE)
 set_criterion_method("dist", "Neumann_stress", criterion_Neumann_stress_dist,
     "Stress (Neumann neighborhood)", FALSE)
+set_criterion_method("dist", "2SUM", criterion_2SUM,
+    "2-SUM objective value (QAP)", FALSE)
+set_criterion_method("dist", "LS", criterion_LS,
+    "Linear seriation objective value (QAP)", FALSE)

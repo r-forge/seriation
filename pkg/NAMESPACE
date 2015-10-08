@@ -37,6 +37,7 @@ export(
     pimage, 
     seriate,
     is.robinson,
+    random.robinson,
   
     path_dist,
     VAT,

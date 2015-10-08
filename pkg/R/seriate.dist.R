@@ -527,6 +527,23 @@ seriate_dist_SPIN_STS <- function(x, control = NULL) {
   o
 }
 
+## QAP 2SUM seriation
+seriate_dist_2SUM <- function(x, control = NULL) {
+  ## param are passed on to QAP
+  
+  do.call(qap::qap, c(list(A = .A_2SUM(attr(x, "Size")), 
+    B = 1/(1+as.matrix(x))), control))
+}
+  
+## QAP Linear seriation
+seriate_dist_LS <- function(x, control = NULL) {
+  ## param are passed on to QAP
+  
+  do.call(qap::qap, c(list(A = .A_LS(attr(x, "Size")), 
+    B = as.matrix(x)), control))
+}
+
+
 
 set_seriation_method("dist", "Identity", seriate_dist_identity,
   "Identity permutation")
@@ -597,3 +614,8 @@ set_seriation_method("dist", "SPIN_NH", seriate_dist_SPIN,
   "SPIN (Neighborhood algorithm)")
 set_seriation_method("dist", "SPIN_STS", seriate_dist_SPIN_STS,
   "SPIN (Side-to-Side algorithm)")
+
+set_seriation_method("dist", "2SUM", seriate_dist_2SUM,
+  "2-SUM (QAP)")
+set_seriation_method("dist", "LS", seriate_dist_LS,
+  "Linear Seriation (QAP)")

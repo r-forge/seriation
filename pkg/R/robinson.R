@@ -33,3 +33,17 @@ is.robinson <- function(x, anti = TRUE, pre = FALSE) {
   unname(criterion(d, method = "AR_events") == 0)
 }
   
+random.robinson <- function(n, anti = TRUE, pre = FALSE, 
+  scale = 1, power = 1) {
+  
+  x <- (runif(n)*scale)^power
+  
+  if(!pre) x <- sort(x)
+  
+  m <- as.matrix(dist(x))
+
+  if(!anti) m <- 1-m
+  
+  m
+}
+
